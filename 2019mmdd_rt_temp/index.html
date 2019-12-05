@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Posting Title — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Posting title</h1>
+
+    <time datetime="2018-01-01" class="published updated">
+        2019 Mmm dd
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>Introduction summary paragraph.</p>
+
+<hr>
+
+<section><h2>First</h2>
+    <figure>
+        <img alt="Test" src="#" />
+        <figcaption>
+            The caption.
+        </figcaption>
+    </figure>
+</section>
+
+
+<section><h2></h2>
+
+I approximate the effect of ground signals diffracting off of the groundshield lip by placing an extra cylinder object surrounding the groundshield and set the height of the cylinder such that the panels farthest from a given point on the lip of the cylinder are illuminated down to a point that measures 2&deg; from the lip of the point's opposing panel (see fig. ##)
+    <figure>
+        <img alt="Maps pager" id="mapspager" src="#" />
+        <figcaption>
+			Temperature-based ray traces for various levels of ground-shielding. Left column: Schematic of optical setup, Middle column: Temperature map for a ray bundle in the center of a window. Right column: Temperature difference map for two levels of ground temperature (dT_ground is 10K).
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#mapspager",
+                {
+                    'Shielding|p': ['None|none','FB|fb','GS|gs','FB+GS|fb+gs'],
+                },
+                function(params) {
+                    return 'figs/rt_3panel_'+params.p+'.png';
+                });
+            pager.setparams({
+                    'p': 'none',
+                });
+        </script>
+    </figure>
+</section>
+
+
+<hr>
+
+<h3>Linked previous postings</h3>
+
+<dl class="postinglist">
+    <a class="posting" href="#">
+        <dt>[20140101_title]</dt>
+        <dd>Posting title (JAC)</dd>
+    </a>
+</dl>
+
+</body>

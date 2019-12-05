@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>30/40 GHz BBNS — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>30/40 GHz Broad Band Noise Source Build and Performance</h1>
+
+    <time datetime="2019-12-05" class="published updated">
+        2019 Dec 05
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>This posting provides an overview of the design and performance of the 30/40GHz BroadBand Noise Source (BBNS) for the calibration efforts which will be conducted on our 30/40 GHz BICEP Array receiver.</p>
+
+<hr>
+
+<section><h2>Design</h2>
+
+
+
+<p>I used the same RF design scheme as our other sources where we amplify and chop the noise of relatively low frequency band (~10 GHz) which we then pass through a frequency multiplier to achieve the desirable output frequency. It was possible to start in the 30-40 GHz range, but the components for the aforementioned design are overall cheaper, easier to acquire, and are less sensitive to fluctations in temperature. The figure below shows a schematic of the RF chain I based my designs on.
+
+    <figure>
+        <img   src="figs/rf_diagram.png" width=40%/>
+        <figcaption>
+            Simplified RF chain for the 30/40Ghz BBNS.
+        </figcaption>
+    </figure>
+
+
+<p>Further, the new source was designed using the following guidelines acquired from the typical performance and lessons-learned of previous sources:
+<ol>
+<li>Hardware must be compatible with other source hardware and wiring
+<li>Flat spectrum from 26.5-50GHz
+<li>Achieve 1dBm total power output over spectrum at room temperature
+<li>Wide dynamic range $(\gt 40\text{dB})$ of power output for main, near, and far sidelobe mapping
+<li>High thermal stabilty when under PID feedback $(\lt\pm 1K)$
+<li>Stability of source output of $\sim1\%$ over entire calibration schedules $(\sim 12\text{hrs})$
+</ol>
+
+<p>Following these guidelines should give us confidence that the source can be used for any of our beam mapping needs without modifying any existing calibration equipment.
+
+<p>Major design choices influenced by the established criteria:
+<ol>
+<li>Source uses identical chassis, and DB-15 serial cable for interfacing with other source hardware.
+<li>High-pass filtering flattens spectrum at the lower end of our target bandwidth.*
+<li>Gain blocks in both low- and high-frequency parts of the RF chain maximize total throughput
+<li>Inline waveguide variable attenuators provide 65dB of attenuation of output power.
+<li>All active components are mounted to copper brackets to optimize thermal coupling.
+<li>Heaters are placed next to active components to optimize thermal (and thus output) stability.
+</ol>
+
+<p>*Due to a long lead-time with the high-pass filter, a diplexer is currently being used as the high pass filter.
+<!--
+    <figure>
+        <img   src="figs/bbns_sw.png" width=40%/>
+        <figcaption>
+            Solidworks model of the BBNS.
+        </figcaption>
+    </figure>
+-->
+
+    <figure>
+        <table><tr>
+		<td><img src="figs/bbns_pic_1.jpg" />
+		<td><img src="figs/bbns_pic_2.jpg" />
+		</tr></table>
+        <figcaption>
+            The 30/40GHz BBNS as fabricated.
+        </figcaption>
+    </figure>
+
+<p>
+Two notable differences in this design from its predecessors are the use of off-the-shelf components for the low-frequency noise source and the over-voltage protection circuitry. The noise source, designed by Noisewave, was chosen due to its built-in TTL switching, good impedance matching, and ability to output flat noise over a relatively broad band (DC-21GHz). This is in contrast to previous iterations of BBNS's where the low-frequency noise was produced by amplifying the Johnson noise of a $50\Omega$ termination via multiple gain blocks before being put through a seperate PIN switch which was prone to burning-out.
+</p>
+<p>
+The over-voltage circuitry in our other sources were designed and fabricated in-house which was time-consuming, expensive and produced a relatively large footprint on the source chassis. The new <a href="https://www.digikey.com/product-detail/en/bel-power-solutions/OVP-12G/179-2353-ND/1705782">protection circuit</a> can be bought and shipped overnight from Digikey, has a small footprint, is quite cheap, and is also tunable from 6-34V.
+</p>
+
+    <figure>
+        <img src="figs/bbns_layout.png" width=60%/>
+        <figcaption>
+            Layout of the as-fabricated source with component annotations.
+        </figcaption>
+    </figure>
+
+<p>
+
+Solidworks drawings for this BBNS can be found in the <a href="BICEP_SVN_Repository"></a> (user:polar, pass:g******w****).
+</p>
+<p>
+
+<h3>Comparison to other sources</h3>
+
+Looking through the Calibration Hardware Logbook, I was able to compare the performace of the new source to our other sources.
+
+<figure>
+<table border=1>
+<tr><th>Source (GHz)</th><th>Output (dBm)</th><th>Atten. Range (dB)</th><th>Flatness (dB, pk-to-pk)</th></tr>
+<tr><td>30 / 40</td><td>13</td><td>65</td><td>6 / 14+</td></tr>
+<tr><td>95</td><td>2.3</td><td>95</td><td>-</td></tr>
+<tr><td>150</td><td>-0.7</td><td>70</td><td>15</td></tr>
+<tr><td>220</td><td>-40</td><td>70</td><td>-</td></tr>
+</table>
+</figure>
+</section>
+
+
+<section><h2>Spectrum</h2>
+<p>I measured the spectrum using an Agilent 3Hz-44GHz spectrum analyzer. In the figure below, I've overplotted the typical 30 and 40GHz band centers and widths given in <a href="CZ2019_2"></a> and <a href="CZ2019_1"></a> respectively. The spectrum is flat to $\pm3dB$ for the 30GHz band, but we're only illuminating about half of the 40GHz band.
+    <figure>
+        <img   src="figs/spectrum_04dec2019.png" />
+        <figcaption>
+            BBNS Spectrum (<b>Black</b>) overplotted with typical 30GHz (<font color=blue>Blue</font>) 40GHz (<font color=red>Red</font>) band centers (solid) and band widths (dashed).
+        </figcaption>
+    </figure>
+</section>
+
+
+<section><h2>Beams</h2>
+<p>For most other measurements, the output of the source was read out with a Pacific Millimeter KaD (26.5-40GHz) broadband detector diode via Lock-in amplifier with a chop frequency at 1KHz. For beam mapping, the BBNS and detector were secured to a portable optics bench 21" apart (the far-field for the source is 1.25"). The source was secured in a manual rotation stage which allowed me to rotate the source about vertical axis with about $\sim 1^\circ$ of precision. I then rotated the source from $-60^\circ$ to $60^\circ$ in increments of $5^\circ$, measuring the output of the lock-in amplifier where the uncertainty was $\sim0.05\%\,$ of the peak amplitude.
+    <figure>
+        <table><tr>
+		<td><img src="figs/beam_pic_e.jpg" />
+		<td><img src="figs/beam_pic_h.jpg" />
+		</tr></table>
+        <figcaption>
+            Optical benchtop set-up for beam mapping.
+        </figcaption>
+    </figure>
+
+<p>Fitting a simple 1-D Gaussian to the data, I estimated the amplitude, beam width and beam centers of each beam. I find that the width of the beam in the E-plane ($17.4\pm0.1^\circ$) is $7\%$ smaller than that of the H-plane ($18.6\pm0.1^\circ$).
+
+    <figure>
+        <img   src="figs/beam_maps_03dec2019.png" />
+        <figcaption>
+            (Left) Beam maps of E- and H-plane with the best-fit model overplotted. (Right) Fractional residuals to the best fit model.
+        </figcaption>
+    </figure>
+</section>
+
+<section><h2>Dynamic Range</h2>
+<p>Using the same setup mentioned in the beam mapping section, I measured the output of the source as I individually dialed in the attenuators via the lock-in amplifier. By combining both attenuators, we can achieve up to $65 \text{dB}$ of attenuation in source amplitude.
+
+    <figure>
+        <table><tr>
+		<td><img   src="figs/hughes_attn_curve_03dec2019.png" />
+		<td><img   src="figs/millitech_attn_curve_03dec2019.png" />
+		</tr></table>
+        <figcaption>
+			Amplitude of the source as read by the lock-in amplifier as a function of attenuator setting.
+        </figcaption>
+    </figure>
+</section>
+
+<section><h2>Thermal Dependence</h2>
+<p>Both of our heater drivers are at pole, so I was unable check the source output stability under PID control. Instead, I measured the thermal dependence of the source output and, assuming 250K ambient temperature at pole, I determined the typical temperature stability we would need in order to achieve a stability of $1\%$ in source amplitude. I left the source running overnight and monitored its temperature while simultaneously measuring the source amplitude using a LabJack. The plot below shows the fluctation of source power as a function of source temperature. Assuming the gain scales linearly down to 250K, our target temperature fluctation should be $\sigma_T\lt 0.5K$ which, historically is quite achievable.
+
+    <figure>
+        <img   src="figs/amp_vs_temp.png" />
+        <figcaption>
+            Amplitude of the source output as a function of source temperature.
+        </figcaption>
+    </figure>
+</section>
+
+
+<hr>
+
+<section>
+<h3>Summary</h3>
+I have developed a Broadband Noise Source for calibration of the 30/40 GHz BICEP Array receiver for this deployment. The source is compatible with the mounts and wiring of its predecessors, has a high power output and dynamic range, and can be made sufficently stable under PID feedback. While the source likely be sufficient for calibration efforts on the 30Ghz modules, the sharp roll-off in the 40GHz band may limit our capabilities in the 40GHz band.
+
+
+<h3>Code</h3>
+
+<ul>
+<li><tt><a href="posting_plots.m">posting_plots.m</a></tt> - Code that produces the plots for this posting. The data can be found in the 'data/' directory in this posting.
+</ul>
+
+
+<h3>References</h3>
+<p id="references"></p>
+	<script type="text/javascript">
+	// This my way of making shorthand links.
+	// We'll make a couple arrays with the 'tag' and href information
+	// and then look through each anchor element for the specified tag.
+	// The anchors should then just look like: <a href="tagname"></a>
+	// and the script will automatically fill in the hyperlings and text.
+	var tags = [
+	"CZ2019_1",
+	"CZ2019_2",
+	"BICEP_SVN_Repository",
+	];
+	
+	var hrefs = [
+	"../20191024_FTS_BA_R1p10/",
+	"../20191113_BA30N1S1_SK_OEnFTS/",
+	"http://clk-1f.stanford.edu/svn/polar-drawings/BBNS/",
+	];
+	
+	var desc = [
+	"BA 40 Tile T5/8/6 in M3/7/5 FTS @ BA1, Run1.10",
+	"BA 30 M190603 (S1) in N1, OE and FTS @ SK",
+	"Location of Solidworks models for BICEP related instruments.",
+	];
+	
+	
+	var post = document.getElementById("references");
+	var msg = "<table>";
+	for (var tag in tags){
+		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
+	};
+	msg = msg+ "</table>";
+	post.innerHTML = msg;
+
+	var links = document.getElementsByTagName("A");
+	for (var link in links){
+		for (var tag in tags){
+			if (links[link].href.endsWith(tags[tag])){
+				links[link].text = "("+tags[tag]+")";
+				links[link].href = hrefs[tag];
+				links[link].target = "_blank";
+			}
+		}
+	}
+	
+	</script>
+</section>
+</body>
