@@ -1,0 +1,73 @@
+.showhide
+{
+    /* Make it equivalent to content in the body */
+    width: 100%;
+    width: -webkit-calc(100vw - 2 * 32px);
+    width: -moz-calc(100vw - 2 * 32px);
+    width: calc(100vw - 2 * 32px);
+    margin-left: 0px;
+    margin-left: -webkit-calc(-50vw + 400px + 32px);
+    margin-left: -moz-calc(-50vw + 400px + 32px);
+    margin-left: calc(-50vw + 400px + 32px);
+    
+    margin-top: 1em;
+
+    /* Make some nice looking box shadows in as many browsers as we
+        can */
+    -moz-box-shadow: inset 2px 2px 12px #BBBBBB;
+    -webkit-box-shadow: inset 2px 2px 12px #BBBBBB;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2,
+        Direction=135, Color='#BBBBBB')";
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2,
+        Direction=135, Color='#BBBBBB');
+    box-shadow: inset 2px 2px 12px #BBBBBB;
+    /* then do some rounded box corners for eye candy as well */
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    
+    /* Add some extra styling to make it stand out */
+    background-color: #e0e0e0;
+
+    overflow-y: hidden;
+    overflow-x: visible;
+    opacity: 1.0;
+    max-height: 10000px;
+    transition: all 1s ease-in-out 0ms;
+}
+.showhide_hidden
+{
+    max-height: 0px;
+    opacity: 0.0;
+}
+.showhide > div
+{
+    width: 100%;
+    margin-left: 16px;
+    margin-right: 16px;
+    /* Center the body. Do this with calc statements instead of the usual
+     * margin trick so that this only happens if we can also later resize
+     * figures to be full page width too */
+    width: -webkit-calc(0vw + 800px);
+    width: -moz-calc(0vw + 800px);
+    width: calc(0vw + 800px);
+    margin-left: -webkit-calc(50vw - 400px - 32px);
+    margin-left: -moz-calc(50vw - 400px - 32px);
+    margin-left: calc(50vw - 400px - 32px);
+    margin-right: -webkit-calc(50vw - 400px);
+    margin-right: -moz-calc(50vw - 400px);
+    margin-right: calc(50vw - 400px);
+}
+.showhide > div figure
+{
+    /* Figures should span the entire page width even though the body
+     * doesn't necessarily span that far. */
+    width: 100%;
+    width: -webkit-calc(100vw - 4 * 32px);
+    width: -moz-calc(100vw - 4 * 32px);
+    width: calc(100vw - 4 * 32px);
+    margin-left: 0px;
+    margin-left: -webkit-calc(-50vw + 400px + 2 * 32px);
+    margin-left: -moz-calc(-50vw + 400px + 2 * 32px);
+    margin-left: calc(-50vw + 400px + 2 * 32px);
+}

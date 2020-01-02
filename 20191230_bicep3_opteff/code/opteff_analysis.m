@@ -1,0 +1,778 @@
+function opteff_analysis(measure_year,fdir,mtypes)
+% function opteff_analysis(measure_year)
+%
+% Data:
+% South Pole 2018: data/B3_SP2017_20170128_run09_OE/LC_Al_???K_bicep3_mce?_FPU???mK.run
+%  measure.expt   = get_experiment_name;
+%  measure.year   = '2018';
+%  measure.cryo   = 'B3_SP2018';
+%  measure.date   = '20170201';
+%  measure.loadT  = {'074K'; '242K'};
+%  measure.OE_T   = [074; 242];
+%  measure.fpuT   = {'280mK'; '280mK'};
+%  measure.run    = 'run09';
+%  measure.type   = 'OE';
+%
+% South Pole 2017: data/B3_SP2017_20170128_run09_OE/LC_Al_???K_bicep3_mce?_FPU???mK.run
+%  measure.expt   = get_experiment_name;
+%  measure.year   = '2017';
+%  measure.cryo   = 'B3_SP2017';
+%  measure.date   = '20170201';
+%  measure.loadT  = {'074K'; '242K'};
+%  measure.OE_T   = [074; 242];
+%  measure.fpuT   = {'285mK'; '285mK'};
+%  measure.run    = 'run09';
+%  measure.type   = 'OE';
+%
+% South Pole 2016: data/B3_SP2016_20160201_run08_OE/LC_Al_???K_bicep3_mce?_FPU???mK.run
+%  measure.expt   = get_experiment_name;
+%  measure.year   = '2016';
+%  measure.cryo   = 'B3_SP2016';
+%  measure.date   = '20160201';
+%  measure.loadT  = {'074K'; '250K'};
+%  measure.OE_T   = [074; 250];
+%  measure.fpuT   = {'290mK'; '290mK'};
+%  measure.run    = 'run08';
+%  measure.type   = 'OE';
+%
+% Optical Efficiency Analysis
+% Procedure:
+%   1) Take data for all MCEs
+%     - Load curves taken at two different ambient temperatures
+%       + South pole
+%         - LN2      =  74K
+%         - Ambient  = 242K
+%       + Caltech / Short Keck
+%         - LN2      =  77K
+%         - Ambient  = 300K
+%   2) Setup aux_data for the given experiment
+%   3) Edit the structs measure and fpu to current measurement & experiment
+%   4) Process raw data first by setting do.process_raw = 1
+%     - Edit data_cut & data_plot to reasonable values, which can be changed later
+%     - This will save the preprocessed data that takes the most amount of time in this analysis
+%   5) Change the rest of the struct do for generating plots
+%
+% Last Update:
+% SNK: Mar 03, 2017
+%
+% TO DO:
+%  % Make spreadsheets
+%
+
+close all;
+
+%%
+do.process_raw   = 0;
+do.show_plots    = 0;
+do.save_plots    = 1;
+do.per_mce_plot  = 1;
+do.per_tile      = 1;
+do.per_tile_figs = 1;
+do.cvs_output    = 0;
+
+measure.year    = measure_year;
+
+%% Data
+% Measurement properties
+
+switch measure.year
+  case '20191228'
+    measure.expt   = get_experiment_name;
+    measure.year   = '2019';
+    measure.cryo   = 'B3_SP2019';
+    measure.date   = '20191228';
+    measure.loadT  = {'074K'; '260K'};
+    measure.OE_T   = [074; 260];
+    measure.fpuT   = {'280mK'; '280mK'};
+    measure.run    = 'run11';
+    measure.type   = 'OE';
+  case '20181217'
+    measure.expt   = get_experiment_name;
+    measure.year   = '2018';
+    measure.cryo   = 'B3_SP2018';
+    measure.date   = '20181217';
+    measure.loadT  = {'074K'; '242K'};
+    measure.OE_T   = [074; 242];
+    measure.fpuT   = {'280mK'; '280mK'};
+    measure.run    = 'run10';
+    measure.type   = 'OE';
+  case '20170201'
+    measure.expt   = get_experiment_name;
+    measure.cryo   = 'B3_SP2017';
+    measure.date   = '20170201';
+    measure.loadT  = {'074K'; '242K'};
+    measure.OE_T   = [074; 250];
+    measure.fpuT   = {'285mK'; '285mK'};
+    measure.run    = 'run09';
+    measure.type   = 'OE';
+    
+  case '20160201'
+    measure.expt   = get_experiment_name;
+    measure.cryo   = 'B3_SP2016';
+    measure.date   = '20160201';
+    measure.loadT  = {'074K'; '250K'};
+    measure.OE_T   = [074; 266];
+    measure.fpuT   = {'290mK'; '290mK'};
+    measure.run    = 'run08';
+    measure.type   = 'OE';
+    
+  case '20161114'
+    measure.expt   = get_experiment_name;
+    measure.cryo   = 'B3_SP2016';
+    measure.date   = '20161114';
+    measure.loadT  = {'074K'; '250K'};
+    measure.OE_T   = [074; 266];
+    measure.fpuT   = {'300mK'; '300mK'};
+    measure.run    = 'run08';
+    measure.type   = 'OE';
+    
+  otherwise
+    disp('not valid a measurement date');
+    return
+    
+end
+
+
+
+measure.full   = [measure.cryo, '_', measure.date, '_', ...
+  measure.run, '_', measure.type];
+measure.LCtype = 'LC_Al';
+measure.nT     = length(measure.loadT);
+measure.i077   = 1;
+measure.i300   = 2;
+
+%% FPU properties
+[p, ind] = get_array_info(measure.date);
+p = rmfield(p, 'expt');
+if strcmp(measure.expt, 'keck')
+  fpu.rx    = 0;
+  fpu.nrx   = length(fpu.rx);
+  fpu.mces  = 0;
+  fpu.nmces = length(fpu.mces);
+  
+  prx   = structcut(p, ismember(p.rx, fpu.rx));
+  indrx = strip_ind(ind, find(ismember(p.rx, fpu.rx)));
+elseif strcmp(measure.expt, 'bicep3')
+  fpu.rx    = 0;
+  fpu.nrx   = length(fpu.rx);
+  fpu.mces  = [0;1;2;3];
+  fpu.nmces = length(fpu.mces);
+  
+  prx   = structcut(p, ismember(p.rx, fpu.rx));
+  indrx = strip_ind(ind, find(ismember(p.rx, fpu.rx)));
+end
+
+
+%% Basic Cuts on Data Quality
+data_cut.biasal  = [     600,     6000]; % ADU
+data_cut.ifit    = [ 3.50e-4,  5.50e-4]; % Amperes
+data_cut.rnfit   = [   30e-3,   180e-3]; % Ohms
+data_cut.dPdTlim = [    0.00, 0.25e-12]; % dPdT
+
+%% Plotting
+data_plot.Ib   = [0.00e-4, 2.00e-3];
+data_plot.Is   = [0.00e-5, 1.00e-4];
+data_plot.R    = [0.00e00, 2.00e02];
+data_plot.P    = [0.00e00, 3.00e02];
+
+% Hi?tostogram number of bins
+data_plot.histN = 20;
+
+% Fontsize
+data_plot.fontsize = 24;
+
+% Set the paper aspect because fontsize doesn't really do anything.
+% Number is in inches. Smaller aspect makes font bigger.
+data_plot.paspect = 4;
+plotting.paspect = data_plot.paspect;
+% Do this a little differently:
+% Use dir to find ambient and LN2 measurements
+% If more than one exists, average them together.
+if do.process_raw
+for i = 1:length(mtypes)
+  for imce = 0:(fpu.nmces-1)
+    mce = fpu.mces(imce+1);
+    d = dir([fdir measure.full '/*' mtypes{i} '*MCE' num2str(imce) '*.bias']);
+%    d = dir([fdir '*' mtypes{i} '*mce' num2str(imce) '*.bias']);
+%    keyboard()
+    for idir = 1:length(d)
+      fname = [fdir d(idir).name];
+      fprintf([fname '\n'])
+      Stmp2 = read_mce(fname(1:(end-5)));
+      Btmp = read_mce_biasfile(fname);
+      for ichan = 1:length(Stmp2)
+        chind = find(p.mce==imce & p.mce_col == Stmp2(ichan).mux_rc_col & p.mce_row == Stmp2(ichan).mux_row);
+        if length(chind)>0
+          if idir == 1
+            Stmp(chind).fb = Stmp2(ichan).fb;
+          else
+            Stmp(chind).fb = Stmp(chind).fb + Stmp2(ichan).fb;
+          end
+        end
+      end
+    end
+    mcind = find(p.mce==imce);
+    for k = 1:length(Stmp), Stmp(k).fb = Stmp(k).fb/length(d);, end
+    B{i}(imce+1,:) = Btmp;
+    S{i}(mcind) = Stmp(mcind);
+    clear Stmp Btmp
+  end
+end
+end
+%keyboard()
+
+
+%% Load data
+if 0%do.process_raw
+  filename.data_folder = ['data/', measure.full];
+  for iT = 1:measure.nT
+    filename.filenames{iT} = strcat(filename.data_folder, '/', ...
+      measure.LCtype, '_', measure.loadT{iT}, '_', measure.expt, '_', ...
+      'mce', num2str(fpu.mces), '_FPU', measure.fpuT{iT});
+    fprintf(filename.filenames{iT})
+    keyboard() 
+    for imce = 1:fpu.nmces
+      mce = fpu.mces(imce);
+      Stmp = read_mce(filename.filenames{iT}(imce, :));
+      Btmp = read_mce_biasfile([filename.filenames{iT}(imce, :), '.bias']);
+      S{iT}(find(prx.mce == mce)) =...
+        Stmp(prx.gcp(find(prx.mce == mce))+1);
+      B{iT}(imce, :) = Btmp;
+      clear('Stmp', 'Btmp');
+    end
+  end
+end
+
+%% Make directories
+% Plots
+filename.plotdir = ['plots/', measure.full];
+if exist(filename.plotdir) ~= 7
+  disp([filename.plotdir, ' does not exist']);
+  disp(['creating ', filename.plotdir]);
+  mkdir(filename.plotdir);
+end
+% Output
+filename.outdir = ['out/', measure.full];
+if exist(filename.outdir) ~= 7
+  disp([filename.outdir, ' does not exist']);
+  disp(['creating ', filename.outdir]);
+  mkdir(filename.outdir);
+end
+
+%% Calibration
+disp('Calibration:')
+eval(['calib = calib_', measure.cryo, ';']);
+
+%% Data Processing
+% Get Ib and Is,
+% Calculate Ti Normal Rn,
+% Apply Cuts,
+% Calculate R, P
+if do.process_raw
+  for iT = 1:measure.nT
+    for det = 1:length(prx.gcp)
+      % Cut region
+      indx_cut = find(B{iT}(mce, :).tes_bias >= data_cut.biasal(1)...
+        & B{iT}(mce, :).tes_bias <= data_cut.biasal(2));
+      % Cut data
+      Ib{iT}(det, :) = B{iT}(prx.mce(det)+1).tes_bias(indx_cut)*calib.BIAS_CAL(1);
+      Is{iT}(det, :) = -S{iT}(det).fb(indx_cut)*calib.FB_CAL(1);
+      
+      % Rn fit
+      [Rn{iT}(det), fit_param] = fit_TiRn(Ib{iT}(det, :), Is{iT}(det, :), data_cut, calib);
+      
+      % Cut bad Rn
+      if Rn{iT}(det) <= data_cut.rnfit(1) || Rn{iT}(det) >= data_cut.rnfit(2)
+        Is{iT}(det, :) = NaN;
+        Rn{iT}(det)   = NaN;
+        R{iT}(det, :)  = NaN(size(Ib{iT}(det, :)));
+        P{iT}(det, :)  = NaN(size(Ib{iT}(det, :)));
+      else
+        % Correct for the Offset
+        indx_Ib = find(Ib{iT}(det, :) > data_cut.ifit(2), 1, 'last');
+        Is{iT}(det, :) = Is{iT}(det, :) - Is{iT}(det, indx_Ib) +...
+          Ib{iT}(det, indx_Ib)*fit_param(1);
+        
+        % R, P
+        [R{iT}(det, :), P{iT}(det, :)] = calc_RP(Ib{iT}(det, :), Is{iT}(det, :), calib);
+      end
+      
+    end
+    
+    RSat{iT} = NaN(size(p.gcp));
+    PSat{iT} = NaN(size(p.gcp));
+    
+    % Get PSat using Rn values per mce_col
+    for imce = 1:fpu.nmces
+      mce      = fpu.mces(imce);
+      mce_cols = unique(p.mce_col(prx.mce == mce));
+      for mce_col = mce_cols'
+        dets = find(prx.mce == mce & prx.mce_col == mce_col);
+        RSat{iT}(dets) = 1.5*nanmedian(Rn{iT}(dets));
+        for idet = 1:length(dets)
+          det = dets(idet);
+          try
+            [R_mono, P_mono] = make_mono_inc(R{iT}(det, :), P{iT}(det, :));
+            PSat{iT}(det) = interp1(R_mono, P_mono, RSat{iT}(det));
+          catch
+            PSat{iT}(det) = NaN;
+          end
+        end
+      end
+    end
+    
+  end
+  
+  dPdT = -(PSat{measure.i077}-PSat{measure.i300})/(measure.OE_T(measure.i077)-measure.OE_T(measure.i300));
+ 
+  % Save intermediate results
+  save([filename.outdir, '/inter_results'], ...
+    'Ib', 'Is', 'Rn', 'R', 'P', 'RSat', 'PSat', 'dPdT');
+else
+  load([filename.outdir, '/inter_results']);
+end
+
+%% Plot Load Curves, per mce_col for all mce, for individual loads
+if do.per_mce_plot
+  if do.show_plots
+    figure;
+    set(gcf, 'Position', [0 0 1200 800]);
+  end
+  for iT = 1:measure.nT
+    for imce = 1:fpu.nmces
+      mce      = fpu.mces(imce);
+      mce_cols = unique(p.mce_col(prx.mce == mce));
+      for mce_col = mce_cols'
+        dets = find(prx.mce == mce & prx.mce_col == mce_col);
+        tile = prx.tile(dets(1));
+        module = prx.module{dets(1)};
+        
+        if do.show_plots
+          clf;
+          
+          % Ib vs % Is
+          subplot(2, 2, 1);
+          hold on;
+          plot(Ib{iT}(dets, :)', Is{iT}(dets, :)', 'linewidth', 2);
+          plot(data_cut.ifit(1)*[1, 1], data_plot.Is, 'k', 'linewidth', 2);
+          plot(data_cut.ifit(2)*[1, 1], data_plot.Is, 'k', 'linewidth', 2);
+          xlim(data_plot.Ib);
+          ylim(data_plot.Is);
+          set(gca, 'xtick', linspace(data_plot.Ib(1), data_plot.Ib(2), 11));
+          set(gca, 'ytick', linspace(data_plot.Is(1), data_plot.Is(2), 11));
+          xlabel('Ib');
+          ylabel('Is');
+          grid on;
+          set(gca, 'fontsize', data_plot.fontsize);
+          
+          % R vs P
+          subplot(2, 2, 3);
+          hold on;
+          plot(1e3*R{iT}(dets, :)', 1e12*P{iT}(dets, :)', 'linewidth', 2);
+          plot(1e3*nanmedian(RSat{iT}(dets))*[1, 1], data_plot.P, 'k', 'linewidth', 2);
+          xlim(data_plot.R);
+          ylim(data_plot.P);
+          set(gca, 'xtick', linspace(data_plot.R(1), data_plot.R(2), 11));
+          set(gca, 'ytick', linspace(data_plot.P(1), data_plot.P(2), 11));
+          %title(['mce', num2str(mce), ', mce_col', num2str(mce_col)], ...
+          %  'interpreter', 'none');
+          xlabel('R [m\Omega]');
+          ylabel('P [pW]');
+          grid on;
+          %set(gca, 'fontsize', data_plot.fontsize);
+          
+          % Histogram of Ti Normal Rn
+          subplot(2, 2, 2);
+          hold on;
+          hist(1e3*Rn{iT}(dets), linspace(data_cut.rnfit(1)*1e3, ...
+            data_cut.rnfit(2)*1e3, data_plot.histN));
+          plot_legend(1e3*Rn{iT}(dets), 0.1, 0.9, 0.05, data_plot.fontsize);
+          %title(['mce', num2str(mce), ', mce_col', num2str(mce_col)], ...
+          %  'interpreter', 'none');
+          xlabel('Ti Normal Resistance [m\Omega]');
+          ylabel('Count');
+          xlim(1e3*data_cut.rnfit);
+          %set(gca, 'fontsize', data_plot.fontsize);
+          
+          % Histogram of PSat
+          subplot(2, 2, 4);
+          hold on;
+          hist(1e12*PSat{iT}(dets), ...
+            linspace(data_plot.P(1), data_plot.P(2), data_plot.histN));
+          plot_legend(1e12*PSat{iT}(dets), 0.1, 0.9, 0.05, data_plot.fontsize);
+          %title(['mce', num2str(mce), ', mce_col', num2str(mce_col)], ...
+          %  'interpreter', 'none');
+          xlabel('PSat [pW]');
+          ylabel('Count');
+          xlim(data_plot.P);
+          %xlim(1e3*data_cut.rnfit);
+          %set(gca, 'fontsize', data_plot.fontsize);
+          
+          suptitle([measure.run, ', mce', num2str(mce), ', mce col', num2str(mce_col), ...
+            ', tile', num2str(tile), ', ', module, ', ', measure.loadT{iT}]);
+          
+          if do.save_plots
+            %set(gcf, 'PaperPositionMode', 'auto');
+            fpos = get(gcf,'Position');
+            set(gcf,'PaperPosition',[0,0,data_plot.paspect,data_plot.paspect*fpos(4)/fpos(3)]);
+            printname = [filename.plotdir, '/rawLC_', ...
+              measure.loadT{iT}, '_mce', num2str(mce), ...
+              '_mce_col', num2str(mce_col)];
+            print('-dpng', printname);
+          else
+            pause;
+          end
+          
+        end
+      end
+    end
+  end
+end
+
+%% Per tile dP/dT maps
+if do.per_tile
+  
+  if do.per_tile_figs
+    figure;
+    set(gcf, 'Position', [100, 100, 1000, 600]);
+  end
+  
+  % Number of working detectors per tile
+  tot_yield_tile = NaN(size(unique(prx.tile')));
+  eff_yield_tile = NaN(size(unique(prx.tile')));
+  
+  for tile = unique(prx.tile')
+    if isnan(tile)
+      continue;
+    end
+    %disp(['tile ', num2str(tile)]);
+    
+    % Tile properties
+    dets_tile = find(prx.tile == tile);
+    ptile     = structcut(p, ismember(prx.tile, tile));
+    indtile   = strip_ind(ind, find(ismember(prx.tile, tile)));
+    module    = ptile.module{1};
+    
+    % Plotting properties
+    plotting.type     = 'tile';
+    plotting.tile     = tile;
+    plotting.module   = module;
+    plotting.printdir = [filename.plotdir];
+    plotting.histbins = data_plot.histN;
+    plotting.date     = measure.date;
+    
+    % Ti Normal Resistance
+    Rn_tile = 1e3*nanmean([Rn{measure.i077}(dets_tile); Rn{measure.i300}(dets_tile)]);
+    plotting.name     = 'RnTi';
+    plotting.label    = ['Tile', num2str(tile), ', ', module, ...
+      ', Ti Normal Rn [mOhms]'];
+    plotting.limits   = 1e3*data_cut.rnfit;
+    % Plots
+    if do.per_tile_figs
+      make_hist(Rn_tile, ptile, indtile, do, plotting);
+      det_map(Rn_tile, ptile, indtile, do, plotting);
+    end
+    
+    % dPdT
+    dPdT_tile = 1e12*dPdT(dets_tile);
+    plotting.name     = 'dPdT';
+    plotting.label    = ['Tile', num2str(tile), ', ', module, ...
+      ', dPdT [pW/K]'];
+    plotting.limits   = 1e12*data_cut.dPdTlim;
+    dPdT_tile(find( (dPdT_tile < 1e12*data_cut.dPdTlim(1)) | (dPdT_tile > 1e12*data_cut.dPdTlim(2)) )) = NaN;
+    if do.per_tile_figs
+      make_hist(dPdT_tile, ptile, indtile, do, plotting);
+      det_map(dPdT_tile, ptile, indtile, do, plotting);
+    end
+    
+    dets_tile_a    = intersect(   ind.a, dets_tile);
+    dets_tile_b    = intersect(   ind.b, dets_tile);
+    dets_tile_rgla = intersect(ind.rgla, dets_tile);
+    dets_tile_rglb = intersect(ind.rgla, dets_tile);
+    
+    tot_yield_tile(tile) = sum(~isnan(dPdT(dets_tile_a)+dPdT(dets_tile_b)))/length(dets_tile_a);
+    eff_yield_tile(tile) = sum(~isnan(dPdT(dets_tile_rgla)+dPdT(dets_tile_rglb)))/length(dets_tile_rgla);
+    %disp(['Tile ',num2str(tile), ', module ', module])
+    %disp(['~isnan: ', num2str(sum(~isnan(dPdT(dets_tile_a)+dPdT(dets_tile_b))))])
+    %disp(['length(ind.a): ', num2str(length(dets_tile_a))])
+    %disp(['length(ind.rgla): ', num2str(length(dets_tile_rgla))])
+    %disp(['Pair tot yield: ', num2str(tot_yield_tile(tile))]);
+    %disp(['Pair eff yield: ', num2str(eff_yield_tile(tile))]);
+    %disp(' ')
+    disp(['<tr><td> ', module, ' </td><td>', num2str(sum(~isnan(dPdT(dets_tile_a)+dPdT(dets_tile_b)))),...
+      ' </td><td>', num2str(length(dets_tile_a)), ' </td><td>', num2str(length(dets_tile_rgla)),...
+      ' </td><td>', num2str(tot_yield_tile(tile)), ' </td><td>',  num2str(eff_yield_tile(tile)), '</td></tr>']);
+    
+  end
+  % Entire instrument maps
+  plotting.type     = 'all';
+  plotting.printdir = [filename.plotdir];
+  plotting.histbins = data_plot.histN;
+  plotting.date     = measure.date;
+  plotting.tile     = 'all';
+  plotting.module   = 'all';
+  
+  % Make mce map for entire instrument
+  Rn_all = 1e3*nanmean([Rn{measure.i077}(:), Rn{measure.i300}(:)],2);
+  plotting.name     = 'RnTi';
+  plotting.label    = ['All tiles, Ti Normal Rn [mOhms]'];
+  plotting.limits   = 1e3*data_cut.rnfit;
+  if do.per_tile_figs
+    make_hist(Rn_all, prx, indrx, do, plotting);
+    det_map(Rn_all, prx, indrx, do, plotting);
+    mce_map(Rn_all, prx, indrx, do, plotting);
+  end
+  
+  dPdT_all = 1e12*dPdT(:);
+  plotting.name     = 'dPdT';
+  plotting.label    = ['All tiles, dPdT [pW/K]'];
+  plotting.limits   = 1e12*data_cut.dPdTlim;
+  dPdT_all(find( (dPdT_all < 1e12*data_cut.dPdTlim(1)) | (dPdT_all > 1e12*data_cut.dPdTlim(2)) )) = NaN;
+  if do.per_tile_figs
+    make_hist(dPdT_all, prx, indrx, do, plotting);
+    det_map(dPdT_all, prx, indrx, do, plotting);
+    mce_map(dPdT_all, prx, indrx, do, plotting);
+  end
+  
+  close all;
+  
+  tot_yield_all = sum(~isnan(dPdT_all(ind.a)+dPdT_all(ind.b)))/length(ind.a);
+  eff_yield_all = sum(~isnan(dPdT_all(ind.rgla)+dPdT_all(ind.rglb)))/length(ind.rgla);
+  disp(['Total pair yield: ', num2str(tot_yield_all)]);
+  disp(['Effective pair yield: ', num2str(eff_yield_all)]);
+  
+  % Save parameters to cvs
+  if do.cvs_output
+    outvar.gcp          = prx.gcp;
+    outvar.mce          = prx.mce;
+    outvar.tile         = prx.tile;
+    outvar.module       = char(prx.module);
+    outvar.det_col      = prx.det_col;
+    outvar.det_row      = prx.det_row;
+    outvar.mce_col      = prx.mce_col;
+    outvar.mce_row      = prx.mce_row;
+    outvar.pol          = char(prx.pol);
+    outvar.type         = char(prx.type);
+    outvar.rgl          = ones(size(prx.gcp));
+    outvar.rgl(ind.rgl) = 1;
+    outvar.RnTi         = Rn_all;
+    outvar.PSat_LN2     = 1e12*PSat{measure.i077};
+    outvar.PSat_Ambient = 1e12*PSat{measure.i300};
+    outvar.dPdT         = dPdT_all;
+    
+    outopt.fields = {'gcp', 'mce', 'tile', 'module', 'det_col',...
+      'det_row', 'mce_col', 'mce_row', 'pol', 'type', 'rgl',...
+      'RnTi', 'PSat_LN2', 'PSat_Ambient', 'dPdT'};
+    
+    outopt.formats = {'integer', 'integer', 'integer', 'string', 'integer',...
+      'integer', 'integer', 'integer', 'string', 'string', 'integer',...
+      'float', 'float', 'float', 'float'};
+    
+    outopt.units = {'', '', '', '', '',...
+      '', '', '', '', '', '',...
+      'mOhm', ['pW @',measure.loadT{measure.i077}], ['pW @',measure.loadT{measure.i300}], 'pW/K'};
+    
+    outopt.comments = {[measure.expt, ', ', measure.run, ' optical efficiency results, ', measure.date]};
+    ParameterWrite([filename.outdir, '/', measure.expt, '_', measure.run, '_optical_efficiency_', measure.date, '.csv'], outvar, outopt);
+  end
+  
+end
+
+end
+
+
+function make_hist(data, p, ind, do, plotting)
+% Make histogram
+% Seperate by polarization of pixel
+if strcmp(plotting.type, 'tile') | strcmp(plotting.type, 'all')
+  pols = {'A', 'B', 'AB'};
+  for ipol = 1:length(pols)
+    % Polarization
+    pol = pols{ipol};
+    if (strcmp(pol, 'A') || strcmp(pol, 'B'))
+      dets = find(strcmp(p.pol, pol));
+    else
+      dets = 1:1:length(p.gcp);
+    end
+    data_pol = data(dets);
+    
+    % Cut limits if exist
+    if ~isempty(plotting.limits)
+      data_pol(find( (data_pol(:) < plotting.limits(1)) | (data_pol(:) > plotting.limits(2)) )) = NaN;
+    end
+    
+    % Histogram
+    clf;
+    hist(data_pol, linspace(plotting.limits(1), plotting.limits(2), plotting.histbins));
+    title(['Histogram, ', plotting.name, ', Tile ', num2str(plotting.tile), ...
+      ', Module ', plotting.module, ', Pol ', pol])
+    if ~isempty(plotting.limits)
+      xlim(plotting.limits);
+    end
+    xlabel(plotting.label);
+    ylabel('Count');
+    grid on;
+    
+    % Histogram statistical properties
+    text(0.05, 0.90, ['Valid  : ', num2str(sum(~isnan(data_pol)))], 'units', 'normalized');
+    text(0.05, 0.85, ['Mean   : ', num2str(nanmean(data_pol))],     'units', 'normalized');
+    text(0.05, 0.80, ['Median : ', num2str(nanmedian(data_pol))],   'units', 'normalized');
+    text(0.05, 0.75, ['Std Dev: ', num2str(nanstd(data_pol))],      'units', 'normalized');
+    
+    if do.save_plots
+      %set(gcf, 'PaperPositionMode', 'auto');
+            fpos = get(gcf,'Position');
+            set(gcf,'PaperPosition',[0,0,plotting.paspect,plotting.paspect*fpos(4)/fpos(3)]);
+      printname = [plotting.printdir, '/hist_', plotting.name, '_module', plotting.module,...
+        '_pol', pol];
+      print('-dpng', printname);
+    else
+      pause;
+    end
+  end
+end
+
+
+end
+
+function det_map(data, p, ind, do, plotting)
+% Make a map of physical pixels
+% Seperate by polarization of pixel
+if strcmp(plotting.type, 'tile') | strcmp(plotting.type, 'all')
+  pols = {'A', 'B'};
+  for ipol = 1:length(pols)
+    % Polarization
+    pol = pols{ipol};
+    if (strcmp(pol, 'A') || strcmp(pol, 'B'))
+      dets = find(strcmp(p.pol, pol));
+    else
+      dets = [];
+    end
+    
+    %x = p.pix_phys_x(dets);
+    %y = p.pix_phys_y(dets);
+    x = p.det_col(dets);
+    y = p.det_row(dets);
+    data_pol = data(dets);
+    
+    % Cut limits if exist
+    if ~isempty(plotting.limits)
+      data_pol(find( (data_pol(:) < plotting.limits(1)) | (data_pol(:) > plotting.limits(2)) )) = NaN;
+    end
+    
+    indx_nonnan = find(~isnan(data_pol));
+    
+    % Map
+    clf;
+    scatter(x(indx_nonnan), y(indx_nonnan), 2000, data_pol(indx_nonnan), '.');
+    axis square;
+    grid on;
+    colormap jet;
+    colorbar;
+    
+    title(['Physical Pixel Map, ', plotting.name, ', Tile ', num2str(plotting.tile), ...
+      ', Module ', plotting.module, ', Pol ', pol])
+    xlabel('pix phys x');
+    ylabel('pix phys x');
+    xlim([0 9]);
+    ylim([0 9]);
+    grid on;
+    if ~isempty(plotting.limits)
+      caxis(plotting.limits);
+    end
+    
+    if do.save_plots
+%      set(gcf, 'PaperPositionMode', 'auto');
+            fpos = get(gcf,'Position');
+            set(gcf,'PaperPosition',[0,0,plotting.paspect,plotting.paspect*fpos(4)/fpos(3)]);
+      printname = [plotting.printdir, '/det_map_', plotting.name, '_module', plotting.module,...
+        '_pol', pol];
+      print('-dpng', printname);
+    else
+      pause;
+    end
+  end
+end
+
+end
+
+function mce_map(data, p, ind, do, plotting)
+% Make map in MCE coordinates
+% No need to seperate data into A/B pairs
+% Only call this function for 'all' fpu
+if strcmp(plotting.type, 'all')
+  
+  x = p.mce_col + 32*p.mce;
+  y = p.mce_row;
+  
+  indx_nan    = find(isnan(data));
+  indx_nonnan = find(~isnan(data));
+  
+  clf;
+  hold on;
+  scatter(x(indx_nonnan), y(indx_nonnan), 100, data(indx_nonnan), '.');
+  scatter(x(indx_nan), y(indx_nan), 'xk');
+  xlabel('mce col + 32*mce');
+  ylabel('mce row');
+  xlim([-5 130]);
+  ylim([-2 23]);
+  grid on;
+  colormap jet;
+  colorbar;
+  if ~isempty(plotting.limits)
+    caxis(plotting.limits);
+  end
+  
+  if do.save_plots
+%    set(gcf, 'PaperPositionMode', 'auto');
+            fpos = get(gcf,'Position');
+            set(gcf,'PaperPosition',[0,0,plotting.paspect,plotting.paspect*fpos(4)/fpos(3)]);
+    printname = [plotting.printdir, '/mce_map_', plotting.name];
+    print('-dpng', printname);
+  else
+    pause;
+  end
+  
+end
+
+end
+
+function [Rn, fit_param] = fit_TiRn(Ib, Is, data_cut, calib)
+% Linear regression to determine the slope
+
+% Region to fit
+fitDataX = double(Ib(Ib >= data_cut.ifit(1)...
+  & Ib <= data_cut.ifit(2)));
+fitDataY = double(Is(Ib >= data_cut.ifit(1)...
+  & Ib <= data_cut.ifit(2)));
+
+% Fit
+fit_param = polyfit(fitDataX, fitDataY, 1);
+
+% Rn estimation
+Rn = calib.R_SH*(1/fit_param(1)-1);
+end
+
+function [x_mono, y_mono] = make_mono_inc(x, y)
+% Makes the data monotonically increasing (if samples duplicated, only one
+% is kept!)
+
+% Sort increasing
+[x_sorted, sortIndex] = sort(x);
+y_sorted = y(sortIndex);
+
+% Find the indices of unique values
+[tmp, unique_i, tmp] = unique(x_sorted);
+unique_i = sort(unique_i);
+
+% Return the unique values
+x_mono = x_sorted(unique_i);
+y_mono = y_sorted(unique_i);
+
+end
+
+function [R, P] = calc_RP(Ib, Is, calib)
+R = calib.R_SH*(Ib./Is - 1);
+P = R.*Is.^2;
+end
+

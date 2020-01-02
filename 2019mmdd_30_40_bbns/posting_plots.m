@@ -13,11 +13,11 @@ for i = 1:2
         lbl = 'Millitech';
     end
     A = 10*log10(A/max(A));
-    plot(x,A)
+    plot(x/10,A)
     grid on
     ylim([-40,5])
     title([lbl ' Attenuation Curve'])
-    xlabel('Dial Setting')
+    xlabel('Dial Setting (mm)')
     ylabel('Amplitude (dB)')
 end
 

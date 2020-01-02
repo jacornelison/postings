@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>2019 OE — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+<body>
+  <!-- Add my custom pager script -->
+  <script type="text/javascript" src="scripts/pager.js"></script>
+
+  <header>
+    <h1> Bicep3 Run11 Optical Efficiency </h1>
+  </header>
+
+    <time datetime="2019-12-31" class="published updated">
+      2020 Jan 02 
+    </time>
+    <p>
+    J. Cornelison, P. Crock, A. Solomon
+    </p>
+
+    <hr>
+    <section align="left">
+      <h2> Summary of Data and Analysis </h2>
+      <p>
+      We present the optical effeciency measurements taken after the replacement of the window vacuum o-ring during the 2019-2020 summer season. Since the rest of the receiver was untouched, we expect to see little change in the optical efficiencies between this year's and last year's measurements.
+      </p>
+      <p>We use the same analysis code from previous years where $dP/dT$'s are estimated from Al load curves with the most notable difference being that the ambient load was measured with an IR thermometer to be $-14\pm1^\circ C$ ($259 \pm1 K$)$. The ambient load was assumed to be $242K$ last year. We calculate optical efficiency, $\eta = \frac{dP}{dT}/k_B/d\nu$, assuming a $d\nu =25\text{GHz}$ from <a href="TSG2017"></a>.
+		</p>
+    </section>
+
+    <hr>
+    <section align="left">
+      <h2> FPU Layout </h2>
+      <figure>
+       <a href="figs/fpu_readout_layout_run09.png">
+          <img src="figs/fpu_readout_layout_run09.png" height="600" width="600"></a>
+        <figcaption>
+          FPU Layout has remained unchanged since Run ##.
+        </figcaption>
+      </figure>
+    </section>
+    
+    <hr>
+    
+    <p>
+    Comparing the OE's measured this year to last year's, we can see that the measurements are consistent with a scatter of $\sim0.005$ but with an overall offset of $\sim0.06$ which is likely due to the ambiguity of the ambient load used last year. As mentioned in <a href="HH2017"></a>, if there was truly a shift in optical efficiency we'd see a proportional shift in the load curves taken with the LN2, the temperature of which is well-known. In the right plots of Fig 2.2, we see that an overwelming majority are well-correlated, reinforcing the notion that the shift is due to inaccuracies in logging of the ambient temperatures.
+    </p>
+    <figure>
+	<img id = "hists" src="#" />
+
+    <script type="text/javascript">
+          opts = {
+          'hist|h': ['dPdT|dpdt','OE|oe','Psat|psat'],
+          };
+          pager.link('#hists', opts, function(p) {
+          return 'figs/' + p['h'] + '_compare_run10_to_run11.png';
+          });
+          pager.setparams({'h':'oe'});
+        </script>
+    <figcaption>
+    	Histgrams of dP/dT's, OE's, and Psat's grouped by MCE.
+    </figcaption>
+    </figure>
+    
+
+<p>It shoud be noted that a small portion (28) of detectors from MCE1 show a systematic offset between the two measurement sets. The tile plot in Fig 2.3 shows that almost all of these detectors come from either Tile 4 or Tile 10, though it's not clear what the cause is.
+<p>
+
+    <figure>
+     <img src="figs/tile_plot_diff_psat.png" width=50% />
+    <figcaption>
+    	Tile plot of the difference between Run 10 and Run 11 Psat's. Note that this image is mirrored from the focal plane layout in Figure 2.1.
+    </figcaption>
+    </figure>
+    
+    
+    <section>
+      <h2> Per Module Results </h2>
+      <p align="left">
+        <li> A is for A polarization </li>
+        <li> B is for B polarization </li>
+        <li> AB is for A and B polarizations </li>
+        <li> all option stands for all modules</li>
+      </p>
+      <figure>
+      <img alttext="all modules" id="per_module" src="#" width='800' />
+        <script type="text/javascript">
+          opts = {
+          'run|run_perm': ['run09_preseason|B3_SP2017_20170201_run09_OE',
+          'run10_preseason|B3_SP2018_20181217_run10_OE',
+          'run11_preseason|B3_SP2019_20191228_run11_OE'],
+          'type|type_perm': ['hist_RnTi', 'det_map_RnTi', 'hist_dPdT', 'det_map_dPdT'],
+          'module|module_perm': ['P10', 'P12', 'P13', 'P16', 'P17', 'P18', 'P19', 'P20',
+                                 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27',  'P4',
+                                  'P6',  'P7', 'P11', 'P14',  'P2', ' P3',  'P8',  'P9', 'all'],
+          'pol|pol_perm': ['A', 'B', 'AB']
+          };
+          pager.link('#per_module', opts, function(p) {
+          return 'figs/' + p['run_perm'] + '/' + p['type_perm'] +  '_module' + p['module_perm'] + '_pol' + p['pol_perm']  + '.png';
+          });
+          pager.setparams({'run_perm':'B3_SP2019_20191228_run11_OE', 'type_perm':'hist_RnTi', 'module_perm':'P10', 'pol_perm':'A'});
+        </script>
+        <figcaption>
+          Per module results 
+        </figcaption>
+      </figure>
+    </section>
+    
+    <hr>
+    <section>
+      <h2> MCE Maps </h2>
+      <p align="left">
+        Look at parameter values in MCE coordinates to track relevant issues.
+      </p>
+      <figure>
+      <img alttext="all ,aps" id="mce_map" src="#" width='1200' />
+        <script type="text/javascript">
+          opts = {
+          'run|run_mce_map': ['run09_preseason|B3_SP2017_20170201_run09_OE',
+          'run10_preseason|B3_SP2018_20181217_run10_OE',
+          'run11_preseason|B3_SP2019_20191228_run11_OE'],
+
+          'type|type_mce_map': ['RnTi', 'dPdT']
+          };
+          pager.link('#mce_map', opts, function(p) {
+          return 'figs/' + p['run_mce_map'] + '/mce_map_' + p['type_mce_map']  + '.png';
+          });
+          pager.setparams({'run_mce_map':'B3_SP2019_20191228_run11_OE', 'type_mce_map':'dPdT'});
+        </script>
+        <figcaption>
+          Results in MCE coordinates. Crosses indicate dPdTs with NaN values
+        </figcaption>
+      </figure>
+    </section>
+    
+    <hr>
+    <section>
+      <h2> LCs per MCE_COL </h2>
+      <p align="left">
+        For archival purposes, if looking through load curves is of interest.
+      </p>
+      <figure>
+      <img alttext="all ,aps" id="raw_lc" src="#" width='1200' />
+        <script type="text/javascript">
+          opts = {
+          'run|run_mce_map': ['run09_preseason|B3_SP2017_20170201_run09_OE',
+	                      'run10_preseason|B3_SP2018_20181217_run10_OE',
+                          'run11_preseason|B3_SP2019_20191228_run11_OE'],
+
+          'load|load_raw_lc': ['074K', '242K'],
+          'mce|mce_raw_lc': ['0', '1', '2', '3'],
+          'mce_col|mce_col_raw_lc': [ '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8',
+                                      '9', '10', '11', '12', '13', '14', '15', '16', '17',
+                                     '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29']
+          };
+          pager.link('#raw_lc', opts, function(p) {
+          return 'figs/' + p['run_mce_map'] + '/rawLC_' + p['load_raw_lc'] + '_mce' + p['mce_raw_lc'] + '_mce_col' + p['mce_col_raw_lc']  + '.png';
+          });
+          pager.setparams({'run_mce_map':'B3_SP2019_20191228_run11_OE', 'load_raw_lc':'074K', 'mce_raw_lc':'0', 'mce_col_raw_lc':'0'});
+        </script>
+        <figcaption>
+          Results in MCE coordinates. Crosses indicate dPdTs with NaN values
+        </figcaption>
+      </figure>
+    </section>
+    <hr>
+    
+<h3>Data</h3>
+All BICEP3 OE data products can be found in the <tt>data/</tt> directory of this posting.
+<h3>Code</h3>
+<ul>
+<li><tt><a href="scripts/opteff_analysis.m">opteff_analysis.m</a></tt> - OE analysis and plotting code.
+<li><tt><a href="scripts/posting_plots_20191230.m">posting_plots_20191230.m</a></tt> - Code that produces the plots for $\S 2$ of this posting. The data can be found in the 'data/' directory in this posting.
+</ul>
+
+
+<h3>References</h3>
+<p id="references"></p>
+	<script type="text/javascript">
+	// This is my way of making shorthand links.
+	// We'll make a couple arrays with the 'tag' and href information
+	// and then look through each anchor element for the specified tag.
+	// The anchors should then just look like: <a href="tagname"></a>
+	// and the script will automatically fill in the hyperlinks and text.
+	var tags = [
+	"SNK2016a",
+	"SNK2016b",
+	"SNK2017a",
+	"SNK2017b",
+	"TSG2017",
+	"HH2017",
+	"SNK2018",
+	];
+	
+	var hrefs = [
+	"../20160105_B3_SP_run08_OE/",
+	"../20161009_B3_Modules_K7/",
+	"../20170112_Preliminary_LC_FTS/",
+	"../20170306_bicep3_run09_opteff/",
+	"../../bkcmb/analysis_logbook/analysis/20170710_FTS_all_data_comparison_2017/",
+	"../20171116_b3_run09_opt_compare/",
+	"../20181214_bicep3_opteff_r10/",
+	];
+	
+	var desc = [
+	"South Pole BICEP3 Run08 Load Curves",
+	"B3 Modules P24 and P15 at K7",
+	"Optical Efficiency and FTS at B3 - 2017",
+	"Bicep3 Run09 Optical Efficiency",
+	"FTS All Data Comparison 2017",
+	"Bicep3 Run09 Optical Efficiency Comparison",
+	"Bicep3 Run10 Optical Efficiency",
+	];
+	
+	
+	var post = document.getElementById("references");
+	var msg = "<table>";
+	for (var tag in tags){
+		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
+	};
+	msg = msg+ "</table>";
+	post.innerHTML = msg;
+
+	var links = document.getElementsByTagName("A");
+	for (var link in links){
+		for (var tag in tags){
+			if (links[link].href.endsWith(tags[tag])){
+				links[link].text = "("+tags[tag]+")";
+				links[link].href = hrefs[tag];
+				links[link].target = "_blank";
+			}
+		}
+	}
+	
+	</script>
+</section>
+    
+        <!--
+    <section align="left">
+    <h2> Results Spreadsheet and Scripts </h2>
+    <p align="left">
+      Instructions:
+      <li> Raw data is the collection of load curve data taken with mce</li>
+      <li> Run opteff_analysis.m to run analysis code</li>
+      <li> Proccessed Data contains 'Ib', 'Is', 'Rn', 'R', 'P', 'RSat', 'PSat', 'dPdT'</li>
+      <li> Calibration file contains calibration. Run09 and Run08 contain the same values, taken from Run04</li>
+      <li> Take a look at Results Spreadsheets for more about results...</li>
+    </p>
+    <li> <a href="./data/B3_SP2018_20171213_run09_OE"> Run10_preseason Raw Data </a> </li>
+    <li> <a href="./code/opteff_analysis.m"> opteff_analysis.m </a></li>
+    <li> <a href="./code/calib_B3_SP2017.m"> calib_B3_SP2017.m </a></li>
+    <li> <a href="./code/calib_B3_SP2016.m"> calib_B3_SP2016.m </a></li>
+    </section>
+-->
+</body>

@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Posting Title — J. Cornelison</title>
+    <title>Mirror Predictions — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -26,7 +26,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1></h1>
+    <h1>Optimizing FFFlat Mirror Positions using 3D Raytracing</h1>
 
     <time datetime="2018-01-01" class="published updated">
         2019 Mmm dd
@@ -36,22 +36,23 @@
 
 <hr>
 
-<p>Introduction summary paragraph.</p>
+<p>In a previous posting, I developed a 3D raytracer for the use of optimizing radiation shielding configurations for CMB-S4 SATs. In this posting, I present an additional function of the raytracer which, for an arbitrary object, determines the fractional coupling of the collimated bundle of rays corresponding to a position on the focal plane emitted from the telescope window. Using this new function, I probe a range of mirror positions to optimize the total number of pixels that totally couple with the mirror during a calibration schedule.
+</p>
 
 <hr>
 
-<section><h2>First</h2>
+<section><h2>Calculating Fractional Coupling</h2>
+<p>I've added an additional functionality to my raytracing code to determine the fraction of the collimated ray bundle for a given detector that is incident on a target object. As is shown in the illustration below, the code works by producing a grid of rays on the window in a given direction corresponding to an r-$\theta$ (or x-y) position on the focal plane. Then it calculates the ratio of intersecting rays to total rays emitted. This ratio is calculated for a grid of positions on the focal plane for any given mirror position.
     <figure>
-        <img alt="Test" src="#" />
-        <figcaption>
-            The caption.
-        </figcaption>
+        <img alt="Test" src="figs/column_beam_diagram_v2.png" width=50% />
+		<figcaption>
+			Functional diagram of the raytracing code. A column of rays for a single pixel on a focal plane are projected out of a window and either intersecting or passing a target object.
+		</figcaption>
     </figure>
 </section>
 
-
-<section><h2>Comparison to Keck Beammapping Pipeline</h2>
-<p>Words.
+<section><h2>Consistency Checks with Keck Beam Mapping Data</h2>
+<p>To verify the accuracy of the code, I calculated the subtended fraction for a grid of points using Keck mount, mirror, and focal plane parameters as input which, in the figure below, I compare to mirror mask calculations shown in Figure 2 of <a href="TSG2018"></a>. I find that, qualitatively, the predictions made by the raytracer match nicely to the calculated projections of the mirror onto the focal plane.
     <figure>
 	<img alt="Maps pager" id="selectpager"/>
 	<table cellpadding=1px border=0 cellspacing=1px><tr>
@@ -104,20 +105,122 @@
         </script>
 		
 		<figcaption>
-
+			(Left) Plot of fraction of rays which intersect the mirror as a function of location on the focal plane. (Right) Beam amplitudes for RX0 overlayed with a projection of the mirror onto the focal plane for masking purposes.
         </figcaption>
 
     </figure>
 </section>
 
+<section><h2>Optimizing Mirror Positions</h2>
+<p>
 
+
+For any given pixel, we require that the collimated beam couples completely with the mirror as we see significant degradation of the beams with a little as 0.5% of beam fall off (see <a href="TSG2018"></a>). Ideally, we'd want to converge on a single position that accomplished this as adjusting the mirror is difficult and time-consuming. Additionally, we want each pixel covered at multiple Deck angles to identify and suppress rotation-dependent systematics.
+
+
+<h3>Setup</h3>
+The raytracing code takes most of the same inputs used by our pointing model code (<tt>keck_beam_map_pointing.m</tt>) to define the mount geometry and aperture positions. All of the inputs for the mount were acquired from "As-Built" SOLIDWorks models located in the SVN. The diagram in Fig. 3.1 shows an example setup of the BICEP Array geometry. The RX numbers were for differentiation purposes only in the code and are not representitive on our actual identification scheme. Since we're retrofitting the Keck mirror onto the BA mount, the positions of the carbon fiber struts limit the positions of the mirror toward 'back' positions only. Thus, in the figure below, the distance from the theta axis in the direction of decreasing elevation.
+
+<figure>
+	<img id="rxdiag" src="figs/rx_diagram.png" width=60%/>
+	<figcaption>
+	Example diagram of the BA receiver layout looking down into the mount with mirror projection overlaid.
+	</figcaption>
+</figure>
+
+<h3></h3>
+<p>I manually picked a mirror position by producing coverage maps like those in Fig. 2.1 over multiple mirror positions and also by looking at the number of times a pixel fully sees the mirrorover all drum positions. As can be seen in the pager below, there is no position of the mirror at which all detectors at some Deck angle can fully see the mirror; Pixels in the $+x$ quadrants can be hit by moving the mirror farther away, but this creates a "dead spot" in the $-x$ quadrants. Thus, I instead found the position at which not only had hits for more than half the focal plane at multiple Deck angles but also minimized the dead spots. For the "drum" positions seen in Fig. 2.1, I chose 8 Deck positions spanning from 0-360&deg; in 45&deg; increments. If we wanted hit more pixels above 10&deg; in $x$ we could increase the number of drum positions with smaller increments. The manually chosen position of $0.61\text{m}$ is shown below.
+
+<figure>
+	
+	<img alt="Maps pager" id="rt2pager" src="#" width=60%/>
+		
+		
+
+        <script type="text/javascript">
+			
+            var drumlist = new Array(8);
+            for (var ii=0; ii<8; ++ii) {
+                drumlist[ii] = ii;
+            }
+
+            var drumopt = new Pager.DataList(drumlist);
+            drumopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 0) { val = "0"+val; }
+                return val;
+            }
+            drumopt.fromString = function(val) {
+                return parseInt(val);
+            }
+			pager.link("#rt2pager",
+                {
+                    'Mirror Pos|p2': ['0.4','0.61','0.8'],
+					'Drum Pos|d2': drumopt,
+					'Plot|plt' : ['Fractional Cvg.|frac','Unique Hits|unq'],
+                },
+                function(params) {
+				if (params.plt=="unq"){
+                    return 'figs/unique_hits_'+params.p2+'.png';
+					//return 'figs/unique_hits_0.61.png';
+					}
+				else{
+					return 'figs/BAraytrace_pos'+params.d2+'_'+params.p2+'.png';
+					//return 'figs/BAraytrace_pos'+params.d2+'_0.61.png';
+				}
+                });
+            pager.setparams({
+                    'p2': '0.61',
+					'd2': '0',
+					'plt':'frac',
+                });
+        </script>
+		
+		<figcaption>
+			<b>[Fractional Cvg.]</b>Plot of fraction of rays which intersect the mirror as a function of location on the focal plane. <b>[Unique Hits]</b> Plot of the number of unique positions at which the collimated beam for a given position on the focal plane is completely coupled to the mirror out of a total of 8 Deck positions spanning from 0-360&deg; in 45&deg; increments.
+        </figcaption>
+
+    </figure>
+
+<!--
+<figure>
+	
+	<img id="optimpager" src="#" width=60%/>
+		
+		
+
+        <script type="text/javascript">
+			
+			pager.link("#optimpager",
+                {
+					'Deck Angle|k': ['0','15','30','45'],
+                },
+                function(params) {
+                    return 'figs/mirropt_dk'+params.k+'.png';
+                });
+            pager.setparams({
+					'k': '0',
+                });
+        </script>
+		
+		<figcaption>
+			As a function of the lateral distance of the center of the mirror from the Theta axis.
+        </figcaption>
+
+    </figure>
+
+-->
+
+</section>
 <hr>
 
 <section>
 <h3>Code</h3>
 
 <ul>
-<li><tt>code1.py</tt> - Code desciption
+<li><tt>mirror_check.py</tt> - For a given mirror position and SAT configuration, plot the fractional couple with the mirror as a function of x/y coordinates.
+<li><tt>gs_analysis.py</tt> - Main library for setting up the mount and mirror.
+<li><tt>geometry.py</tt> - Base raytracing class. 
 </ul>
 
 
@@ -130,30 +233,18 @@
 	// The anchors should then just look like: <a href="tagname"></a>
 	// and the script will automatically fill in the hyperlings and text.
 	var tags = [
-	"CAB2012",
-	"JB2016",
-	"KLT2017",
-	"KSK2018",
-	"NWP2019",
-	"FCG2-CH10",
+	"TSG2018",
+	"JAC2019",
 	];
 	
 	var hrefs = [
-	"../../../../keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-	"https://www.excamera.com/sphinx/article-ray.html",
-	"../20170321_BA_Forebaf+GS_study01/",
-	"../20181030_groundshield_study/",
-	"../20190207_BA_Forebaffle_Concepts/",
-	"http://www.cs.utah.edu/~shirley/books/fcg2/rt.pdf",
+	"http://bicep.rc.fas.harvard.edu/bkcmb/analysis_logbook/analysis/20180829_bm_pipeline_binning/",
+	"http://bicep.rc.fas.harvard.edu/bicep_array/analysis_logbook/20190919_gs_raytrace/",
 	];
 	
 	var desc = [
 	"Pointing Model for Keck Beam Maps",
-	"A reasonably speedy Python ray-tracer - James Bowman",
-	"BA Forebaffle and Groundscreen Study 01: Zeroth Order Properties",
-	"Probing Parameter Space of Ground Shield Design Dimensions for Double- and Triple-Shielded CMB Experiments",
-	"BA Forebaffle Design Concepts",
-	"Fundamentals of Computer Graphics 2nd Ed. - Peter Shirley",
+	"Groundshield Study: 3D Raytracing",
 	];
 	
 	

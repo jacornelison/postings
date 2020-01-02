@@ -1,0 +1,329 @@
+/* Set defaults just in case HTML5 isn't implemented fully */
+article, aside, details, figcaption, figure, footer, header,
+hgroup, menu, nav, section { display: block; }
+
+/* Force a sane/predictable box model on everything */
+*, *::after, *::before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Basic style properties */
+body {
+    color: #000000;
+    background-color: #FFF0F0;
+    font-family: 'Linux Libertine', 'Cambria', serif;
+    text-align: justify;
+
+    /* Boring defaults if we can't do fancier things in the next block */
+    width: 100%;
+    margin-left: 16px;
+    margin-right: 16px;
+    /* Center the body. Do this with calc statements instead of the usual
+     * margin trick so that this only happens if we can also later resize
+     * figures to be full page width too */
+    width: -webkit-calc(0vw + 800px);
+    width: -moz-calc(0vw + 800px);
+    width: calc(0vw + 800px);
+    margin-left: -webkit-calc(50vw - 400px);
+    margin-left: -moz-calc(50vw - 400px);
+    margin-left: calc(50vw - 400px);
+    margin-right: -webkit-calc(50vw - 400px);
+    margin-right: -moz-calc(50vw - 400px);
+    margin-right: calc(50vw - 400px);
+}
+header {
+    text-align: center;
+}
+h1,h2,h3,h4,h5,h6 {
+    font-family: 'Linux Biolinum', 'Calibri', sans-serif;
+}
+hr {
+    border: 0;
+    height: 1px;
+    width: 80%;
+    background-image: -webkit-linear-gradient(left, rgba(0,0,0,0),
+        rgba(0,0,0,0.75), rgba(0,0,0,0)); 
+    background-image:    -moz-linear-gradient(left, rgba(0,0,0,0),
+        rgba(0,0,0,0.75), rgba(0,0,0,0)); 
+    background-image:     -ms-linear-gradient(left, rgba(0,0,0,0),
+        rgba(0,0,0,0.75), rgba(0,0,0,0)); 
+    background-image:      -o-linear-gradient(left, rgba(0,0,0,0),
+        rgba(0,0,0,0.75), rgba(0,0,0,0));
+    margin-top: 40px; 
+    margin-bottom: 40px;
+}
+dl {
+    margin-left: 40px;
+    margin-right: 40px;
+}
+dt {
+    font-weight: bold;
+}
+ul li,ol li {
+    margin: 1em 0;
+}
+code.block {
+    display: block;
+    margin: 0.75em 40px 0.75em 40px;
+    white-space: nowrap;
+}
+table {
+    border-spacing: 0.5em;
+}
+
+/* Make a prettier color for links */
+a {
+    color: #c02020;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* Link class for postings, colored differently so that they don't stand out
+ * as much
+ */
+a.posting {
+    color: #802020;
+}
+
+/* Also make a postings list align correctly */
+.postinglist {
+    display: block; /* Fallback */
+    display: table;
+    margin: 0px 40px;
+    font-size: smaller;
+}
+.postinglist > * {
+    display: block; /* Fallback */
+    display: table-row;
+}
+.postinglist > * > * {
+    display: inline; /* Fallback */
+    display: table-cell;
+    padding: 0.2em 0;
+}
+.postinglist > * > *:first-child {
+    font-weight: bold;
+    text-align: right;
+    padding-right: 1em;
+}
+
+.shadowbox {
+    /* Make some nice looking box shadows in as many browsers as we
+        can */
+    -moz-box-shadow: 2px 2px 12px #BBBBBB;
+    -webkit-box-shadow: 2px 2px 12px #BBBBBB;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2,
+        Direction=135, Color='#BBBBBB')";
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2,
+        Direction=135, Color='#BBBBBB');
+    box-shadow: 2px 2px 12px #BBBBBB;
+    /* then do some rounded box corners for eye candy as well */
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+figure {
+    text-align: center;
+    background-color: #ffffff;
+    padding: 8px;
+
+    /* Figures should span the entire page width even though the body
+     * doesn't necessarily span that far. */
+    width: 100%;
+    width: -webkit-calc(100vw - 2 * 32px);
+    width: -moz-calc(100vw - 2 * 32px);
+    width: calc(100vw - 2 * 32px);
+    margin-left: 0px;
+    margin-left: -webkit-calc(-50vw + 400px + 32px);
+    margin-left: -moz-calc(-50vw + 400px + 32px);
+    margin-left: calc(-50vw + 400px + 32px);
+
+    /* Make some nice looking box shadows in as many browsers as we
+        can */
+    -moz-box-shadow: 2px 2px 12px #BBBBBB;
+    -webkit-box-shadow: 2px 2px 12px #BBBBBB;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2,
+        Direction=135, Color='#BBBBBB')";
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2,
+        Direction=135, Color='#BBBBBB');
+    box-shadow: 2px 2px 12px #BBBBBB;
+    /* then do some rounded box corners for eye candy as well */
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+figure table {
+    margin-left: auto;
+    margin-right: auto;
+}
+figure figcaption {
+    width: 800px;
+    margin: 8px auto;
+    text-align: left;
+    font-size: 10pt;
+}
+tr {
+    vertical-align: top;
+}
+.rlabel {
+    text-align: right;
+    padding-right: 1em;
+    white-space: nowrap;
+}
+
+/* Center the contents of any node */
+.center {
+    text-align: center;
+}
+
+/* Setup automatic numbering */
+/*
+     Note that counters only propagate increments at the sibling and
+     child levels. This means, e.g., that incrementing counter section
+     on the <h2> element doesn't work when each section is embedded in
+     a <section> element; instead, the counter must be incremented at
+     the <section> level so that all sibling sections also see the
+     correct counter value.
+*/
+body {
+    counter-reset: section;
+    counter-reset: figure;
+    counter-reset: table;
+}
+section {
+    counter-increment: section;
+}
+h2:before {
+    content: counter(section, upper-roman) ': ';
+}
+figure {
+    counter-increment: figure;
+}
+figure > figcaption:before {
+    content: 'Figure ' counter(section) '.' counter(figure) ': ';
+}
+figure.table {
+    counter-increment: table;
+}
+figure.table > figcaption:before {
+    content: 'Table ' counter(section) '.' counter(table) ': ';
+}
+
+/***** Styles for pager.js *****/
+
+/* Whole pager option table */
+.pager.container {
+    display: inline-block;
+}
+table.pager td {
+    vertical-align: middle;
+}
+/* Associated pager image */
+img.pager {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Option group labels */
+.pager.label {
+    text-align: right;
+    font-weight: bold;
+}
+
+/* Generic styles for all options */
+a.pager {
+    padding: 2px 4px;
+}
+/* Styling for the active options */
+a.pager.active {
+    background-color: #c0c0c0;
+    border-radius: 4px;
+}
+/* Remove padding from a spinner */
+form.pager {
+    margin: 0px;
+    padding: 0px;
+}
+
+/***** Styles for showhide.js *****/
+
+.showhide
+{
+    /* Make it equivalent to content in the body */
+    width: 100%;
+    width: -webkit-calc(100vw - 2 * 32px);
+    width: -moz-calc(100vw - 2 * 32px);
+    width: calc(100vw - 2 * 32px);
+    margin-left: 0px;
+    margin-left: -webkit-calc(-50vw + 400px + 32px);
+    margin-left: -moz-calc(-50vw + 400px + 32px);
+    margin-left: calc(-50vw + 400px + 32px);
+    
+    margin-top: 1em;
+
+    /* Make some nice looking box shadows in as many browsers as we
+        can */
+    -moz-box-shadow: inset 2px 2px 12px #BBBBBB;
+    -webkit-box-shadow: inset 2px 2px 12px #BBBBBB;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2,
+        Direction=135, Color='#BBBBBB')";
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2,
+        Direction=135, Color='#BBBBBB');
+    box-shadow: inset 2px 2px 12px #BBBBBB;
+    /* then do some rounded box corners for eye candy as well */
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    
+    /* Add some extra styling to make it stand out */
+    background-color: #e0e0e0;
+
+    overflow-y: hidden;
+    overflow-x: visible;
+    opacity: 1.0;
+    max-height: 10000px;
+    transition: all 1s ease-in-out 0ms;
+}
+.showhide_hidden
+{
+    max-height: 0px;
+    opacity: 0.0;
+}
+.showhide > div
+{
+    width: 100%;
+    margin-left: 16px;
+    margin-right: 16px;
+    /* Center the body. Do this with calc statements instead of the usual
+     * margin trick so that this only happens if we can also later resize
+     * figures to be full page width too */
+    width: -webkit-calc(0vw + 800px);
+    width: -moz-calc(0vw + 800px);
+    width: calc(0vw + 800px);
+    margin-left: -webkit-calc(50vw - 400px - 32px);
+    margin-left: -moz-calc(50vw - 400px - 32px);
+    margin-left: calc(50vw - 400px - 32px);
+    margin-right: -webkit-calc(50vw - 400px);
+    margin-right: -moz-calc(50vw - 400px);
+    margin-right: calc(50vw - 400px);
+}
+.showhide > div figure
+{
+    /* Figures should span the entire page width even though the body
+     * doesn't necessarily span that far. */
+    width: 100%;
+    width: -webkit-calc(100vw - 4 * 32px);
+    width: -moz-calc(100vw - 4 * 32px);
+    width: calc(100vw - 4 * 32px);
+    margin-left: 0px;
+    margin-left: -webkit-calc(-50vw + 400px + 2 * 32px);
+    margin-left: -moz-calc(-50vw + 400px + 2 * 32px);
+    margin-left: calc(-50vw + 400px + 2 * 32px);
+}
+
+
+
