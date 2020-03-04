@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mirror Predictions — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Optimizing FFFlat Mirror Positions using 3D Raytracing 2</h1>
+
+    <time datetime="2020-01-02" class="published updated">
+        2020 Feb 06
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+<hr>
+
+<section><h2>Mast Work</h2>
+<p>
+Went out to lower the mast and adjust the chopper pointing when we found that one of the lags to a guy line had come out (see picture, in red circle). Not knowing where the electrical lines were routed, I decided to fix the guy line to an anchor point that is welded to the railing. The guy line is roughly in line with where it was but farther away -- the other choices were a closer anchor point that was far from the previous alignment or the gated railing which wasn't at all structural. This defintely 
+</p>
+<figure>
+
+<img src="20200210_mast_work/lag1.jpg"/>
+
+<table><tr>
+<td><img src="20200210_mast_work/guy1.jpg" width=300px /></td>
+<td><img src="20200210_mast_work/guy2.jpg" width=300px /></td>
+<td><img src="20200210_mast_work/guy3.jpg" width=300px /></td>
+</tr></table>
+</figure>
+<p>
+Regarding the tilt of the mast, I asked Dave and Cal (the summer and winter machinists resp.) to take a look. They said that the mast needs to be significantly reworked before we try to raise it next year. In addition to fixing the tilt in the mast, they suggested that we replace any lags going into the rooftop SIPs with threaded rod with metal plates at the ends to evenly distribute the force on the guy line. For now, they agreed that the mast should be sufficiently stable to complete the calibration campaign so long as we don't lower it. When we do lower it, extreme caution should be used and the work should be done before we raise it again.
+</p>
+</section>
+<hr>
+
+<section>
+
+<h3>References</h3>
+<p id="references"></p>
+	<script type="text/javascript">
+	// This my way of making shorthand links.
+	// We'll make a couple arrays with the 'tag' and href information
+	// and then look through each anchor element for the specified tag.
+	// The anchors should then just look like: <a href="tagname"></a>
+	// and the script will automatically fill in the hyperlings and text.
+	var tags = [
+	"TSG2018",
+	"JAC2019",
+	"JAC2020",
+	];
+	
+	var hrefs = [
+	"../../../bkcmb/analysis_logbook/analysis/20180829_bm_pipeline_binning/",
+	"../20190919_gs_raytrace/",
+	"../20200102_mirror_check/"
+	];
+	
+	var desc = [
+	"Pointing Model for Keck Beam Maps",
+	"Groundshield Study: 3D Raytracing",
+	"Optimizing FFFlat Mirror Positions using 3D Raytracing",
+	];
+	
+	
+	var post = document.getElementById("references");
+	var msg = "<table>";
+	for (var tag in tags){
+		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
+	};
+	msg = msg+ "</table>";
+	post.innerHTML = msg;
+
+	var links = document.getElementsByTagName("A");
+	for (var link in links){
+		for (var tag in tags){
+			if (links[link].href.endsWith(tags[tag])){
+				links[link].text = "("+tags[tag]+")";
+				links[link].href = hrefs[tag];
+				links[link].target = "_blank";
+			}
+		}
+	}
+	
+	</script>
+</section>
+</body>

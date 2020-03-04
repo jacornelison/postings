@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mirror Predictions — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Optimizing FFFlat Mirror Positions using 3D Raytracing 2</h1>
+
+    <time datetime="2020-01-02" class="published updated">
+        2020 Feb 06
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>This is a continuation of <a href="JAC2020"></a> where I try to determine optimal positioning of the Far Fielt Flat (FFF). For any given pixel, we require that the collimated beam couples completely with the mirror as we see significant degradation of the beams with a little as 0.5% of beam fall off (see <a href="TSG2018"></a>). Ideally, we'd want to converge on a single position that accomplished this as adjusting the mirror is difficult and time-consuming. From my previous posting, however, it became increasingly evident that this isn't really feasible. Instead I'm looking for two positions, each providing "good" coverage of the focal plane in at least one DK position.
+</p>
+
+<hr>
+
+<section><h2>Optimizing Mirror Positions</h2>
+<p>
+
+<figure>
+	<img id="rxdiag" src="figs/rx_diagram.png" width=60%/>
+	<figcaption>
+	Example diagram of the BA receiver layout looking down into the mount with mirror projection overlaid.
+	</figcaption>
+</figure>
+
+
+<h3>Setup</h3>
+I used the same setup as <a href="JAC2020"></a> where I cast a grid of rays in some $(r,\,\theta)$ direction and calculate the fractional coupling of with a keck-sized mirror $3.2\text{m}$ above the mount over a series of positions from the boresight. Due to geometric restrictions of the struts on the mirror, I only probe for positions toward the bottom of the drum. Figure 1.1 illustrates the direction in which the mirror positions were probed. Figure 1.2 shows a map in boresight-centered coordinates in counting the amount of times a given part of the focal plane is fully coupled to the mirror along with a representation of the actual mirror positioning using SOLIDWORKS. 
+
+
+<figure>
+	<img alt="Maps pager" id="selectpager"/>
+	<table cellpadding=1px border=0 cellspacing=1px><tr>
+	
+	<td><img alt="Maps pager" id="bmpager" src="#" width=100%/>
+	<td><img alt="Maps pager" id="rtpager" src="#" width=100%/>
+	</tr></table>
+		
+		
+
+        <script type="text/javascript">
+			
+            var drumlist = new Array(20);
+            for (var ii=0; ii<20; ++ii) {
+                drumlist[ii] = ii;
+            }
+
+            var drumopt = new Pager.DataList(drumlist);
+            drumopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 0) { val = "0"+val; }
+                return val;
+            }
+            drumopt.fromString = function(val) {
+                return parseInt(val);
+            }
+			pager.link("#selectpager",
+                {
+					'Mirror Pos|d': drumopt,
+                },
+                function(params) {
+                    return '';
+                });
+			pager.link("#bmpager",{},
+                function(params) {
+                    return 'figs/unique_hits_'+params.d+'.png';
+                });
+            pager.link("#rtpager",{},
+                function(params) {
+                    return 'figs/pos_'+params.d+'_cropped.png';
+                });
+			
+            pager.setparams({
+ 					'd': '0',
+                });
+			pager.wrap("#rtpager","td")
+			pager.wrap("#bmpager","td")
+        </script>
+		
+		<figcaption>
+			(Left)  Plot of the number of unique positions at which the collimated beam for a given position on the focal plane is completely coupled to the mirror out of a total of 8 Deck positions spanning from 0-360&deg; in 45&deg; increments. (Right) SOLIDWORKS model of the as-fabricated BICEP Array mount with a Keck-sized FFF for each position.
+        </figcaption>
+
+    </figure>
+	
+<p>At a position of $0.6\text{m}$, we see good coverage of the $-x$ quadrants of the focal plane at multiple DK-angles. At $1.4 \text{m}$ the $+x$ quandrant is well covered, but only at one DK angle.
+	
+</section>
+<hr>
+
+<section>
+<!--
+<h3>Code</h3>
+
+<ul>
+<li><tt>mirror_check.py</tt> - For a given mirror position and SAT configuration, plot the fractional couple with the mirror as a function of x/y coordinates.
+<li><tt>gs_analysis.py</tt> - Main library for setting up the mount and mirror.
+<li><tt>geometry.py</tt> - Base raytracing class. 
+</ul>
+-->
+
+<h3>References</h3>
+<p id="references"></p>
+	<script type="text/javascript">
+	// This my way of making shorthand links.
+	// We'll make a couple arrays with the 'tag' and href information
+	// and then look through each anchor element for the specified tag.
+	// The anchors should then just look like: <a href="tagname"></a>
+	// and the script will automatically fill in the hyperlings and text.
+	var tags = [
+	"TSG2018",
+	"JAC2019",
+	"JAC2020",
+	];
+	
+	var hrefs = [
+	"../../../bkcmb/analysis_logbook/analysis/20180829_bm_pipeline_binning/",
+	"../20190919_gs_raytrace/",
+	"../20200102_mirror_check/"
+	];
+	
+	var desc = [
+	"Pointing Model for Keck Beam Maps",
+	"Groundshield Study: 3D Raytracing",
+	"Optimizing FFFlat Mirror Positions using 3D Raytracing",
+	];
+	
+	
+	var post = document.getElementById("references");
+	var msg = "<table>";
+	for (var tag in tags){
+		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
+	};
+	msg = msg+ "</table>";
+	post.innerHTML = msg;
+
+	var links = document.getElementsByTagName("A");
+	for (var link in links){
+		for (var tag in tags){
+			if (links[link].href.endsWith(tags[tag])){
+				links[link].text = "("+tags[tag]+")";
+				links[link].href = hrefs[tag];
+				links[link].target = "_blank";
+			}
+		}
+	}
+	
+	</script>
+</section>
+</body>
