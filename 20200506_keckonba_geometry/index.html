@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>BA Geometry Check — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Geometry Check of Keck on the BICEP Array Mount</h1>
+
+    <time datetime="2020-05-07" class="published updated">
+        2020 May 07
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>In this posting, I take a quick look at the mount geometry of the Keck and BICEP Array using 2D-raytracing (see <a href="JAC2018"></a> for previous work). This is a follow up of <a href="CZ2020"></a> and the intent is to determine if we should expect to see some additional signal in the el-nods due to coupling with the groundshield.
+</p>
+
+<hr>
+
+<section><h2>Raytracing Keck for DASI and BA Mount Cases</h2>
+
+    The diagram in the pager below shows a mount+forebaffle+groundshield setup and traces rays from the receivers in both the top and bottom of the "drum", i.e. the receivers farthest and closest to the ground when at Elevations less than 90&deg;. The <span style="color: lawngreen">green</span> lines represent the <b>FOV ray</b> defined by the receiver. The <span style="color: magenta; ">magenta</span> lines define the <b>exclusion ray</b> which is the ray originating at the window edge and intersecting the forebaffle lip <i>opposite</i> of the ray origin. The <span style="color: blue">blue</span> line indicates the <b>inclusion ray</b>, defined by a horizontal line at the peak height of the forebaffle as it traverses in Elevation. Together, the inclusion and exclusion rays define a zone in which the double-diffraction criteria are satisfied (<a href="JAC2018"></a> &sect;I). If the lip of the groundshield lies within this zone, one could reasonably expect errant ground signals to be significantly mitigated before directly coupling with a given receiver. The pager below shows 2D raytraces for a range of elevations and 3 experimental configurations.
+    <ol>
+        <li><b>Keck on DASI</b> - Keck RXs, as configured on the DASI mount as a sanity check</li>
+        <li><b>Keck on BA</b> - Keck RXs, as configured on the BICEP Array mount</li>
+        <li><b>BA</b> - BICEP Array RXs</li>
+    </ol>
+
+    <figure>
+        <img alt="raytrace" id="raypager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            var drumlist = new Array(11);
+            for (var ii=44; ii<60; ++ii) {
+                drumlist[ii] = ii+1;
+            }
+
+            var elopt = new Pager.DataList(drumlist);
+            elopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 0) { val = "0"+val; }
+                return val;
+            }
+            elopt.fromString = function(val) {
+                return parseInt(val);
+            }
+            pager.link("#raypager",
+                {
+                    'Elevation|p': elopt,
+                    'Experiment|e': ['Keck on DASI|keck','Keck on BA|keckonba','BA']
+                },
+                function(params) {
+                    return 'figs/'+params.e+'_el_'+params.p+'.png';
+                });
+            pager.setparams({
+                    'p': '54',
+                    'e': 'keck'
+                });
+        </script>
+    </figure>
+</section>
+<p>Important things to note:
+<ol>
+    <li>On the DASI mount, no rays from any Keck window couple with the groundshield until ~44&deg;, which is consistent with  the study described in <a href="MG2012"></a></li>
+    <li>On the BA mount, no rays from any Keck window couple with the groundshield down to 48&deg;.</li>
+    <li>For Elevations of <52&deg;, some rays from the BA window are <b>always</b> coupling with the groundshield.</li>
+</ol>
+
+<section>
+    <h2>Conclusions</h2>
+    <p>
+        From a purely geometric standpoint, we shouldn't expect to see any features in Keck data on the BA mount resulting from ground contamination that we didn't see when Keck was in the DASI mount.
+    </p>
+
+</section>
+
+<hr>
+
+<section>
+<h3>Code</h3>
+
+<ul>
+    <li><a href="https://github.com/jacornelison/gs-2d-study"><tt>gs-2d-study</tt></a> - Calculate zone which satisfies double-diffraction criteria given SAT mount parameters.</li>
+    <li><a href="scripts/raytrace_plots_20200506.m"><tt>raytrace_plots_20200506.m</tt></a> - Plot 2D raytrace for a range of elevations.</li>
+</ul>
+
+
+<h3>References</h3>
+<p id="references"></p>
+	<script type="text/javascript">
+	// This my way of making shorthand links.
+	// We'll make a couple arrays with the 'tag' and href information
+	// and then look through each anchor element for the specified tag.
+	// The anchors should then just look like: <a href="tagname"></a>
+	// and the script will automatically fill in the hyperlings and text.
+	var tags = [
+        "MG2012",
+	    "JAC2018",
+        "CZ2020",
+	];
+
+	// Logbook Site map:
+    // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+    // keck:    www/keck/analysis_logbook/analysis/
+    // BICEP3:  www/bicep3/analysis_logbook/
+    // BA:      www/bicep_array/analysis_logbook/
+
+	var hrefs = [
+	    "../../keck/analysis_logbook/analysis/20120727_5forebaffle_design/Baffles.pdf",
+	    "../20181030_groundshield_study/",
+        "../20200420_ElnodGOF30GHz/",
+	];
+	
+	var desc = [
+	    "Keck Array Forebaffle Construction",
+	    "Probing Parameter Space of Ground Shield Design Dimensions for Double- and Triple-Shielded CMB Experiments",
+        "BA1 30 GHz Yield and Elnod Diagnosis",
+	];
+	
+	
+	var post = document.getElementById("references");
+	var msg = "<table>";
+	for (var tag in tags){
+		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
+	};
+	msg = msg+ "</table>";
+	post.innerHTML = msg;
+
+	var links = document.getElementsByTagName("A");
+	for (var link in links){
+		for (var tag in tags){
+			if (links[link].href.endsWith(tags[tag])){
+				links[link].text = "("+tags[tag]+")";
+				links[link].href = hrefs[tag];
+				links[link].target = "_blank";
+			}
+		}
+	}
+	
+	</script>
+</section>
+</body>
