@@ -36,21 +36,62 @@
 
 <hr>
 
-<p>Introduction summary paragraph.</p>
-
+<p>I am characterizing beam steer and edge taper for a selection of pixels in BICEP3 near field beam maps. These parameters are not only useful in tracking systematics at the focal plane level, but we also want to try to connect these to deprojected residuals and eventually resulting B-mode power. This is a proof of concept. We will eventually want to characterize the entire focal plane.</p>
 <hr>
 
-<section><h2>First</h2>
+<section><h2>Definition of Metrics</h2>
+    <h3>Beam Steer</h3>
+    Thickness variation in the intermediate layer between the Niobium backshort and microstrip lines can create a phase gradient in the summing network. This phase gradient manifests as an angular offset from the direction normal to the focal plane of the beam trajectory coming out of the antenna feed. As projected onto the plane of the aperture, the offset trajectory would look like a translation of the beam center from the aperture center in near field beam maps. Thus, <b>we define beam steer as the offset between the beam center and aperture center</b>.
+
+    <h3>Edge Taper</h3>
+
+    <p>In our instrumental designs, we configure the optics with a specific target for edge taper in mind. Estimating the minimum, maximum, and azimuthal average edge taper tells us how we compare to the as-designed values. The "edge" is determined by defining an annulus within which we calculate the taper parameters. <b>The outer boundary of the edge is defined by the aperture diameter and the inner boundary is arbitrarily selected to be N% smaller than the aperture diameter.</b> For the figures below, I've set the inner boundary to be 10% of the aperture diameter.
+    </p>
+
     <figure>
-        <img alt="Test" src="#" />
+        <img src="figs/nfbm_edge_taper_min_max_avg.png" />
+        <figcaption>
+            The caption.
+        </figcaption>
+    </figure>
+
+    <h4>Additional Metrics</h4>
+    <p>Additionally, I combine the min, max, and the average into two addtional metrics which can more easily help us identify abnormalities at the edge.</p>
+
+    The max-min ratio (MMR) can indicate
+
+    $$MMR = \frac{A_{max}}{A_{min}}$$
+
+    An MMR much larger than one can indicate there's a relatively large signal at the edge.
+
+    I also calculate a fractional average amplitude at the edge which can indicate whether the edge effects are sharp or extended.
+
+    $$\bar{A}_{frac} = \frac{\bar{A}-A_{min}}{A_{max}-A_{min}}$$
+
+    For a high MMR, if the fractional average is low then the power at the edge is a sharp spike. In contrast, a high fractional average would indicate an extended feature at the edge.
+
+    <figure>
+        <img alt="Test" src="figs/nfbm_edge_taper_metrics.png" />
         <figcaption>
             The caption.
         </figcaption>
     </figure>
 </section>
 
+<section><h2>Procedure</h2>
+<p>
+    We mostly follow the procedure historically done in CLW's posting but we list it here explicitly for clarity:
+    <ol>
+        <li>Determine the location of the aperture in the beam map coordinate system.</li>
+        <ul><li>This is accomplished by stacking multiple maps and identifying a sharp truncation in amplitude. </li></ul>
+        <li>Fit Gaussian profiles to per-detector beams.</li>
+        <ul><li>Model a 6-parameter Gaussian plus a background parameter. I also mask out all data outside the aperture.</li></ul>
+    </ol>
+</p>
 
-<section><h2>Second</h2>
+</section>
+
+<section><h2>Results</h2>
 <p>Words.
     <figure>
         <img alt="Maps pager" id="mapspager" src="#" />
