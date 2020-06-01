@@ -28,23 +28,24 @@
 <header>
     <h1>Beam Steer and Edge Taper Estimations for Near Field Beam Maps</h1>
 
-    <time datetime="2020-xx-xx" class="published updated">
-        2020 Mmm dd
+    <time datetime="2020-06-02" class="published updated">
+        2020 June 02
     </time> —
     J. Cornelison
 </header>
 
 <hr>
 
-<p>I am characterizing beam steer and edge taper for a selection of pixels in BICEP3 near field beam maps. These parameters are not only useful in tracking systematics at the focal plane level, but we also want to try to connect these to deprojected residuals and eventually resulting B-mode power. This is a proof of concept. We will eventually want to characterize the entire focal plane.</p>
+<p>I am characterizing beam steer and edge taper for a selection of pixels in BICEP3 near field beam maps. These parameters are not only useful in tracking systematics at the focal plane level, but we also want to try to connect these to deprojected residuals and eventually resulting B-mode power. These are prelimenary results. Definitions of metrics and approaches to the fitting code are subject to changes.</p>
 <hr>
 
 <section><h2>Definition of Metrics</h2>
     <h3>Beam Steer</h3>
+    <p>
     Thickness variation in the intermediate layer between the Niobium backshort and microstrip lines can create a phase gradient in the summing network. This phase gradient manifests as an angular offset from the direction normal to the focal plane of the beam trajectory coming out of the antenna feed. As projected onto the plane of the aperture, the offset trajectory would look like a translation of the beam center from the aperture center in near field beam maps. Thus, <b>we define beam steer as the offset between the beam center and aperture center</b>.
+    </p>
 
     <h3>Edge Taper</h3>
-
     <p>In our instrumental designs, we configure the optics with a specific target for edge taper in mind. Estimating the minimum, maximum, and azimuthal average edge taper tells us how we compare to the as-designed values. The "edge" is determined by defining an annulus within which we calculate the taper parameters. <b>The outer boundary of the edge is defined by the aperture diameter and the inner boundary is arbitrarily selected to be N% smaller than the aperture diameter.</b> For the figures below, I've set the inner boundary to be 10% of the aperture diameter.
     </p>
 
@@ -55,6 +56,7 @@
         </figcaption>
     </figure>
 
+    <!--
     <h4>Additional Metrics</h4>
     <p>Additionally, I combine the min, max, and the average into two addtional metrics which can more easily help us identify abnormalities at the edge.</p>
 
@@ -77,37 +79,95 @@
         </figcaption>
     </figure>
 </section>
-
+-->
 <section><h2>Procedure</h2>
 <p>
-    We mostly follow the procedure historically done in CLW's posting but we list it here explicitly for clarity:
+    We mostly follow the procedure historically done in <a href="CLW2012A"></a> but we list it here explicitly for clarity:
     <ol>
         <li>Determine the location of the aperture in the beam map coordinate system.</li>
-        <ul><li>This is accomplished by stacking multiple maps and identifying a sharp truncation in amplitude. </li></ul>
+        <ul><li>This is accomplished by stacking multiple maps and shifting/rotating until we can identifying a sharp truncation in amplitude from the aperture.</li></ul>
+
+        <figure>
+            <img alt="Maps pager" id="shiftpager" src="#" />
+            <figcaption>
+                Maps of 8 good detectors across the focal plane and the coadded maps (center) before and after shifting.
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#shiftpager",
+                    {
+                        'Shift|s': ['Before|before','After|after'],
+                    },
+                    function(params) {
+                        return 'figs/apt_fit_'+params.s+'_shift.png';
+                    });
+                pager.setparams({
+                    's': 'before',
+                });
+            </script>
+        </figure>
+
+
         <li>Fit Gaussian profiles to per-detector beams.</li>
-        <ul><li>Model a 6-parameter Gaussian plus a background parameter. I also mask out all data outside the aperture.</li></ul>
+        <ul><li>Model a 6-parameter Gaussian plus a de-bias parameter.</li>
+        <li><b>Note:</b> Beam fitting for this posting were done using <tt>normfit2d.m</tt> during the data reduction stage <a href="TSG2020A"></a>. Future postings may include beams fit to a model which masks data beyond the aperture.</li>
+        </ul>
+        <li>Subtract aperture center from as-fit beam center to get the beam steer.</li>
+        <li>Determine apparent size of the aperture.</li>
+        <ul><li>In the coadded map, it is easy to see the sharp cut off due to the aperture. As can be seen in the figure below, the as-given illuminated aperture is notably larger than the apparent aperture. The aperture diameter in this case was set by-eye at 19".</li></ul>
+        <figure>
+            <img alt="Maps pager" id="aptpager" src="#" />
+            <figcaption>
+                The shifted and coadded map for 8 good detectors with the physical aperture size overlaid on top. The <b>Given</b> aperture size of ~21" is the listed BICEP3 "Illuminated Aperture" from the <a href="https://docs.google.com/spreadsheets/d/1imzDteb9FE-Cjh5p8T4tjHvL0X6UEihp94yvQgXON5k/edit#gid=473345804">Telescope & Instrument Parameters Doc</a>. The <b>Set</b> aperture size is the by-eye setting of 19".
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#aptpager",
+                    {
+                        'Illum. Apt.|a': ['Given|given','Set|set'],
+                    },
+                    function(params) {
+                        return 'figs/apt_size_'+params.a+'.png';
+                    });
+                pager.setparams({
+                    'a': 'given',
+                });
+            </script>
+        </figure>
+        <li>Calculate per-detector edge taper parameters based on aperture center, size, and margin.</li>
     </ol>
 </p>
 
 </section>
+<section>
+        <h2>Dataset</h2>
+        The dataset used in this posting comes from the Nov 2016 - Feb 2017 Calibration season, the maps for which can be found in <a href="TSG2020B"></a>.
+</section>
 
 <section><h2>Results</h2>
-<p>Words.
+<p>
+    <h3>Beam Steer</h3>
     <figure>
-        <img alt="Maps pager" id="mapspager" src="#" />
+        <img alt="Test" src="figs/beam_steer_prelim.png" />
+        <figcaption>
+            Quiver plot of beam steer for A and B polarization RGL detectors in <font color="blue">blue</font> and <font color="red">red</font> respectively.
+        </figcaption>
+    </figure>
+
+    <h3>Edge Taper</h3>
+    <figure>
+        <img alt="Maps pager" id="taperpager" src="#" />
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
-            pager.link("#mapspager",
+            pager.link("#taperpager",
                 {
-                    'Parameter|p': ['P1|p1','P2|p2'],
+                    'Metric|m': ['Min|min','Max|max','Avg|avg'],
                 },
                 function(params) {
-                    return 'figs/fig_'+params.p+'.png';
+                    return 'figs/tile_plot_edge_taper_'+params.m+'.png';
                 });
             pager.setparams({
-                    'p': 'p1',
+                    'm': 'min',
                 });
         </script>
     </figure>
@@ -117,11 +177,11 @@
 <hr>
 
 <section>
-<h3>Code</h3>
+<!--<h3>Code</h3>-->
 
-<ul>
-<li><tt>code1.py</tt> - Code desciption
-</ul>
+<!--<ul>-->
+<!--<li><tt>code1.py</tt> - Code desciption-->
+<!--</ul>-->
 
 
 <h3>References</h3>
@@ -131,53 +191,62 @@
 	// We'll make a couple arrays with the 'tag' and href information
 	// and then look through each anchor element for the specified tag.
 	// The anchors should then just look like: <a href="tagname"></a>
-	// and the script will automatically fill in the hyperlings and text.
-	// var tags = [
-	// "CAB2012",
-	// "JB2016",
-	// "KLT2017",
-	// "KSK2018",
-	// "NWP2019",
-	// "FCG2-CH10",
-	// ];
-	//
-	// var hrefs = [
-	// "../../../../keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-	// "https://www.excamera.com/sphinx/article-ray.html",
-	// "../20170321_BA_Forebaf+GS_study01/",
-	// "../20181030_groundshield_study/",
-	// "../20190207_BA_Forebaffle_Concepts/",
-	// "http://www.cs.utah.edu/~shirley/books/fcg2/rt.pdf",
-	// ];
-	//
-	// var desc = [
-	// "Pointing Model for Keck Beam Maps",
-	// "A reasonably speedy Python ray-tracer - James Bowman",
-	// "BA Forebaffle and Groundscreen Study 01: Zeroth Order Properties",
-	// "Probing Parameter Space of Ground Shield Design Dimensions for Double- and Triple-Shielded CMB Experiments",
-	// "BA Forebaffle Design Concepts",
-	// "Fundamentals of Computer Graphics 2nd Ed. - Peter Shirley",
-	// ];
-	//
-	//
-	// var post = document.getElementById("references");
-	// var msg = "<table>";
-	// for (var tag in tags){
-	// 	msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
-	// };
-	// msg = msg+ "</table>";
-	// post.innerHTML = msg;
-    //
-	// var links = document.getElementsByTagName("A");
-	// for (var link in links){
-	// 	for (var tag in tags){
-	// 		if (links[link].href.endsWith(tags[tag])){
-	// 			links[link].text = "("+tags[tag]+")";
-	// 			links[link].href = hrefs[tag];
-	// 			links[link].target = "_blank";
-	// 		}
-	// 	}
-	// }
+	// and the script will automatically fill in the hyperlinks and text.
+	var tags = [
+	"CLW2012A",
+        "CLW2012B",
+        "CLW2012C",
+        "CLW2012D",
+        "CLW2012E",
+        "TSG2020A",
+        "TSG2020B",
+	];
+
+    // Logbook Site map:
+    // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+    // keck:    www/keck/analysis_logbook/analysis/
+    // BICEP3:  www/bicep3/analysis_logbook/
+    // BA:      www/bicep_array/analysis_logbook/
+
+	var hrefs = [
+	    "../../../keck/analysis_logbook/analysis/20120726_beamsteer/",
+        "../../../keck/analysis_logbook/analysis/20120802_beamsteer/",
+        "../../../keck/analysis_logbook/analysis/20120808_beamsteer/",
+        "../../../keck/analysis_logbook/analysis/20120913_beamsteer_E8_B2/",
+        "../../../keck/analysis_logbook/analysis/20120920_beamsteervsoe/",
+        "../20200303_bicep3_nfbm_alldata/",
+        "../20200303_bicep3_nfbm_alldata/nfbm_bicep3_mount_20170116/",
+	];
+
+	var desc = [
+	"Beam Steer in the near field",
+        "Update on beam steer",
+        "Beam steer",
+        "Beam Steer of E8 and Bicep2",
+        "Beam Steer and Optical efficiency",
+        "BICEP3 NFBM All Data",
+        "BICEP3 NFBM 2017-01-16",
+	];
+
+
+	var post = document.getElementById("references");
+	var msg = "<table>";
+	for (var tag in tags){
+		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
+	};
+	msg = msg+ "</table>";
+	post.innerHTML = msg;
+
+	var links = document.getElementsByTagName("A");
+	for (var link in links){
+		for (var tag in tags){
+			if (links[link].href.endsWith(tags[tag])){
+				links[link].text = "("+tags[tag]+")";
+				links[link].href = hrefs[tag];
+				links[link].target = "_blank";
+			}
+		}
+	}
 	
 	</script>
 </section>
