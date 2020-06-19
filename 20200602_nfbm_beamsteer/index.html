@@ -56,35 +56,30 @@
         </figcaption>
     </figure>
 
-    <section><h2>Aperture Modeling</h2>
-    <p>
-    The apparent aperture center of each detector in the near-field beam map coordinate system, ($x_{apt},\,y_{apt}\,$), is calculated using four global parameters in conjunction with the ideal detector pointings ($r,\,\theta\,$):
-    </p>
-        \begin{equation}
-        \begin{split}
-        &x_{apt} = d \tan(r)\sin(\theta+\phi)+x_{0}\\
-        &y_{apt} = d \tan(r)\cos(\theta+\phi)+y_{0}
-        \end{split}
-        \end{equation}
-    <p>
-        where $d$ is the distance from the aperture plane to the mapper plane, $\phi$ is the rotation of the mapper WRT the boresight-centered coordinate system,  and ($x_0,\,y_0$) is the offset from the origin of the mapper to the center of the aperture.
-    </p>
+    <!--
+    <h4>Additional Metrics</h4>
+    <p>Additionally, I combine the min, max, and the average into two addtional metrics which can more easily help us identify abnormalities at the edge.</p>
 
-        <p>
-        These parameters are estimated using a background+mask model. In the real beam maps, I assume little-to-no signal should exist beyond the aperture and that the aperture is symmetric. Thus, for a map with amplitude $A(x,y)$ masking out the data within the radius of the aperture, $R_{apt}$, should result in a constant background signal $A_{bg}$:
+    The max-min ratio (MMR) can indicate
 
-        </p>
-        \begin{equation}
-        A(x,y\,|\,x_{apt},\,y_{apt},\,R_{apt}) =
-        \begin{cases}
-        \text{NaN} & \sqrt{(x-x_{apt})^2+(y-y_{apt})^2}\lt R_{apt} \\
-        A_{bg} & \sqrt{\left(x-x_{apt}\right)^2+(y-y_{apt})^2}\ge R_{apt} \\
-        \end{cases}
-        \end{equation}
+    $$MMR = \frac{A_{max}}{A_{min}}$$
 
+    An MMR much larger than one can indicate there's a relatively large signal at the edge.
 
-    </section>
+    I also calculate a fractional average amplitude at the edge which can indicate whether the edge effects are sharp or extended.
 
+    $$\bar{A}_{frac} = \frac{\bar{A}-A_{min}}{A_{max}-A_{min}}$$
+
+    For a high MMR, if the fractional average is low then the power at the edge is a sharp spike. In contrast, a high fractional average would indicate an extended feature at the edge.
+
+    <figure>
+        <img alt="Test" src="figs/nfbm_edge_taper_metrics.png" />
+        <figcaption>
+            The caption.
+        </figcaption>
+    </figure>
+</section>
+-->
 <section><h2>Procedure</h2>
 <p>
     We mostly follow the procedure historically done in <a href="CLW2012A"></a> but we list it here explicitly for clarity:
