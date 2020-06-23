@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Jan 2018 RPS Analysis  — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+	
+
+	
+	
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Analysis of Jan 2018 RPS Observations</h1>
+
+    <time datetime="2018-04-09" class="published updated">
+        2019 Apr 09
+    </time> —
+    J. Cornelison
+	<p><font color=red>Updated: 2019 Apr 23</font></p>
+</header>
+
+<p>
+In this posting I present my analysis of RPS data from the Jan 2018 calibration season. Using the parameter estimation method described in <a href="20180717JAC"></a>, polarization angles, $\phi_d$, and cross-polar leakages, $\epsilon\,$, were estimated for all individual detectors across the focal plane over four different DK-angles (see <a href="#scheds">&sect;4.1</a> for all schedules covered). I also calculate axis of the pair-diff polarization angle (dubbed $\phi_Q$) of each pixel in order to estimate the global polarization rotation, $\alpha$, of the focal plane. Some DK-dependence on $\phi_d$ estimations are found on the level of $\sim0.3^\circ$ which translates to a &lt;0.1&deg; DK-dependent variation on $\phi_Q$. Estimations of same-DK datasets are consistent to &lt;0.1&deg;.
+
+Since detectors on MCE0 are clocked 90&deg; with respect to the other MCE's I calculate global polarization rotation angles for MCE0 alone to be $\alpha=-1.34\pm0.32^\circ$. For MCE's 1, 2, and 3 combined $\alpha = -1.02\pm0.28^\circ$. With all MCE's combined $\alpha=-1.11\pm0.32^\circ$.
+</p>
+
+<!--
+Running the pipeline global rotation analysis on preliminary B2018 CMB data returns $\alpha = -0.503\pm0.139^\circ$ which is in agreement with my findings from RPS observations.
+-->
+
+<hr>
+<!--
+spare sentences:
+
+$\psi$ is independent of the pointing model and only requires knowledge of the source orientation WRT to zenith. 
+-->
+
+<h3>Table of Contents</h3>
+<ol type="I">
+<li><a href="#reduc">Introduction</a></li>
+	<ol type="i">
+	<li><a href="#phiangle">$\phi$-angle</a>
+	<li><a href="#mirroreff">Naive Vs. Fit Mirror Parameters</a>
+	<li><a href="#consistency">Consistency Checks</a>
+	</ol>
+<li><a href="#results">Results</a></li>
+	<ol type="i">
+	<li><a href="#globalresults">Global Polarization Rotation</a>
+	<li><a href="#detresults">Per-Detector</a>
+	</ol>
+<li><a href="#error">Error Analysis</a></li>
+	<ol type="i">
+	<li><a href="#srcstability">Source Stability</a>
+	<li><a href="#cmdangle">Command Angle Uncertainty</a>
+	<li><a href="#demoderr">Demodulation Noise</a>
+	<li><a href="#gndref">Ground Reflections</a>
+	<li><a href="#sourcerep">Uncertainty on Estimated Beam Centers</a>
+	<li><a href="#rpsort">RPS Mispointing</a>
+	<li><a href="#mirort">Repeatability on Mirror and Source Parameters</a>
+	</ol>
+<li><a href="#appx">Appendix</a></li>
+	<ol type="i">
+	<li><a href="#scheds">Schedules</a>
+	<li><a href="#redplts">Reduction Plots</a>
+	<li><a href="#ortplots">Additional Orientation Effects Plots</a>
+	</ol>
+</ol>
+
+<section><h2>Introduction</h2>
+<h3 id="phiangle">$\phi$-angle</h3>
+<p>
+I present detector polarization response angles in a coordinate system that is referenced to the boresight in x-y coordinates. For completeness, we define a new parameter, $\phi$, as an angle measuring an orientation direction in the tangent plane at any $x,y$ point relative to the local orientation vectors ($\hat{D}_1,\hat{D}_2$) (see <a href="20140203CAB"></a>). The $\phi$-angle is measured from the $\hat{D}_1$-axis toward the $-\hat{D}_2$-axis. Figure 1.1 shows a diagram of the relationship between the co-polar axes with the mirror installed.
+
+<p>
+In the RPS analysis we estimate $\psi$, the angle from the RPS co-polar axis, $\hat{S}_\phi$, to the detector co-polar axis, $\hat{D}_\phi$, in the plane tangent to the detector pointing, $\hat{D}_3$, when it is directly coupled to the source pointing, $\hat{S}_3$ (i.e. $\hat{S}_3\cdot\hat{D}_3=1$ in <a href="20140203CAB"></a>). The angle to $\hat{S}_\phi$ from $\hat{D}_1$, measured in the plane tangent to the source pointing, is called $\phi_s$ and is calculated via <tt>keck_beam_map_pointing</tt> using input mount, mirror, and source location parameters for a given detector pointing.
+
+<p>
+Since $\psi$ is measured between the source and detector co-polar axes it follows that the angle from $\hat{D}_1$ to $\hat{D}_\phi$, called $\phi_d$, is just the sum between $\psi$ and $\phi_s$:
+</p>
+$$
+\phi_d \equiv \psi + \phi_s
+$$
+
+Presenting angles in terms of $\phi_d$ is useful because, unlike $\chi$-angles, $\phi_d$ is naturally aligned along $0^\circ$ and $90^\circ$ for pol A and pol B detectors respectively. Using the $r$-$\theta$ convention described in  (<a href="20140203CAB"></a>), the angle from $\hat{D}_1$ to the detector co-polar axis, labeled $\hat{D}_\chi$ in the posting, is $\theta+\chi$ and so it follows that $\phi_d$ of a detector is related to its $\chi$-angle by:
+
+$$
+\chi = \phi_d-\theta
+$$
+
+
+<figure>
+<figcaption>
+Diagram showing the relationship between local orientation axes $\left(\hat{D}_1,\hat{D}_2\right)$, RPS co-polar axis $\left(\hat{S}_\phi\right)$ , and detector co-polar axis $\left(\hat{D}_\phi\right)$ for a given detector pointing when it is coupled directly with the RPS. 
+</figcaption>
+<img src="figs3/geometry1.png" width=35%/>
+
+</figure>
+
+In practice, we're interested how the orientations of the detectors combine into a single orientation of the pair-diff axis (or +Q-axis). By calculating Q and U for a pixel, we can back out the +Q-axis, $\phi_Q$, in addition to the polarization efficiency.
+
+$$
+    \begin{split}
+        &Q = \left(\cos\phi_{d,A} - \cos\phi_{d,B}\right)/2 \\
+        &U = \left(\sin\phi_{d,A} - \sin\phi_{d,B}\right)/2 \\
+        &\phi_Q = \frac{1}{2}\tan^{-1}\left(\frac{U}{Q}\right)\\
+		&\text{pol-eff} = \sqrt{Q^2+U^2}\\
+    \end{split}
+$$
+
+<h3 id="mirroreff">Naive vs. Fit Mirror Parameters</h3>
+<p>The source angle, $\phi_s$ is calculated using mount, mirror, and source axes and location inputs and thus requires knowledge of each parameter to high precision. Aside from the location of the aperture WRT the elevation axis, mount parameters are acquired from optical star pointing. The mirror and source parameters, however, must be derived by other means. Typically, beam maps with the moon are taken each season under the premise that the location of the moon is well known and so the mirror parameters can be estimated to good precision. No moon observations were made during the Jan 2018 measurement season, so in <a href="20190409JAC"></a>, moon observations are used in conjunction with RPS test observations from Jan 2017 to verify the location of the RPS. For this year, under the assumption that deployment of the RPS on the MAPO is sufficiently repeatable, I estimate the mirror parameters using beam centers estimated with Jan 2018 RPS data. I assumed that CMB-derived beam centers were preserved through the mirror pointing and fit for mirror parameters at which the residuals between the CMB-derived and RPS-derived beam centers were minimized across the focal plane and all deck angles. To expedite the fitting process, I used only one detector-pair from each tile. The resulting fit parameters were [$tilt =44.687^\circ$ $roll = 0.148^\circ$]. Figure 2.1 shows the quiver plots of residuals between CMB-derived and RPS-derived beam centers with naive and fit parameters of [$tilt = 45^\circ$ and $roll = 0^\circ$].
+
+</p>
+
+</p>
+
+    <figure>
+	<!-- New Mirror params = [44.687 0.148]-->
+	<figcaption>
+        	Caption
+    </figcaption>
+	<img alt="" id="quiv" src="#quiv" onerror="this.src='plot_blank.png';" width=50% />
+
+        <script type="text/javascript">
+
+			var qpager = new Pager("quiv");
+			qpager.link("#quiv",
+                {
+                    'Deck|dk': ['0|000','45|045','90|090','135','all'],
+					'Type|s':['Naive|2','Mirror Fit|3','Mirror(x10)|4']
+                },
+                function(params) {
+				if (params.s<4){
+                    return 'figs'+params.s+'/quiverplot_'+params.dk+'.png';
+					}else {
+					return 'figs3/scaled_quiverplot_'+params.dk+'.png';
+					
+					}
+				});
+			
+            qpager.setparams({
+				'dk':'all',
+				's':'3'
+                });
+            qpager.gridalign('#qpager', 4);
+        </script>
+    </figure>
+
+<p>
+While systematic features due to pointing are not completely eliminated by the fitting process, Figure 2.1 shows that the uniform offset effect is eliminated. We do see some interesting features across the focal plane that appear fixed WRT the mirror. I speculate that this could be a result of imperfections in the mirror. With the new mirror parameters, the mean pointing residual across all channels and DK's is $0 \pm 0.03^\circ$. I go on to show in the Error Analysis section that the impact on the repeatability of angle estimations from beam center offsets are small compared to other sources of error. Additionally, I explore the systematic impact on parameter estimations due to the repeatability with which we can redeploy the RPS on the MAPO mast from season to season.
+</p>
+
+<h3 id="consistency">Parameter Consistency Checks</h3>
+
+<p>To probe the susceptibility of the data to systematics, a sort of DK jackknife was performed on the data where per-channel parameters estimated at each DK-angle were subtracted from each other and were checked whether the residual distributions are consistent with noise. In Figure 1.3, parameters for each channel were plotted against those measured at other DK-angles.  Two-thirds of the focal plane was covered twice a DK of $45^\circ$ so in the bottom-most left plot, two different $DK=45$ measurements are plotted against each other to show the expected repeatability of each parameter without influence of DK-dependent systematics.
+
+<font color="red">
+<ul>
+<li>Note: MCE0 is clocked $90^\circ$ compared to other MCE's on the focal plane. To make plotting easier, "Pol A" detectors in this posting refer to detectors most closely aligned to $0^\circ$ and "Pol B" detectors refer to those most closely aligned with $90^\circ\,$.
+</ul>
+</font>
+
+
+    <figure>
+	<figcaption>
+        Dk-for-DK scatter plots and residual histograms. In the scatter plots, $\phi_s$ and $\psi$ have been centered by adding and subtracting DK angles respectively. For the residual histograms, $\phi_s$ and $\psi$ were not altered before differencing.
+    </figcaption>
+	<img alt="" id="cons" src="#cons" onerror="this.src='plot_blank.png';" width=35% />
+
+        <script type="text/javascript">
+
+			var conspager = new Pager("cons");
+			conspager.link("#cons",
+                {
+                    'Param|p': ['\u03C6$_d$|phi','\u03C6$_s$|phi_s','\u03C8|psi','\u03B5|xpol'],
+					'Det|d': ['A|a','B|b'],
+					//'Type|m':['Lockin|2','Lockin+Fit|3','Square+Fit|1','Hires+Fit|4'],
+					'Plot|pl':['Scatter|','Residual|res']
+                },
+                function(params) {
+				    //return 'figs'+params.m+'/deck_for_deck_'+params.pl+'consistency_'+params.p+'_'+params.d+'.png';
+					return 'figs3/deck_for_deck_'+params.pl+'consistency_'+params.p+'_'+params.d+'.png';
+				});
+			
+            conspager.setparams({
+                    'p':'phi',
+					'd':'a',
+					'm':'3',
+					'pl':'res'
+                });
+            conspager.gridalign('#conspager', 4);
+        </script>
+    </figure>
+
+	<p>
+	I use the two-sample Kolgomorov-Smirnov test in Matlab (<tt>kstest2</tt>) to determine if the residual distributions are consistent with noise. The ks-test rejects all distributions as being consistent with noise with $5\sigma$ confidence except in the case of DK45-vs-DK45 for Pol A detectors and DK45-vs-DK135 for pol B detectors which are only rejected with $1\sigma$ confidence. A mean offset can be seen in most of the residual histograms that appears opposite between A/B detectors in behavior, but not in magnitude. The phenomenology of this effect is similar to what is expected if the RPS is not pointing directly at the telescope (See <a href="20121205CAB"></a>), which is important because Pol A and Pol B detectors would be biased differently at a given DK-angle. Another posting is in the works that investigates this issue more thoroughly.
+	</p>
+	<p>The standard deviations from the DK45-vs-DK45 residuals are $0.065^\circ$. I divide this by $\sqrt(2)$ to get an estimate of the statistical uncertainty without DK-dependent effects to be $0.045^\circ$ and compare this value to predictions in the error analysis section.
+	</p>	
+	<hr>
+</section>
+<section><h2 id='results'>Results</h2>
+
+	
+<h3 id="globalresults">Global Results</h3>
+
+<p>This section presents the results on global polarization rotation angle (conventionally labeled $\alpha$ (<a href="20160907JBW"></a>)) and discusses the assigned uncertainties. To get a sense of the impact of DK-dependent results, $\alpha$ is calculated Per-DK as the weighted mean of $\phi_d$ estimations using the inverse of median per-detector NET's from the 2017 CMB observing season as weights. Figure 2.3 shows histograms of $\phi_d$ and $\epsilon$ estimations for each DK-angle and also for per-channel parameters averaged across DK-angles. Additionally, to examine the effect of MCE0 being clocked $90^\circ$, histograms and global rotation angles are shown without MCE0 included.
+</p>
+
+<figure>
+<figcaption>
+Histogram of $\phi_d$ and $\epsilon$ estimations per-DK with 1/NET used to determine $\alpha$ (<font color="red">red line</font>). The <b>All</b> tab averages per-channel estimations first across DK's using inverse of fit residuals as weights and then averages all detectors together using 1/NET's as weights. 
+</figcaption>
+<img alt="" id="ov1" src="#ov" onerror="this.src='plot_blank.png';" width=50% />
+
+
+       <script type="text/javascript">
+
+			var ovpager = new Pager("ov");
+			ovpager.link("#ov1",
+                {
+                    'Det|d':['A|a','B|b','pairdiff|q'],
+					'Deck|dk': ['0|000','45|045','90|090','135','all'],
+					'Type|t':['All MCEs|','MCE 1-3|_nomce0','MCE0|_mce0']
+                
+                },
+                function(params) {
+					//return 'figs'+params.s+'/'+params.t+'_final_'+params.d+'.png';
+					return 'figs3/hist_final_'+params.d+'_'+params.dk+params.t+'.png';				
+                });
+
+            ovpager.setparams({
+                
+					'd':'a',
+					'dk': '000',
+					't':''
+                });
+            ovpager.gridalign('#ovpager', 4);
+        </script>
+
+
+</figure>
+
+
+<p>When MCE0 and the other MCEs are plotted separately, the non-orthogonality between A and B detectors becomes more apparent. Independent of DK angle, Pol A and Pol B distributions are approximately Gaussian and A/B orthogonality is rejected to $>1\sigma$. As such, two global rotation angles are assigned, one for Pol A detectors, $\alpha_a$, and one for Pol B detectors, $\alpha_b$. Due to the DK-dependence on $\phi_d$ estimations, I assign a systematic uncertainty of $\sigma_{\alpha_a} = 0.3^\circ$ and $\sigma_{\alpha_b} = 0.45^\circ$.
+</p>
+<p>Global rotation angles are calculated by first averaging $\phi_d$ for each channel across DK-angles using fit residuals as weights and then calculating $\alpha$ by averaging across all $\phi_d$'s using 1/NET as weights. Global rotation angles for different combinations of MCE's are tabulated below.
+</p>
+
+
+<table align="center">
+<tr>
+<th>Type</th><th>Pol</th><th>$\alpha$ (&deg;)</th><th>$\sigma_\alpha\text{(stat)}$ (&deg;)</th><th>$\sigma_\alpha\text{(sys)}$ (&deg;)</th>
+</tr>
+<tr>
+<td rowspan="3">MCE's 1-3</td><td>A</td><td>-0.72</td><td>0.34</td><td>0.30</td>
+</tr>
+<tr>
+<td>B</td><td>88.64</td><td>0.34</td><td>0.45</td>
+</tr>
+<tr>
+<td>diff</td><td>-1.02</td><td>0.28</td><td>--</td>
+</tr>
+<tr>
+<td rowspan="3">MCE0 only</td><td>B</td><td>-1.67</td><td>0.34</td><td>0.30</td>
+</tr>
+<tr>
+<td>A</td><td>88.98</td><td>0.33</td><td>0.45</td>
+</tr>
+<tr>
+<td>diff</td><td>-1.34</td><td>0.30</td><td>--</td>
+</tr>
+<tr>
+<td rowspan="3">All MCE's</td><td>A</td><td>-0.99</td><td>0.54</td><td>0.30</td>
+</tr>
+<tr>
+<td>B</td><td>88.74</td><td>0.37</td><td>0.45</td>
+</tr>
+<tr>
+<td>diff</td><td>-1.11</td><td>0.32</td><td>--</td>
+</tr>
+
+</table>
+
+Looking at (<a href="20160907JBW"></a>), the statistical uncertainties when MCE0 is counted separately seem to be what we'd reasonably expect.
+<!--
+With Justin's help, I ran the $EB/TB$-minimization code to fit for a global rotation offset from the 99 B2018 LCDM+Dust sims (see <a href="20190331HH"></a>) using $TB$, $EB$, and $EB+TB$ fits and show the plots below. 
+
+<figure>
+	<figcaption>
+	
+	</figcaption>
+	<img alt="" id="glob" src="#glob" onerror="this.src='plot_blank.png';" width=70% />
+	        <script type="text/javascript">
+
+			var globpager = new Pager("glob");
+			globpager.link("#glob",
+                {
+                    'Param|p': ['EB','TB','EB+TB|TBEB']//,
+					//Type|s' : ['Lockin|2','Lockin+Fit|3','Square+Fit|1']
+                },
+                function(params) {
+                    //return 'figs'+params.s+'/'+params.p+'_per_channel_alltile_alldk.png';
+					return 'figs3/globfit_'+params.p+'.png';
+                });
+			
+            globpager.setparams({
+                    'p': 'EB'
+					
+                });
+            globpager.gridalign('#globpager', 4);
+        </script>
+	</figure>
+	
+I find that for the $EB$-minimization which is usually chosen for as the global rotation angle $\alpha = -0.503\pm0.139^\circ$ and is in agreement with my findings from the RPS data.
+-->
+
+<h3 id="detresults">Per-Detector Results</h3>
+
+<p>
+This section examines detector-to-detector variations, so an offset of $+1.0^\circ$ was applied to all detectors to bring them around zero. Figure 2.1 shows a plot of $\phi_d$ and $\epsilon$ estimations per detector for each of the four $DK$ angles. It should also be noted that each data set was actually taken with a $1.25^\circ$ offset in $DK$ to account for the drum angle, but plot legends have been rounded to the nearest multiple of 5 for convenience.
+</p>
+	<figure>
+	<figcaption>
+	
+	</figcaption>
+	<img alt="" id="pol" src="#pol" onerror="this.src='plot_blank.png';" width=50% />
+	        <script type="text/javascript">
+
+			var polpager = new Pager("pol");
+			polpager.link("#pol",
+                {
+                    'Param|p': ['\u03C6$_d$|phi','\u03B5|xpol_eff']//,
+					//Type|s' : ['Lockin|2','Lockin+Fit|3','Square+Fit|1']
+                },
+                function(params) {
+                    //return 'figs'+params.s+'/'+params.p+'_per_channel_alltile_alldk.png';
+					return 'figs3/'+params.p+'_per_channel_alltile_alldk.png';
+                });
+			
+            polpager.setparams({
+                    'p': 'phi',
+					's': '3'
+                });
+            polpager.gridalign('#polpager', 4);
+        </script>
+	</figure>
+	
+<p>
+The channel plots in Fig 2.1 show obvious outliers in the data. Interestingly, some tiles exhibit unusual deviations from the apparent mean across the tile (e.g. Chans around 1500 for $\phi_d$ and around 2400 for $\epsilon$) that is consistent across DK-angles even when the result is unphysical (around chans 1200 for $\epsilon$).
+</p>
+
+
+<h3>Tile Plots</h3>
+Figure 2.2 shows tile-plots of $\phi_d$, $\phi_s$, $\psi$, and $\epsilon$.
+
+Notable Clicks:
+<ul>
+<li><a href="javascript:clk2();">DK45+xpol+</a> - Some tiles such as 4, 7, and 3 have xpol leakage that is consistently negative across deck angles.
+<li><a href="javascript:clk1();">DK90+phi</a> - DK90 measurements appear to be more noisy than measurements at other DK angles. Additionally, Pol B detectors are consistently underestimated across the focal plane compared to other deck angles.
+<li><a href="javascript:clk3();">$\phi_d$ pair-diff</a> - We can see that the Pol A and Pol B detectors are not orthogonal by $\sim 0.5^\circ$ which appears to be consistent across the focal plane with some dependence on DK.
+</ul>
+
+
+    <figure>
+	<figcaption>
+        	Per-DK Tile Plots: Pol A $\phi_d$ are as-measured and Pol B's are $\phi_d-90$. $\psi$ is similar with Pol B's $\psi-90$. $\phi_s$ and cross-pol leakage are as-measured. $\phi_d$ pair-diff is $(\phi_{d,B}-90)-\phi_{d,A}$.
+    </figcaption>
+	<img alt="" id="bm" src="#bm" onerror="this.src='plot_blank.png';" width=40%/>
+
+        <script type="text/javascript">
+
+			var bmpager = new Pager("bm");
+			bmpager.link("#bm",
+                {
+                    'DK|d': ['0|000','45|045','90|090','135'],
+					'Param|r': ['\u03C6$_d$|phi','\u03C6$_s$|phis','\u03C8|psi','\u03B5|xpol','\u03C6$_d$ pair-diff|phiq','poleff']//,'x','y']//,
+					//'Type|s': ['Lockin|2','Lockin+Fit|3','Square+Fit|1','Hires+fit|4']
+                
+                },
+                function(params) {
+                    //return 'figs'+params.s+'/tileplot_dk_'+params.d+'_'+params.r+'_res.png';
+					return 'figs3/tileplot_dk_'+params.d+'_'+params.r+'_res.png';
+                });
+			
+            bmpager.setparams({
+                    'd': '000',
+					//'s':  '3',
+					'r': 'phidiff'
+                });
+            bmpager.gridalign('#bmpager', 4);
+			
+			function clk1() { 
+			bmpager.setparams({
+                    'd': '090',
+					//'s':  '3',
+					'r': 'phi'
+                });
+			return void(0); }
+			
+			function clk2() { 
+			bmpager.setparams({
+                    'd': '045',
+					//'s':  '3',
+					'r': 'xpol'
+                });
+			return void(0); }
+			function clk3() { 
+			bmpager.setparams({
+                    'd': '000',
+					//'s':  '3',
+					'r': 'phidiff'
+                });
+			return void(0); }
+        </script>
+    </figure>
+
+
+
+<hr>
+
+</section>
+
+<section><h2 id="error">Error Analysis</h2>
+<p>
+From &sect;1.1, a co-polar axis is related to the telescope orientation axis by: 
+</p>
+$$
+\phi_d = \psi + \phi_s
+$$
+
+As such, uncertainty on $\phi_d$ can enter either through parameter estimations of $\psi$ or through the pointing model and beam center estimations when calculating $\phi_s$.
+<h3 id="srcstability">Source Stability</h3>
+The source output fluctuates at 0.5% of the amplitude on timescales relevant to demodulated timestream samples ($50 \text{ms}$). Simulations of rastersets were conducted where a Gaussian beam with typical BICEP3 beam characteristics was convolved with a point source with an amplitude that fluctuated by 0.5% per sample and modulated as a function of source command angle. This fluctuation in the source output reflects on the apparent repeatability of estimations of $\psi$ by $\sigma_{\psi}<0.025^\circ$. Since the demodulator introduces its own noise, this estimation is mostly useful in demonstrating that effects due to gain variations seen in other RPS analyses (<a href="20121212CLW"></a>) were addressed during the Jan 2018 RPS campaign.  
+
+<h3 id="cmdangle">Uncertainty on Source Command Angle</h3>
+The quadrature sum of the positional repeatability of the stage and the stochastic fluctuations of the tilt meter when the RPS is deployed on the MAPO mast is $\sigma_{\eta}<0.013^\circ$. Simulations were conducted where each commanded angle of the source was dithered by $0.02^\circ$ and $\psi$ was estimated assuming the non-dithered command angles. The simulations predict that a $0.02^\circ$ uncertainty of the source command angle contaminates estimations on $\psi$ by $\sigma_{\psi}<0.006^\circ$.
+
+
+<h3 id="demoderr">Demodulation</h3>
+In order to isolate ambient signals when observing the RPS, the amplitude of the RPS was chopped via an RF PIN switch in the signal chain of the BBNS. During the data reduction process raw data timestreams were ultimately demodulated using a digital lock-in demodulation algorithm described in (<a href="20180808JAC"></a>). The apparent fluctuations on the source amplitude due to the cumulative affects of BBNS stability and noise injected from the demodulator were estimated to be $\sim 1.5\%$ of the peak amplitude. Additionally, the base noise of the demodulated timestreams was estimated to be $\sim0.06\%$ of the peak amplitude. The same simulation approach described in <a href="#srcstability">&sect;3.1</a> was used to estimate the level contamination on the repeatability of $\psi$, except some additional noise of $0.06\%$ of the source amplitude was added to the whole of each timestream in the rasterset. Noise injected into demodulated timestreams impact the apparent repeatability of estimations by $\sigma_{\psi}<0.072^\circ$.
+
+
+<h3 id="gndref">Ground Reflections</h3>
+Demodulated timestreams of RPS data are spliced together to acquire beam maps that include ground reflections that appear at ~9 degrees below the source elevation. Ground reflections are -25dB of the source amplitude when the detectors are directly coupled to the source. A simple model is set up to estimate the contribution of ground reflections to the power measured at the source. 
+
+The total power of a 2D Gaussian is calculated with typical BICEP3 beam characteristics when it is directly coupled to a point source with an amplitude of 1. The total power is compared to the total power calculated of the same 2D Gaussian coupled to a point source of amplitude 1 with an additional point source offset by 9 degrees from the main source and with an amplitude of -25dB. The difference between the power with and without ground reflections is $O\left(10^{-8}\right)$ and the impact on parameter estimations of $\psi$ are negligible.
+
+
+<h3 id="sourcerep">Uncertainty on Estimated Beam Centers</h3>
+<p>
+We expect an impact on the repeatability on $\phi_s$ as a result of uncertainty in estimated beam centroids. I estimate an upper limit on the impact in repeatability on $\phi_s$ due to beam center uncertainty by simulating beam centers per-tile that have been dithered by some RMS and examining the resulting distribution of calculated source polarizations. I calculate $\phi_s$ with the same input pointing model parameters used in the RPS analysis, substituting in dithered beam centers. I then calculate the standard deviation of the resulting distribution of source angles, $\sigma_{\phi_s}\,$, as a function of distance from the focal plane boresight. In figure 1.1, looking at the per-tile beam center residuals as a function of mean distance from the boresight center we can see some increase in the scatter of beam center estimations in edge tiles that is independent of $DK$ angle. On average, however, the standard deviation of beam center residuals is $\sim 0.02^\circ$, so I use this value as the input scatter on the noise realizations of beam center offsets.
+</p>
+
+<figure>
+<figcaption>
+Scatter plot of per-tile standard deviations of beam center offsets estimated by real data <b>(left)</b> and dithered by and RMS of $0.02^\circ$ <b>(right)</b>. 
+</figcaption>
+<table width=65%>
+<tr>
+<td><img src="figs3/beamcen_res_std_vs_dist_real.png" /></td>
+<td><img src="figs3/beamcen_res_std_vs_dist_sim.png" /></td>
+</tr>
+</table>
+</figure>
+
+
+<p>
+Figure 1.2 juxtaposes the per-tile standard deviations of source polarization angles calculated from the estimated beam centers on real data with those of cmb-derived beam centers dithered by a $0.02^\circ$ RMS. Most of the simulated per-tile $\sigma_{\phi_s}\,$ are within &lt;10% of the estimations on real data, so I consider this a reasonable description of the system and defer a more thorough investigation for a later date.
+</p> 
+
+<figure>
+<figcaption>
+
+</figcaption>
+<table width=65%>
+<tr>
+<td><img src="figs3/error_prop_beamcen_to_phis_real.png" /></td>
+<td><img src="figs3/error_prop_beamcen_to_phis_sim.png" ></td>
+</tr>
+</table>
+</figure>
+
+
+<p>
+The upward trend in Figure 1.2 is mainly due to the fact that the source polarization varies more drastically at the edges of the focal plane and thus per-tile $\sigma_{\phi_s}\,$ increases more as a result optical effects than actual random scatter. Assuming that they are the true beam centers, I now subtract the $\phi_s$ calculated from the cmb-derived beam centers to eliminate this effect. While the dependence on $\sigma_{\phi_s}\,$ is not completely eliminated, I can still establish a conservative upper limit on the contribution to the repeatability of source polarization angle due to uncertainty in the estimated beam centroids to be $\sigma_{\phi_s} < 10''$ which is in agreement with the DK45-vs-DK45 residuals seen in &sect;1.3.
+</p>
+
+<figure>
+<figcaption>
+
+</figcaption>
+<table width=65%>
+<tr>
+<td><img src="figs3/error_prop_beamcen_to_phis_realres.png" /></td>
+<td><img src="figs3/error_prop_beamcen_to_phis_simres.png" ></td>
+</tr>
+</table>
+</figure>
+
+
+
+
+<h3 id="rpsort">RPS Mispointing</h3>
+<p>
+I use the information in Colin's posting (<a href="20121205CAB"></a>) as the foundation for investigating effects due to mispointing of the RPS on the mast. The detector polarization angle WRT to the source, $\phi_d$, can be biased if the RPS is assumed to be directly pointing at the telescope but is actually offset in local azimuth $\alpha$ or elevation $\beta$. Alignment strips are installed on the RPS enclosure which allows us to ensure that the RPS is aligned in $\alpha$ to &lt;1&deg;. The RPS is not adjustable in elevation however and, as of this posting, I cannot reasonably assume that the mast was designed with some built-in elevation offset. As such, the RPS is almost certainly misaligned in $\beta$ by $\sim 2.3^\circ$, which is the elevation of the source as seen from the telescope. Given a misalignment of the RPS, we'd expect to see some DK-dependence in $\phi_d$ estimations that is proportional to the magnitude of the offset in $\alpha$ and $\beta$:
+</p>
+
+\begin{equation}
+\left(\hat{s}\cdot\hat{g}\right)^2 = \left[\left(\cos\left(\phi-DK\right) \cos\beta + \sin\left(\phi-DK\right) \sin\alpha \sin\beta\right) \cos\eta + \sin\left(\phi-DK\right) \cos\alpha \sin\eta \right]^2
+\end{equation}
+<p>
+A simple simulation was set up to compare the effect described in Colin's posting to the real data.
+</p>
+<ul>
+<li>For each tile, dither channels by the standard deviations measured by the data.
+
+<li>For a given offset of $\alpha$ and $\beta$, calculate the modulation curves of each detector using Eq. 1 for $\eta = [-180:30:180]$.
+
+<li>Estimate $\phi$ using RPS analysis pipeline.
+
+<li>For now, I assume that cross-polarization response and miscollimation effects are zero.
+</ul>
+
+I found that the combination of $\alpha$ and $\beta$ that most resembled the behavior in the data when $\alpha\sim-\beta$. The figure below shows four sims
+of $\alpha = 2.5^\circ,5^\circ$ and $\beta = -\alpha$ for A/B detectors that are excactly 90&deg; apart and a case where B detectors are 90.5&deg; apart from A detectors.
+    <figure>
+	<figcaption>
+        	Per-DK tile plots of sims with non-zero mispointing of the RPS compared to tile plots from real data. Pol B data has $90^deg$ subtracted from it before taking pair diffs. 
+    </figcaption>
+	<img alt="" id="ort" src="#ort" onerror="this.src='plot_blank.png';" width=40%/>
+
+        <script type="text/javascript">
+
+			var ortpager = new Pager("ort");
+			ortpager.link("#ort",
+                {
+                    'DK|d': ['0|000','45|045','90|090','135'],
+					'Type|t': ['Real|','5deg|_orteff_5','2.5deg|_orteff_2','5deg+offs|_orteff_5_withoffset','2.5deg+offs|_orteff_2_withoffset']
+                },
+                function(params) {
+                    //return 'figs'+params.s+'/tileplot_dk_'+params.d+'_'+params.r+'_res.png';
+					return 'figs3/tileplot_dk_'+params.d+'_phidiff_res'+params.t+'.png';
+                });
+			
+            ortpager.setparams({
+                    'd': '000',
+					't':  '_orteff_5'
+                });
+            ortpager.gridalign('#ortpager', 4);
+			
+        </script>
+    </figure>
+
+We can see from Figure 3.4 that the real data follows a similar behavior of the simulated data when $[\alpha,\beta] = [5^\circ.-5^\circ]$ with a consistent $0.5^\circ$ offset. However, the case of Pol B detectors being offset by $-0.5^\circ$ WRT $90^\circ$ doesn't match the behavior of the data at all. Further investigation into this phenomena is required before any assumptions can be made about the implicit DK-dependent bias on $\phi_d$ can be made. For now, a rough estimate of $\sigma_{\psi} = 0.25^\circ$ is given to address this issue.  
+
+
+<h3 id="mirort">Repeatability on Mirror and Source Parameters</h3>
+Telescope boresight pointing in topocentric horizon coordinates is converted to a source location on the focal plane with the telescope boresight at the origin via a pointing model using mirror orientation and source location in topocentric coordinates as input. The mirror parameters are approximated during the measurement and are later derived by taking beam maps of the moon. After the mirror parameters are derived, the parameters for the source location are then fit using the new mirror parameters as given.
+
+No observations of the Moon were conducted during the season that this RPS data was taken, so I establish upper limits on the location of the source using the estimated source locations from preceding years. The RPS fixed atop a 12.5m tall mast and is leveled WRT to gravity using a high-precision tilt meter to within $0.006^\circ$. At a distance of 196m from the telescope, a $0.006^\circ$ repeatability in leveling corresponds to a repeatability in source azimuth of $1.6''$. The impact on the apparent repeatability of $\phi_d$ still needs to be investigated.
+
+<h3 id="errfinal">Total Uncertainty on $\phi_d$</h3>
+<table align="center">
+<tr>
+<th>Statistical Uncertainty</th><th>$\sigma_{\phi_s}$ (&deg;)</th><th>$\sigma_{\psi}$ (&deg;)</th>
+</tr>
+<tr>
+<td>Demodulation Noise / Source Stability</td><td>--</td><td>$0.072^\circ$</td>
+</tr>
+<tr>
+<td>Command Angle Uncertainty</td><td>--</td><td>$0.006^\circ$</td>
+</tr>
+<tr>
+<td>Beam Center Estimations</td><td>$0.003^\circ$</td><td>--</td>
+</tr>
+<tr>
+<td> </td><td> </td>
+</tr>
+<tr>
+<th>Systematic Uncertainty</th><th>$\sigma_{\phi_s}$ (&deg;)</th><th>$\sigma_{\psi}$ (&deg;)</th>
+</tr>
+<tr>
+<td>DK-to-DK consistency</td><td>--</td><td>$0.25^\circ$</td>
+</tr>
+<tr>
+<td>RPS Location Repeatabiltiy</td><td>--</td><td>--</td>
+</tr>
+<tr>
+<th>Total $\sigma_{\phi_d}$</th><th>$0.08^\circ$ (stat)</th><th>$0.25^\circ$ (sys)</th>
+</tr>
+
+</table>
+ 
+<hr>
+
+</section>
+<section>
+<h3 id="post">Linked previous postings</h3>
+<p id="postings"></p>
+
+<hr>
+</section>
+	<section><h2 id="appx">Appendix</h2>
+	<h3 id="scheds">Schedules</a>
+		
+	<h3 id="redplts">Reduction Plots</h3>
+	
+    <figure>
+	<figcaption>
+        	<b>Top</b> Modulation curves of all tiles. <b>Middle-Top</b> Fits to modulation curves. <b>Middle-Bottom</b> Fractional residuals. <b>Bottom</b> Mean and $1\sigma$ errorbars of per-rotation-angle normalized amplitudes.
+    </figcaption>
+	<img alt="" id="mod" src="#mod" onerror="this.src='plot_blank.png';" width=50%/>
+
+        <script type="text/javascript">
+
+			var modpager = new Pager("mod");
+			modpager.link("#mod",
+                {
+                    'DK|d': ['0|000','45|045','90|090','135'],
+					'Pol|p': ['A','B'],
+					'Cut|c': ['None|uncut','Auto|cut']
+                
+                },
+                function(params) {
+				return 'figs3/'+params.c+'_mod_curve_res_pol_'+params.p+'_dk_'+params.d+'.png';
+				
+				});
+			
+            modpager.setparams({
+                    'd': '000',
+					'p':  'A',
+					'c': 'cut'
+                });
+            modpager.gridalign('#modpager', 4);
+        </script>
+    </figure>
+	<h3 id="">RPS Orientation Effect Scatter Plots</h3>
+	As mentioned in &sect;3.7, sims were run to investigate the DK-dependence on polarization angle estimates for given inputs of $\alpha$ and $\beta$. The pager below shows DK-vs-DK scatter plots similar to Figure 1.3. We can see that the configuration that most resembles the behavior of the real data is when $\alpha \sim -\beta$. Note: Not all combinations work.
+	
+    <figure>
+	<!--
+	<figcaption>
+        	Caption
+    </figcaption>
+	
+	-->
+	<img alt="" id="ort2" src="#ort2" onerror="this.src='plot_blank.png';" width=35% />
+
+        <script type="text/javascript">
+
+			var ort2pager = new Pager("ort2");
+			ort2pager.link("#ort2",
+                {
+                    '\u03B1|a': ['-10','-5','0|00','5|05','10'],
+					'\u03B2|b': ['-10','-5','0|00','5|05','10'],
+					'pol|p' : ['A|a','B|b']
+                },
+                function(params) {
+				    return 'figs3/rps_orientation_a_'+params.a+'_b_'+params.b+'_offs_00_pol_'+params.p+'.png';
+				});
+			
+            ort2pager.setparams({
+                    'a':'-5',
+					'b':'05',
+					'p':'a'
+					
+                });
+            
+        </script>
+    </figure>
+
+
+	
+	
+	</section>
+
+<!--
+<dl class="postinglist">
+    <a class="posting" href="#">
+        <dt>[20140101_title]</dt>
+        <dd>Posting title (JAC)</dd>
+    </a>
+</dl>
+-->
+
+	
+	
+	<script type="text/javascript">
+	// This my way of making shorthand links.
+	// We'll make a couple arrays with the 'tag' and href information
+	// and then look through each anchor element for the specified tag.
+	// The anchors should then just look like: <a href="tagname"></a>
+	// and the script will automatically fill in the hyperlings and text.
+	var tags = [
+	"20070318KWY",
+	"20120510CAB",
+	"20121205CAB",
+	"20121212CLW",
+	"20140203CAB",
+	"20160907JBW",
+	"20180717JAC",
+	"20190331HH",
+	"20190409JAC"
+	];
+	
+	var hrefs = [
+	"../../../../general_projects/rps/pointing_article.pdf",
+	"../../../../keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+	"../../../../keck/analysis_logbook/analysis/20121205_rps_orientation/",
+	"../20121212_rps_corrected",
+	"../../../../keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
+	"../20160907_polrot/",
+	"../20180717_rps_sims/",
+	"../20190331_B2016_final_99/",
+	"../2019mmdd_moon_analysis_2017/"
+	];
+	
+	var desc = [
+	"BICEP Pointing Supplement",
+	"Pointing Model for Keck Beam Maps",
+	"RPS Orientation Effects",
+	"RPS: Polarization angle offsets after correction",
+	"Spherical coordinates for beam maps",
+	"Birefringence/Polarization rotation in K2015 and BK15",
+	"Simulations of RPS Data",
+	"B2016/2018 Final Pager with 99 Realizations",
+	"Jan 2017 Moon Analysis for RPS"
+	];
+	
+	
+	var post = document.getElementById("postings");
+	var msg = "<ul>";
+	for (var tag in tags){
+	msg = msg + "<li><a href="+hrefs[tag]+">"+tags[tag]+"</a> - "+desc[tag]+"</li>";
+	};
+	msg = msg+ "</ul>";
+	post.innerHTML = msg;
+
+	var links = document.getElementsByTagName("A");
+	for (var link in links){
+		for (var tag in tags){
+			if (links[link].href.endsWith(tags[tag])){
+				links[link].text = tags[tag];
+				links[link].href = hrefs[tag];
+				links[link].target = "_blank";
+			}
+		}
+	}
+	
+	</script>
+
+
+
+</body>

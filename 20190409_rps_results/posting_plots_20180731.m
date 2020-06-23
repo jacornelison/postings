@@ -1,0 +1,2460 @@
+function [ fd ] = rps_analysis_plots(dirname,figdir, rerun, nocut)
+
+if ~exist('dirname','var')
+    dirname = 'rps_data/2019_mirror/';
+    figdir = 'postings/20180731_rps_something/';
+end
+if ~exist('rerun','var')
+    rerun = false;
+end
+if ~exist('nocut','var')
+    nocut = false;
+end
+
+load([dirname 'b3rpsfiles'])
+if strcmp(dirname(15:end-1),'original')
+    figfold = 'figs1/';
+elseif strcmp(dirname(15:end-1),'lockin')
+    figfold = 'figs2/';
+elseif strcmp(dirname(15:end-1),'mirror')
+    figfold = 'figs3/';
+else
+    figfold = 'figs/';
+end
+
+
+%load('man_cuts')
+%good_chans = find(man_cuts);
+
+
+%p = get_array_info(20180131,'ideal','ideal','ideal','ideal');
+prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
+pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
+
+if rerun
+    fd = [];
+    fd.bparam = [];
+    fd.berr = [];
+    fd.aparam = [];
+    fd.aerr = [];
+    fd.amodel = [];
+    fd.ch = [];
+    fd.sch = [];
+    fd.row = [];
+    fd.stat = [];
+    fd.dk = [];
+    fd.gof = [];
+    fd.rot = [];
+    fd.data_rms = [];
+    fd.inda = [];
+    fd.phi_s = [];
+    fd.phi_d = [];
+    fd.bchi2 = [];
+    
+    % Manually cut tiles so far:
+    % [1 2 3 4 8 13 11]
+    %rot = -180:30:180;
+    for i = 1:length(sch)
+        schname = sch{i}.name(end-15:end-4);
+        for j = 1:sch{i}.nrows
+            rpsparam_file = [dirname, 'params/param_', schname, sprintf('_%02i.mat', j)];
+            try
+                load(rpsparam_file)
+                if ~isempty(i_param) & ~isfield(i_param{1},'map_param')
+                    for k = 1:length(i_param)
+                        if any(p_ind.rgl100==i_param{k}.ch)
+                            %                     if any(good_chans==i_param{k}.ch)...
+                            %                             & any( [1:20] == p.tile(i_param{k}.ch))...
+                            %                             & ~isnan(i_param{k}.aparam(5))...
+                            %                             & i_param{k}.agof < 1e7...
+                            %                             & i_param{k}.data_rms <30%...
+                            %                             %& any(p_ind.rgl100==i_param{k}.ch))
+                            
+                            fd.rot = [fd.rot; i_param{k}.rot];
+                            fd.bparam = [fd.bparam; i_param{k}.bparam];
+                            fd.berr = [fd.berr; i_param{k}.berr];
+                            fd.aparam = [fd.aparam; i_param{k}.aparam];
+                            fd.aerr = [fd.aerr; i_param{k}.aerr];
+                            fd.amodel = [fd.amodel; rps_get_mod_model(...
+                                i_param{k}.aparam, i_param{k}.rot)];
+                            fd.ch = [fd.ch; i_param{k}.ch];
+                            fd.sch = [fd.sch; i];
+                            fd.row = [fd.row; j];
+                            fd.stat = [fd.stat; i_param{k}.astat];
+                            fd.dk = [fd.dk; i_param{k}.dk];
+                            fd.gof = [fd.gof; i_param{k}.agof];
+                            fd.phi_s = [fd.phi_s; i_param{k}.phi_s];
+                            fd.phi_d = [fd.phi_d; i_param{k}.phi_d];
+                            fd.bchi2 = [fd.bchi2; i_param{k}.bchi2];
+                            %fd.gof = [fd.gof; sum(((fd.bparam(end,6:end)-fd.amodel(end,:))/i_param{k}.var).^2)];
+                            
+                            fd.data_rms = [fd.data_rms; i_param{k}.data_rms];
+                            %disp(['Loaded:', rpsparam_file])
+                            if strcmp(p.pol(i_param{k}.ch),'A')
+                                if p.mce(i_param{k}.ch) ~= 0
+                                    fd.inda = [fd.inda; 1];
+                                else
+                                    fd.inda = [fd.inda; 0];
+                                end
+                            else
+                                if p.mce(i_param{k}.ch) ~= 0
+                                    fd.inda = [fd.inda; 0];
+                                else
+                                    fd.inda = [fd.inda; 1];
+                                end
+                            end
+                        end
+                    end
+                end
+            catch exception
+                disp(exception.message)
+                disp(['Skipping: ', rpsparam_file])
+                continue
+            end
+        end
+    end
+    
+    fd.norm_ang = atand(tand(fd.aparam(:,1)));
+    m = repmat(max(fd.bparam(:,6:end)'),[13,1])';
+    fd.res_var = var(fd.bparam(:,6:end)-fd.amodel(:,:),0,2);
+    fd.res_perc = (fd.bparam(:,6:end)-fd.amodel(:,:))./m;
+    
+    if overwrite
+        save([dirname 'fitdata'], 'fd')
+    end
+else
+    load([dirname 'fitdata'])
+end
+
+
+% Cut out cross-talk channels.
+dk = unique(fd.dk);
+ind = find(fd.dk==dk(1));
+modnormed = (fd.bparam(ind,6:end)./m(ind,:));
+amodnormed = (fd.amodel(ind,:)./m(ind,:));
+
+
+ind2 = ismember(fd.ch(ind),p_ind.rgl100a(p.mce(p_ind.rgl100a)~=0)) | ismember(fd.ch(ind),p_ind.rgl100b(p.mce(p_ind.rgl100b)==0));
+ind2 = ind2 & modnormed(:,1)>-0.1 & modnormed(:,1)<0.2 ...
+    & modnormed(:,4)>0.8 & modnormed(:,4)<1.2 ...
+    & amodnormed(:,1)>-0.1 & amodnormed(:,1)<0.2;
+cutchans_a = fd.ch(ind(ind2));
+
+
+ind2 = ismember(fd.ch(ind),p_ind.rgl100a(p.mce(p_ind.rgl100a)==0)) | ismember(fd.ch(ind),p_ind.rgl100b(p.mce(p_ind.rgl100b)~=0));
+ind2 = ind2 & modnormed(:,1)>0.9 & modnormed(:,1)<1.2 ...
+    & amodnormed(:,1)>0.9 & modnormed(:,1)<1.2;
+cutchans_b = fd.ch(ind(ind2));
+
+fd.cutchans_a = cutchans_a;
+fd.cutchans_b = cutchans_b;
+save([dirname 'fitdata'], 'fd')
+
+
+%% If we're using our own matlab, do the above in holybicep01, save, then load here.
+% cd 'Z:\b3pipe'
+% addpath('./b3_analysis/beammap');
+% load('b3rpsfiles.mat')
+% load('fit_data')
+% load('rpssim_723_it1000_2')
+% prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
+% pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% If we haven't rerun fits lately, start here.
+
+dirname = 'rps_data/2018_lockin/';
+load([dirname 'b3rpsfiles'])
+
+if strcmp(dirname(15:end-1),'original')
+    figfold = 'figs1/';
+elseif strcmp(dirname(15:end-1),'lockin')
+    figfold = 'figs2/';
+elseif strcmp(dirname(15:end-1),'mirror')
+    figfold = 'figs3/';
+end
+
+load([dirname 'fitdata'])
+
+cutchans_a = fd.cutchans_a;
+cutchans_b = fd.cutchans_b;
+
+%%%%%%%%%%%%%%%%%%%%%
+%% Fig 1.1 Plot  all Mod Curves
+
+load([dirname 'fitdata'])
+fig = figure(1);
+clf(fig)
+set(fig, 'Position', [0 -400 1050 900]);
+set(fig,'PaperPosition',[0 0 6.3 5.4])
+dk = unique(fd.dk);
+m = repmat(fd.aparam(:,5)*2,[1,13]);
+for j=1:2
+    for k=1:length(dk)
+        clf(fig)
+        pname = [figdir figfold 'uncut_mod_curve_res_pol'];
+        if j==1
+            tname = sprintf('Modulation curve from 2D Gauss fit, DK %0.2f, Pol A',dk(k));
+            pname = [pname sprintf('_A_dk_%03i',floor(dk(k)-1.25))];
+            ind = find(fd.dk==dk(k) & fd.inda);
+        else
+            tname = sprintf('Modulation curve from 2D GZauss fit, DK %0.2f, Pol B',dk(k));
+            pname = [pname sprintf('_B_dk_%03i',floor(dk(k)-1.25))];
+            ind = find(fd.dk==dk(k) & ~fd.inda);
+        end
+        hold off
+        
+        modnormed = (fd.bparam(ind,6:end)./m(ind,:));
+        subplot(411)
+        plot(repmat(fd.rot(1,:),size(fd.bparam(ind,1)))',(fd.bparam(ind,6:end)./m(ind,:))')
+        title(tname)
+        ylabel('Amp (peak-norm)')
+        ylim([-0.1 1.2])
+        grid on
+        
+        subplot(412)
+        plot(repmat(fd.rot(1,:),size(fd.bparam(ind,1)))',(fd.amodel(ind,:)./m(ind,:))')
+        ylabel('Amp (peak-norm wrt data)')
+        title('Fit to modulation curve')
+        ylim([-0.1 1.2])
+        grid on
+        
+        subplot(413)
+        plot(repmat(fd.rot(1,:),size(fd.bparam(ind,1)))',fd.res_perc(ind,:)')
+        ylabel('Amp (peak-norm wrt data)')
+        title('Estimated Residuals')
+        ylim([-0.1 0.1])
+        grid on
+        %xlabel('Source polarization')
+        
+        % Variant of above. Instead plot mean, errorbars for residuals
+        subplot(414)
+        errorbar(fd.rot(1,:),nanmean(fd.res_perc(ind,:)),nanstd(fd.res_perc(ind,:)),'k')
+        ylabel('Amp (peak-norm wrt data)')
+        title('Mean/Std of Estimated Residuals')
+        ylim([-0.1 0.1])
+        grid on
+        xlabel('Source polarization')
+        
+        print('-dpng', pname)
+    end
+end
+
+%%%%%%%%%%%%%%%%%%%%%
+%% Fig 1.1b Plot cut Mod Curves
+% Threshold is currently by eye.
+
+% It looks like MCE0 pol A and B don't match the polaraizations of the
+% other pol A and B's of other MCE's, Just swap them for now.
+
+% Cut out obvious bad fits.
+% If any of these are true, mark bad.
+if ~nocut
+    cut_ind = ...
+        abs(prx(fd.ch)-fd.bparam(:,1))>1 |...
+        abs(pry(fd.ch)-fd.bparam(:,2))>1 |...
+        (abs(atand(tand(fd.phi_d))) > 10 & fd.inda == 1)|... % No pol a's should be 90 degrees.
+        (abs(atand(tand(fd.phi_d-90))) > 10 & fd.inda~=1)|... % No pol b's should be 0 degrees.
+        abs(fd.aparam(:,2)) > 0.05 |...
+        any(abs(fd.res_perc>0.1),2);
+    
+    fd = structcut(fd,~cut_ind);
+end
+
+cutchans_a = unique(fd.ch(fd.inda==1));
+cutchans_b = unique(fd.ch(fd.inda~=1));
+
+
+fig = figure(1);
+clf(fig)
+set(fig, 'Position', [0 -400 1050 900]);
+set(fig,'PaperPosition',[0 0 6.3 5.4])
+dk = unique(fd.dk);
+m = repmat(fd.aparam(:,5)*2,[1,13]);
+for j=1:2
+    for k=1:length(dk)
+        clf(fig)
+        pname = [figdir figfold 'cut_mod_curve_res_pol'];
+        if j==1
+            tname = sprintf('Modulation curve from 2D Gauss fit, DK %0.2f, Pol A',dk(k));
+            pname = [pname sprintf('_A_dk_%03i',floor(dk(k)-1.25))];
+            ind = find(fd.dk==dk(k) & fd.inda);
+        else
+            tname = sprintf('Modulation curve from 2D GZauss fit, DK %0.2f, Pol B',dk(k));
+            pname = [pname sprintf('_B_dk_%03i',floor(dk(k)-1.25))];
+            ind = find(fd.dk==dk(k) & ~fd.inda);
+        end
+        hold off
+        
+        modnormed = (fd.bparam(ind,6:end)./m(ind,:));
+        subplot(411)
+        plot(repmat(fd.rot(1,:),size(fd.bparam(ind,1)))',(fd.bparam(ind,6:end)./m(ind,:))')
+        title(tname)
+        ylabel('Amp (peak-norm)')
+        ylim([-0.1 1.2])
+        grid on
+        
+        subplot(412)
+        plot(repmat(fd.rot(1,:),size(fd.bparam(ind,1)))',(fd.amodel(ind,:)./m(ind,:))')
+        ylabel('Amp (peak-norm wrt data)')
+        title('Fit to modulation curve')
+        ylim([-0.1 1.2])
+        grid on
+        
+        subplot(413)
+        plot(repmat(fd.rot(1,:),size(fd.bparam(ind,1)))',fd.res_perc(ind,:)')
+        ylabel('Amp (peak-norm wrt data)')
+        title('Estimated Residuals')
+        ylim([-0.1 0.1])
+        grid on
+        %xlabel('Source polarization')
+        
+        % Variant of above. Instead plot mean, errorbars for residuals
+        subplot(414)
+        errorbar(fd.rot(1,:),nanmean(fd.res_perc(ind,:)),nanstd(fd.res_perc(ind,:)),'k')
+        ylabel('Amp (peak-norm wrt data)')
+        title('Mean/Std of Estimated Residuals')
+        ylim([-0.1 0.1])
+        grid on
+        xlabel('Source polarization')
+        
+        print('-dpng', pname)
+    end
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%% Fig. 3.2b Plot Distribution of Real Residuals
+if 0
+    fig3 = figure(7);
+    set(fig3,'Position',[0 0 450 450])
+    
+    m1 = repmat(max(rpssim.bparam(:,6:end)'),[13,1])';
+    simres = (rpssim.bparam(:,6:end)-rpssim.amodel(:,:))./m1(:,:);
+    tind = find(var(fd.res_perc(ind,:),1,2)>= var(fd.res_perc(117,:)));
+    p_val = length(tind)/length(fd.res_perc(ind,1));
+    skewness
+    
+    ind = find(abs(fd.res_perc(:,2))*100<20);
+    hold off
+    edg = 0:5e-4/20:5e-4;
+    bar(edg,histc(var(fd.res_perc(ind,:),1,2),edg),'histc')
+    hold on
+    plot([1 1]*var(fd.res_perc(117,:)),[0, 25],'r')
+    grid on
+    text(3.1e-4,17,sprintf('p=%0.2f',p_val))
+    xlabel('Variance of Estimated Residuals')
+    ylabel('N')
+end
+%%%%%%%%%%%%%%%%%%%%%
+%% Fig 3.4c Histograms of pol parameters est. from data - Pol A
+% Changed basis of N1/N2 as well.
+if 0
+    m = repmat(max(fd.bparam(:,6:end)'),[13,1])';
+    dk = unique(fd.dk);
+    ang = fd.phi_d;
+    for j=1:2
+        for k=1:length(dk)
+            fig = figure(1);
+            set(fig, 'Position', [0 0 950 450]);
+            set(fig,'PaperPosition',[0 0 7.125 3.375])
+            
+            
+            pname = [figdir figfold 'pol_param_est_pol'];
+            if j==1
+                %tname = sprintf('Modulation curve from 2D Gauss fit Tile 11, DK %03i, Pol A',dk(k));
+                pname = [pname sprintf('_A_dk_%03i',floor(dk(k)-1.25))];
+                ind = find(fd.dk==dk(k) & fd.inda & ismember(fd.ch,cutchans_a));
+            else
+                %tname = sprintf(' Pol B',dk(k));
+                pname = [pname sprintf('_B_dk_%03i',floor(dk(k)-1.25))];
+                ind = find(fd.dk==dk(k) & ~fd.inda & ismember(fd.ch,cutchans_b));
+            end
+            hold off
+            
+            pnames = {'Phi (^o)','Xpol Lkg','N_1','N_2 (^o)','A_0 (ADU)'};
+            pnaught = {'Psi_0','Xpol_0','N_{1,0}','N_{2,0}','A_{0,0}'};
+            nbins = 10;
+            
+            
+            
+            
+            fd.res = (fd.bparam(:,6:end)-fd.amodel(:,:));
+            fd.res_var = var(fd.res,1,2);
+            for i = 1:length(fd.aparam(1,:))
+                subplot(2,3,i)
+                
+                if i == 1
+                    if j==1
+                        prm = atand(tand(ang(ind)));
+                    else
+                        prm = atand(tand(ang(ind)-90))+90;
+                    end
+                    m = mean(prm);
+                    [wm, wv, neff] = wmean(prm,1./fd.res_var(ind));
+                    s = std(prm);
+                    
+                else
+                    prm = fd.aparam(ind,i);
+                    m = mean(prm);
+                    [wm, wv, neff] = wmean(prm,1./fd.res_var(ind));
+                    s = std(fd.aparam(ind,i));
+                    
+                end
+                [N, X] = hist(prm,nbins);
+                hist(prm,nbins)
+                hold on
+                
+                %plot([1 1]*m,[0 max(N)*1.2],'r')
+                plot([1 1]*wm,[0 max(N)*1.2],'r')
+                xlabel(pnames{i})
+                ylabel('N')
+                title(sprintf('Mu: %0.4f | RMS: %0.4f',wm,sqrt(wv)))
+                grid on
+                %ylim([0 20])
+                hold off
+            end
+            saveas(fig,pname,'png')
+        end
+    end
+end
+
+%%%%%%%%%%%%%%%%%%%%%
+%% Fig 3.4d Histograms of pol parameters est. from data - Pol B
+% Changed basis of N1/N2 as well.
+if 0
+    fig3 = figure(13);
+    set(fig3,'Position',[250 0 950 450])
+    
+    hold off
+    simparams = [-89.1466 0.0045 -0.0092558 -0.0047829 668.6468];
+    pnames = {'Psi (^o)','Xpol Lkg','N_1','N_2 (^o)','A_0 (ADU)'};
+    pnaught = {'Psi_0','Xpol_0','N_{1,0}','N_{2,0}','A_{0,0}'};
+    nbins = 10;
+    txm = [-90.4 0.0075 0.03 0.005 685];
+    tym = [110 90 110 110 140];
+    tys = [90 70 90 90 120];
+    dk = unique(fd.dk);
+    ind = (fd.dk==dk(2) & ~fd.inda);
+    
+    % Get rid of channels without pairs across rastersets
+    % Get rid of channels without pairs across rastersets
+    pairchans = zeros(size(fd.ch));
+    ch = unique(fd.ch(ind));
+    for i=1:length(ch)
+        if length(find(ind & fd.ch==ch(i))) == 2
+            pairchans = (pairchans | (ind & fd.ch==ch(i)));
+        end
+    end
+    ind = find(ind);
+    
+    a = atand(tand(fd.aparam(ind,1)));
+    fd.aparam(ind,1) = a;
+    fd.res = (fd.bparam(:,6:end)-fd.amodel(:,:));
+    fd.res_var = var(fd.res,1,2);
+    for i = 1:length(fd.aparam(1,:))
+        m = mean(fd.aparam(ind,i));
+        s = std(fd.aparam(ind,i));
+        [wm, wv, neff] = wmean(fd.aparam(ind,i),fd.res_var(ind));
+        
+        subplot(2,3,i)
+        [N, X] = hist(fd.aparam(ind,i),nbins);
+        hist(fd.aparam(ind,i),nbins)
+        hold on
+        %plot([1 1]*m,[0 max(N)*1.2],'r')
+        plot([1 1]*wm,[0 max(N)*1.2],'r')
+        xlabel(pnames{i})
+        ylabel('N')
+        title(sprintf('Mu: %0.4f | RMS: %0.4f',wm,sqrt(wv)))
+        grid on
+        ylim([0 20])
+        hold off
+    end
+    
+end
+
+%% plotting xpol eff
+
+
+fig = figure(1)
+clf(fig)
+set(fig,'Position',[100 100 950 450])
+set(fig,'PaperPosition',[-2 2.5 [12.6 6]*0.5])
+hold off
+
+dk = unique(fd.dk);
+%clrs = distinguishable_colors(length(dk),'w');
+clrs = [0 0 0;1 0 0; 0 1 0; 0 0 1];
+pname = [figdir figfold 'xpol_eff_per_channel_alltile_alldk'];
+
+for k = 1:20
+    for i = 1:2
+        subplot(2,1,i)
+        for j = 1:length(dk)
+            if i == 1
+                chind = find(fd.dk==dk(j)& ismember(fd.ch,cutchans_a));
+            else
+                chind = find(fd.dk==dk(j)& ismember(fd.ch,cutchans_b));
+            end
+            [a, a_err, ch,a_var] = deal(repmat(NaN,2640,1));
+            ch(fd.ch(chind)) = fd.ch(chind);
+            a(fd.ch(chind)) = fd.aparam(chind,2);
+            a_err(fd.ch(chind)) = fd.aerr(chind,2);
+            %errorbar(ch,a,a_err,'.','Color',clrs(j,:))
+            %plot(fd.ch(chind),atand(tand(ang(chind))),'.','Color',clrs(j,:))
+            
+            %nind = ~isnan(ch);
+            plot(ch,a,'.','Color',clrs(j,:))%,'MarkerSize',4)
+            hold on
+        end
+        for imce = 0:3
+            plot(min(find(p.mce==imce))*[1 1],[-1 1],'k')
+        end
+        for imce = 1:20
+            plot(min(find(p.tile==imce))*[1 1],[-1 1],'k--')
+        end
+        
+        
+        if i == 1
+            ylim([-1 1]*0.05)
+            title('Pol A xpol eff')
+        else
+            ylim([-1 1]*0.05)
+            title('Pol B xpol eff')
+        end
+        xlim([-10 2650])
+        legend('dk0','dk45','dk90','dk135','Location','northeastoutside')
+        legend()
+        grid on
+        ylabel('xpol eff (^o)')
+        xlabel('Channel')
+    end
+end
+
+print('-dpng', pname)
+
+%%%%%%%%%%%%%%%
+%% plotting pol angles
+
+
+fig = figure(1)
+clf(fig)
+set(fig,'Position',[100 100 950 450])
+set(fig,'PaperPosition',[-2 2.5 [12.6 6]*0.5])
+hold off
+
+ang = fd.phi_s+fd.aparam(:,1);
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+dk = unique(fd.dk);
+%clrs = distinguishable_colors(length(dk),'w');
+clrs = [0 0 0;1 0 0; 0 1 0; 0 0 1];
+pname = [figdir figfold 'phi_per_channel_alltile_alldk'];
+
+for i = 1:2
+    subplot(2,1,i)
+    for j = 1:length(dk)
+        if i == 1
+            chind = find(fd.dk==dk(j)& ismember(fd.ch,cutchans_a));
+        else
+            chind = find(fd.dk==dk(j)& ismember(fd.ch,cutchans_b));
+        end
+        [a, a_err, ch,a_var] = deal(repmat(NaN,2640,1));
+        ch(fd.ch(chind)) = fd.ch(chind);
+        a(fd.ch(chind)) = atand(tand(ang(chind)));
+        a_err(fd.ch(chind)) = fd.aerr(chind,1);
+        %errorbar(ch,a,a_err,'.','Color',clrs(j,:))
+        %plot(fd.ch(chind),atand(tand(ang(chind))),'.','Color',clrs(j,:))
+        
+        %nind = ~isnan(ch);
+        plot(ch,a,'.','Color',clrs(j,:))%,'MarkerSize',3)
+        hold on
+    end
+    for imce = 0:3
+        plot(min(find(p.mce==imce))*[1 1],[-360 360],'k')
+    end
+    for imce = 1:20
+        plot(min(find(p.tile==imce))*[1 1],[-360 360],'k--')
+    end
+    
+    if i == 1
+        ylim([-6 0])
+        title('Pol A phi-angle')
+    else
+        ylim(90+[-6 0])
+        title('Pol B phi-angle')
+    end
+    xlim([-10 2650])
+    legend('dk0','dk45','dk90','dk135','Location','northeastoutside')
+    legend()
+    grid on
+    ylabel('Phi (^o)')
+    xlabel('Channel')
+end
+
+print('-dpng', pname)
+
+%% Plot tiles of phi
+
+
+fig = figure(1)
+clf(fig)
+set(fig, 'Position',[500 -100 700 700])
+set(fig,'PaperPosition',[0 0 [1 1]*5])
+ang = fd.phi_d;
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+sched = unique(fd.sch);
+dk = unique(fd.dk);
+
+for j = 1:length(dk)
+    [a, a_err, ch,a_var] = deal(repmat(NaN,2640,1));
+    pname = [figdir figfold 'tileplot'];
+    pname = [pname sprintf('_dk_%03i_phi_res',floor(dk(j)-1.25))];
+    for i = 1:2
+        if i == 1
+            chind = find(fd.dk==dk(j)& fd.inda);
+            a(fd.ch(chind)) = atand(tand(ang_0(chind)-ang(chind)));
+        else
+            chind = find(fd.dk==dk(j)& ~fd.inda);
+            a(fd.ch(chind)) = atand(tand(ang_0(chind)-ang(chind)));
+        end
+        
+        ch(fd.ch(chind)) = fd.ch(chind);
+        
+        a_err(fd.ch(chind)) = fd.aerr(chind,1);
+    end
+    
+    ind2 = ismember(ch,cutchans_a) + ismember(ch,cutchans_b);
+    a(~ind2) = NaN;
+    hold on
+    plot_tiles(a,p,'clim',[-4 4],'fig',fig)
+    saveas(fig,pname,'png')
+end
+
+%% plot tiles of xpol eff
+
+
+fig = figure(1)
+clf(fig)
+set(fig, 'Position',[500 -100 700 700])
+set(fig,'PaperPosition',[0 0 [1 1]*5])
+ang = fd.phi_d;
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+sched = unique(fd.sch);
+dk = unique(fd.dk);
+
+for j = 1:length(dk)
+    [a, a_err, ch,a_var] = deal(repmat(NaN,2640,1));
+    pname = [figdir figfold 'tileplot'];
+    pname = [pname sprintf('_dk_%03i_xpol_res',floor(dk(j)-1.25))];
+    for i = 1:2
+        if i == 1
+            chind = find(fd.dk==dk(j)& fd.inda);
+            a(fd.ch(chind)) = fd.aparam(chind,2);
+        else
+            chind = find(fd.dk==dk(j)& ~fd.inda);
+            a(fd.ch(chind)) = fd.aparam(chind,2);
+        end
+        
+        ch(fd.ch(chind)) = fd.ch(chind);
+        
+        a_err(fd.ch(chind)) = fd.aerr(chind,1);
+    end
+    
+    ind2 = ismember(ch,cutchans_a) + ismember(ch,cutchans_b);
+    a(~ind2) = NaN;
+    hold on
+    plot_tiles(a,p,'clim',[-0.02 0.02],'fig',fig)
+    saveas(fig,pname,'png')
+end
+
+
+%% Plot tiles of Beam center residuals
+
+fig = figure(1)
+clf(fig)
+set(fig, 'Position',[500 -100 700 700])
+set(fig,'PaperPosition',[0 0 [1 1]*5])
+dk = unique(fd.dk);
+for j = 1:length(dk)
+    
+    
+    for i = 1:2
+        [a, a_err, ch,a_var] = deal(repmat(NaN,2640,1));
+        pname = [figdir figfold 'tileplot'];
+        if i == 1
+            chind = find(fd.dk==dk(j));
+            ch(fd.ch(chind)) = fd.ch(chind);
+            a(fd.ch(chind)) = prx(fd.ch(chind))-fd.bparam(chind,1);
+            pname = [pname sprintf('_dk_%03i_x_res',floor(dk(j)-1.25))];
+            
+        else
+            chind = find(fd.dk==dk(j));
+            ch(fd.ch(chind)) = fd.ch(chind);
+            a(fd.ch(chind)) = pry(fd.ch(chind))-fd.bparam(chind,2);
+            pname = [pname sprintf('_dk_%03i_y_res',floor(dk(j)-1.25))];
+        end
+        ind2 = ismember(ch,cutchans_a) + ismember(ch,cutchans_b);
+        a(~ind2) = NaN;
+        plot_tiles(a,p,'clim',[-1,1],'fig',fig)
+        saveas(fig,pname,'png')
+    end
+end
+
+
+%% Quiver of beam-center residuals
+
+
+fig = figure(1)
+clf(fig)
+set(fig, 'Position',[500 -100 700 700])
+set(fig,'PaperPosition',[0 0 [1 1]*5])
+
+fig2 = figure(2)
+clf(fig2)
+set(fig2, 'Position',[500 -100 700 700])
+set(fig2,'PaperPosition',[0 0 [1 1]*5])
+
+dk = unique(fd.dk);
+qscale=1;
+clr = {[0,0,0],[0,0,0],[0,0,0],[0,0,0]};
+clr2 = {[0,0,1],[0,0.7,0],[0.7,0,0],[0,0,0]};
+
+for j = 1:length(dk)
+    figure(1)
+    hold off
+    [ax,ay, a_err, ch,a_var] = deal(repmat(NaN,2640,1));
+    pname = [figdir figfold 'quiverplot_'];
+    pname = [pname sprintf('%03i',floor(dk(j)-1))]
+    pname2 = [figdir figfold 'quiverplot_all'];
+    
+    chind = find(fd.dk==dk(j));
+    ch(fd.ch(chind)) = fd.ch(chind);
+    ax(fd.ch(chind)) = prx(fd.ch(chind))-fd.bparam(chind,1);
+    ay(fd.ch(chind)) = pry(fd.ch(chind))-fd.bparam(chind,2);
+    
+    ind2 = ismember(ch,cutchans_a) + ismember(ch,cutchans_b);
+    a(~ind2) = NaN;
+    
+    quiver(prx(fd.ch(chind)),pry(fd.ch(chind)),ax(fd.ch(chind))*qscale,ay(fd.ch(chind))*qscale,0,'Color',clr{j})
+    xlabel('x (^o)')
+    ylabel('y (^o)')
+    xlim([-15 15])
+    ylim([-15 15])
+    grid on
+    axis square
+    saveas(fig,pname,'png')
+    
+    figure(2)
+    hold on
+    quiver(prx(fd.ch(chind)),pry(fd.ch(chind)),ax(fd.ch(chind))*qscale,ay(fd.ch(chind))*qscale,0,'Color',clr2{j})
+    xlabel('x (^o)')
+    ylabel('y (^o)')
+    xlim([-15 15])
+    ylim([-15 15])
+    grid on
+    axis square
+    
+end
+
+legend('dk0','dk45','dk90','dk135','Location','northeast')
+grid on
+axis square
+saveas(fig2,pname2,'png')
+
+%% Look at phi calculations
+
+%% Plot tiles of phi_s
+
+close 1
+fig = figure(1)
+set(fig, 'Position',[500 -100 700 700])
+set(fig,'PaperPosition',[0 0 [1 1]*5])
+ang = fd.phi_s+fd.dk-90;
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+sched = unique(fd.sch);
+dk = unique(fd.dk);
+
+for j = 1:length(dk)
+    [a, a_err, ch,a_var] = deal(repmat(NaN,2640,1));
+    pname = [figdir figfold 'tileplot'];
+    pname = [pname sprintf('_dk_%03i_phis_res',floor(dk(j)-1.25))];
+    for i = 1:2
+        if i == 1
+            chind = find(fd.dk==dk(j)& fd.inda);
+            a(fd.ch(chind)) = atand(tand(ang(chind)));
+        else
+            chind = find(fd.dk==dk(j)& ~fd.inda);
+            a(fd.ch(chind)) = atand(tand(ang(chind)));
+        end
+        
+        ch(fd.ch(chind)) = fd.ch(chind);
+        
+        a_err(fd.ch(chind)) = fd.aerr(chind,1);
+    end
+    
+    ind2 = ismember(ch,cutchans_a) + ismember(ch,cutchans_b);
+    a(~ind2) = NaN;
+    hold on
+    plot_tiles(a,p,'clim',[-1 1],'fig',fig)
+    saveas(fig,pname,'png')
+end
+
+%%
+%% Plot tiles of psi
+
+close 1
+fig = figure(1)
+set(fig, 'Position',[500 -100 700 700])
+set(fig,'PaperPosition',[0 0 [1 1]*5])
+ang = fd.aparam(:,1)-fd.dk-90;
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+sched = unique(fd.sch);
+dk = unique(fd.dk);
+
+for j = 1:length(dk)
+    [a, a_err, ch,a_var] = deal(repmat(NaN,2640,1));
+    pname = [figdir figfold 'tileplot'];
+    pname = [pname sprintf('_dk_%03i_psi_res',floor(dk(j)-1.25))];
+    for i = 1:2
+        if i == 1
+            chind = find(fd.dk==dk(j)& fd.inda);
+            a(fd.ch(chind)) = atand(tand(ang(chind)));
+        else
+            chind = find(fd.dk==dk(j)& ~fd.inda);
+            a(fd.ch(chind)) = atand(tand(ang(chind)+90));
+        end
+        
+        ch(fd.ch(chind)) = fd.ch(chind);
+        
+        a_err(fd.ch(chind)) = fd.aerr(chind,1);
+    end
+    
+    ind2 = ismember(ch,cutchans_a) + ismember(ch,cutchans_b);
+    a(~ind2) = NaN;
+    hold on
+    plot_tiles(a,p,'clim',[-3.5 -1.5],'fig',fig)
+    saveas(fig,pname,'png')
+end
+
+
+%% Check for correlations in xpol and phi
+
+
+%% Xpol eff
+
+close 1
+fig = figure(1)
+set(fig,'Position',[500 0 [200 300]*1.7])
+pname = [figdir figfold 'deck_for_deck_consistency_xpol'];
+hold on
+dk = unique(mparam.dk);
+
+% Grab xpol from each dk
+[a, ch] = deal(repmat(NaN,2640,4));
+I = eye(4);
+for j = 1:length(dk)
+    chind = find(fd.dk==dk(j));
+    ch(fd.ch(chind),j) = fd.ch(chind);
+    a(fd.ch(chind),j) = fd.aparam(chind,2);
+end
+
+for i = 1:2
+    if i == 1
+        ind = ismember(ch(:,1),cutchans_a)& ~any(isnan(a),2);
+        clr = [0,0,0.7];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_xpol_a'];
+    else
+        ind = ismember(ch(:,1),cutchans_b)& ~any(isnan(a),2);
+        clr = [0.7,0,0];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_xpol_b'];
+    end
+    clf(fig)
+    subplot(3,2,1)
+    plot(a(ind,1),a(ind,2),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,1),a(ind,2),1);
+    plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(2)))
+    xlabel('Xpol eff')
+    ylabel('Xpol eff')
+    ylim([-0.05 0.05])
+    xlim([-0.05 0.05])
+    axis square
+    grid on
+    I(1,2) = c(1);
+    
+    subplot(3,2,2)
+    plot(a(ind,1),a(ind,3),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,1),a(ind,3),1);
+    plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(3)))
+    xlabel('Xpol eff')
+    ylabel('Xpol eff')
+    ylim([-0.05 0.05])
+    xlim([-0.05 0.05])
+    axis square
+    grid on
+    I(1,3) = c(1);
+    
+    subplot(3,2,3)
+    plot(a(ind,1),a(ind,4),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,1),a(ind,4),1);
+    plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(4)))
+    xlabel('Xpol eff')
+    ylabel('Xpol eff')
+    ylim([-0.05 0.05])
+    xlim([-0.05 0.05])
+    axis square
+    grid on
+    I(1,4) = c(1);
+    
+    subplot(3,2,4)
+    plot(a(ind,2),a(ind,3),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,2),a(ind,3),1);
+    plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(3)))
+    xlabel('Xpol eff')
+    ylabel('Xpol eff')
+    ylim([-0.05 0.05])
+    xlim([-0.05 0.05])
+    axis square
+    grid on
+    I(2,3) = c(1);
+    
+    subplot(3,2,5)
+    plot(a(ind,2),a(ind,4),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,2),a(ind,4),1);
+    plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(4)))
+    xlabel('Xpol eff')
+    ylabel('Xpol eff')
+    ylim([-0.05 0.05])
+    xlim([-0.05 0.05])
+    axis square
+    grid on
+    I(2,4) = c(1);
+    
+    subplot(3,2,6)
+    plot(a(ind,3),a(ind,4),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,3),a(ind,4),1);
+    plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    plot([-10 10],[-10 10],'k--','LineWidth',1)
+    xlabel('Xpol eff')
+    ylabel('Xpol eff')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(3),dk(4)))
+    ylim([-0.05 0.05])
+    xlim([-0.05 0.05])
+    axis square
+    grid on
+    I(3,4) = c(1);
+    
+    
+    saveas(fig,pname,'png')
+    
+end
+
+saveas(fig,pname,'png')
+
+%% Source Phi
+
+close 1
+fig = figure(1)
+set(fig,'Position',[500 0 [200 300]*1.7])
+%pname = [figdir figfold 'deck_for_deck_consistency_phi_a'];
+hold on
+dk = unique(mparam.dk);
+ang = fd.phi_s;
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+% Grab phi from each dk
+[a, ch] = deal(repmat(NaN,2640,4));
+
+for j = 1:length(dk)
+    chind = find(fd.dk==dk(j));
+    ch(fd.ch(chind),j) = fd.ch(chind);
+    a(fd.ch(chind),j) = ang(chind);%atand(tand(ang_0(chind)-ang(chind)));
+end
+
+for i = 1:2
+    if i == 1
+        ind = ismember(ch(:,1),cutchans_a) & ~any(isnan(a),2);% & any(abs(a)<4,2);
+        clr = [0,0,0.7];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_phi_s_a'];
+    else
+        ind = ismember(ch(:,1),cutchans_b) & ~any(isnan(a),2);% & any(abs(a)<4,2);
+        clr = [0.7,0,0];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_phi_s_b'];
+    end
+    clf(fig)
+    subplot(3,2,1)
+    plot(a(ind,1),a(ind,2),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,1),a(ind,2),1);
+    %plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    %plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(2)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    %ylim([-4 4])
+    %xlim([-4 4])
+    axis square
+    grid on
+    
+    subplot(3,2,2)
+    plot(a(ind,1),a(ind,3),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,1),a(ind,3),1);
+    %plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    %plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(3)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    %ylim([-4 4])
+    %xlim([-4 4])
+    axis square
+    grid on
+    
+    subplot(3,2,3)
+    plot(a(ind,1),a(ind,4),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,1),a(ind,4),1);
+    %plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    %plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    %ylim([-4 4])
+    %xlim([-4 4])
+    axis square
+    grid on
+    
+    subplot(3,2,4)
+    plot(a(ind,2),a(ind,3),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,2),a(ind,3),1);
+    %plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    %plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(3)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    %ylim([-4 4])
+    %xlim([-4 4])
+    axis square
+    grid on
+    
+    subplot(3,2,5)
+    plot(a(ind,2),a(ind,4),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,2),a(ind,4),1);
+    %plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    %plot([-10 10],[-10 10],'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    %ylim([-4 4])
+    %xlim([-4 4])
+    axis square
+    grid on
+    
+    subplot(3,2,6)
+    plot(a(ind,3),a(ind,4),mk,'Color',clr)
+    hold on
+    c = polyfit(a(ind,3),a(ind,4),1);
+    %plot([-10 10],[-10 10]*c(1)+c(2),'--','Color',clr)
+    %plot([-10 10],[-10 10],'k--','LineWidth',1)
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(3),dk(4)))
+    %ylim([-4 4])
+    %xlim([-4 4])
+    axis square
+    grid on
+    
+    
+    saveas(fig,pname,'png')
+end
+
+saveas(fig,pname,'png')
+
+%% Phi_d
+
+close 1
+fig = figure(1)
+set(fig,'Position',[500 0 [200 300]*1.7])
+%pname = [figdir figfold 'deck_for_deck_consistency_phi_a'];
+hold on
+dk = unique(mparam.dk);
+ang = fd.phi_d;%fd.aparam(:,1);
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+% Grab phi from each dk
+[a, ch] = deal(repmat(NaN,2640,4));
+
+for j = 1:length(dk)
+    chind = find(fd.dk==dk(j));
+    ch(fd.ch(chind),j) = fd.ch(chind);
+    a(fd.ch(chind),j) = ang(chind);%atand(tand(ang_0(chind)-ang(chind)));
+end
+
+for i = 1:2
+    if i == 1
+        ind = ismember(ch(:,1),cutchans_a) & ~any(isnan(a),2);% & any(abs(a)<4,2);
+        clr = [0,0,0.7];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_phi_a'];
+        a1 = atand(tand(a(ind,1)-90))-90;
+        %a1 = a(ind,1);
+        a2 = a(ind,2);
+        a3 = a(ind,3);
+        a4 = a(ind,4);
+        
+        C = -2;
+    else
+        ind = ismember(ch(:,1),cutchans_b) & ~any(isnan(a),2);% & any(abs(a)<4,2);
+        clr = [0.7,0,0];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_phi_b'];
+        
+        a1 = a(ind,1);
+        a2 = a(ind,2);
+        a3 = atand(tand(a(ind,3)-90))+90;
+        %a3 = a(ind,3);
+        a4 = a(ind,4)+180;
+        
+        C = 88;
+    end
+    clf(fig)
+    subplot(3,2,1)
+    plot(a1,a2,mk,'Color',clr)
+    hold on
+    c = polyfit(a1,a2,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(2)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,2)
+    plot(a1,a3,mk,'Color',clr)
+    hold on
+    c = polyfit(a1,a3,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(3)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,3)
+    plot(a1,a4,mk,'Color',clr)
+    hold on
+    c = polyfit(a1,a4,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,4)
+    plot(a2,a3,mk,'Color',clr)
+    hold on
+    c = polyfit(a2,a3,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(3)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,5)
+    plot(a2,a4,mk,'Color',clr)
+    hold on
+    c = polyfit(a2,a4,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,6)
+    plot(a3,a4,mk,'Color',clr)
+    hold on
+    c = polyfit(a3,a4,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(3),dk(4)))
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    
+    saveas(fig,pname,'png')
+end
+
+%% Psi
+
+close 1
+fig = figure(1)
+set(fig,'Position',[500 0 [200 300]*1.7])
+%pname = [figdir figfold 'deck_for_deck_consistency_phi_a'];
+hold on
+dk = unique(mparam.dk);
+ang = atand(tand(fd.aparam(:,1)-fd.dk-90));
+ang(fd.inda~=1) = atand(tand(ang(fd.inda~=1)+90));
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+% Grab phi from each dk
+[a, ch] = deal(repmat(NaN,2640,4));
+
+for j = 1:length(dk)
+    chind = find(fd.dk==dk(j));
+    ch(fd.ch(chind),j) = fd.ch(chind);
+    a(fd.ch(chind),j) = ang(chind);%atand(tand(ang_0(chind)-ang(chind)));
+end
+
+for i = 1:2
+    if i == 1
+        ind = ismember(ch(:,1),cutchans_a) & ~any(isnan(a),2);% & any(abs(a)<4,2);
+        clr = [0,0,0.7];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_psi_a'];
+        %a1 = atand(tand(a(ind,1)-90))-90;
+        a1 = a(ind,1);
+        a2 = a(ind,2);
+        a3 = a(ind,3);
+        a4 = a(ind,4);
+        
+        C = -2;
+    else
+        ind = ismember(ch(:,1),cutchans_b) & ~any(isnan(a),2);% & any(abs(a)<4,2);
+        clr = [0.7,0,0];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_psi_b'];
+        
+        a1 = a(ind,1);
+        a2 = a(ind,2);
+        %a3 = atand(tand(a(ind,3)-90))+90;
+        a3 = a(ind,3);
+        a4 = a(ind,4);
+        
+        C = -2;
+    end
+    clf(fig)
+    subplot(3,2,1)
+    plot(a1,a2,mk,'Color',clr)
+    hold on
+    c = polyfit(a1,a2,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(2)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,2)
+    plot(a1,a3,mk,'Color',clr)
+    hold on
+    c = polyfit(a1,a3,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(3)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,3)
+    plot(a1,a4,mk,'Color',clr)
+    hold on
+    c = polyfit(a1,a4,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,4)
+    plot(a2,a3,mk,'Color',clr)
+    hold on
+    c = polyfit(a2,a3,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(3)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,5)
+    plot(a2,a4,mk,'Color',clr)
+    hold on
+    c = polyfit(a2,a4,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    subplot(3,2,6)
+    plot(a3,a4,mk,'Color',clr)
+    hold on
+    c = polyfit(a3,a4,1);
+    plot(([-10 10]+C),([-10 10]+C)*c(1)+c(2),'--','Color',clr)
+    plot(([-10 10]+C),([-10 10]+C),'k--','LineWidth',1)
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(3),dk(4)))
+    ylim([-4 4]+C)
+    xlim([-4 4]+C)
+    axis square
+    grid on
+    
+    
+    saveas(fig,pname,'png')
+end
+
+
+
+
+%% Phi_d diffhist
+
+if 0
+fig = figure(1)
+clf(fig)
+set(fig,'Position',[500 0 [200 300]*1.7])
+%pname = [figdir figfold 'deck_for_deck_consistency_phi_a'];
+hold on
+dk = unique(fd.dk);
+ang = fd.aparam(:,2);%fd.phi_d;%fd.aparam(:,1);
+ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+% Grab phi from each dk
+[a, ch] = deal(repmat(NaN,2640,4));
+edg = -5:0.1:5.0;
+
+
+for j = 1:length(dk)
+    chind = find(fd.dk==dk(j));
+    ch(fd.ch(chind),j) = fd.ch(chind);
+    a(fd.ch(chind),j) = ang(chind);%atand(tand(ang_0(chind)-ang(chind)));
+end
+
+for i = 1%:2
+    if i == 1
+        ind = ismember(ch(:,1),cutchans_a) & ~any(isnan(a),2);% & any(abs(a)<4,2);
+        clr = [0,0,0.7];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_psi_a'];
+        %a1 = atand(tand(a(ind,1)-90))-90;
+        a1 = a(ind,1);
+        a2 = a(ind,2);
+        a3 = a(ind,3);
+        a4 = a(ind,4);
+        
+        C = -2;
+    else
+        ind = ismember(ch(:,1),cutchans_b) & ~any(isnan(a),2);% & any(abs(a)<4,2);
+        clr = [0.7,0,0];
+        mk='.';
+        pname = [figdir figfold 'deck_for_deck_consistency_psi_b'];
+        
+        a1 = a(ind,1);
+        a2 = a(ind,2);
+        %a3 = atand(tand(a(ind,3)-90))+90;
+        a3 = a(ind,3);
+        a4 = a(ind,4)+180;
+        
+        C = 88;
+    end
+    
+    clf(fig)
+    subplot(3,2,1)
+    bar(edg,histc(a1-a2,edg),'histc')
+    hold on
+    plot(([0 0]+mean(a1-a2)),([-10 300]),'r')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(2)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    xlim([-2 2])
+    ylim([0 50])
+    axis square
+    grid on
+    
+    
+    subplot(3,2,2)
+    bar(edg,histc(a1-a3,edg),'histc')
+    hold on
+    plot(([0 0]+mean(a1-a3)),([-10 300]),'r')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(3)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    xlim([-2 2])
+    ylim([0 50])
+    axis square
+    grid on
+    
+    subplot(3,2,3)
+    bar(edg,histc(a1-a4,edg),'histc')
+    hold on
+    plot(([0 0]+mean(a1-a4)),([-10 300]),'r')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(1),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    xlim([-2 2])
+    ylim([0 50])
+    axis square
+    grid on
+    
+    subplot(3,2,4)
+    bar(edg,histc(a2-a3,edg),'histc')
+    hold on
+    plot(([0 0]+mean(a2-a3)),([-10 300]),'r')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(3)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    xlim([-2 2])
+    ylim([0 50])
+    axis square
+    grid on
+    
+    subplot(3,2,5)
+    bar(edg,histc(a2-a4,edg),'histc')
+    hold on
+    plot(([0 0]+mean(a2-a4)),([-10 300]),'r')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(2),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    xlim([-2 2])
+    ylim([0 50])
+    axis square
+    grid on
+    
+    subplot(3,2,6)
+    bar(edg,histc(a3-a4,edg),'histc')
+    hold on
+    plot(([0 0]+mean(a3-a4)),([-10 300]),'r')
+    title(sprintf('DK %2.0f VS DK %2.0f',dk(3),dk(4)))
+    xlabel('Phi (^o)')
+    ylabel('Phi (^o)')
+    xlim([-2 2])
+    ylim([0 50])
+    axis square
+    grid on
+    
+    
+    %saveas(fig,pname,'png')
+end
+end
+
+
+%% Per detector stats
+
+
+s_all = [];
+for i = 1:2
+    fig = figure(1)
+    clf(fig)
+    hold off
+    set(fig,'Position',[100 0 950 450])
+    set(fig,'PaperPosition',[-2 2.5 [12.6 6]*0.4])
+    
+    %pname = [figdir figfold 'phi_per_channel_alltile_averaged'];
+    %hold on
+    dk = unique(fd.dk);
+    ang = fd.phi_d;
+    ang_0 = p.chi(fd.ch)+p.chi_thetaref(fd.ch);
+    % Grab phi from each dk
+    [a, ch,xpol, res] = deal(repmat(NaN,2640,4));
+    
+    for j = 1:length(dk)
+        chind = find(fd.dk==dk(j));
+        ch(fd.ch(chind),j) = fd.ch(chind);
+        a(fd.ch(chind),j) = atand(tand(ang(chind)));
+        res(fd.ch(chind),j) = fd.res_var(chind);
+        xpol(fd.ch(chind),j) = fd.aparam(chind,2);
+    end
+    
+    if i==1
+        ind = ismember(ch(:,1),cutchans_a) & ~any(isnan(a),2); %& any(abs(a)<50,2);
+        pname = [figdir figfold 'perchan_final_a'];
+        C = 0;
+    else
+        ind = ismember(ch(:,1),cutchans_b) & ~any(isnan(a),2) ;%& any(abs(a)<4,2);
+        pname = [figdir figfold 'perchan_final_b'];
+        %a(ind) = atand(tand(a(ind)-90));
+        C = 90;
+    end
+    
+    subplot(211)
+    s = std(a(ind,:),0,2);
+    m = mean(a(:,:),2);
+    [wm,wv,neff] = wmean(a(ind,:),1./res(ind,:),2);
+    
+    s_all = [s_all sqrt(wv)'];
+    plot(ch(ind,1),wm,'k.')
+    hold on
+    
+    for imce = 0:3
+        plot(min(find(p.mce==imce))*[1 1],[-10 10]+C,'k')
+    end
+    for imce = 1:20
+        plot(min(find(p.tile==imce))*[1 1],[-10 10]+C,'k--')
+    end
+    
+    xlabel('Channel')
+    ylabel('Phi (^o)')
+    xlim([0 2650])
+    %xlim([1500 1564])
+    ylim([-6 0]+C)
+    grid on
+    
+    subplot(212)
+    s = std(xpol(ind,:),0,2);
+    m = mean(xpol(:,:),2);
+    [wm,wv,neff] = wmean(xpol(ind,:),1./res(ind,:),2);
+    
+    plot(ch(ind,1),wm,'k.')
+    hold on
+    
+    for imce = 0:3
+        plot(min(find(p.mce==imce))*[1 1],[-10 10],'k')
+    end
+    for imce = 1:20
+        plot(min(find(p.tile==imce))*[1 1],[-10 10],'k--')
+    end
+    
+    xlabel('Channel')
+    ylabel('xpol')
+    xlim([0 2650])
+    %xlim([1500 1564])
+    ylim([-1 1]*0.05)
+    grid on
+    
+    saveas(fig,pname,'png')
+    
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Global Polarization Rotation
+
+ang = fd.phi_d;
+for i = 1:2
+    
+    % Grab phi from each dk
+    
+    [a, ch,xpol, res] = deal(repmat(NaN,2640,4));
+    
+    for j = 1:length(dk)
+        chind = find(fd.dk==dk(j));
+        ch(fd.ch(chind),j) = fd.ch(chind);
+        a(fd.ch(chind),j) = atand(tand(ang(chind)));
+        res(fd.ch(chind),j) = fd.res_var(chind);
+        xpol(fd.ch(chind),j) = fd.aparam(chind,2);
+    end
+    
+    
+    if i==1
+        ind = ismember(ch(:,1),cutchans_a) & ~any(isnan(a),2); %& any(abs(a)<50,2);
+        pname = [figdir figfold 'hist_final_a'];
+        C = 0;
+    else
+        ind = ismember(ch(:,1),cutchans_b) & ~any(isnan(a),2) ;%& any(abs(a)<4,2);
+        pname = [figdir figfold 'hist_final_b'];
+        %a(ind) = atand(tand(a(ind)-90));
+        C = 90;
+    end
+    
+    s = nanstd(a(ind,:),0,2);
+    m = nanmean(a(ind,:),2);
+    [wm,wv,neff] = wmean(a(ind,:),1./res(ind,:),2);
+    
+    
+    fig = figure(1)
+    clf(fig)
+    hold off
+    set(fig,'Position',[400 0 [200 100]*5])
+    set(fig,'PaperPosition',[0 0 4 2])
+    subplot(1,2,1)
+    hold off
+    edg = [-1:0.01:1]*10+C;
+    bar(edg,histc(wm,edg),'histc')
+    hold on
+    plot([1 1]*nanmean(wm),[-1 500],'r')
+    xlim([-8 8]+C)
+    ylim([0,100])
+    xlabel('phi')
+    txt_str = {...
+        sprintf('Mean: %2.2f',nanmean(wm)),...
+        sprintf('STD: %2.2f',nanstd(wm))...
+        };
+    %sprintf('STD: %2.2f',nanmean(sqrt(wv)))...
+    text(2+C,75,txt_str)
+    grid on
+    
+    
+    % Uniform xpol eff
+    s = nanstd(xpol(ind,:),0,2);
+    m = nanmean(xpol(ind,:),2);
+    [wm,wv,neff] = wmean(xpol(ind,:),1./res(ind,:),2);
+    
+    subplot(1,2,2)
+    hold off
+    %set(fig,'Position',[1100 300 [100 100]*5])
+    %set(fig,'PaperPosition',[0 0 2 2])
+    edg = [-1:0.01:1]*0.1;
+    bar(edg,histc(wm,edg),'histc')
+    hold on
+    plot([1 1]*nanmean(m),[-1 500],'r')
+    xlim([-0.1 0.1])
+    ylim([0,100])
+    xlabel('xpol')
+    txt_str = {...
+        sprintf('Mean: %2.3f',nanmean(wm)),...
+        sprintf('STD: %2.3f',nanstd(wm))...
+        };
+    %sprintf('STD: %2.3f',nanmean(sqrt(wv)))...
+    text(0.02,75,txt_str)
+    grid on
+    
+    saveas(fig,pname,'png')
+    
+end
+
+%% Per-Tile polarization
+
+
+ang = fd.phi_d;
+dk = unique(fd.dk);
+for i = 1:2
+    
+    % Grab phi from each dk
+    
+    for k = 1:20
+        
+        [a, ch,xpol, res] = deal(repmat(NaN,2640,4));
+        
+        for j = 1:length(dk)
+            chind = find(fd.dk==dk(j) & p.tile(fd.ch)==k);
+            ch(fd.ch(chind),j) = fd.ch(chind);
+            a(fd.ch(chind),j) = atand(tand(ang(chind)));
+            res(fd.ch(chind),j) = fd.res_var(chind);
+            xpol(fd.ch(chind),j) = fd.aparam(chind,2);
+        end
+        
+        
+        if i==1
+            ind = ismember(ch(:,1),cutchans_a) & ~any(isnan(a),2); %& any(abs(a)<50,2);
+            pname = [figdir figfold sprintf('hist_tile_%02i_a',k)];
+            C = 0;
+        else
+            ind = ismember(ch(:,1),cutchans_b) & ~any(isnan(a),2) ;%& any(abs(a)<4,2);
+            pname = [figdir figfold sprintf('hist_tile_%02i_b',k)];
+            %a(ind) = atand(tand(a(ind)-90));
+            C = 90;
+        end
+        
+        s = nanstd(a(ind,:),0,2);
+        m = nanmean(a(ind,:),2);
+        [wm,wv,neff] = wmean(a(ind,:),1./res(ind,:),2);
+        
+        
+        fig = figure(1);
+        clf(fig)
+        hold off
+        set(fig,'Position',[400 0 [200 100]*5])
+        set(fig,'PaperPosition',[0 0 4 2])
+        subplot(1,2,1)
+        hold off
+        edg = [-1:0.01:1]*10+C;
+        bar(edg,histc(wm,edg),'histc')
+        hold on
+        plot([1 1]*nanmean(wm),[-1 500],'r')
+        xlim([-8 8]+C)
+        ylim([0,20])
+        xlabel('phi')
+        title(sprintf('Mean: %2.2f\tSTD: %2.2f',nanmean(wm),nanstd(wm)))
+        txt_str = {...
+            sprintf('Mean: %2.2f',nanmean(wm)),...
+            sprintf('STD: %2.2f',nanstd(wm))...
+            };
+        %sprintf('STD: %2.2f',nanmean(sqrt(wv)))...
+        text(2+C,75,txt_str)
+        grid on
+        
+        
+        % Uniform xpol eff
+        s = nanstd(xpol(ind,:),0,2);
+        m = nanmean(xpol(ind,:),2);
+        [wm,wv,neff] = wmean(xpol(ind,:),1./res(ind,:),2);
+        
+        subplot(1,2,2)
+        hold off
+        %set(fig,'Position',[1100 300 [100 100]*5])
+        %set(fig,'PaperPosition',[0 0 2 2])
+        edg = [-1:0.01:1]*0.1;
+        bar(edg,histc(wm,edg),'histc')
+        hold on
+        plot([1 1]*nanmean(m),[-1 500],'r')
+        xlim([-0.1 0.1])
+        ylim([0,20])
+        xlabel('xpol')
+        title(sprintf('Mean: %2.3f\tSTD: %2.3f',nanmean(wm),nanstd(wm)))
+        txt_str = {...
+            sprintf('Mean: %2.3f',nanmean(wm)),...
+            sprintf('STD: %2.3f',nanstd(wm))...
+            };
+        %sprintf('STD: %2.3f',nanmean(sqrt(wv)))...
+        text(0.02,75,txt_str)
+        grid on
+        
+        %pause(0.5)
+        saveas(fig,pname,'png')
+    end
+end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Scratch paper
+%% Statistics Exercise
+%
+%d = normrnd(0,0.1,3000,1);
+%
+%s = 1;
+%m = 0;
+%d1 = d+normrnd(m,s,3000,1);
+%d2 = d+normrnd(m,s,3000,1);
+%
+%%close 1
+%fig = figure(1);
+%hold off
+%set(fig,'Position',[1100 300 [100 100]*5])
+%plot(d1,d2,'.')
+%hold on
+%c = polyfit(d1,d2,1);
+%plot([-10 10],[-10 10]*c(1)+c(2),'--')
+%plot([-1 1]*4,[-1 1]*4,'k--')
+%xlim([-4 4])
+%ylim([-4 4])
+%grid on
+%
+%%% Look at error propagation
+%dx = 1;
+%dy = 1;
+%dp.r = 2*asind(0.5*(dp.x.^2./sqrt(dp.x.^2+dp.y.^2)+dp.y.^2./sqrt(dp.x.^2+dp.y.^2)));
+%dp.theta = atan2(dp.y./sqrt(dp.x.^2+dp.y.^2),dp.x./sqrt(dp.x.^2+dp.y.^2))*180/pi;
+%dp.r = 0;
+%dp.theta = 0;
+%dp.chi = 0;
+%dp.chi_thetaref = 0;
+%dp.drumangle = 0;
+%rpsopt.mount.aperture_offr = 0;
+%
+%%% Check to ensure cmb-derived centers are actually loading.
+%
+%p = get_array_info(20180131,'obs','obs','obs','obs');
+%prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
+%pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
+%
+%p = get_array_info(20180131,'ideal','ideal','ideal','ideal');
+%prx2 = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
+%pry2 = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
+%
+%figure(1)
+%hold off
+%quiver(prx2,pry2,prx2-prx,pry2-pry,qscale,'Color',clr{1})
+%
+
+%% Sim of beam centroid estimations
+% Make a plot of the STD of beam centroid offsets as a function of distance from the focal plane
+
+clr = {[0,0,1],[0,0.7,0],[0.7,0,0],[0,0,0]};
+dk = unique(fd.dk);
+npnts = 132*1; %Number of channels per tile
+%sig = 0.1;
+sig = 0.02;
+sig2 = 0.04;
+az = -200:-170;
+el = -15:15;
+[az el] = meshgrid(az,el);
+az = reshape(az,[],1);
+el = reshape(el,[],1);
+
+mount = rpsopt.mount;
+mirror = rpsopt.mirror;
+%mirror.tilt = 45;
+%mirror.roll = 0;
+source = rpsopt.source;
+source.azimuth = -180;
+%source.height = 5.7925;
+%source.distance = 1e6;
+source.height = source.distance*tand(0);
+
+bs.r = 0;
+bs.theta = 0;
+bs.chi = 0;
+bs.chi_thetaref = 0*zeros(size(bs.r));
+bs.drumangle = 0*zeros(size(bs.r));
+mount.aperture_offr = 0; % Locate boresight 'aperture' in center of drum.
+
+close 1
+fig = figure(1)
+set(fig,'Position',[700 0 [200 300]*1.7])
+pname = [figdir figfold 'beamcen_res_std_vs_dist_sim'];
+dk = unique(fd.dk);
+for i = 1:2
+    for j = 1:length(dk)
+        [s, d] = deal([]);
+        
+        for k = 1:20
+            ind = p.tile==k;
+            if i==1
+                s = [s nanstd(normrnd(0,sig,size(prx(ind))))];
+                plind = j+j-1;
+            else
+                s = [s nanstd(normrnd(0,sig,size(pry(ind))))];
+                plind = j+j;
+            end
+            d = [d nanmean(sqrt(prx(ind).^2+pry(ind).^2))];
+        end
+        
+        subplot(4,2,plind)
+        plot(d,s,'k.')
+        if plind == 1
+            title('dX')
+            ylabel(sprintf('DK: %03i\nSTD (^o)',floor(dk(j))-1))
+        elseif plind == 2
+            title('dY')
+        elseif plind == 7 | plind == 8
+            xlabel('dist (^o)')
+        end
+        if mod(plind,2)~=0
+            ylabel(sprintf('DK: %03i\nSTD (^o)',floor(dk(j))-1))
+        end
+        ylim([0,0.06])
+        xlim([0,15])
+        grid on
+    end
+end
+saveas(fig,pname,'png')
+
+
+%% Take a look how beam center errors propagate to phi-source
+% aka expected statistical error on phi-source due to statistical error on
+% beam centers
+% Assume source orientation is exactly at zenith
+%
+
+clr = {[0,0,1],[0,0.7,0],[0.7,0,0],[0,0,0]};
+dk = unique(fd.dk);
+npnts = 132*1; %Number of channels per tile
+%sig = 0.1;
+sig = 0.02;
+sig2 = 0.04;
+az = -200:-170;
+el = -15:15;
+[az el] = meshgrid(az,el);
+az = reshape(az,[],1);
+el = reshape(el,[],1);
+
+mount = rpsopt.mount;
+mirror = rpsopt.mirror;
+%mirror.tilt = 45;
+%mirror.roll = 0;
+source = rpsopt.source;
+%source.azimuth = -180;
+%source.height = 5.7925;
+%source.distance = 1e6;
+%source.height = source.distance*tand(0);
+
+bs.r = 0;
+bs.theta = 0;
+bs.chi = 0;
+bs.chi_thetaref = 0*zeros(size(bs.r));
+bs.drumangle = 0*zeros(size(bs.r));
+mount.aperture_offr = 0; % Locate boresight 'aperture' in center of drum.
+
+close 2
+fig = figure(2)
+set(fig,'Position',[700 0 [200 200]*1.7])
+pname = [figdir figfold 'error_prop_beamcen_to_phis_sim'];
+hold off
+s_allsim = [];
+for j = 1:4
+    sall = [];
+    md = [];
+    dks = dk(j)+zeros(size(az));
+    
+    [r, theta, phi] = ...
+        keck_beam_map_pointing(az-180, 90-el, -1*dks, ...
+        mount,mirror, source, bs);
+    x = 2 * sind(r / 2) .* cosd(theta) * 180 / pi;
+    y = 2 * sind(r / 2) .* sind(theta) * 180 / pi;
+    
+    
+    
+    for i = 1:20
+        % Upper limit on STD
+        ind = p.tile==i;
+        x0 = 2 * sind(p.r(ind) / 2) .* cosd(p.theta(ind)) * 180 / pi;
+        y0 = 2 * sind(p.r(ind) / 2) .* sind(p.theta(ind)) * 180 / pi;
+        d = nanmean(sqrt(x0.^2+y0.^2));
+        md = [md d];
+        
+        
+        % The actual phenomenology looks like this, but we don't need it right now.
+        %dp.x = normrnd(nanmean(x0),sig+normrnd(0,sig2),1,npnts);
+        %dp.y = normrnd(nanmean(y0),sig+normrnd(0,sig2),1,npnts);
+        
+        dp.x = x0 + normrnd(0,sig,length(x0),1);
+        dp.y = y0 + normrnd(0,sig,length(y0),1);
+        
+        
+        phi_i = griddata(x,y,phi,dp.x,dp.y);
+        sall = [sall nanstd(phi_i)];
+        
+    end
+    s_allsim = [s_allsim sall];
+    plot(md,sall,'.','Color',clr{j})
+    %errorbar(d,mmax,smax,'.','Color',clr{j})
+    hold on
+end
+
+xlabel('Mean Distance from boresight (^o)')
+ylabel('STD of phi (^o)')
+title(sprintf('Phi-Source STD vs. dist from boresight @ STD(x,y) = %1.2f^o',sig))
+%legend(sprintf('dk= %3.2f',dk(1)),sprintf('dk= %3.2f',dk(2)),sprintf('dk= %3.2f',dk(3)),sprintf('dk= %3.2f',dk(4)),'Location','northeast')
+legend(sprintf('dk= %3.2f',dk(1)),sprintf('dk= %3.2f',dk(2)),sprintf('dk= %3.2f',dk(3)),sprintf('dk= %3.2f',dk(4)),'Location','northwest')
+ylim([0 0.16])
+xlim([0 13])
+%ylim([0 1.4e-3])
+grid on
+saveas(fig,pname,'png')
+
+
+%%
+% Make a plot of the STD of beam centroid offsets as a function of distance from the focal plane
+
+close 1
+fig = figure(1)
+set(fig,'Position',[700 0 [200 300]*1.7])
+pname = [figdir figfold 'beamcen_res_std_vs_dist_real'];
+dk = unique(fd.dk);
+for i = 1:2
+    for j = 1:length(dk)
+        chind = fd.dk==dk(j) & (ismember(fd.ch,cutchans_a) | ismember(fd.ch,cutchans_b));
+        [s, d] = deal([]);
+        
+        
+        for k = 1:20
+            ind = chind & p.tile(fd.ch)==k;
+            if i==1
+                ws = std(prx(fd.ch(ind))-fd.bparam(ind,1));
+                %[wm ws] = wmean(prx(fd.ch(ind))-fd.bparam(ind,1),1./fd.bchi2(ind));
+                s = [s ws];
+                plind = j+j-1;
+            else
+                ws = std(pry(fd.ch(ind))-fd.bparam(ind,2));
+                %[wm ws] = wmean(pry(fd.ch(ind))-fd.bparam(ind,2),1./fd.bchi2(ind));
+                s = [s ws];
+                plind = j+j;
+            end
+            d = [d nanmean(sqrt(prx(fd.ch(ind)).^2+pry(fd.ch(ind)).^2))];
+        end
+        
+        subplot(4,2,plind)
+        plot(d,s,'k.')
+        if plind == 1
+            title('dX')
+            ylabel(sprintf('DK: %03i\nSTD (^o)',floor(dk(j))-1))
+        elseif plind == 2
+            title('dY')
+        elseif plind == 7 | plind == 8
+            xlabel('dist (^o)')
+        end
+        if mod(plind,2)~=0
+            ylabel(sprintf('DK: %03i\nSTD (^o)',floor(dk(j))-1))
+        end
+        ylim([0,0.06])
+        xlim([0,15])
+        grid on
+    end
+end
+saveas(fig,pname,'png')
+
+%% What do we actually see from fits?
+
+%dfit = sqrt(fd.bparam(:,1).^2+fd.bparam(:,2).^2);
+%dobs = sqrt(prx(fd.ch).^2+pry(fd.ch).^2);
+%dfit = sqrt(fd.bparam(:,1).^2+fd.bparam(:,2).^2);
+%dobs = sqrt(prx(fd.ch).^2+pry(fd.ch).^2);
+
+close 1
+fig = figure(1)
+pname = [figdir figfold 'error_prop_beamcen_to_phis_real'];
+set(fig,'Position',[700 0 [200 200]*1.7])
+hold off
+s_all = [];
+dk = unique(fd.dk);
+clr = {[0,0,1],[0,0.7,0],[0.7,0,0],[0,0,0]};
+
+for j = 1:4
+    sall = [];
+    mmax = [];
+    imax = 0;
+    d = [];
+    
+    for i = 1:20
+        ind = fd.dk==dk(j) & p.tile(fd.ch)==i & (ismember(fd.ch,cutchans_a) | ismember(fd.ch,cutchans_b));
+        %[m s] = wmean(fd.phi_s(ind),1./fd.bchi2(ind));
+        s = std(fd.phi_s(ind));
+        d = [d nanmean(sqrt(prx(p.tile==i).^2+pry(p.tile==i).^2))];
+        %[m s] = wmean(dfit(ind)-dobs(ind),fd.bchi2(ind));
+        %bar(edg,histc(dfit(ind)-dobs(ind),edg),'histc')
+        %pause(1)
+        sall = [sall s];
+        mmax = [mmax m];
+    end
+    s_all = [s_all sall];
+    
+    plot(d,sall,'.','Color',clr{j})
+    hold on
+end
+%c = polyfit(repmat(d,1,4),s_all,2);
+%plot([0:12],c(1)*[0:12].^2+c(2)*[0:12]+c(3),'r')
+
+xlabel('Mean Distance from boresight (^o)')
+ylabel('STD of phi (^o)')
+title('Per-Tile Phi-Source STD vs. dist from boresight')
+legend(sprintf('dk= %3.2f',dk(1)),sprintf('dk= %3.2f',dk(2)),sprintf('dk= %3.2f',dk(3)),sprintf('dk= %3.2f',dk(4)),'Location','northwest')
+%legend(sprintf('dk= %3.2f',dk(1)),sprintf('dk= %3.2f',dk(2)),sprintf('dk= %3.2f',dk(3)),sprintf('dk= %3.2f',dk(4)),'Location','northeast')
+ylim([0 0.16])
+xlim([0 13])
+grid on
+saveas(fig,pname,'png')
+
+%% Sims and real source phi's look similar. Calculate std of simmed residuals
+% Plot STD of simmed residuals
+
+clr = {[0,0,1],[0,0.7,0],[0.7,0,0],[0,0,0]};
+dk = unique(fd.dk);
+npnts = 132*1; %Number of channels per tile
+%sig = 0.1;
+sig = 0.02;
+sig2 = 0.04;
+az = -200:-170;
+el = -15:15;
+[az el] = meshgrid(az,el);
+az = reshape(az,[],1);
+el = reshape(el,[],1);
+
+mount = rpsopt.mount;
+mirror = rpsopt.mirror;
+%mirror.tilt = 45;
+%mirror.roll = 0;
+source = rpsopt.source;
+%source.azimuth = -180;
+%source.height = 5.7925;
+%source.distance = 1e6;
+%source.height = source.distance*tand(0);
+
+bs.r = 0;
+bs.theta = 0;
+bs.chi = 0;
+bs.chi_thetaref = 0*zeros(size(bs.r));
+bs.drumangle = 0*zeros(size(bs.r));
+mount.aperture_offr = 0; % Locate boresight 'aperture' in center of drum.
+
+
+close 2
+fig = figure(2)
+set(fig,'Position',[700 0 [200 200]*1.7])
+pname = [figdir figfold 'error_prop_beamcen_to_phis_simres'];
+hold off
+for j = 1:4
+    sall = [];
+    md = [];
+    dks = dk(j)+zeros(size(az));
+    
+    [r, theta, phi] = ...
+        keck_beam_map_pointing(az-180, 90-el, -1*dks, ...
+        mount,mirror, source, bs);
+    x = 2 * sind(r / 2) .* cosd(theta) * 180 / pi;
+    y = 2 * sind(r / 2) .* sind(theta) * 180 / pi;
+    
+    
+    for i = 1:20
+        % Upper limit on STD
+        ind = p.tile==i;
+        x0 = 2 * sind(p.r(ind) / 2) .* cosd(p.theta(ind)) * 180 / pi;
+        y0 = 2 * sind(p.r(ind) / 2) .* sind(p.theta(ind)) * 180 / pi;
+        d = nanmean(sqrt(x0.^2+y0.^2));
+        md = [md d];
+        
+        
+        % The actual phenomenology looks like this, but we don't need it right now.
+        %dp.x = normrnd(nanmean(x0),sig+normrnd(0,sig2),1,npnts);
+        %dp.y = normrnd(nanmean(y0),sig+normrnd(0,sig2),1,npnts);
+        
+        dp.x = x0 + normrnd(0,sig,length(x0),1);
+        dp.y = y0 + normrnd(0,sig,length(y0),1);
+        
+        
+        phi_i = griddata(x,y,phi,dp.x',dp.y');
+        phi_0 = griddata(x,y,phi,x0',y0');
+        sall = [sall nanstd(phi_0-phi_i)];
+        
+    end
+    
+    plot(md,sall*3600,'.','Color',clr{j})
+    %errorbar(d,mmax,smax,'.','Color',clr{j})
+    hold on
+end
+
+xlabel('Mean Distance from boresight (^o)')
+ylabel('STD of phi_s residuals (arcsec)')
+title(sprintf('STD Phi-Source residualvs. dist from boresight @ STD(x,y) = %1.2f^o',sig))
+%legend(sprintf('dk= %3.2f',dk(1)),sprintf('dk= %3.2f',dk(2)),sprintf('dk= %3.2f',dk(3)),sprintf('dk= %3.2f',dk(4)),'Location','northeast')
+legend(sprintf('dk= %3.2f',dk(1)),sprintf('dk= %3.2f',dk(2)),sprintf('dk= %3.2f',dk(3)),sprintf('dk= %3.2f',dk(4)),'Location','northwest')
+ylim([0 0.004*3600])
+xlim([0 13])
+%ylim([0 1.4e-3])
+grid on
+saveas(fig,pname,'png')
+
+
+%% Plot STD of real reasiduals
+
+
+clr = {[0,0,1],[0,0.7,0],[0.7,0,0],[0,0,0]};
+dk = unique(fd.dk);
+npnts = 132*1; %Number of channels per tile
+%sig = 0.1;
+sig = 0.02;
+sig2 = 0.04;
+az = -200:-170;
+el = -15:15;
+[az el] = meshgrid(az,el);
+az = reshape(az,[],1);
+el = reshape(el,[],1);
+
+mount = rpsopt.mount;
+mirror = rpsopt.mirror;
+%mirror.tilt = 45;
+%mirror.roll = 0;
+source = rpsopt.source;
+%source.azimuth = -180;
+%source.height = 5.7925;
+%source.distance = 1e6;
+%source.height = source.distance*tand(0);
+
+bs.r = 0;
+bs.theta = 0;
+bs.chi = 0;
+bs.chi_thetaref = 0*zeros(size(bs.r));
+bs.drumangle = 0*zeros(size(bs.r));
+mount.aperture_offr = 0; % Locate boresight 'aperture' in center of drum.
+
+close 1
+fig = figure(1)
+pname = [figdir figfold 'error_prop_beamcen_to_phis_realres'];
+set(fig,'Position',[700 0 [200 200]*1.7])
+hold off
+s_all = [];
+dk = unique(fd.dk);
+clr = {[0,0,1],[0,0.7,0],[0.7,0,0],[0,0,0]};
+
+for j = 1:4
+    sall = [];
+    mmax = [];
+    imax = 0;
+    d = [];
+    
+    dks = dk(j)+zeros(size(az));
+    
+    [r, theta, phi] = ...
+        keck_beam_map_pointing(az-180, 90-el, -1*dks, ...
+        mount,mirror, source, bs);
+    x = 2 * sind(r / 2) .* cosd(theta) * 180 / pi;
+    y = 2 * sind(r / 2) .* sind(theta) * 180 / pi;
+    
+    
+    for i = 1:20
+        
+        
+        ind = fd.dk==dk(j) & p.tile(fd.ch)==i & (ismember(fd.ch,cutchans_a) | ismember(fd.ch,cutchans_b));
+        
+        %[m s] = wmean(fd.phi_s(ind),1./fd.bchi2(ind));
+        
+        d = [d nanmean(sqrt(prx(p.tile==i).^2+pry(p.tile==i).^2))];
+        x0 = 2 * sind(p.r(fd.ch(ind)) / 2) .* cosd(p.theta(fd.ch(ind))) * 180 / pi;
+        y0 = 2 * sind(p.r(fd.ch(ind)) / 2) .* sind(p.theta(fd.ch(ind))) * 180 / pi;
+        
+        phi_0 = griddata(x,y,phi,x0',y0');
+        
+        s = std(phi_0'-fd.phi_s(ind));
+        sall = [sall s];
+        mmax = [mmax m];
+    end
+    s_all = [s_all sall];
+    
+    plot(d,sall*3600,'.','Color',clr{j})
+    hold on
+end
+%c = polyfit(repmat(d,1,4),s_all,2);
+%plot([0:12],c(1)*[0:12].^2+c(2)*[0:12]+c(3),'r')
+
+xlabel('Mean Distance from boresight (^o)')
+ylabel('STD of phi_s residuals (arcsec)')
+title('Per-Tile Phi-Source residual STD vs. dist from boresight')
+legend(sprintf('dk= %3.2f',dk(1)),sprintf('dk= %3.2f',dk(2)),sprintf('dk= %3.2f',dk(3)),sprintf('dk= %3.2f',dk(4)),'Location','northwest')
+%legend(sprintf('dk= %3.2f',dk(1)),sprintf('dk= %3.2f',dk(2)),sprintf('dk= %3.2f',dk(3)),sprintf('dk= %3.2f',dk(4)),'Location','northeast')
+ylim([0 0.004*3600])
+xlim([0 13])
+grid on
+saveas(fig,pname,'png')
+
+
+
+
+%% hist of beam-center residuals per tile
+if 0
+figure(1)
+hold off
+edg = -0.1:0.005:0.1;
+for j = 1:4
+    for i = 1:20
+        ind = fd.dk==dk(j) & p.tile(fd.ch)==i & (ismember(fd.ch,cutchans_a) | ismember(fd.ch,cutchans_b));
+        bar(edg,histc(prx(fd.ch(ind))-fd.bparam(ind,1),edg),'histc')
+        xlim([-1 1]*0.1)
+        ylim([0 30])
+        title(sprintf('STD: %0.4f',std(prx(fd.ch(ind))-fd.bparam(ind,1))))
+        grid on
+        
+        pause(0.5)
+    end
+end
+end
+%% Hist of beam-center residuals across all tiles per dk
+
+if 0
+figure(1)
+hold off
+edg = -1:0.005:1;
+for j = 1:4
+    
+    ind = fd.dk==dk(j) & (ismember(fd.ch,cutchans_a) | ismember(fd.ch,cutchans_b));
+    bar(edg,histc(prx(fd.ch(ind))-fd.bparam(ind,1),edg),'histc')
+    %xlim([-1 1]*0.1)
+    ylim([0 100])
+    title(sprintf('M: %2.4f STD: %0.4f',mean(prx(fd.ch(ind))-fd.bparam(ind,1)),std(prx(fd.ch(ind))-fd.bparam(ind,1))))
+    grid on
+    
+    pause(0.5)
+    
+end
+end
+
+%%
+% Check differential pointing
+%
+%close 1
+%fig = figure(1)
+%set(fig, 'Position',[500 -100 700 700])
+%dk = unique(fd.dk);
+%qscale=5;
+%%clr = {[0,0,1],[0,0.7,0],[0.7,0,0],[0,0,0]};
+%clr = {[0,0,0],[0,0,0],[0,0,0],[0,0,0]};
+%
+%for j = 4%:length(dk)
+%
+%
+%    [axa,axb,aya,ayb,cha,chb] = deal(repmat(NaN,2640,1));
+%    pname = [figdir figfold 'diffpoint_quiverplot_135'];
+%
+%    chind_a = fd.dk==dk(j) & ismember(fd.ch,cutchans_a);
+%	chind_b = fd.dk==dk(j) & ismember(fd.ch,cutchans_b);
+%    cha(fd.ch(chind_a)) = fd.ch(chind_a);
+%    chb(fd.ch(chind_b)) = fd.ch(chind_b);
+%	axa(fd.ch(chind_a)) = fd.bparam(chind_a,2);%-fd.bparam(chind,1);
+%	axb(fd.ch(chind_b)) = fd.bparam(chind_b,2);%-fd.bparam(chind,1);
+%
+%    %pname = [pname sprintf('_dk_%03i_res',floor(dk(j)-1.25))];
+%    ay(fd.ch(chind)) = (pry(fd.ch(chind_a))-pry(fd.ch(chind_b)));%-fd.bparam(chind,2);
+%
+%	hist(axa-axb)
+%	%quiver(prx(fd.ch(chind)),pry(fd.ch(chind)),ax(fd.ch(chind)),ay(fd.ch(chind)),qscale,'Color',clr{j})
+%    hold on
+%    xlabel('x (^o)')
+%	ylabel('y (^o)')
+%
+%
+%end
+%%legend('dk0','dk45','dk90','dk135','Location','northeast')
+%grid on
+%axis square
+%
+%
+%saveas(fig,pname,'png')
+%
+%
+%%%%%%%%%%%%%%
+%% Fig 4.2a Look at pairwise residuals
+% RMS should reduce by sqrt(2) if uncorrelated
+
+% Find channels with more than one hit, then take the difference of
+% residuals.
+% Isolate to sch 2 and 4 since they have the most hits.
+%
+%fig = figure(14)
+%set(fig,'Position',[0 550 500 500])
+%hold off
+%for j=1:2
+%    if j==1
+%        schind = ((fd.sch==2 | fd.sch==4) & fd.inda);
+%        clr = [0 0 1];
+%    else
+%        schind = ((fd.sch==2 | fd.sch==4) & ~fd.inda);
+%        clr = [1 0 0];
+%    end
+%    ch = unique(fd.ch(schind));
+%
+%    pwres = []; %pairwise residual
+%    pairchans = zeros(size(fd.ch));
+%    for i=1:length(ch)
+%        chind = find(schind & fd.ch==ch(i));
+%        if length(chind) == 2
+%            pwres = [pwres; fd.aparam(chind(1),:)-fd.aparam(chind(2),:)];
+%            pairchans = (pairchans | (schind & fd.ch==ch(i)));
+%            if j==2
+%                plot(fd.aparam(chind(1),1),fd.aparam(chind(2),1),'.','Color',clr)
+%            else
+%                plot(fd.aparam(chind(1),1)+90,fd.aparam(chind(2),1)+90,'.','Color',clr)
+%            end
+%            hold on
+%        end
+%    end
+%
+%end
+%plot([0 3],[0 3],'k--')
+%grid on
+%
+%
+%%%%%%%%%%%%%%
+%%% Fig 4.2b Hist of pairwise residuals
+%
+%fig = figure(15)
+%set(fig,'Position',[250 0 950 450])
+%hold off
+%for j=1:2
+%    if j==1
+%        schind = ((fd.sch==2 | fd.sch==4) & fd.inda);
+%        clr = [0 0 1];
+%    else
+%        schind = ((fd.sch==2 | fd.sch==4) & ~fd.inda);
+%        clr = [1 0 0];
+%    end
+%    ch = unique(fd.ch(schind));
+%
+%    pwres = []; %pairwise residual
+%    pairchans = zeros(size(fd.ch));
+%    for i=1:length(ch)
+%        chind = find(schind & fd.ch==ch(i));
+%        if length(chind) == 2
+%            pwres = [pwres; fd.aparam(chind(1),:)-fd.aparam(chind(2),:)];
+%            pairchans = (pairchans | (schind & fd.ch==ch(i)));
+%
+%        end
+%    end
+%
+%    fig = figure(14+j)
+%    set(fig,'Position',[250 0 950 450])
+%    hold off
+%    nbins = 10;
+%    pnames = {'Psi (^o)','Xpol Lkg','N_1','N_2 (^o)','A_0 (ADU)'};
+%    for i = 1:5
+%        m = mean(pwres(:,i));
+%        s = std(pwres(:,i));
+%        subplot(2,3,i)
+%        [N,X] = hist(pwres(:,i),nbins);
+%        hist(pwres(:,i),nbins)
+%        hold on
+%
+%        grid on
+%        plot([1 1]*m,[0 max(N)*1.2],'r')
+%        ylim([0 10])
+%        xlabel(pnames{i})
+%        ylabel('N')
+%        title(sprintf('Mu: %0.4f | RMS: %0.4f',m,s))
+%    end
+%    hold on
+%
+%end
+%
+%nbins = 10;
+%pnames = {'Psi (^o)','Xpol Lkg','N_1','N_2 (^o)','A_0 (ADU)'};
+%for i = 1:length(fd.aparam(1,:))
+%    m = mean(pwres(:,i));
+%    s = std(pwres(:,i));
+%    subplot(2,3,i)
+%    [N,X] = hist(pwres(:,i),nbins);
+%    hist(pwres(:,i),nbins)
+%    hold on
+%
+%    grid on
+%    plot([1 1]*m,[0 max(N)*1.2],'r')
+%    ylim([0 10])
+%    xlabel(pnames{i})
+%    ylabel('N')
+%    title(sprintf('Mu: %0.4f | RMS: %0.4f',m,s))
+%end
+
