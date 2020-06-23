@@ -58,10 +58,49 @@ apt_pos = [0,0];
 apt_diam = 482.6;
 
 
+%% Look at the masking model
+
+% Poor fit
+parms = [0   0  0   0    1];
+[xmove, ymove] = get_xy_offsets(parms,p,chind);
+model = reshape(nfbm_get_apt_model(parms,x,y,p,chind),length(x),length(y),[]);
+
+[X,Y] = meshgrid(x,y);
+
+newmap = map.*model;
+for ind = 1:length(chind)
+    newmap(:,:,ind) = interp2(X-xmove(ind),Y-ymove(ind),newmap(:,:,ind),X,Y);
+end
+
+coaddmap = newmap;
+coaddmap(isnan(coaddmap)) = 0;
+coaddmap = sum(coaddmap,3)./sum(coaddmap~=0,3);
+
+plot_some_maps(map.*model,coaddmap,lims,x,y,tiles,rows,cols,'No Fit')
+% Good fit
+parms = [17.9988   38.6928  535.6901   16.2122    1];
+[xmove, ymove] = get_xy_offsets(parms,p,chind);
+model = reshape(nfbm_get_apt_model(parms,x,y,p,chind),length(x),length(y),[]);
+
+[X,Y] = meshgrid(x,y);
+
+newmap = map.*model;
+for ind = 1:length(chind)
+    newmap(:,:,ind) = interp2(X-xmove(ind),Y-ymove(ind),newmap(:,:,ind),X,Y);
+end
+
+coaddmap = newmap;
+coaddmap(isnan(coaddmap)) = 0;
+coaddmap = sum(coaddmap,3)./sum(coaddmap~=0,3);
+
+plot_some_maps(map.*model,coaddmap,lims,x,y,tiles,rows,cols,'Good Fit')
+%plot_some_maps(lognewmap,logcoaddmap,loglims,x,y,tiles,rows,cols,'After Shifting')
+
+%% Shifting effects
 % Make map with no offsets
 coaddmap = sum(map,3)/length(chind);
 
-plot_some_maps(map,coaddmap,lims,x,y,tiles,rows,cols,'Before Shifting')
+plot_some_maps(map,coaddmap,lims,x,y,tiles,rows,cols,'No Shifting')
 %plot_some_maps(logmap,logcoaddmap,loglims,x,y,tiles,rows,cols)
 
 % Make map with offsets
@@ -81,49 +120,10 @@ coaddmap = sum(coaddmap,3)./sum(coaddmap~=0,3);
 plot_some_maps(newmap,coaddmap,lims,x,y,tiles,rows,cols,'After Shifting')
 %plot_some_maps(lognewmap,logcoaddmap,loglims,x,y,tiles,rows,cols,'After Shifting')
 
-%% Look at the masking model
-keyboard()
-% Good fit
-parms = [10   20  250   10    1];
-[xmove, ymove] = get_xy_offsets(parms,p,chind);
-model = reshape(nfbm_get_apt_model(parms,x,y,p,chind),length(x),length(y),[]);
-
-[X,Y] = meshgrid(x,y);
-
-newmap = map.*model;
-for ind = 1:length(chind)
-    newmap(:,:,ind) = interp2(X-xmove(ind),Y-ymove(ind),newmap(:,:,ind),X,Y);
-end
-
-coaddmap = newmap;
-coaddmap(isnan(coaddmap)) = 0;
-coaddmap = sum(coaddmap,3)./sum(coaddmap~=0,3);
-
-plot_some_maps(newmap,coaddmap,lims,x,y,tiles,rows,cols,'Poor Fit')
-% Good fit
-parms = [17.9988   38.6928  535.6901   16.2122    1];
-[xmove, ymove] = get_xy_offsets(parms,p,chind);
-model = reshape(nfbm_get_apt_model(parms,x,y,p,chind),length(x),length(y),[]);
-
-[X,Y] = meshgrid(x,y);
-
-newmap = map.*model;
-for ind = 1:length(chind)
-    newmap(:,:,ind) = interp2(X-xmove(ind),Y-ymove(ind),newmap(:,:,ind),X,Y);
-end
-
-coaddmap = newmap;
-coaddmap(isnan(coaddmap)) = 0;
-coaddmap = sum(coaddmap,3)./sum(coaddmap~=0,3);
-
-plot_some_maps(newmap,coaddmap,lims,x,y,tiles,rows,cols,'Good Fit')
-%plot_some_maps(lognewmap,logcoaddmap,loglims,x,y,tiles,rows,cols,'After Shifting')
-
-
 
 %% Figuring the aperture size
 
-apt_diam = 0.53*1000;
+apt_diam = 0.52*1000;
 
 % Plot maps and margin overlay
 figure(pltcnt); pltcnt = pltcnt+1;
@@ -139,7 +139,7 @@ ylabel('Y (mm)')
 set(gca,'YDir','normal')
 grid on
 axis image
-title(sprintf('Aperture: %2.2f"',apt_diam))
+title(sprintf('Aperture: %2.2fmm',apt_diam))
 colormap(jet)
 hp4 = get(subplot(1,1,1),'Position');
 colorbar('Position', [hp4(1)+hp4(3)+0.01  hp4(2)  0.025  hp4(2)+hp4(3)*0.9])
@@ -162,7 +162,7 @@ ylabel('Y (mm)')
 set(gca,'YDir','normal')
 grid on
 axis image
-title(sprintf('Aperture: %2.2f"',apt_diam))
+title(sprintf('Aperture: %2.2fmm',apt_diam))
 colormap(jet)
 hp4 = get(subplot(1,1,1),'Position');
 colorbar('Position', [hp4(1)+hp4(3)+0.01  hp4(2)  0.025  hp4(2)+hp4(3)*0.9])
@@ -256,11 +256,10 @@ colorbar('Position', [hp4(1)+hp4(3)+0.01  hp4(2)+0.08  0.025  hp4(2)+hp4(3)*2.5]
 
 %% Beam Steer
 
-%keyboard()
 [xmove, ymove] = get_xy_offsets(parms,p,1:2640);
 params = nfbm.A;
-params(2,:) = -1*params(2,:)*25.4;
-params(3,:) = params(3,:)*25.4;
+%params(2,:) = params(2,:);
+%params(3,:) = params(3,:);
 bmsteer = [params(2,:)'-xmove, params(3,:)'-ymove];
 %bmsteer = nfbm.beam_steer;
 
@@ -280,7 +279,7 @@ pol = {'A','B'};
 clr = {'b','r'};
 for polind = 1:2
     % ind = sqrt(sum(bmsteer.^2,2))<2 & (p.mce~=0) & ismember(1:2640,pind.rgl100)' & strcmp(p.pol,pol{polind});
-    ind = sqrt(sum(bmsteer.^2,2))<5000 & (p.mce~=0) & ismember(1:2640,pind.rgl100)' & strcmp(p.pol,pol{polind});
+    ind = sqrt(sum(bmsteer.^2,2))<50 & (p.mce~=0) & ismember(1:2640,pind.rgl100)' & strcmp(p.pol,pol{polind});
     quiver(ymovep(ind),xmovep(ind),bmsteerp(ind,2)*scale,bmsteerp(ind,1)*scale,0,'color',clr{polind});
 end
 
@@ -293,7 +292,7 @@ xlabel('Y (mm)')
 legend('Pol A','Pol B')
 title(sprintf('Beam Steer (%2.2fx scaling)',scale))
 % Per tile beam steer plots
-
+keyboard()
 
 %% Comparing sims to close detectors
 %chind = 
@@ -318,7 +317,7 @@ ymove = planedist*tand(p.r(chind)).*sind(p.theta(chind)+phase)+ycen;
 function plot_some_maps(map,coaddmap,lims,x,y,tiles,rows,cols,plttitle)
 global pltcnt
 figure(pltcnt); pltcnt = pltcnt+1;
-set(gcf,'Position',[50,50,800,800])
+set(gcf,'Position',[50,50,600,600])
 clf
 
 subplot(3,3,5)

@@ -123,7 +123,7 @@ plot_some_maps(newmap,coaddmap,lims,x,y,tiles,rows,cols,'After Shifting')
 
 %% Figuring the aperture size
 
-apt_diam = 0.53*1000;
+apt_diam = 0.52*1000;
 
 % Plot maps and margin overlay
 figure(pltcnt); pltcnt = pltcnt+1;
@@ -256,7 +256,6 @@ colorbar('Position', [hp4(1)+hp4(3)+0.01  hp4(2)+0.08  0.025  hp4(2)+hp4(3)*2.5]
 
 %% Beam Steer
 
-keyboard()
 [xmove, ymove] = get_xy_offsets(parms,p,1:2640);
 params = nfbm.A;
 %params(2,:) = params(2,:);
@@ -280,7 +279,7 @@ pol = {'A','B'};
 clr = {'b','r'};
 for polind = 1:2
     % ind = sqrt(sum(bmsteer.^2,2))<2 & (p.mce~=0) & ismember(1:2640,pind.rgl100)' & strcmp(p.pol,pol{polind});
-    ind = sqrt(sum(bmsteer.^2,2))<5000 & (p.mce~=0) & ismember(1:2640,pind.rgl100)' & strcmp(p.pol,pol{polind});
+    ind = sqrt(sum(bmsteer.^2,2))<20 & (p.mce~=0) & ismember(1:2640,pind.rgl100)' & strcmp(p.pol,pol{polind});
     quiver(ymovep(ind),xmovep(ind),bmsteerp(ind,2)*scale,bmsteerp(ind,1)*scale,0,'color',clr{polind});
 end
 
@@ -293,7 +292,7 @@ xlabel('Y (mm)')
 legend('Pol A','Pol B')
 title(sprintf('Beam Steer (%2.2fx scaling)',scale))
 % Per tile beam steer plots
-
+keyboard()
 
 %% Comparing sims to close detectors
 %chind = 
