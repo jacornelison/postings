@@ -34,10 +34,10 @@
 <link href="scripts/pager.css" rel="stylesheet" type="text/css"/>
 
 <header>
-    <h1>Near Field Beam Metrics</h1>
+    <h1>A Comparison of Measured and GRASP-Simulated Near Field Beam Maps</h1>
 
-    <time class="published updated" datetime="2020-06-02">
-        2020 June 02
+    <time class="published updated" datetime="2020-xx-xx">
+        2020 mmm dd
     </time>
     —
     J. Cornelison
@@ -46,232 +46,19 @@
 </header>
 
 
-<p>This posting follows <a href="JAC2020"></a> in presenting estimates various metrics from near field beam maps particularly for BICEP3 data. These
-    parameters are not only useful in tracking systematics at the focal plane level, but we also want to try to connect
-    these to deprojected residuals and eventually resulting B-mode power. This posting goes more in depth on the model used to derive the location of the aperture WRT the telescope boresight. I also present updated results for beam steer using new gaussian fits as well as a comparison of measured edge tapers to Paul Grimes' GRASP simulations of near field power.</p>
+<p>Words.
 <hr>
 
 
-<section>
-    <h2>Definition of Metrics</h2>
-    <h3>Beam Steer</h3>
-    <p>
-        Thickness variation in the intermediate layer between the Niobium groundplane and microstrip lines can create a
-        phase gradient in the summing network. This phase gradient manifests as an angular offset from the direction
-        normal to the focal plane of the beam trajectory coming out of the antenna feed. As projected onto the plane of
-        the aperture, the offset trajectory would look like a translation of the beam center from the aperture center in
-        near field beam maps. Thus, <b>we define beam steer as the offset between the beam center and aperture
-        center</b>.
-    </p>
-
-    <h3>Edge Taper</h3>
-    <p>In our instrumental designs, we configure the optics with a specific target for edge taper in mind. Estimating
-        the minimum, maximum, and azimuthal average edge taper tells us how we compare to the as-designed values. The
-        "edge" is determined by defining an annulus within which we calculate the taper parameters. <b>The outer
-            boundary of the edge is defined by the aperture diameter and the inner boundary is arbitrarily selected to
-            be N% smaller than the aperture diameter.</b> For the figures below, I've set the inner boundary to be 10%
-        of the aperture diameter.
-    </p>
-
-    <figure>
-        <img src="figs/nfbm_edge_taper_min_max_avg.png"/>
-    </figure>
-
-</section>
-<section><h2>Procedure</h2>
-    <p>
-        We mostly follow the procedure historically done in <a href="CLW2012A"></a> but we list it here explicitly
-        for clarity:
-    <ol>
-        <li>Determine the location of the aperture in the beam map coordinate system.</li>
-        <ul>
-            <li>This is accomplished by stacking multiple maps and shifting/rotating until we can identifying a
-                sharp truncation in amplitude from the aperture.
-            </li>
-        </ul>
 
 
-        <li>Fit Gaussian profiles to per-detector beams.</li>
-        <ul>
-            <li>In my previous posting <a href="JAC2020"></a>, I used parameter estimates on the beams that we done as
-                part of the reduction pipeline. In this posting, I fit each beam to a 4-parameter symmetrical
-                Gaussian, masking out all data beyond a 150mm radius around the apparent aperture center of each
-                detector.
-            </li>
-        </ul>
-        <li>Subtract aperture center from as-fit beam center to get the beam steer.</li>
-        <li>Determine apparent size of the aperture.</li>
-        <ul>
-            <li>In the coadded map, it is easy to see the sharp cut off due to the aperture. As can be seen in the
-                figure below, the as-given illuminated aperture is notably larger than the apparent aperture. The
-                aperture diameter in this case was set by-eye at 483mm.
-            </li>
-        </ul>
-        <figure>
-            <img alt="Maps pager" id="aptpager" src="#"/>
-            <figcaption>
-                The shifted and coadded map for 8 good pixels with the physical aperture size overlaid on top. The
-                <b>Given</b> aperture size of 520mm is the listed BICEP3 "Illuminated Aperture" from the <a
-                    href="https://docs.google.com/spreadsheets/d/1imzDteb9FE-Cjh5p8T4tjHvL0X6UEihp94yvQgXON5k/edit#gid=473345804">Telescope
-                & Instrument Parameters Doc</a>. The <b>Set</b> aperture size is the by-eye setting of 483mm".
-            </figcaption>
-            <script type="text/javascript">
-                pager.link("#aptpager",
-                    {
-                        'Illum. Apt.|a': ['Given|given', 'Set|set'],
-                    },
-                    function (params) {
-                        return 'figs/apt_size_' + params.a + '.png';
-                    });
-                pager.setparams({
-                    'a': 'given',
-                });
-            </script>
-        </figure>
-        <li>Calculate per-detector edge taper parameters based on aperture center, size, and margin.</li>
-    </ol>
-    </p>
 
-</section>
-<section>
-    <h2>Dataset</h2>
-    The dataset used in this posting comes from the Nov 2016 - Feb 2017 Calibration season, the maps for which can
-    be found in <a href="TSG2020B"></a>.
-</section>
-
-<section><h2>Aperture Modeling</h2>
-    <h3>Finding the Aperture</h3>
-    <p>
-        The apparent aperture center of each detector in the near-field beam map coordinate system,
-        ($x_{apt},\,y_{apt}\,$), is calculated using four global parameters in conjunction with the ideal detector
-        pointings ($r,\,\theta\,$):
-    </p>
-    \begin{equation}
-    \begin{split}
-    &x_{apt} = d \tan(r)\sin(\theta+\phi)+x_{0}\\
-    &y_{apt} = d \tan(r)\cos(\theta+\phi)+y_{0}
-    \end{split}
-    \end{equation}
-    <p>
-        where $d$ is the distance from the aperture plane to the mapper plane, $\phi$ is the rotation of the mapper
-        WRT the boresight-centered coordinate system, and ($x_0,\,y_0$) is the offset from the origin of the mapper
-        to the center of the aperture.
-    </p>
-
-    <p>
-        These parameters are estimated using a background+mask model. In the real beam maps, I assume little-to-no
-        signal should exist beyond the aperture and that the aperture is symmetric. Thus, for a map with amplitude
-        $A(x,y)$ masking out the data within the radius of the aperture, $R_{apt}$, should result in a constant
-        background signal $A_{bg}$:
-
-    </p>
-    \begin{equation}
-    A(x,y\,|\,x_{apt},\,y_{apt},\,R_{apt}) =
-    \begin{cases}
-    \text{NaN} & \sqrt{(x-x_{apt})^2+(y-y_{apt})^2}\lt R_{apt} \\
-    A_{bg} & \sqrt{\left(x-x_{apt}\right)^2+(y-y_{apt})^2}\ge R_{apt} \\
-    \end{cases}
-    \end{equation}
-
-    <p>
-        The maps from a few pixels (both A & B detectors) spread out across the focal plane are simultaneously fit
-        to the model above to estimate the parameters $\left(x_0,\,y_0,\,d,\,\phi,\,A_{bg}\right)$. The pager below
-        shows the masked maps. In the 'After Fit' plots, we can see that a single set of parameters adequately masks
-        all beams, leaving only a flat level of background noise. For the data used in this posting the best-fit
-        parameters are:
-    </p>
-    <table class="center">
-        <tr>
-            <th>$x_0$ (mm)</th>
-            <th>$y_0$ (mm)</th>
-            <th>$d$ (mm)</th>
-            <th>$\phi$ (&deg;)</th>
-            <th>$A_{bg}$ (mm)</th>
-        </tr>
-        <tr>
-            <td>18.0</td>
-            <td>38.7</td>
-            <td>535.7</td>
-            <td>16.2</td>
-            <td>0.55</td>
-        </tr>
-    </table>
-
-    <h3>Shifting the Maps</h3>
-
-    <p>
-
-        The coadded map is created by calculating the per-detector aperture positions using Eq. 1 with the best-fit
-        parameters of $\left(x_0,\,y_0,\,d,\,\phi\right)$ as inputs and then shifting the maps before coadding.
-    </p>
-
-
-    <figure>
-        <img alt="Maps pager" id="shiftpager" src="#"/>
-        <figcaption>
-            <b>Fit:</b> Maps of 8 good detectors across the focal plane masked over using the model described in EQ.
-            2 and the coadded maps for 8 whole pixels (center) after shifting using Eq. 1 and all zeros (<b>Fit:
-            None</b>) or the best-fit parameters (<b>Fit: After</b>) as inputs.
-            <b>Shift:</b> Maps of 8 good detectors across the focal plane and the coadded maps for 8 whole pixels
-            (center) before and after shifting.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#shiftpager",
-                {
-                    'Plot|c': ['Fit|fit', 'Shift|shift'],
-                    'Fit|s': ['None|before', 'After|after'],
-                },
-                function (params) {
-                    return 'figs/apt_fit_' + params.s + '_' + params.c + '.png';
-                });
-            pager.setparams({
-                'c': 'fit',
-                's': 'before',
-            });
-        </script>
-    </figure>
-
-
-</section>
-
-<section><h2>Results</h2>
-    <p>
-    <h3>Beam Steer</h3>
-    Beam steer has been recalculated using the new 4-parameter beam fits.
-    <figure>
-        <img alt="Test" src="figs/beam_steer.png"/>
-        <figcaption>
-            Quiver plot of beam steer for A and B polarization RGL detectors in <font color="blue">blue</font> and
-            <font color="red">red</font> respectively.
-        </figcaption>
-    </figure>
-
-    <h3>Edge Taper</h3>
-    <figure>
-        <img alt="Maps pager" id="taperpager" src="#"/>
-
-        <script type="text/javascript">
-            pager.link("#taperpager",
-                {
-                    'Metric|m': ['Min|min', 'Max|max', 'Avg|avg'],
-                },
-                function (params) {
-                    return 'figs/tile_plot_edge_taper_' + params.m + '.png';
-                });
-            pager.setparams({
-                'm': 'min',
-            });
-        </script>
-    </figure>
-</section>
 <section>
     <h2>Comparing Real NFBM's to GRASP Sims</h2>
-    <p>
-    In this section, I perform my edge taper analysis on Paul's GRASP simulations of near field power 20" (~410mm) from the aperture. In the pager below, I also provide four Pol A detectors that are relatively close in pointing to the the sims. In the plots below, the particular sims used were the co-polar field amplitudes in <tt>Main beam only/BICEP3_asBuilt_PO_withForebaffle_Nearfield_Grid_##</tt>.
-    </p>
-    <p>
-    By accounting for the distance to the mapper, the simulated edge tapers are now much closer to the measured edge taper, but the power roll off is much slower for the sims compared to the real data.
-    </p>
+    <ul>
+        <li>Applying debias to measured beam maps</li>
+        <li>Absolute min/max values can be thrown off by statistical fluctuations, so I added a "quantile" page showing 10th-percentile, 90th-percentile, and median in lieu of min,max, and avg respectively.</li>
+    </ul>
     <figure>
         <img alt="Maps pager" id="taperpager2" src="#"/>
 
@@ -279,14 +66,20 @@
             pager.link("#taperpager2",
                 {
                     'Map|mp': ['Measured|real', 'GRASP|grasp', 'Downsampled|grasp_ds'],
+                    'Taper|tp': ['min/max/avg|','Quantile|_quantile']
                 },
                 function (params) {
-                    return 'figs/simcompare_' + params.mp + '.png';
+                    return 'figs/simcompare_' + params.mp + '' + params.tp +'.png';
                 });
             pager.setparams({
                 'mp': 'real',
+                'tp':'',
             });
         </script>
+    </figure>
+
+    <figure>
+        <img src="figs/beam_profiles.png"/>
     </figure>
 
 </section>
