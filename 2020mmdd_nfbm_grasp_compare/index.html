@@ -40,7 +40,7 @@
         2020 mmm dd
     </time>
     —
-    J. Cornelison
+    J. Cornelison, K. McGowen
     <hr>
 
 </header>
@@ -48,9 +48,64 @@
 
 <p>Words.
 <hr>
+<section>
+    <h2>Beam Steer</h2>
+
+<ul>
+    <li>Beam steer on grasp sims</li>
+    <li>Zero-steer case</li>
+    <li>Do a near-field displacement using Zemax</li>
+    <li>Translate beams to center(using expected and fit parameters)</li>
+    <li>Compare to real data</li>
+    <li>Look at average fit per-tile</li>
+    <li>End goal is to have a recipe that takes a given rx and quantifies beam steer (in degs) and patterns tile-by-tile and stores results as a csv file</li>
+</ul>
+
+    <p>In a previous posting, I defined the beam steer as the offset between the beam center and aperture center and offered previous results in units of mm. Realistically, beam steer has a more physical meaning when converted into the offset angle from normal to the focal plane</p>
+
+    <p>
+        The problem is that this offset angle is Approximate it by
+    </p>
+
+
+    $$N_f$$
+    $$\theta_{bs} = \frac{18.2^\circ}{260\,\text{mm}}\left(r_{beam}-r_{apt}\right)$$
+
+    <h3>Far-Field pointing calculations</h3>
+    <p>We had a summer student (Kaylah McGowan from UofA) re-blaze the trail for converting detector locations on the focal plane ($R_{FP}$) into on-sky pointing ($R_{SKY}$) at the far field via Zemax models (see <a href="JBW2016"></a> for previous work).</p>
+    <p>In essence, her recipe was as follows:</p>
+    <ol>
+        <li>For a given model, create a paraxial object at the very end of the lens system in "lens data".</li>
+        <li>Set the paraxial object thickness to very far away (we set ours arbitrarily to 5e6 mm)</li>
+        <li>Using the "single raytrace" tool, record the z-cosine value after the paraxial object for a series of distances on the focal plane (normalized in OptStudio from 0 to 1 for FP center and edge respectively).</li>
+        <li>Convert FP distances from normalized to mm and ray angles to degrees (using arccos) to produce an array of $R_{FP}$ vs. $R_{SKY}$.</li>
+        <li>Fit a 4th-order polynomial (with no constant) to the $R_{FP}$ vs. $R_{SKY}$ data to produce a function which converts radial distance on the focal plane to on-sky pointing WRT to boresight.</li>
+    </ol>
+
+    <p>Her results for a far-field case compared to those from JWB's posting are shown below. We find that Kaylah's results deviate, at most, on the order of 1 arcmin compared to JWB's, which we think are sufficiently close for our purposes.</p>
+
+    <figure>
+        <img src=""/>
+
+
+    </figure>
+
+    <h3>Near-Field pointing calculations</h3>
+    <p>Thanks to Kaylah, I was able to take this project one step further and calculate $R_{SKY}$ for the near-field case to see if we can detect significant deviations in pointing in the near field which would skew our beam steer results. I followed her recipe as described above but instead set the paraxial lens object thickness to 508 mm (20 inches) to match the near field mapper distance set in Paul's GRASP sims. For convenience, I wrapped steps 3 and 4 in her procedure in a Zemax macro: <a href="rfp_to_rsky.ZPL">rf_to_rsky.ZPL</a></p>
+    <p>In the plot below, I compare the near-field results to the Kaylah and Justin's far-field results. We can see that the near-field pointing quickly deviates as $R_{FP}$ increases and differs by $\sim4^\circ$ at the edge of the focal plane.</p>
+
+    <figure>
+        <img src=""/>
+    </figure>
+
+
+    <h3></h3>
 
 
 
+    <h3>GRASP Sims: Zero-steer case</h3>
+
+</section>
 
 
 <section>
@@ -109,6 +164,7 @@
             "CLW2012C",
             "CLW2012D",
             "CLW2012E",
+            "JBW2016",
             "TSG2020A",
             "TSG2020B",
             "JAC2020",
@@ -126,6 +182,7 @@
             "../../../keck/analysis_logbook/analysis/20120808_beamsteer/",
             "../../../keck/analysis_logbook/analysis/20120913_beamsteer_E8_B2/",
             "../../../keck/analysis_logbook/analysis/20120920_beamsteervsoe/",
+            "../20160510_ideal_beamcen_distortion/",
             "../20200303_bicep3_nfbm_alldata/",
             "../20200303_bicep3_nfbm_alldata/nfbm_bicep3_mount_20170116/",
             "../20200602_nfbm_beamsteer/"
@@ -137,6 +194,7 @@
             "Beam steer",
             "Beam Steer of E8 and Bicep2",
             "Beam Steer and Optical efficiency",
+            "Including optical model distortion parameters in the BICEP3 ideal beam centers",
             "BICEP3 NFBM All Data",
             "BICEP3 NFBM 2017-01-16",
             "Beam Steer and Edge Taper Estimations for Near Field Beam Maps"
