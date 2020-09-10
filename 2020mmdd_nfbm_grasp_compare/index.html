@@ -60,19 +60,20 @@
     <li>Look at average fit per-tile</li>
     <li>End goal is to have a recipe that takes a given rx and quantifies beam steer (in degs) and patterns tile-by-tile and stores results as a csv file</li>
 </ul>
-
-    <p>In a previous posting, I defined the beam steer as the offset between the beam center and aperture center and offered previous results in units of mm. Realistically, beam steer has a more physical meaning when converted into the offset angle from normal to the focal plane</p>
+    <h3>Converting Beam Steer from mm to degrees</h3>
+    <p>In a previous posting, I defined the beam steer as a lateral offset between the beam center and aperture center ($r_{beam}-r_{apt}$) in NFBMs and offered previous results in units of mm. Realistically, beam steer is more easily comparable to sims when converted from that lateral offset into an equivalent offset angle, $\theta_{bs}$, of the beam trajectory WRT to the focal plane normal. This is computed by ...</p>
 
     <p>
-        The problem is that this offset angle is Approximate it by
     </p>
 
 
-    $$N_f$$
-    $$\theta_{bs} = \frac{18.2^\circ}{260\,\text{mm}}\left(r_{beam}-r_{apt}\right)$$
+    $$\theta_{bs} =\frac{2}{D_{apt}}\tan^{-1}{\left(\frac{1}{2\cdot\,N_f}\right)}\left(r_{beam}-r_{apt}\right)$$
+
+    <p>Where, for BICEP3, $N_f=1.576$ and $D_{apt}=520\,\text{mm}$:</p>
+    $$\theta_{bs} = \frac{17.60^\circ}{260\,\text{mm}}\left(r_{beam}-r_{apt}\right)$$
 
     <h3>Far-Field pointing calculations</h3>
-    <p>We had a summer student (Kaylah McGowan from UofA) re-blaze the trail for converting detector locations on the focal plane ($R_{FP}$) into on-sky pointing ($R_{SKY}$) at the far field via Zemax models (see <a href="JBW2016"></a> for previous work).</p>
+    <p>We had some intuition that the optical pointing in the near field would be slightly different than that in the far field, but needed to verify that we could correctly calculate far-field pointing before moving on to the near field. We had a summer student (Kaylah McGowan from UofA) re-blaze the trail for converting detector locations on the focal plane ($R_{FP}$) into on-sky pointing ($R_{SKY}$) at the far field via Zemax models (see <a href="JBW2016"></a> for previous work).</p>
     <p>In essence, her recipe was as follows:</p>
     <ol>
         <li>For a given model, create a paraxial object at the very end of the lens system in "lens data".</li>
