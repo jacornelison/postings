@@ -50,7 +50,7 @@
 <hr>
 <section>
     <h2>Beam Steer</h2>
-
+<!--
 <ul>
     <li>Beam steer on grasp sims</li>
     <li>Zero-steer case</li>
@@ -60,6 +60,8 @@
     <li>Look at average fit per-tile</li>
     <li>End goal is to have a recipe that takes a given rx and quantifies beam steer (in degs) and patterns tile-by-tile and stores results as a csv file</li>
 </ul>
+
+    -->
     <h3>Converting Beam Steer from mm to degrees</h3>
     <p>In a previous posting, I defined the beam steer as a lateral offset between the beam center and aperture center ($r_{beam}-r_{apt}$) in NFBMs and offered previous results in units of mm. Realistically, beam steer is more easily comparable to sims when converted from that lateral offset into an equivalent offset angle, $\theta_{bs}$, of the beam trajectory WRT to the focal plane normal. This is computed by ...</p>
 
@@ -72,13 +74,25 @@
     <p>Where, for BICEP3, $N_f=1.576$ and $D_{apt}=520\,\text{mm}$:</p>
     $$\theta_{bs} = \frac{17.60^\circ}{260\,\text{mm}}\left(r_{beam}-r_{apt}\right)$$
 
-    <h3>Far-Field pointing calculations</h3>
+    <h3>Beam Steer in GRASP sims</h3>
+
+    Like real data, I calculate aperture center on each map (see $\S 4$ of <a href="JAC2020B"></a>) to center the maps before calculating beam steer (this sets $r_{apt}=0$). For the sims, I assume zero $x$, $y$, or $\phi$ correction and set the mapper distance to 508mm (20") to reflect the mapping plane set in the sims.
+
+    <figure>
+        <img src="figs/nfbm_grasp_beam_steer.png" width=60%/>
+        <figcaption>
+            Beam Steer estimations for each Grid for the various GRASP sims. "MainBeamOnly" and "WithBuddies" are expected have zero steer.
+        </figcaption>
+    </figure>
+
+
+    <h3>Near-Field Pointing Corrections</h3>
     <p>We had some intuition that the optical pointing in the near field would be slightly different than that in the far field, but needed to verify that we could correctly calculate far-field pointing before moving on to the near field. We had a summer student (Kaylah McGowan from UofA) re-blaze the trail for converting detector locations on the focal plane ($R_{FP}$) into on-sky pointing ($R_{SKY}$) at the far field via Zemax models (see <a href="JBW2016"></a> for previous work).</p>
     <p>In essence, her recipe was as follows:</p>
     <ol>
-        <li>For a given model, create a paraxial object at the very end of the lens system in "lens data".</li>
-        <li>Set the paraxial object thickness to very far away (we set ours arbitrarily to 5e6 mm)</li>
-        <li>Using the "single raytrace" tool, record the z-cosine value after the paraxial object for a series of distances on the focal plane (normalized in OptStudio from 0 to 1 for FP center and edge respectively).</li>
+        <li>For a given model, create a dummy lens object at the very end of the lens system in "lens data".</li>
+        <li>Set the dummy lens object thickness to very far away (we set ours arbitrarily to 5e6 mm)</li>
+        <li>Using the "single raytrace" tool, record the z-cosine value after the dummy lens object for a series of distances on the focal plane (normalized in OptStudio from 0 to 1 for FP center and edge respectively).</li>
         <li>Convert FP distances from normalized to mm and ray angles to degrees (using arccos) to produce an array of $R_{FP}$ vs. $R_{SKY}$.</li>
         <li>Fit a 4th-order polynomial (with no constant) to the $R_{FP}$ vs. $R_{SKY}$ data to produce a function which converts radial distance on the focal plane to on-sky pointing WRT to boresight.</li>
     </ol>
@@ -86,21 +100,69 @@
     <p>Her results for a far-field case compared to those from JWB's posting are shown below. We find that Kaylah's results deviate, at most, on the order of 1 arcmin compared to JWB's, which we think are sufficiently close for our purposes.</p>
 
     <figure>
-        <img src=""/>
+        <img src="figs/zemax_reanalysis.png"/>
+        <figcaption>
 
+        </figcaption>
 
     </figure>
 
-    <h3>Near-Field pointing calculations</h3>
-    <p>Thanks to Kaylah, I was able to take this project one step further and calculate $R_{SKY}$ for the near-field case to see if we can detect significant deviations in pointing in the near field which would skew our beam steer results. I followed her recipe as described above but instead set the paraxial lens object thickness to 508 mm (20 inches) to match the near field mapper distance set in Paul's GRASP sims. For convenience, I wrapped steps 3 and 4 in her procedure in a Zemax macro: <a href="rfp_to_rsky.ZPL">rf_to_rsky.ZPL</a></p>
+
+    <p>Thanks to Kaylah, I was able to take this project one step further and calculate $R_{SKY}$ for the near-field case to see if we can detect significant deviations in pointing in the near field which would skew our beam steer results. I followed her recipe as described above but instead set the dummy lens object thickness to 508 mm (20 inches) to match the near field mapper distance set in Paul's GRASP sims. For convenience, I wrapped steps 3 and 4 in her procedure in a Zemax macro: <a href="rfp_to_rsky.ZPL">rf_to_rsky.ZPL</a></p>
     <p>In the plot below, I compare the near-field results to the Kaylah and Justin's far-field results. We can see that the near-field pointing quickly deviates as $R_{FP}$ increases and differs by $\sim4^\circ$ at the edge of the focal plane.</p>
 
     <figure>
-        <img src=""/>
+        <img src="figs/zemax_nearfield_correction.png"/>
+        <figcaption>
+
+        </figcaption>
     </figure>
 
 
-    <h3></h3>
+    <h4>Applied to GRASP sims</h4>
+    I applied the near field correction to sims ... When fitting for the aperture centering parameters, the center and rotation parameters are consistent with zero. The aperture distance, however converges on ~700mm instead of 500mm. Below I show a pager comparing near-field "corrected" sims both at a distance of 508mm and the estimated 700mm.
+
+    What we see, I suppose, isn't surprising.
+    <figure>
+        <img alt="" id="bsgrasppager" src="#" width=60%/>
+
+        <script type="text/javascript">
+            pager.link("#bsgrasppager",
+                {
+                    'Correction|cr': ['None|', 'Near Field|nf_corrected','NF 700mm|nf_corrected_newplane'],
+
+                },
+                function (params) {
+                    return 'figs/nfbm_grasp_beam_steer_' + params.cr + '.png';
+                });
+            pager.setparams({
+                'cr': '',
+
+            });
+        </script>
+    </figure>
+
+
+    <h4>Applied to real data</h4>
+<figure>
+    <img alt="" id="bspager" src="#"/>
+
+    <script type="text/javascript">
+        pager.link("#bspager",
+            {
+                'Correction|c': ['None|no', 'Near Field|nf'],
+
+            },
+            function (params) {
+                return 'figs/tile_plot_beam_steer_' + params.c + '_correction.png';
+            });
+        pager.setparams({
+            'c': 'no',
+
+        });
+    </script>
+    </figure>
+
 
 
 
@@ -168,7 +230,8 @@
             "JBW2016",
             "TSG2020A",
             "TSG2020B",
-            "JAC2020",
+            "JAC2020A",
+            "JAC2020B"
         ];
 
         // Logbook Site map:
@@ -186,7 +249,8 @@
             "../20160510_ideal_beamcen_distortion/",
             "../20200303_bicep3_nfbm_alldata/",
             "../20200303_bicep3_nfbm_alldata/nfbm_bicep3_mount_20170116/",
-            "../20200602_nfbm_beamsteer/"
+            "../20200602_nfbm_beamsteer/",
+            "../20200623_nfbm_beamsteer/"
         ];
 
         var desc = [
@@ -198,7 +262,8 @@
             "Including optical model distortion parameters in the BICEP3 ideal beam centers",
             "BICEP3 NFBM All Data",
             "BICEP3 NFBM 2017-01-16",
-            "Beam Steer and Edge Taper Estimations for Near Field Beam Maps"
+            "Beam Steer and Edge Taper Estimations for Near Field Beam Maps",
+            "Near Field Beam Metrics"
         ];
 
 
