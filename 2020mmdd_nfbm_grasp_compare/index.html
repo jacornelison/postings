@@ -46,8 +46,10 @@
 </header>
 
 
-<p>Words.
+<p></p>
 <hr>
+
+
 <section>
     <h2>Beam Steer</h2>
 <!--
@@ -63,9 +65,12 @@
 
     -->
     <h3>Converting Beam Steer from mm to degrees</h3>
-    <p>In a previous posting, I defined the beam steer as a lateral offset between the beam center and aperture center ($r_{beam}-r_{apt}$) in NFBMs and offered previous results in units of mm. Realistically, beam steer is more easily comparable to sims when converted from that lateral offset into an equivalent offset angle, $\theta_{bs}$, of the beam trajectory WRT to the focal plane normal. This is computed by ...</p>
+    <p>In a previous posting, I defined the beam steer as a lateral offset between the beam center and aperture center ($r_{beam}-r_{apt}$) in NFBMs and offered previous results in units of mm. In practice, beam steer is more easily comparable to sims when converted from that lateral offset into an equivalent offset angle, $\theta_{bs}$, of the beam trajectory WRT to the focal plane normal. This is computed by using the ratio of <a href="https://en.wikipedia.org/wiki/Angular_aperture">angular apterture</a>, $a$, to the aperture radius, $D/2$</p>
+
+    $$\theta_{bs} = \frac{2a}{D}\left(r_{beam}-r_{apt}\right)$$
 
     <p>
+        And $a$ can be substituted for the effective f-number, $N_f$:
     </p>
 
 
@@ -73,6 +78,9 @@
 
     <p>Where, for BICEP3, $N_f=1.576$ and $D_{apt}=520\,\text{mm}$:</p>
     $$\theta_{bs} = \frac{17.60^\circ}{260\,\text{mm}}\left(r_{beam}-r_{apt}\right)$$
+
+    <p>Realistically, the $N_f$ varies across the focal plane, but I've verified through Zemax that using the "working" $N_f$ is approximately good to within 4% across the whole focal plane.</p>
+
 
     <h3>Beam Steer in GRASP sims</h3>
 
@@ -120,9 +128,9 @@
 
 
     <h4>Applied to GRASP sims</h4>
-    I applied the near field correction to sims ... When fitting for the aperture centering parameters, the center and rotation parameters are consistent with zero. The aperture distance, however converges on ~700mm instead of 500mm. Below I show a pager comparing near-field "corrected" sims both at a distance of 508mm and the estimated 700mm.
+    <p>I applied the near field correction to sims. When fitting for the aperture centering parameters, the center and rotation parameters are consistent with zero. The aperture distance, however converges on ~700mm instead of 500mm. Below I show a pager comparing near-field "corrected" sims both at a distance of 508mm and the estimated 700mm.
+    </p>
 
-    What we see, I suppose, isn't surprising.
     <figure>
         <img alt="" id="bsgrasppager" src="#" width=60%/>
 
@@ -142,6 +150,9 @@
         </script>
     </figure>
 
+    <p>
+
+    </p>
 
     <h4>Applied to real data</h4>
 <figure>
@@ -163,16 +174,11 @@
     </script>
     </figure>
 
-
-
-
-    <h3>GRASP Sims: Zero-steer case</h3>
-
 </section>
 
 
 <section>
-    <h2>Comparing Real NFBM's to GRASP Sims</h2>
+    <h2>Edge Taper</h2>
     <ul>
         <li>Applying debias to measured beam maps</li>
         <li>Absolute min/max values can be thrown off by statistical fluctuations, so I added a "quantile" page showing 10th-percentile, 90th-percentile, and median in lieu of min,max, and avg respectively.</li>
@@ -201,6 +207,62 @@
     </figure>
 
 </section>
+
+
+<section>
+    <h2>Analysis Pipeline</h2>
+
+    <h3>Data Reduction</h3>
+
+
+    <h3>NFBM Metrics</h3>
+    <ul>
+        <li>
+            <code>nfbm_fit_metrics.m</code> -
+        </li>
+    <ol>
+        <li>
+            <code>nfbm_fit_aperture.m</code> -
+        </li>
+        <ul>
+            <li>
+                <code>nfbm_get_apt_model.m</code> -
+            </li>
+            <li>
+                <code>nfbm_get_apt_center.m</code> -
+            </li>
+        </ul>
+        <li>
+            <code>nfbm_fit_beam.m</code> -
+        </li>
+        <ul>
+        <li>
+            <code>nfbm_get_apt_model.m</code> -
+        </li>
+        </ul>
+
+        <li>
+            <code>.m</code> -
+        </li>
+
+    </ol>
+    </ul>
+        <h3>Interfacing GRASP sims with the NFBM metrics pipeline</h3>
+    Grasp sims come in a standard format, so I've added some code that easily converts the numpy files into a Matlab struct that we can run through the NFBM analysis pipeline.
+
+    <ol>
+        <li>
+            <code>npz_to_mat.py</code> - one-to-one conversion of GRASP <code>.npz</code> files into matlab compatible <code>.mat</code> structs. Requires <code>scipy</code>.
+        </li>
+        <li>
+            <code>grasp2nfbmstruct</code> - Loads the raw GRASP sim data and outputs a struct identical to those taken by the NFBM pipeline including faux FPU parameters and channel flags using <code>get_grasp_array_info.m</code>.
+        </li>
+    </ol>
+
+
+
+</section>
+
 
 
 <hr>
