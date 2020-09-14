@@ -48,8 +48,35 @@
 
 <p></p>
 <hr>
+<section>
+<h2>Grasp Sims</h2>
+
+    The following GRASP sims have been converted and run through the metrics analysis pipeline. The pager below shows maps of the GRASP sims, downsampled to match the same pixel spacing as the BICEP3 Jan 2017 data (~14mm/pix).
 
 
+<figure>
+    <img alt="" id="rdgrasppager" src="#" width=60%/>
+
+    <script type="text/javascript">
+        pager.link("#rdgrasppager",
+            {
+                'Sim Type|st': ['MainBeamOnly', 'withBuddies', '-3deg_beamsteer','3deg_beamsteer','-6deg_beamsteer','6deg_beamsteer'],
+
+            },
+            function (params) {
+                return 'figs/nfbm_grasp_reduc_plot_' + params.st + '.png';
+            });
+        pager.setparams({
+            'st': 'MainBeamOnly',
+
+        });
+    </script>
+    <figcaption>
+        
+    </figcaption>
+</figure>
+
+</section>
 <section>
     <h2>Beam Steer</h2>
 <!--
