@@ -72,9 +72,14 @@
         });
     </script>
     <figcaption>
-        
+
     </figcaption>
 </figure>
+
+    <p>It should be immediately obvious that the $\pm3^\circ$ beam steer maps are identical. This is because the data for these on the Google Drive are also identical. I've contacted Paul about rectifying this.</p>
+    <p>
+
+    </p>
 
 </section>
 <section>
@@ -110,19 +115,49 @@
 
 
     <h3>Beam Steer in GRASP sims</h3>
+<p>
+    Like real data, I calculate aperture center on each map (see $\S 4$ of <a href="JAC2020B"></a>) to center the maps before calculating beam steer. For the sims, I assume zero $x$, $y$, or $\phi$ correction and set the mapper distance to 508mm (20") to reflect the mapping plane set in the sims. After centering the maps, I estimate the beam centers using a 4-parameter cylindrically symmetric gaussian ($\left[A x_0 y_0 \sigma\right]). Additionally, to avoid errors on the fit from deformationa at the aperture edge, I zero-weighted all data outside a diameter of 385mm. Cacluating the beam steer is trivial as, since the maps are already centered, the beam steer is simply equal to the estimates on the beam centers.
+</p>
+    <p>
+    The pager below show the GRASP sims with the measured beam steer overplotted with a green 'x'.
+    </p>
+<figure>
+    <img alt="" id="rdbsgrasppager" src="#" width=60%/>
 
-    Like real data, I calculate aperture center on each map (see $\S 4$ of <a href="JAC2020B"></a>) to center the maps before calculating beam steer (this sets $r_{apt}=0$). For the sims, I assume zero $x$, $y$, or $\phi$ correction and set the mapper distance to 508mm (20") to reflect the mapping plane set in the sims.
+    <script type="text/javascript">
+        pager.link("#rdbsgrasppager",
+            {
+                'Sim Type|st': ['MainBeamOnly', 'withBuddies', '-3deg_beamsteer','3deg_beamsteer','-6deg_beamsteer','6deg_beamsteer'],
 
+            },
+            function (params) {
+                return 'figs/nfbm_grasp_reduc_plot_bs_' + params.st + '.png';
+            });
+        pager.setparams({
+            'st': 'MainBeamOnly',
+
+        });
+    </script>
+    <figcaption>
+        GRASP sims with measured beam steer overplotted with a <font color="green">green 'x'</font>. Data outside the black line were zero-weighted during the fits.
+    </figcaption>
+    </figure>
+<p>
+    We can see from the plot above that the beam steer estimates become less reliable as the beam steer increases. The plot below shows this more quantitatively where the estimates for both 3&deg; and 6&deg; magnitudes of beam steer are underestimated by ~16% and ~20% respectively.
+</p>
     <figure>
-        <img src="figs/nfbm_grasp_beam_steer.png" width=60%/>
+        <img src="figs/nfbm_grasp_beam_steer_.png" width=60%/>
         <figcaption>
             Beam Steer estimations for each Grid for the various GRASP sims. "MainBeamOnly" and "WithBuddies" are expected have zero steer.
         </figcaption>
     </figure>
 
+    <p>
+
+    </p>
 
     <h3>Near-Field Pointing Corrections</h3>
-    <p>We had some intuition that the optical pointing in the near field would be slightly different than that in the far field, but needed to verify that we could correctly calculate far-field pointing before moving on to the near field. We had a summer student (Kaylah McGowan from UofA) re-blaze the trail for converting detector locations on the focal plane ($R_{FP}$) into on-sky pointing ($R_{SKY}$) at the far field via Zemax models (see <a href="JBW2016"></a> for previous work).</p>
+    <p>We had some intuition that the optical pointing in the near field could be slightly different than that in the far field, but needed to verify that we could correctly calculate far-field pointing before moving on to the near field. We had a summer student (Kaylah McGowan from UofA) re-blaze the trail for converting detector locations on the focal plane ($R_{FP}$) into on-sky pointing ($R_{SKY}$) at the far field via Zemax models (see <a href="JBW2016"></a> for previous work).</p>
     <p>In essence, her recipe was as follows:</p>
     <ol>
         <li>For a given model, create a dummy lens object at the very end of the lens system in "lens data".</li>
@@ -143,8 +178,8 @@
     </figure>
 
 
-    <p>Thanks to Kaylah, I was able to take this project one step further and calculate $R_{SKY}$ for the near-field case to see if we can detect significant deviations in pointing in the near field which would skew our beam steer results. I followed her recipe as described above but instead set the dummy lens object thickness to 508 mm (20 inches) to match the near field mapper distance set in Paul's GRASP sims. For convenience, I wrapped steps 3 and 4 in her procedure in a Zemax macro: <a href="rfp_to_rsky.ZPL">rf_to_rsky.ZPL</a></p>
-    <p>In the plot below, I compare the near-field results to the Kaylah and Justin's far-field results. We can see that the near-field pointing quickly deviates as $R_{FP}$ increases and differs by $\sim4^\circ$ at the edge of the focal plane.</p>
+    <p>Thanks to Kaylah, I was able to take this project one step further and calculate $R_{SKY}$ for the near-field case to see if we can detect significant deviations in pointing in the near field which would skew our beam steer results. I followed her recipe as described above but instead set the dummy lens object thickness to 508 mm (20 inches) to match the near field mapper distance set in Paul's GRASP sims. For convenience, I wrapped steps 3 and 4 in her procedure in a Zemax macro: <a href="scripts/rfpu_to_rsky.ZPL">rfpu_to_rsky.ZPL</a></p>
+    <p>In the plot below, I compare the near-field results to the Kaylah's far-field results. We can see that the near-field pointing is nearly identical, deviating at most by ~2 arcseconds.</p>
 
     <figure>
         <img src="figs/zemax_nearfield_correction.png"/>
@@ -154,56 +189,9 @@
     </figure>
 
 
-    <h4>Applied to GRASP sims</h4>
-    <p>I applied the near field correction to sims. When fitting for the aperture centering parameters, the center and rotation parameters are consistent with zero. The aperture distance, however converges on ~700mm instead of 500mm. Below I show a pager comparing near-field "corrected" sims both at a distance of 508mm and the estimated 700mm.
-    </p>
-
-    <figure>
-        <img alt="" id="bsgrasppager" src="#" width=60%/>
-
-        <script type="text/javascript">
-            pager.link("#bsgrasppager",
-                {
-                    'Correction|cr': ['None|', 'Near Field|nf_corrected','NF 700mm|nf_corrected_newplane'],
-
-                },
-                function (params) {
-                    return 'figs/nfbm_grasp_beam_steer_' + params.cr + '.png';
-                });
-            pager.setparams({
-                'cr': '',
-
-            });
-        </script>
-    </figure>
-
-    <p>
-
-    </p>
-
-    <h4>Applied to real data</h4>
-<figure>
-    <img alt="" id="bspager" src="#"/>
-
-    <script type="text/javascript">
-        pager.link("#bspager",
-            {
-                'Correction|c': ['None|no', 'Near Field|nf'],
-
-            },
-            function (params) {
-                return 'figs/tile_plot_beam_steer_' + params.c + '_correction.png';
-            });
-        pager.setparams({
-            'c': 'no',
-
-        });
-    </script>
-    </figure>
-
 </section>
 
-
+<!--
 <section>
     <h2>Edge Taper</h2>
     <ul>
@@ -234,7 +222,7 @@
     </figure>
 
 </section>
-
+-->
 
 <section>
     <h2>Analysis Pipeline</h2>
