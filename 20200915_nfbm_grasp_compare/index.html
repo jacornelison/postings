@@ -227,48 +227,77 @@
 
     <h3>Data Reduction</h3>
 
+    <p>Before I committed changes, the three functions below are a snapshot of the current (working) NFBM pipeline. The
+        primary purposes of these functions is data reduction, mapmaking, and plotting for data quality
+        respectively.</p>
 
-    <h3>NFBM Metrics</h3>
     <ul>
         <li>
-            <code>nfbm_fit_metrics.m</code> -
+            <code>nfbm_makemap.m</code> - Loads raw detector timestream data from NFBM observations and deconvolves, demodulated, and bins them into maps at the per detector level.
+        </li>
+        <li>
+            <code>nfbm_fitter.m</code> - Fits bivariate 2D Gaussians to binned maps.
+        </li>
+        <li>
+            <code>nfbm_plotter.m</code> - Plots maps for data quality purposes.
+        </li>
+    </ul>
+
+    <h3>NFBM Metrics</h3>
+    <p>
+    The following code was written for the sole purpose of streamlining the measurement of arbitrary metrics in NFBMs. While we are currently only measuring beam steer and edge taper, the code is constructed in such a way that accomodating new metrics is easy. All parameter estimations are done through our Matlab wrapper for MINUIT called `matmin.m`.
+    </p>
+    <ul>
+        <li>
+            <code>nfbm_fit_metrics.m</code> - Wrapper function which measures metrics related to Near Field Beam Maps. Currently measures beam steer and edge taper.
         </li>
     <ol>
         <li>
-            <code>nfbm_fit_aperture.m</code> -
+            <code>nfbm_fit_aperture.m</code> - Finds apparent aperture centers for channels by shifting and masking beams using four global parameters in conjunction with their on-sky pointing. See $\S\,4$ of <a href="JAC2020B"></a> for details.
         </li>
         <ul>
             <li>
-                <code>nfbm_get_apt_model.m</code> -
+                <code>nfbm_get_apt_model.m</code> - 4-parameter + 1 nuisance parameter model that shifts and masks beams maps. For use by <code>matmin.m</code>.
             </li>
             <li>
-                <code>nfbm_get_apt_center.m</code> -
+                <code>nfbm_get_apt_center.m</code> - Given some location of the mapper center ($x_0,\,y_0$), mapper distance $d$, and mapper rotation $\phi$, returns the apparent aperture centers for all input channels of $r,\,\theta$.
             </li>
         </ul>
         <li>
-            <code>nfbm_fit_beam.m</code> -
+            <code>nfbm_fit_beam.m</code> - Fits a 2D Gaussian beam to NFBMs of all selected channels.
         </li>
         <ul>
         <li>
-            <code>nfbm_get_apt_model.m</code> -
+            <code>nfbm_get_apt_model.m</code> - Bivariate or cylindrically symmetric Gaussian model with optional masking ability.
         </li>
-        </ul>
 
+        </ul>
+        <li>
+            <code>nfbm_get_beam_steer.m</code> - Acquires beam steer for selected channels.
+        </li>
+        <li>
+            <code>nfbm_get_edge_taper.m</code> - Acquires measures of edge taper from maps of selected channels
+        </li>
+    <!--
         <li>
             <code>.m</code> -
         </li>
-
+-->
     </ol>
     </ul>
         <h3>Interfacing GRASP sims with the NFBM metrics pipeline</h3>
-    Grasp sims come in a standard format, so I've added some code that easily converts the numpy files into a Matlab struct that we can run through the NFBM analysis pipeline.
+    <p>Grasp sims come in a standard format, so I've added some code that easily converts the numpy files into a Matlab
+        struct that we can run through the NFBM analysis pipeline. Currently, the conversion from <code>.npz</code> to
+        <code>.mat</code> is done via Python. I have preliminary matlab code that can do this as well, but the python
+        handles this much better. If there's a strong demand to develop the matlab function for uniformity's sake, I can
+        do that.</p>
 
     <ol>
         <li>
             <code>npz_to_mat.py</code> - one-to-one conversion of GRASP <code>.npz</code> files into matlab compatible <code>.mat</code> structs. Requires <code>scipy</code>.
         </li>
         <li>
-            <code>grasp2nfbmstruct</code> - Loads the raw GRASP sim data and outputs a struct identical to those taken by the NFBM pipeline including faux FPU parameters and channel flags using <code>get_grasp_array_info.m</code>.
+            <code>grasp2nfbmstruct.m</code> - Loads the raw GRASP sim data and outputs a struct identical to those taken by the NFBM pipeline including faux FPU parameters and channel flags using <code>get_grasp_array_info.m</code>.
         </li>
     </ol>
 
@@ -303,6 +332,7 @@
             "CLW2012D",
             "CLW2012E",
             "JBW2016",
+            "KLT2017",
             "TSG2020A",
             "TSG2020B",
             "JAC2020A",
@@ -322,6 +352,7 @@
             "../../../keck/analysis_logbook/analysis/20120913_beamsteer_E8_B2/",
             "../../../keck/analysis_logbook/analysis/20120920_beamsteervsoe/",
             "../20160510_ideal_beamcen_distortion/",
+            "../20171010_B3_PhysOptics/",
             "../20200303_bicep3_nfbm_alldata/",
             "../20200303_bicep3_nfbm_alldata/nfbm_bicep3_mount_20170116/",
             "../20200602_nfbm_beamsteer/",
@@ -335,6 +366,7 @@
             "Beam Steer of E8 and Bicep2",
             "Beam Steer and Optical efficiency",
             "Including optical model distortion parameters in the BICEP3 ideal beam centers",
+            "BICEP3 ZEMAX Physical Optics Calcs I. Profiles and Field Radius Systematics",
             "BICEP3 NFBM All Data",
             "BICEP3 NFBM 2017-01-16",
             "Beam Steer and Edge Taper Estimations for Near Field Beam Maps",
