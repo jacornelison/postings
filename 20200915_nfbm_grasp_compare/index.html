@@ -96,20 +96,86 @@
     -->
     <h3>Converting Beam Steer from mm to degrees</h3>
     <p>In a previous posting, I defined the beam steer as a lateral offset between the beam center and aperture center ($r_{beam}-r_{apt}$) in NFBMs and offered previous results in units of mm. In practice, beam steer is more easily comparable to sims when converted from that lateral offset into an equivalent offset angle, $\theta_{bs}$, of the beam trajectory WRT to the focal plane normal. This is computed by using the ratio of <a href="https://en.wikipedia.org/wiki/Angular_aperture">angular apterture</a>, $a$, to the aperture radius, $D/2$</p>
-
-    $$\theta_{bs} = \frac{2a}{D}\left(r_{beam}-r_{apt}\right)$$
-
+    \begin{equation}
+    \theta_{bs} = \frac{2a}{D}\left(r_{beam}-r_{apt}\right)
+    \end{equation}
     <p>
         And $a$ can be substituted for the effective f-number, $N_f$:
     </p>
 
-
-    $$\theta_{bs} =\frac{2}{D_{apt}}\tan^{-1}{\left(\frac{1}{2\cdot\,N_f}\right)}\left(r_{beam}-r_{apt}\right)$$
-
+    \begin{equation}
+    \theta_{bs} =\frac{2}{D_{apt}}\tan^{-1}{\left(\frac{1}{2\cdot\,N_f}\right)}\left(r_{beam}-r_{apt}\right)
+    \end{equation}
     <p>Where, for BICEP3, $N_f=1.576$ and $D_{apt}=520\,\text{mm}$:</p>
-    $$\theta_{bs} = \frac{17.60^\circ}{260\,\text{mm}}\left(r_{beam}-r_{apt}\right)$$
 
+    \begin{equation}
+    \theta_{bs} = \frac{17.60^\circ}{260\,\text{mm}}\left(r_{beam}-r_{apt}\right)
+    \end{equation}
     <p>Realistically, the $N_f$ varies across the focal plane, but I've verified through Zemax that using the "working" $N_f$ is approximately good to within 4% across the whole focal plane.</p>
+
+
+
+    <h3>Near-Field Corrections to the Aperture Function</h3>
+    <p>We use a plate scale function to calculate the apparent aperture centers for each detector based on their on-sky pointing ($r,\,\theta$):
+
+        \begin{equation}
+        \begin{split}
+        &x_{apt} = -d \tan(r)\cos(\theta+\phi)+x_{0}\\
+        &y_{apt} = d \tan(r)\sin(\theta+\phi)+y_{0}
+        \end{split}
+        \end{equation}
+
+        and we had some intuition that this could be slightly non-linear in the near field due to parallax. To check this, the idea was to determine the physical x-y positions chief rays coming off the focal plane in the plane of the near field beam mapper using Zemax and then compare those values to those calculated by our plate-scale function using the same distance.
+    </p>
+    <p>
+        To verify that our model (and method) was correct, we first needed to verify that we could correctly calculate far-field pointing before moving on to the near field. We had a summer student (Kaylah McGowan from UofA) re-blaze the trail for converting detector locations on the focal plane ($R_{FP}$) into on-sky pointing ($r_{SKY}$) at the far field via Zemax models (see <a href="JBW2016"></a> for previous work).</p>
+    <p>In essence, her recipe was as follows:</p>
+    <ol>
+        <li>For a given model, create a dummy lens object at the very end of the lens system in "lens data".</li>
+        <li>Set the dummy lens object thickness to very far away (we set ours arbitrarily to 5e6 mm)</li>
+        <li>Using the "single raytrace" tool, record the z-cosine value after the dummy lens object for a series of distances on the focal plane (normalized in OptStudio from 0 to 1 for FP center and edge respectively).</li>
+        <li>Convert FP distances from normalized to mm and ray angles to degrees (using arccos) to produce an array of $R_{FP}$ vs. $r_{SKY}$.</li>
+        <li>Fit a 4th-order polynomial (with no constant) to the $R_{FP}$ vs. $r_{SKY}$ data to produce a function which converts radial distance on the focal plane to on-sky pointing WRT to boresight.</li>
+    </ol>
+
+    <p>Her results for a far-field case compared to those from JWB's posting are shown below. We find that Kaylah's results deviate, at most, on the order of 1 arcmin compared to JWB's, which we think are sufficiently close for our purposes.</p>
+
+    <figure>
+        <img src="figs/zemax_reanalysis.png"/>
+        <figcaption>
+
+        </figcaption>
+
+    </figure>
+
+
+    <p>Thanks to Kaylah, I was able to take this project one step further and calculate $r_{SKY}$ for the near-field case to see if we can detect significant deviations in pointing in the near field which would skew our beam steer results. I followed her recipe as described above but instead set the dummy lens object thickness to 366mm to match the near field mapper distance of 508mm (20 inches) from the aperture set in Paul's GRASP sims. For convenience, I wrapped steps 3 and 4 in her procedure in a Zemax macro: <a href="scripts/rfpu_to_rsky.ZPL">rfpu_to_rsky.ZPL</a></p>
+    <p>In the plot below, I compare the near-field results to the Kaylah's far-field results. We can see that the near-field pointing is nearly identical, deviating at most by ~2 arcseconds.</p>
+
+    <figure>
+        <img src="figs/zemax_nearfield_correction.png"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>
+        I then computed the positions at which the rays intersect the mapper plane $R_{apt}$ (using <a href="scripts/rfpu_to_rsky.ZPL">rfpu_to_rsky.ZPL</a>) and compared them to the positions calculated by the plate scale function assuming $x_0=y_0=\phi=0$ and $d=508\,\text{mm}$. Because the plate scale function uses $r,\,\theta$ as inputs instead of $R_{FPU}$, I used the near-field 4th-order polynomial function described above to convert $R_{FPU}$ to $r_{SKY}$ before computing $R_{apt}$. Results from Zemax and the plate scale function are plotted below along with their residuals.
+
+    </p>
+
+    <figure>
+        <img src="figs/beam_steer_bias.png"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>
+        In the plot above, we can clearly see that higher order effects cause deviations in the residuals up to $\sim0.6\,\text{mm}$ at the edge of the focal plane which amounts to $<0.05^\circ$ bias on beam steer.
+    </p>
+
+
 
 
     <h3>Beam Steer in GRASP sims</h3>
@@ -150,48 +216,30 @@
         </figcaption>
     </figure>
 
-    <p>
 
-    </p>
 
-    <h3>Near-Field Pointing Corrections</h3>
-    <p>We had some intuition that the optical pointing in the near field could be slightly different than that in the far field, but needed to verify that we could correctly calculate far-field pointing before moving on to the near field. We had a summer student (Kaylah McGowan from UofA) re-blaze the trail for converting detector locations on the focal plane ($R_{FP}$) into on-sky pointing ($R_{SKY}$) at the far field via Zemax models (see <a href="JBW2016"></a> for previous work).</p>
-    <p>In essence, her recipe was as follows:</p>
-    <ol>
-        <li>For a given model, create a dummy lens object at the very end of the lens system in "lens data".</li>
-        <li>Set the dummy lens object thickness to very far away (we set ours arbitrarily to 5e6 mm)</li>
-        <li>Using the "single raytrace" tool, record the z-cosine value after the dummy lens object for a series of distances on the focal plane (normalized in OptStudio from 0 to 1 for FP center and edge respectively).</li>
-        <li>Convert FP distances from normalized to mm and ray angles to degrees (using arccos) to produce an array of $R_{FP}$ vs. $R_{SKY}$.</li>
-        <li>Fit a 4th-order polynomial (with no constant) to the $R_{FP}$ vs. $R_{SKY}$ data to produce a function which converts radial distance on the focal plane to on-sky pointing WRT to boresight.</li>
-    </ol>
-
-    <p>Her results for a far-field case compared to those from JWB's posting are shown below. We find that Kaylah's results deviate, at most, on the order of 1 arcmin compared to JWB's, which we think are sufficiently close for our purposes.</p>
+    <h3>Beam Steer on real data</h3>
 
     <figure>
-        <img src="figs/zemax_reanalysis.png"/>
-        <figcaption>
-
-        </figcaption>
-
-    </figure>
-
-
-    <p>Thanks to Kaylah, I was able to take this project one step further and calculate $R_{SKY}$ for the near-field case to see if we can detect significant deviations in pointing in the near field which would skew our beam steer results. I followed her recipe as described above but instead set the dummy lens object thickness to 508 mm (20 inches) to match the near field mapper distance set in Paul's GRASP sims. For convenience, I wrapped steps 3 and 4 in her procedure in a Zemax macro: <a href="scripts/rfpu_to_rsky.ZPL">rfpu_to_rsky.ZPL</a></p>
-    <p>In the plot below, I compare the near-field results to the Kaylah's far-field results. We can see that the near-field pointing is nearly identical, deviating at most by ~2 arcseconds.</p>
-
-    <figure>
-        <img src="figs/zemax_nearfield_correction.png"/>
+        <img src="figs/beam_steer_jan2017.png" width=60%/>
         <figcaption>
 
         </figcaption>
     </figure>
-
 
 </section>
 
 <!--
 <section>
     <h2>Edge Taper</h2>
+    <h3>NFBM/Grasp profiles</h3>
+    <p>
+        <ul>
+    <li>Acquire an uncertainty of grasp profiles and real (well-behaved) beams.</li>
+    <li>Make histograms to show min/max/avg and 10th/90th/50th percentiles.</li>
+</ul>
+
+    </p>
     <ul>
         <li>Applying debias to measured beam maps</li>
         <li>Absolute min/max values can be thrown off by statistical fluctuations, so I added a "quantile" page showing 10th-percentile, 90th-percentile, and median in lieu of min,max, and avg respectively.</li>
@@ -221,6 +269,7 @@
 
 </section>
 -->
+
 
 <section>
     <h2>Analysis Pipeline</h2>
