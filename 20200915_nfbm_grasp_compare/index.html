@@ -39,8 +39,7 @@
     <time class="published updated" datetime="2020-09-15">
         2020 Sep 15 
     </time>
-    —
-    J. Cornelison, K. McGowen
+    — J. Cornelison, K. McGowen
     <hr>
 
 </header>
@@ -218,17 +217,62 @@
 
 
 
-    <h3>Beam Steer on real data</h3>
+    <h3>Beam Steer on BICEP3 2017 data</h3>
+
 
     <figure>
         <img src="figs/beam_steer_jan2017.png" width=60%/>
         <figcaption>
+Tile plot of beam steer measured across the focal plane for BICEP3.
+        </figcaption>
+    </figure>
 
+
+    <figure>
+        <img alt="" id="quivpager" src="#" width=60%/>
+
+        <script type="text/javascript">
+            pager.link("#quivpager",
+                {
+                    'Quiver|q': ['Mag+Dir|mag_dir', 'Dir Only|dir_only'],
+
+                },
+                function (params) {
+                    return 'figs/beam_steer_quiver_' + params.q + '.png';
+                });
+            pager.setparams({
+                'q': 'mag_dir',
+
+            });
+        </script>
+        <figcaption>
+    Quiver Plots of beam steer showing relative magnitude and direction or direction only.
+        </figcaption>
+    </figure>
+
+
+
+    <figure>
+        <img src="figs/beam_steer_hists.png" width=60%/>
+        <figcaption>
+histograms of beam steer in x and y axes in left and right plots respectively.
+        </figcaption>
+    </figure>
+
+    <figure>
+        <img src="figs/beam_steer_per_tile_avgs.png" width=60%/>
+        <figcaption>
+Per-Tile averages of beam steer and 1-$\sigma$ standard deviations
         </figcaption>
     </figure>
 
 </section>
-
+<section>
+    <h2>Summary</h2>
+    <ul>
+        <li>Grasp models </li>
+    </ul>
+</section>
 <!--
 <section>
     <h2>Edge Taper</h2>
