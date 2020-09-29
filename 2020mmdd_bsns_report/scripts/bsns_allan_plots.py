@@ -5,14 +5,14 @@ import scipy.io as sio
 
 file_dict = {
     "30 GHz": 'C:\\Users\\James\\Documents\\GitHub\\postings\\2020mmdd_bsns_report\\data\\data\\BSNS_stab_test_30GHz_final.csv',
-    "90 GHz": 'C:\\Users\\James\\Documents\\GitHub\\postings\\2020mmdd_bsns_report\\data\\data\\BSNS_stab_test_90GHz_28aug2020.csv',
+    "90 GHz": 'C:\\Users\\James\\Documents\\GitHub\\postings\\2020mmdd_bsns_report\\data\\data\\BSNS_stab_test_90GHz_28aug20201_fixed.csv',
     "220 GHz": 'C:\\Users\\James\\Documents\\GitHub\\postings\\2020mmdd_bsns_report\\data\\data\\BSNS_stab_test_220GHz1.csv',
              }
 
 src_index = [1,1,1]
 src_fs = [1.0,0.5,0.5]
 keys = list(file_dict.keys())
-start_ind = [0,5000,0]
+start_ind = [0,5000*0,0]
 T_cal = [0,1000,1000]
 
 for srcind in np.arange(len(keys)):

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Posting Title — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Systematics from Differential Reflection of Polarization</h1>
+
+    <time datetime="2019-07-20" class="published updated">
+        2019 Jul 20
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<section>
+Starting with code borrowed from John where he extrapolates the refractive index of aluminum from experimental data on silver at $5 \mu m$ (Born and Wolf, Fig 13.3), assuming the measurement was made at room temperature. Using the ratio of conductivity between silver, $\sigma_{Ag}$, and aluminum, $\sigma_{Al}$ to be
+
+$$
+\frac{\sigma_{Ag}}{\sigma_{Al}} = \frac{2.71}{1.62}
+$$ 
+
+from the CRC Handbook, p.E-78 <font color="red">(not verified)</font>, the index of refraction for Aluminum is
+
+$$
+n_{Al} \sim n_{Ag} \left(\frac{\lambda_{obs}}{5\mu m} \frac{\sigma_{Al}}{\sigma_{Ag}} \frac{293K}{240K}\right) = 2141(1+i)
+$$
+
+Where the $240K$ is roughly the outside temperature at Pole. Using Fresnel's equations, we can calculate the Reflectivity for polarization that is parallel and perpendicular to the plane of incidence as a function of incident angle Fig 1.1.
+
+
+
+    <figure>
+        <img alt="Test" src="figs/al_reflectivity.png" />
+        <figcaption>
+            Reflectivity of Aluminum as a function of incident angle, $\theta_i$.
+        </figcaption>
+    </figure>
+
+
+For the detectors on BICEP3, I use the functions in <tt>keck_beam_map_pointing</tt> to calculate the incident angle on a mirror with $45^\circ$ tilt and $0^\circ$ roll and plot the incident angle as a function of location on the focal plane in Fig 1.2.
+
+<figure>
+
+<img alt="" id="tp" src="#" onerror="this.src='plot_blank.png';" width=50% />
+
+
+       <script type="text/javascript">
+
+			var pager = new Pager("tp");
+			pager.link("#tp",
+                {
+                    'Deck|dk': ['0','45','90','135']
+					
+                
+                },
+                function(params) {
+					//return 'figs'+params.s+'/'+params.t+'_final_'+params.d+'.png';
+					return 'figs/tileplot_inc_angle_dk_'+params.dk+'.png';				
+                });
+
+            pager.setparams({
+                
+					'dk': '0'
+
+                });
+            pager.gridalign('#tp', 4);
+        </script>
+<figcaption>
+Incident angle as a function of pixel location on the focal plane per DK-angle.
+</figcaption>
+
+</figure>
+
+For set of A and B detectors of a given pixel with an on-FPU polarization, the effective polarization changes due differential polarization reflection. The detector co-polar axes form vectors, $\hat{B}_A$ and $\hat{B}_B$, which can be separated into components, $\hat{V}_\perp$ and $\hat{V}_\parallel$ that are perpendicular and parallel to the plane of incidence respectively.
+
+$$
+\hat{B}_A = \left(\hat{B}_1\cdot\hat{V}_\parallel\right)\hat{V}_\parallel+\left(\hat{B}_1\cdot\hat{V}_\perp\right)\hat{V}_\perp
+$$
+
+The effective polarization orientation due to reflection off of the mirror becomes
+
+$$
+\tilde{B}_A = |r_\parallel|^2\left(\hat{B}_1\cdot\hat{V}_\parallel\right)\hat{V}_\parallel+|r_\perp|^2\left(\hat{B}_1\cdot\hat{V}_\perp\right)\hat{V}_\perp
+$$
+ 
+where $r_\parallel$ and $r_\perp$ are the parallel and perpendicular reflection coefficients respectively. Assuming Pol A and B detectors are orthogonal, the effective polarization angle due to differential polarization reflection is then just
+$$
+\tilde{\phi}_A = \phi_A + \tan^{-1}\left(\frac{\hat{B}_B\cdot\tilde{B}_A}{\hat{B}_A\cdot\tilde{B}_A}\right)
+$$
+
+Then, the effective pair-diff polarization angle becomes
+$$
+\tilde{\phi}_Q = \frac{1}{2}\left(\tilde{\phi}_A+\tilde{\phi}_B-90\right)
+$$
+
+Figure 1.3 shows the effective pair-diff polarization due to reflections off of the mirror.
+<figure>
+
+<img alt="" id="tp2" src="#" onerror="this.src='plot_blank.png';" width=50% />
+
+
+       <script type="text/javascript">
+
+			var pager = new Pager("tp2");
+			pager.link("#tp2",
+                {
+                    'Deck|dk': ['0|dk_0','45|dk_45','90|dk_90','135|dk_135','mean']
+					
+                
+                },
+                function(params) {
+					//return 'figs'+params.s+'/'+params.t+'_final_'+params.d+'.png';
+					return 'figs/tileplot_effq_angle_'+params.dk+'.png';				
+                });
+
+            pager.setparams({
+                
+					'dk': 'dk_0'
+
+                });
+            pager.gridalign('#tp2', 4);
+        </script>
+
+<figcaption>
+Effective change in $\phi_Q$ due to differential polarization reflection as a function of location on the focal plane per DK-angle.
+</figcaption>
+</figure>
+
+
+For DK-angles of 0 and 90, the bias on $\phi_Q$ is mean-zero and the variation is less than $0.01^\circ$ across the focal plane. For DK-angles of 45 and 135, however, the biases are $\pm0.025^\circ$ on average with variation of $\sim0.015^\circ$. Additionally, because this is a 1-theta dependent function, averaging $\phi_Q$ over DK-angles from 0 to 135, like we have for RPS data, doesn't go to zero.
+
+For future polarization calibrations, we'll want to acquire measurements over $360^\circ$ of DK-angle so that it averages down more.
+
+
+
+
+</section>
+<hr>
+<!--
+<h3>References</h3>
+<p id="references"></p>
+	<script type="text/javascript">
+	// This my way of making shorthand links.
+	// We'll make a couple arrays with the 'tag' and href information
+	// and then look through each anchor element for the specified tag.
+	// The anchors should then just look like: <a href="tagname"></a>
+	// and the script will automatically fill in the hyperlings and text.
+	var tags = [
+	"HCC2007",
+	"KWY2007",
+	"CAB2012",
+	"CLW2013",
+	"IDB2013",
+	"CAB2014",
+	];
+	
+	var hrefs = [
+	"../../../..//general_projects/rps/inverse_pointing.pdf",
+	"../../../../general_projects/rps/pointing_article.pdf",
+	"../../../..//keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+	"../20130521_elipgausmaps/",
+	"../20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
+	"../../../../keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
+	];
+	
+	var desc = [
+	"Inverse Pointing Model",
+	"BICEP Pointing Supplement",
+	"Pointing Model for Keck Beam Maps",
+	"Constructed elliptical gaussian maps and coordinate system definitions",
+	"Calculations for Beam Mapping in Spherical Coordinates",
+	"Spherical coordinates for beam maps",
+	];
+	
+	
+	var post = document.getElementById("references");
+	var msg = "<table>";
+	for (var tag in tags){
+		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
+	};
+	msg = msg+ "</table>";
+	post.innerHTML = msg;
+
+	var links = document.getElementsByTagName("A");
+	for (var link in links){
+		for (var tag in tags){
+			if (links[link].href.endsWith(tags[tag])){
+				links[link].text = "("+tags[tag]+")";
+				links[link].href = hrefs[tag];
+				links[link].target = "_blank";
+			}
+		}
+	}
+	
+	</script>
+-->
+</body>

@@ -103,7 +103,7 @@ for srcind = src_order
     hold on
     
     xlabel('\tau (seconds)')
-    ylim([5e-8,7e-1])
+    ylim([5e-10,7e-1])
     xlim([1e-1,5e4])
     grid on  
     end
@@ -119,7 +119,7 @@ subplot(1,2,1)
 plot([1e-1, 4e4],exp(-0.5*[1e-1, 4e4]/1e-1),'k-')
 
 %% Output Stability - Timestreams
-if 0
+if 1
 figure(pltind); pltind=pltind+1;
 clf
 set(gcf,'Position',[300,200,900,400])
