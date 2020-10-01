@@ -34,17 +34,28 @@
 <link href="scripts/pager.css" rel="stylesheet" type="text/css"/>
 
 <header>
-    <h1>A Comparison of Measured and GRASP-Simulated Near Field Beam Maps</h1>
+    <h1>Beam Steer in Real and GRASP-Simulated Near Field Beam Maps</h1>
 
     <time class="published updated" datetime="2020-09-15">
-        2020 Sep 15 
+        2020 Sep 15
     </time>
     — J. Cornelison, K. McGowen
     <hr>
 
 </header>
+<p>
 
+</p>
+<p>In a previous posting, I provided a preliminary analysis of beam steer estimates. In this posting, I examine beam steer in both GRASP simulations and real data. Comparing estimates on the GRASP sims from my metrics analysis pipeline to known input values of beam steer, I find that beam steer is consistently underestimated by ~20% across the focal plane. In later analyses, I aim to find the cause of this but for now I choose instead to simply scale the estimates on real data by this factor.
+</p>
+<p>
+    Additionally, I investigate a possible source of bias in beam steer resulting from parallax effects unaccounted for during out coordinate transformation. Using a raytracing scheme in Zemax validated by a summer student, we find a bias on beam steer due to near-field parallax to be $\Delta \theta_{bs}<0.04^\circ$.
+</p>
+<p>
+    Lastly, I present results of beams steer on real BICEP3 data taken at Pole in January of 2017. I find that current levels of beam steer are a full order of magnitude lower than the levels measured on the old Keck 150 FPU's.
+</p>
 
+<hr>
 <section>
 <h2>Grasp Sims</h2>
 
@@ -81,18 +92,7 @@
 </section>
 <section>
     <h2>Beam Steer</h2>
-<!--
-<ul>
-    <li>Beam steer on grasp sims</li>
-    <li>Zero-steer case</li>
-    <li>Do a near-field displacement using Zemax</li>
-    <li>Translate beams to center(using expected and fit parameters)</li>
-    <li>Compare to real data</li>
-    <li>Look at average fit per-tile</li>
-    <li>End goal is to have a recipe that takes a given rx and quantifies beam steer (in degs) and patterns tile-by-tile and stores results as a csv file</li>
-</ul>
 
-    -->
     <h3>Converting Beam Steer from mm to degrees</h3>
     <p>In a previous posting, I defined the beam steer as a lateral offset between the beam center and aperture center ($r_{beam}-r_{apt}$) in NFBMs and offered previous results in units of mm. In practice, beam steer is more easily comparable to sims when converted from that lateral offset into an equivalent offset angle, $\theta_{bs}$, of the beam trajectory WRT to the focal plane normal. This is computed by using the ratio of <a href="https://en.wikipedia.org/wiki/Angular_aperture">angular apterture</a>, $a$, to the aperture radius, $D/2$</p>
     \begin{equation}
@@ -179,7 +179,7 @@
 
     <h3>Beam Steer in GRASP sims</h3>
 <p>
-    Like real data, I calculate aperture center on each map (see $\S 4$ of <a href="JAC2020B"></a>) to center the maps before calculating beam steer. For the sims, I assume zero $x$, $y$, or $\phi$ correction and set the mapper distance to 508mm (20") to reflect the mapping plane set in the sims. After centering the maps, I estimate the beam centers using a 4-parameter cylindrically symmetric gaussian ($\left[A x_0 y_0 \sigma\right]). Additionally, to avoid errors on the fit from deformationa at the aperture edge, I zero-weighted all data outside a diameter of 385mm. Cacluating the beam steer is trivial as, since the maps are already centered, the beam steer is simply equal to the estimates on the beam centers.
+    Like real data, I calculate aperture center on each map (see $\S 4$ of <a href="JAC2020B"></a>) to center the maps before calculating beam steer. For the sims, I assume zero $x$, $y$, or $\phi$ correction and set the mapper distance to 508mm (20") to reflect the mapping plane set in the sims. After centering the maps, I estimate the beam centers using a 4-parameter cylindrically symmetric gaussian -- $\left[A\,\,x_0\,\,y_0\,\,\sigma\right]$. Additionally, to avoid errors on the fit from deformation at the aperture edge, I zero-weighted all data outside a diameter of 385mm. Cacluating the beam steer is trivial as, since the maps are already centered, the beam steer is simply equal to the estimates on the beam centers.
 </p>
     <p>
     The pager below show the GRASP sims with the measured beam steer overplotted with a green 'x'.
@@ -206,72 +206,119 @@
     </figcaption>
     </figure>
 <p>
-    We can see from the plot above that the beam steer estimates become less reliable as the beam steer increases. The plot below shows this more quantitatively where the estimates for both 3&deg; and 6&deg; magnitudes of beam steer are underestimated by ~16% and ~20% respectively.
+    We can see from the plot above that the beam steer estimates become less reliable as the beam steer increases. The plot below shows this more quantitatively where the estimates of beam steer are ~80% of the input quantities.
 </p>
+
     <figure>
-        <img src="figs/nfbm_grasp_beam_steer_.png" width=60%/>
+        <img src="figs/nfbm_grasp_beam_steer_fit.png" width=60%/>
         <figcaption>
             Beam Steer estimations for each Grid for the various GRASP sims. "MainBeamOnly" and "WithBuddies" are expected have zero steer.
         </figcaption>
     </figure>
 
-
+    <p>
+        In a later posting, I plan to mitigate the bias here but for now I'll move on and simply <b>scale the results on the real data by 1.2</b>.
+    </p>
 
     <h3>Beam Steer on BICEP3 2017 data</h3>
-
-
-    <figure>
-        <img src="figs/beam_steer_jan2017.png" width=60%/>
-        <figcaption>
-Tile plot of beam steer measured across the focal plane for BICEP3.
-        </figcaption>
-    </figure>
-
-
+    <p>
+        I ran the BICEP3 Jan 2017 data through the same pipeline as the GRASP sims and scaled the results by a factor of 1.2 as discussed above. Figure 2.6 shows those results in a quiver plot. Note that for this particular dataset, MCE0 was not working (for reasons unknown to me) and so all MCE0 data has been cut.
+    </p>
     <figure>
         <img alt="" id="quivpager" src="#" width=60%/>
 
         <script type="text/javascript">
             pager.link("#quivpager",
                 {
-                    'Quiver|q': ['Mag+Dir|mag_dir', 'Dir Only|dir_only'],
+                    'Quiver|q': ['Raw|raw', 'Median Sub|medsub'],
 
                 },
                 function (params) {
                     return 'figs/beam_steer_quiver_' + params.q + '.png';
                 });
             pager.setparams({
-                'q': 'mag_dir',
+                'q': 'medsub',
 
             });
         </script>
         <figcaption>
-    Quiver Plots of beam steer showing relative magnitude and direction or direction only.
+            Quiver plots showing raw and per-tile, median-subtracted quiver plots of beam steer.
         </figcaption>
     </figure>
 
-
+    <p>
+        <b>Big Note:</b> in his 2012 SPIE proceedings <a href="ROB2012B"></a> Roger defines beam-steer phenomena in terms of "Horizontal" or "Vertical" corresponding an affect dominating in either the row or column part of the summing tree respectively. In our footnote 6 of our <a href="https://arxiv.org/pdf/1502.00596.pdf">Beams Paper</a> (footnote 23 in ApJ), we lock the "Horizontal" and "Vertical" directions as $y'$ and $x'$ respectively which caused some confusion for me as this is apparently backwards for BICEP3 at first glance (i.e. we see beam steer along the y-axis, thus Horizontal direction and corresponding to cross-talk and not Nb contamination). It turns out that if I instead follow the Horizontal-Vertical convention by tracking the rows and columns of the tiles (see figure 2.7), the beam steer is actually a gradient across the columns which is Vertical, as expected. Since tiles on MCE0 are clocked 90&deg; WRT to the other MCE's, I would expect that we would find that the beam steer followed the convention outlined in our Beams Paper. A look into the 2016 NFBM data which has MCE0 (but lower SNR) would be a good consistency check of this.
+    </p>
 
     <figure>
-        <img src="figs/beam_steer_hists.png" width=60%/>
+        <img src="figs/tile_plot_det_rows.png" width=60%/>
         <figcaption>
-histograms of beam steer in x and y axes in left and right plots respectively.
+            Tile plots for detector rows shows detector columns for MCE's 1 through 3 clocked 90&deg; WRT MCE0. Assuming MCE0 follows the convention layed out in footnote 6 of our <a href="https://arxiv.org/pdf/1502.00596.pdf">Beams Paper</a>, we can expect that our measured beams steer for these MCE's will be along the Y-direction since that is the "Vertical" direction for those MCE's.
         </figcaption>
     </figure>
+
+<p>
+    While the raw values of beam steer are muddled in the raw results, the tell-tale gradients can more easily be seen when I subtract the median values for each tile. From the pager above, we can also consistently see a sharp increase in the beam steer at the edge of the tiles. I acquire the per-tile gradients by fitting 1st, 2nd, and 3rd-order polynomials using the <code>polyfit.m</code> Matlab function and deriving the parameter uncertainties using bootstrapping. While adding the 2nd-order polynomial improves the fit, I don't see that the 3rd-order fit makes a meaningful difference for most cases.
+</p>
 
     <figure>
-        <img src="figs/beam_steer_per_tile_avgs.png" width=60%/>
+        <img id="selectpager"/>
+
+        <script type="text/javascript">
+
+            var drumlist = new Array(20);
+            for (var ii=1; ii<21; ++ii) {
+                drumlist[ii] = ii;
+            }
+
+            var drumopt = new Pager.DataList(drumlist);
+            drumopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 0) { val = "0"+val; }
+                return val;
+            }
+            drumopt.fromString = function(val) {
+                return parseInt(val);
+            }
+            pager.link("#selectpager",
+                {
+                    'Tile|t': drumopt,
+                    'Pol|pol': ['A','B'],
+                    'N-Poly|n': ['1','2','3'],
+                },
+                function(params) {
+                    return 'figs/nfbm_bs_slopes_tile_'+params.t+'_pol_'+params.pol+'_poly_'+params.n+'.png';
+                });
+
+            pager.setparams({
+                't': '5',
+                'pol':'A',
+                'n':1,
+            });
+
+        </script>
+
         <figcaption>
-Per-Tile averages of beam steer and 1-$\sigma$ standard deviations
+        Plots showing X- and Y-direction beam steer per tile with 1st, 2nd, and 3rd-order polynomial fits. Gradients in the beam steer are seem much more strongly in the Y-direction (along columns) of the tiles corresponding to Nb Contamination <a href="ROB2012A"></a>.
         </figcaption>
     </figure>
+    <p>
+    These values can easily be compared to gradients calculated for Keck 150 tiles given in <a href="CLW2012C"></a> by multiplying them by $\frac{25.4\,mm}{in.}\frac{2a_{keck,150}}{D_{keck,150}}$. In her posting, Chin Lin finds for most Keck 150 tiles in 2012 $x^1>0.91^\circ/mm$ which is a full order of magnitude higher than the largest gradient measured on BICEP3. While this is expected, it is nice to finally see results showing how small this effect is compared the old tiles.
 
+    </p>
+<p>
+    In <a href="ROB2012B"></a>, Roger finds that a simulating 5% gradient in $\lambda_{eff}$ was able to produce the level of beam steer measure by Chin Lin showing that it is possible to link contamination to beam steer metrics. The long-term goal is to see how these gradients directly result in T-to-P leakage and then in turn be able to, given some requirement for minimum T-to-P leakage, report real design tolerances for fabrication.
+</p>
 </section>
+
+
 <section>
     <h2>Summary</h2>
     
     <ul>
-        <li>Grasp models </li>
+        <li>Using Grasp sims of beam steer, I found that the metrics analysis pipeline underestimates all beam steer by %20%. When looking at results on real data, I scale them accordingly.</li>
+        <li>I used Zemax models to estimate the level of bias on beam steer resulting from parallax affects in the near field to be $\Delta\theta_{bs}<0.04^\circ$.</li>
+        <li>I present beam steer results from BICEP3 Jan 2017 data and find that levels of beam steer are a full order of magnitude lower than those measured on the Keck 150 FPU's.</li>
     </ul>
 </section>
 <!--
@@ -420,6 +467,9 @@ Per-Tile averages of beam steer and 1-$\sigma$ standard deviations
         // The anchors should then just look like: <a href="tagname"></a>
         // and the script will automatically fill in the hyperlinks and text.
         var tags = [
+            "ROB2011",
+            "ROB2012A",
+            "ROB2012B",
             "CLW2012A",
             "CLW2012B",
             "CLW2012C",
@@ -440,6 +490,9 @@ Per-Tile averages of beam steer and 1-$\sigma$ standard deviations
         // BA:      www/bicep_array/analysis_logbook/
 
         var hrefs = [
+            "../../../keck/analysis_logbook/analysis/20110818_vertical_dipole_speculation/",
+            "../../../keck/analysis_logbook/analysis/20120607_Nb_variations/",
+            "https://arxiv.org/pdf/1208.1247.pdf",
             "../../../keck/analysis_logbook/analysis/20120726_beamsteer/",
             "../../../keck/analysis_logbook/analysis/20120802_beamsteer/",
             "../../../keck/analysis_logbook/analysis/20120808_beamsteer/",
@@ -454,6 +507,9 @@ Per-Tile averages of beam steer and 1-$\sigma$ standard deviations
         ];
 
         var desc = [
+            "A Hypothesis about the vertical dipole origin",
+            "Further evidence of Nb contamination",
+            "Antenna-coupled TES bolometers for the Keck Array, Spider, and Polar-1",
             "Beam Steer in the near field",
             "Update on beam steer",
             "Beam steer",
