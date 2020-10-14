@@ -33,7 +33,7 @@
     </time> —
     J. Cornelison
 </header>
-
+<!--
 <hr>
 
 <p>Introduction summary paragraph.</p>
@@ -42,58 +42,221 @@
     <li>Give a brief description of measurement and data</li>
     <li>What's the SNR?</li>
     <li>What's the repeatability?</li>
+    <li>What data are you cutting?</li>
     <ul>
         <li>At single boresight angle</li>
         <li>At multiple boresights</li>
     </ul>
+    <li>Open Threads</li>
+    <ul>
+        <li>"We have a really good understanding of the location and orientation of the RPS WRT to gravity and we have a really good understanding of the orientation of the telescope. To establish an absolute reference frame, we can connect the two by reconciling the position/orientation of the mirror by ... over our wide field of view</li>
+    </ul>
 </ul>
-
+-->
 <hr>
 
-<section><h2>Observations and Data</h2>
+<section>
+    <h2>Introduction</h2>
+    <h3>Motivation</h3>
+    <ol>
+        <li>Adding a Chern-Simons term to the EM Lagrangian results in Uniform Cosmic Birefringence</li>
+        <li>Means: the speed of circularly polarized light changes depending on pol. direction</li>
+        <li>For linearly pol. light, polarization orientation rotates as it propogates</li>
+        <li>We'll see larger rotation $\alpha$ the longer it propagates</li>
+        <li>CMB is perfect for this sort of observation.</li>
+        <li>$\alpha$ is degenerate with instrumental rotation $\Delta \phi$</li>
+        <li>Constraining $\alpha$ requires calibrating the instrument rotation.</li>
+        <li>Rich history of constraints on UCB, but we think we can do better (Table 1). </li>
+    </ol>
     <figure>
-        <img alt="Test" src="#" />
+        <img src="figs/table_1.PNG">
+    </figure>
+</section>
+
+
+<section><h2>Setup, Observations, and Dataset</h2>
+    <h3>Setup</h3>
+    <p>
+        The RPS is deployed atop a 12m mast on the Martin A. Pomerantz Observatory and observed by BICEP3 in the Dark Sector Laboratory 200m away. Even atop the mast, the RPS is well below the normal elevation range so a beam-filling aluminum honeycomb flat mirror is installed with $45^\circ$ tilt to redirect rays onto the horizon when that telescope is pointed at zenith.
+    </p>
+    <p>
+        The RPS is electrically chopped at 20Hz.
+    </p>
+    <figure>
+        <img src="figs/rps_figures.png">
         <figcaption>
-            The caption.
+            Images of a typical RPS setup.
+            <b>Left:</b> RPS deployed atop a 40ft mast which is observed by reflecting rays off of an aluminum honeycomb flat mirror <b>(Middle-Left)</b>.
+            <b>Middle-Right:</b> RPS benchtop setup - BBNS with absorptive shroud and wire grid secured to a precision rotation stage.
+            <b>Right:</b> Zoomed image of the RPS installed in its environmental encloser shows alignment strips allows for precise pointing alignment ($<1^\circ$) with the telescope.
         </figcaption>
     </figure>
+    <h3>Observations</h3>
+<p>
+    We conduct observations by rastering across the source $9^\circ$ in azimuth and $2^\circ$ in elevation with $0.1^\circ$ steps in elevation. The source is fixed at a single command angle per-raster and a full RPS observation consists of 13 separate rasters where the RPS is commanded from $-180^\circ$ to $180^\circ$ in $30^\circ$ increments. As the RPS rotates through it command angles, the observed amplitude changes as a function of the coupling the source polarization axis and a detector's polarization axis. We call this a modulation curve Fig. 2.3.
+</p>
+    <p>
+
+        Rasters are have very high signal-to-noise with a median SNR of $\sim6000$ at maximum amplitude.
+    </p>
+<figure>
+    <img src="figs/raster.png" width=50%>
+    <figcaption>
+        An example RPS raster.
+        Rasters are $9^\circ \times 2^\circ$ in azimuth and elevation respectively with $0.1^\circ$ steps in elevation.
+        Rasters are have very high signal-to-noise at the detector level with a median SNR of $\sim6000$ at maximum amplitude.
+    </figcaption>
+</figure>
+
+
+    <figure>
+        <table>
+            <tr>
+                <td><img src="figs/mosaic.png"/></td>
+            </tr>
+            <tr>
+                <td><img src="figs/modcurve.png"/></td>
+            </tr>
+        </table>
+
+        <figcaption>
+            <b>Top:</b> Beam maps of individual RPS rasters from a rasterset for a single detector and resulting modulation curve as a function of source command angle <b>(bottom)</b>
+        </figcaption>
+    </figure>
+
+
+    <p>
+
+    </p>
+
+<h3>Dataset</h3>
+<p>
+    The RPS observations used in this analysis were taken in January and February of 2018. Five observations were taken over four boresight angles of $1.25^\circ$, $46.25^\circ$, $91.25^\circ$, $136.25^\circ$ with and extra observation taken at $46.25^\circ$. The BICEP3 focal plane is clocked $1.25^\circ$ WRT the $DK=0^\circ$ and so we add $1.25^\circ$ to ensure maximum polarization coupling to the source. Observations over multiple boresight angles provides a consistency check of our measurement repeatability.
+</p>
+
+
+
 </section>
 
 <section>
     <h2>Analysis</h2>
+<h3>2D Gaussian Fits</h3>
 <p>
-    I fit a 2-D Gaussian profile to the beams where the beam amplitude is a free parameter for each raster but the beam center, beam widths, and correlation coefficient are single parameters fit across the whole rasterset. This is to mitigate bad fits when the RPS and detector are 90&deg; out of phase and the constraining power on the beam is poor.
+    We fit a 2-D Gaussian profile across all beams in a rasterset simultaneously where the beam amplitude is a free parameter for each raster but the beam center, beam widths, and correlation coefficient are single parameters fit across the whole rasterset. This is to mitigate bad fits when the RPS and detector are 90&deg; out of phase and the constraining power on the beam is poor.
 </p>
+
+
+
+    <p>
+
+</p>
+
+    <figure>
+        <table>
+            <tr>
+                <td><img src="figs/diffhist_phip_corr.png"/></td>
+                <td><img src="figs/diffhist_xpol.png"/></td>
+            </tr>
+        </table>
+
+        <figcaption>
+            Histograms of parameter estimates difference between observed boresight angles. We find the mean systematic repeatability between boresight angles $\sigma_{\phi_{pix}}<0.088^\circ$ and $\sigma_{\epsilon_{pix}}<0.0033^\circ$.
+        </figcaption>
+    </figure>
+
 <p>
-    $\epsilon<0.0014\text{(stat)}$
+
 </p>
 
 </section>
 
 <section><h2>Results</h2>
-<p>Words.
-    <figure>
-        <img alt="Maps pager" id="mapspager" src="#" />
-        <figcaption>
 
+    <figure>
+        <table>
+            <tr>
+                <td><img src="figs/tile_plot_phip_corr.png"/></td>
+                <td><img src="figs/tile_plot_phip_corr_medsub.png"/></td>
+            </tr>
+            <tr>
+                <td><img src="figs/tile_plot_xpol.png"/></td>
+                <td><img src="figs/tile_plot_xpol_medsub.png"/></td>
+            </tr>
+        </table>
+
+        <figcaption>
+            The caption.
+        </figcaption>
+    </figure>
+
+    <figure>
+        <table>
+            <tr>
+                <th>Statistics</th>
+                <td>FPU Median Per-Tile</td>
+                <td>FPU Scatter Per-Tile</td>
+                <td>FPU Median Per-Pixel</td>
+                <td>FPU Scatter Per-Pixel</td>
+                <td>Statistical Uncertainty</td>
+                <td>Systematic Uncertainty</td>
+            </tr>
+            <tr>
+                <th>$\phi_{pix} (^\circ)$</th>
+                <td>-1.20</td>
+                <td>0.32</td>
+                <td>-0.03</td>
+                <td>0.13</td>
+                <td>0.040</td>
+                <td>0.088</td>
+
+            </tr>
+            <tr>
+                <th>$\epsilon_{pix}$</th>
+                <td>0.0069</td>
+                <td>0.0097</td>
+                <td>0.0016</td>
+                <td>0.0084</td>
+                <td>0.0014</td>
+                <td>0.0033</td>
+            </tr>
+
+        </table>
+    </figure>
+
+</section>
+<hr>
+
+
+<section>
+    <h2>Appendix: Extra Plots</h2>
+
+    <h3>Cut Thresholds</h3>
+
+
+
+    <figure>
+        <img id="cutpager" src="#" />
+        <figcaption>
+            Cuts are performed to exclude outliers resulting from poor fits. Cut thresholds are kept "loose" to avoid cutting real statistical outliers. $\mathbf{\Delta x_0,\Delta y_0}$ : Deviations from fit beam centers and observed. $\mathbf{\Delta \epsilon,\Delta \phi}$ : Deviations of per-detector polarization parameters from expected values. <b>Fit:</b> Any fits that were flagged by the fitting function as "Failed" or "Problems" are cut. <b>SNR:</b> The Signal-to-Noise ratio is calculated by dividing the as-fit modulation curve amplitude by the STD of beam map noise floor.
         </figcaption>
         <script type="text/javascript">
-            pager.link("#mapspager",
+            pager.link("#cutpager",
                 {
-                    'Parameter|p': ['P1|p1','P2|p2'],
+                    'Parameter|p': ['$\\Delta x_0$|dx','$\\Delta y_0$|dy','$\\Delta \\epsilon$|xpol','$\\Delta \\phi$|phid','Fit|fit','SNR|snr'],
                 },
                 function(params) {
-                    return 'figs/fig_'+params.p+'.png';
+                    return 'figs/cutthresh_'+params.p+'.png';
                 });
             pager.setparams({
-                    'p': 'p1',
+                    'p': 'dx',
                 });
         </script>
     </figure>
+
+
+
+
 </section>
-
-
-<hr>
 
 <section>
 <h3>Code</h3>
