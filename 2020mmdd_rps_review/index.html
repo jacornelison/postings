@@ -74,13 +74,29 @@
 </section>
 
 
-<section><h2>Setup, Observations, and Dataset</h2>
+<section><h2>Far Field Polarization Measurements</h2>
     <h3>Setup</h3>
+    <p>We map polarization response in the far-field using a Rotating Polarized Source (RPS) which is an electrically
+        chopped, non-thermal, broad spectrum noise source (BSNS) fixed to a precision rotation stage and finely
+        polarized using a wire grid.
+        The RPS is deployed atop a 12m mast on the Martin A. Pomerantz Observatory and observed by BICEP3 in the Dark
+        Sector Laboratory 211m away (The far-field of BICEP3 is $\sim180$m).
+        Even atop the mast, the RPS is well below BICEP3's normal elevation range so a flat, beam-filling,
+        aluminum-honeycomb mirror is installed at a $45^\circ$ tilt to redirect rays onto the horizon when the telescope
+        is pointed at zenith.
+        The forebaffle which during normal operation terminates the sidelobes is removed to accomodate the installation
+        of the redirecting mirror.</p>
+
     <p>
-        The RPS is deployed atop a 12m mast on the Martin A. Pomerantz Observatory and observed by BICEP3 in the Dark Sector Laboratory 200m away. Even atop the mast, the RPS is well below the normal elevation range so a beam-filling aluminum honeycomb flat mirror is installed with $45^\circ$ tilt to redirect rays onto the horizon when that telescope is pointed at zenith.
-    </p>
-    <p>
-        The RPS is electrically chopped at 20Hz.
+        The RPS is housed within an environmental enclosure and PID temperature controlled to ensure stability on the
+        output.
+        The environmental enclosure is equipped with high-visibility tabs on each side to allow for precise alignment
+        ($<1^\circ$) with the telescope.
+        We reference the polarization orientation of the source to zenith using a precision tilt meter installed
+        alongside the source within the environmental enclosure.
+        The tilt of the source is zeroed and locked in using guy wires on the mast to which it is fixed.
+        Because the horizon is thermally bright, the RPS is chopped at 20 Hz and demodulated during analysis to isolate
+        the signal from the surrounding area.
     </p>
     <figure>
         <img src="figs/rps_figures.png">
@@ -93,7 +109,11 @@
     </figure>
     <h3>Observations</h3>
 <p>
-    We conduct observations by rastering across the source $9^\circ$ in azimuth and $2^\circ$ in elevation with $0.1^\circ$ steps in elevation. The source is fixed at a single command angle per-raster and a full RPS observation consists of 13 separate rasters where the RPS is commanded from $-180^\circ$ to $180^\circ$ in $30^\circ$ increments. As the RPS rotates through it command angles, the observed amplitude changes as a function of the coupling the source polarization axis and a detector's polarization axis. We call this a modulation curve Fig. 2.3.
+    We capture the polarization coupling between the telescope and source by rotating the source over a full $360^\circ$ of rotation.
+    With the RPS fixed at one polarization angle, we map polarized beams by rastering across the source $9^\circ$ in azimuth at $1.5^\circ/s$ and step up to $2^\circ$ in elevation in $0.1^\circ$ steps.
+    A full RPS observation, called a rasterset, consists of 13 separate rasters where the RPS is commanded from $-180^\circ$ to $180^\circ$ in $30^\circ$ increments.
+    This scan strategy allows us to sufficiently map the entire focal plane with multiple samples per beam over all source angles between cryogenic cycling.
+    An example of the modulation curve as a function of RPS angle is shown in Fig. ??.
 </p>
     <p>
 
@@ -139,18 +159,70 @@
 </section>
 
 <section>
-    <h2>Analysis</h2>
-<h3>2D Gaussian Fits</h3>
-<p>
-    We fit a 2-D Gaussian profile across all beams in a rasterset simultaneously where the beam amplitude is a free parameter for each raster but the beam center, beam widths, and correlation coefficient are single parameters fit across the whole rasterset. This is to mitigate bad fits when the RPS and detector are 90&deg; out of phase and the constraining power on the beam is poor.
-</p>
-
-
-
+    <h2>Polarization Parameters</h2>
     <p>
+        This section outlines the process through which we estimate polarization parameters.
+        To summarize, for each detector we fit a 2-D elliptical Gaussian profile across all rasters in a rasterset
+        simultaneously.
+        The resulting amplitudes as a function of source angle are fit to polarization response model.
+        Finally, the polarization parameters of the two orthogonal detectors corresponding to a single pixel are
+        combined into a per-pixel polarization angle and cross-polarization response.
+    </p>
+    <p>
+        We fit a 2-D elliptical Gaussian profile across all beams in a rasterset simultaneously where the beam amplitude
+        $A$ is a free parameter for each raster but the beam center $(x_0\,\,y_0)$, beam widths $(\sigma_x,\,\sigma_y)$,
+        and correlation coefficient $\rho$ are single parameters fit across the entire rasterset.
+    \begin{equation}
+    B_i(\mathbf{x}) = A_i e^{(\mathbf{x}-\mathbf{\mu})^T\Sigma^{-1}(\mathbf{x}-\mathbf{\mu})}
+    \end{equation}
+    Where $\mathbf{\mu} = (x_0\,\,y_0)$ is the beam center and
+    \begin{equation}
+    \Sigma =
+    \begin{bmatrix} \sigma_x^2& \rho \sigma_x \sigma_y \\ \rho \sigma_x \sigma_y & \sigma_y^2 \end{bmatrix}
+    \end{equation}
+    
+        This is to mitigate bad fits when the RPS and detector are $90^\circ$ out of phase and the constraining power on
+        the beam is poor.
+    </p>
+    <p>
+        The array of amplitudes $A$ resulting from the Gaussian fits produces a modulation curve as a function of source
+        angle $\theta$.
+        We fit a sinusoidal polarization response function to the modulation curves of the form
+        \begin{equation}
+        A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)\right)\left(N_1\cos(\theta)+N_2\sin(\theta)\right)
+        \end{equation}
+        where $G$ is the gain of the detector, $\psi$ is the detector polarization angle with respect to the source,
+        $\epsilon$ is the detector cross-polarization response, and ($N_1,\,N_2$) are nuisance parameters describing a
+        miscollimation of the source rotation axis.
+        We relate the detector polarization angle to the telescope zero $\phi$ by subtracting the polarization
+        orientation of the source with respect to the telescope $\phi_s$
+        \begin{equation}
+        \phi_d = \psi - \phi_s
+        \end{equation}
+        which is computed through the pointing model described ...
 
-</p>
+        %\subsection{Per-pixel Polarization Parameters}
+        Finally, we compute the polarization parameters of a pixel.
+        For a pair of detectors A and B, the response in Stokes Q and U of the pixel is calculated as
+        \begin{equation}\label{eq:QU}
+        \begin{split}
+        &Q =
+        \frac{\left[\cos(2\phi_A)-\epsilon_A\cos(2\phi_A)\right]-\left[\cos(2\phi_B)-\epsilon_B\cos(2\phi_B)\right]}{2+\epsilon_A+\epsilon_B}\\
+        &\\
+        &U =
+        \frac{\left[\sin(2\phi_A)-\epsilon_A\sin(2\phi_A)\right]-\left[\sin(2\phi_B)-\epsilon_B\sin(2\phi_B)\right]}{2+\epsilon_A+\epsilon_B}\\
+        \end{split}
+        \end{equation}
 
+        and the effective per-pixel polarization angle $\phi_p$ and cross-polarization response $\epsilon_p$ is simply
+        \begin{equation}\label{eq:phiq}
+        \begin{split}
+        &\phi_p = \frac{1}{2}\tan^{-1}\frac{U}{Q}\\
+        &\\
+        &\epsilon_p = 1-\sqrt{Q^2+U^2}
+        \end{split}
+        \end{equation}
+    </p>
     <figure>
         <table>
             <tr>
@@ -160,7 +232,7 @@
         </table>
 
         <figcaption>
-            Histograms of parameter estimates difference between observed boresight angles. We find the mean systematic repeatability between boresight angles $\sigma_{\phi_{pix}}<0.088^\circ$ and $\sigma_{\epsilon_{pix}}<0.0033^\circ$.
+            Histograms of parameter estimates difference between observed boresight angles. We find the mean systematic repeatability between boresight angles $\sigma_{\phi_{pix}}<0.119^\circ$ and $\sigma_{\epsilon_{pix}}<0.0032^\circ$.
         </figcaption>
     </figure>
 
@@ -185,7 +257,7 @@
         </table>
 
         <figcaption>
-            The caption.
+            Per-polarization $\phi_{pix}$ and $\epsilon_{pix}$ across the focal plane.
         </figcaption>
     </figure>
 
@@ -207,7 +279,7 @@
                 <td>-0.03</td>
                 <td>0.13</td>
                 <td>0.040</td>
-                <td>0.088</td>
+                <td>0.119</td>
 
             </tr>
             <tr>
@@ -217,7 +289,7 @@
                 <td>0.0016</td>
                 <td>0.0084</td>
                 <td>0.0014</td>
-                <td>0.0033</td>
+                <td>0.0032</td>
             </tr>
 
         </table>

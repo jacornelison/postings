@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cbb0713d-2948-4960-9b09-29638b4dc582" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figs/diffhist_phip_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/figs/diffhist_phip_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figs/diffhist_xpol.png" beforeDir="false" afterPath="$PROJECT_DIR$/figs/diffhist_xpol.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/rps_review_posting_plots.asv" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rps_review_posting_plots.asv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/rps_review_posting_plots.m" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rps_review_posting_plots.m" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +45,8 @@
       <workItem from="1601916542199" duration="4091000" />
       <workItem from="1602189786631" duration="1013000" />
       <workItem from="1602600875259" duration="18558000" />
+      <workItem from="1602780281298" duration="3044000" />
+      <workItem from="1602871243392" duration="1131000" />
     </task>
     <servers />
   </component>

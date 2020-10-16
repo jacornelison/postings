@@ -1,10 +1,11 @@
 function rps_review_posting_plots()
+global p p_ind
 
 load('data/b3rpsfiles.mat')
 load('data/fitdata_20201013.mat')
 addpath('Z:\\b3reduc\b3_analysis\util\')
 
-global p p_ind
+
 
 
 prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
@@ -24,9 +25,9 @@ param_array = {...
     {prx(fd.ch)-fd.bparam(:,1),-0.3,0.3,'x_{obs}-x_{fit}','dx'},...
     {pry(fd.ch)-fd.bparam(:,2),-0.3,0.3,'y_{obs}-y_{fit}','dy'},...
     {fd.aparam(:,2),-0.05,0.05,'Xpol leakage','xpol'},...
-    {atand(tand(p.chi(fd.ch)+p.chi_thetaref(fd.ch)-fd.aparam(:,1))),-4,5,'\phi_{d,0}-\phi_{d,fit}','phip'},...
-    {fd.stat,3,3,'Fit status',''},...
-    {fd.aparam(:,7)./fd.data_rms,1000,8600,'Sig.-to-Noise'}...
+    {atand(tand(p.chi(fd.ch)+p.chi_thetaref(fd.ch)-fd.aparam(:,1))),-4,5,'\phi_{d,0}-\phi_{d,fit}','phid'},...
+    {fd.stat,3,3,'Fit status','fit'},...
+    {fd.aparam(:,7)./fd.data_rms,1000,8600,'Sig.-to-Noise','snr'}...
     };
 
 fd_cut = structcut(fd,make_cut_index(fd,param_array));
@@ -53,7 +54,7 @@ for prmind = 1:length(param_array)
     else
         disp(['Skipping: ' ptitle])
     end
-    saveas(fig,[figdir 'cutthresh_'])
+    saveas(fig,[figdir 'cutthresh_' arr{5} '.png'])
 end
 
 
@@ -75,6 +76,32 @@ fd_dk = make_dk_struct(fd_cut,param_array,unique(fd.dk));
 % fd_dk = make_dk_struct(fd_cut,param_array,dk,spec_ind);
 % 
 
+
+%% See how rms changes over averaging
+
+parm = 'xpol';
+medsubstd = [];
+for dkind = 1:length(fd_dk.dk)
+    tilemed = zeros(size(p.gcp));
+    for tileind = 1:20
+        i = intersect(find(p.tile==tileind),fd_dk.inda);
+        tilemed(i) = nanmedian(fd_dk.(parm)(i,dkind));
+    end
+    
+    
+    medsubstd = nanstd(fd_dk.(parm)(fd_dk.inda,dkind)-tilemed(fd_dk.inda));
+    disp(['DK ' num2str(fd_dk.dk(dkind)) ': ' num2str(medsubstd)])
+end
+
+phip_mean = nanmean(fd_dk.(parm),2);
+    tilemed = zeros(size(p.gcp));
+    for tileind = 1:20
+        i = intersect(find(p.tile==tileind),fd_dk.inda);
+        tilemed(i) = nanmedian(phip_mean(i));
+    end
+
+medsubstd = nanstd(phip_mean(fd_dk.inda)-tilemed(fd_dk.inda));
+disp(['DK All: ' num2str(medsubstd)])
 
 %% Consistency Check for sys uncert
 
@@ -138,7 +165,27 @@ end
 %% Load and map tods
 load('data\ideal_tod.mat')
 
-%%
+%% Make single raster
+
+close all
+fig = figure(1)
+clf
+
+todind = 1;
+chind = tods{todind}.ch==697;
+az = tods{todind}.az;
+el = tods{todind}.el;
+A = tods{todind}.todquad(:,chind)/nanmax(tods{todind}.todquad(:,chind));
+
+plot3(az,el,A)
+xlabel('Azimuth (^\circ)')
+ylabel('Elevation (^\circ)')
+zlabel('Amplitude')
+title('RPS Raster')
+grid on
+saveas(fig,[figdir 'raster.png'])
+
+%% Make mosaic and mod curve
 
 
 fig = figure(1)
@@ -246,7 +293,7 @@ colormap jet
 %%% Myriad functions %%%
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-
+%%%%%%
 function ind = make_cut_index(fd,param_array)
 % Makes cut list. If true, channels PASS the cuts.
 
@@ -274,6 +321,7 @@ end
 
 ind = ind&cut_raster;
 
+%%%%%
 function make_cut_hist(param,lb,ub,ptitle,pltraw)
 
 if pltraw
@@ -298,6 +346,7 @@ ylim([-0.1, 1.1*mxn])
 xlim(plim)
 title(ptitle)
 
+%%%%%
 function make_diff_hist(fd_dk,arr,figdir)
 parm = arr{1};
 plimx = arr{2};
@@ -342,11 +391,11 @@ for j = (i+1):length(fd_dk.dk)
     end
 end
 end
-disp([parm 'max diff: ' num2str(nanmax(m))])
+disp([parm 'max diff: ' num2str(nanmax(abs(m)))])
 disp([parm 'min std: ' num2str(nanmin(s))])
 saveas(gcf,[figdir 'diffhist_' parm '.png'])
 
-
+%%%%%
 function fd_dk = make_dk_struct(fd_cut,param_array,dk,spec_ind)
 global p p_ind;
 

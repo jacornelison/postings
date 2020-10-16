@@ -1,10 +1,11 @@
 function rps_review_posting_plots()
+global p p_ind
 
 load('data/b3rpsfiles.mat')
 load('data/fitdata_20201013.mat')
 addpath('Z:\\b3reduc\b3_analysis\util\')
 
-global p p_ind
+
 
 
 prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
@@ -75,6 +76,32 @@ fd_dk = make_dk_struct(fd_cut,param_array,unique(fd.dk));
 % fd_dk = make_dk_struct(fd_cut,param_array,dk,spec_ind);
 % 
 
+
+%% See how rms changes over averaging
+
+parm = 'phip_corr';
+medsubstd = [];
+for dkind = 1:length(fd_dk.dk)
+    tilemed = zeros(size(p.gcp));
+    for tileind = 1:20
+        i = intersect(find(p.tile==tileind),fd_dk.inda);
+        tilemed(i) = nanmedian(fd_dk.(parm)(i,dkind));
+    end
+    
+    
+    medsubstd = nanstd(fd_dk.(parm)(fd_dk.inda,dkind)-tilemed(fd_dk.inda));
+    disp(['DK ' num2str(fd_dk.dk(dkind)) ': ' num2str(medsubstd)])
+end
+
+phip_mean = nanmean(fd_dk.(parm),2);
+    tilemed = zeros(size(p.gcp));
+    for tileind = 1:20
+        i = intersect(find(p.tile==tileind),fd_dk.inda);
+        tilemed(i) = nanmedian(phip_mean(i));
+    end
+
+medsubstd = nanstd(phip_mean(fd_dk.inda)-tilemed(fd_dk.inda));
+disp(['DK All: ' num2str(medsubstd)])
 
 %% Consistency Check for sys uncert
 
@@ -266,7 +293,7 @@ colormap jet
 %%% Myriad functions %%%
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-
+%%%%%%
 function ind = make_cut_index(fd,param_array)
 % Makes cut list. If true, channels PASS the cuts.
 
@@ -294,6 +321,7 @@ end
 
 ind = ind&cut_raster;
 
+%%%%%
 function make_cut_hist(param,lb,ub,ptitle,pltraw)
 
 if pltraw
@@ -318,6 +346,7 @@ ylim([-0.1, 1.1*mxn])
 xlim(plim)
 title(ptitle)
 
+%%%%%
 function make_diff_hist(fd_dk,arr,figdir)
 parm = arr{1};
 plimx = arr{2};
@@ -362,11 +391,11 @@ for j = (i+1):length(fd_dk.dk)
     end
 end
 end
-disp([parm 'max diff: ' num2str(nanmax(m))])
+disp([parm 'max diff: ' num2str(nanmax(abs(m)))])
 disp([parm 'min std: ' num2str(nanmin(s))])
 saveas(gcf,[figdir 'diffhist_' parm '.png'])
 
-
+%%%%%
 function fd_dk = make_dk_struct(fd_cut,param_array,dk,spec_ind)
 global p p_ind;
 
