@@ -140,7 +140,7 @@ plt_array = {...
     {'xpol',[-0.02 0.02],[0,250],'\epsilon_{pix}'}
     };
 close all
-for pltind = 1:length(plt_array)
+for pltind = 1%:length(plt_array)
     
     make_diff_hist(fd_dk,plt_array{pltind},figdir)
     %make_scatter(fd_dk,plt_array{pltind},figdir)
@@ -162,7 +162,6 @@ for i=1:nrows*ncols
         plt = bar(edges,N,'histc');
         title('Misc title')
         set(gca,'XTick',-2:0.5:2)
-        set(gca,'YTick',-0:120:500)
         grid on
         if c==1
             ylabel('N','FontSize',14)
@@ -238,8 +237,8 @@ for medind = 1:2
         end
                 
         plot_tiles(nanmean(fd_dk.(parm),2)-tilemed*medfact,p,'pair','diff','clab',pltlab,'title',[pltlab plttitle],'clim',plimx)
-        %colormap jet
-        saveas(gcf,[figdir 'tile_plot_' parm pltsuffix '.png'])
+        colormap jet
+        %saveas(gcf,[figdir 'tile_plot_' parm pltsuffix '.png'])
         V = nanmean(fd_dk.(parm),2)-tilemed*medfact;
         disp([parm ', ' pltsuffix ': med ' num2str(nanmedian(V(fd_dk.inda))) ', std ' num2str(nanstd(V(fd_dk.inda)))])
         
@@ -308,12 +307,12 @@ title([pols(chi) ' Detector Rasterset Data'])
 end
 %ylabel('Source Amplitude (Normalized)','FontSize',12)
 
-clr1 = clr([1,3],:);
+
 
 subplot(3,1,3)
-plot(-100,-100,'Color',clr1(1,:));
+plot(-100,-100,'Color',clr(1,:));
 hold on
-plot(-100,-100,'Color',clr1(2,:));
+plot(-100,-100,'Color',clr(2,:));
 for chi = 1:2
 chind = find(fd.sch==1 & fd.ch==ch(chi) & fd.row==10);
 modcurve = fd.bparam(chind,6:18);
@@ -322,7 +321,7 @@ grid on
 hold on
 %plot(fd.rot(chind,:),fd.bparam(chind,6:18))
 rot = -180:180;
-plot(rot,rps_get_mod_model([fd.phi_d(chind)+90,0,0,0,1/2],rot),'Color',clr1(chi,:))
+plot(rot,rps_get_mod_model([fd.phi_d(chind)+90,0,0,0,1/2],rot),'Color',clr(chi,:))
 
 end
 xlim(limx)
@@ -518,29 +517,29 @@ for j = (i+1):length(fd_dk.dk)
         [r,c] = ind2rowcol(count,nrows,ncols);
         %subplot(nrows,ncols,count)
         subaxis(nrows,ncols,count,...
-            'S',0,'SV',0.025,'SH',0.01,...
+            'SV',0.025,'SH',0,...
             'P',0,...
-            'M',0,'ML',0.075,'MR',0.05,'MT',0.025,'MB',0.075)
+            'ML',0.01,'MB',0.025)
         V = fd_dk.(parm)(fd_dk.inda,i)-fd_dk.(parm)(fd_dk.inda,j);
         m(end+1) = nanmedian(V);
         s(end+1) = nanstd(V);
         edges = plimx(1):abs(diff(plimx))/25:plimx(2);
         N = histc(V,edges);
         plt = bar(edges,N,'histc');
-        set(plt,'EdgeColor','k','FaceColor',[1 1 1]*0.4);%clr(1,:));
+        set(plt,'EdgeColor','k','FaceColor',clr(1,:));
         title([dkname1 ' - ' dkname2])
         hold on
-        plt = plot(x*m(end),y,'Color',clr(1,:));
-        set(plt,'LineWidth',1.5)%,'LineStyle','--')
-        plt = plot(x*m(end)+s(end),y,'Color',clr(3,:));
+        plt = plot(x*m(end),y,'Color',clr(2,:));
         set(plt,'LineWidth',1.5)
-        plt = plot(x*m(end)-s(end),y,'Color',clr(3,:));
+        plt = plot(x*m(end)+s(end),y,'Color',clr(5,:));
+        set(plt,'LineWidth',1.5)
+        plt = plot(x*m(end)-s(end),y,'Color',clr(5,:));
         set(plt,'LineWidth',1.5)
         grid on
         xlim(plimx)
         ylim(plimy)
         set(gca,'XTick',plimx(1):abs(diff(plimx))/4:plimx(2))
-        %axis square
+        axis square
         
         % Are we in the first column?
         
