@@ -1,0 +1,11 @@
+/.cvsignore/1.1.2.1/Thu Jul 26 21:00:48 2018//Tbicep2
+/Makefile/1.1.2.7/Thu Jul 26 21:03:23 2018//Tbicep2
+/debug.h/1.1.2.1/Thu Jul 26 21:01:18 2018//Tbicep2
+/legendre.c/1.1.2.3/Thu Jul 26 21:02:06 2018//Tbicep2
+/legendre.h/1.1.2.1/Thu Jul 26 21:01:18 2018//Tbicep2
+/libsphere.c/1.1.2.3/Thu Jul 26 21:02:58 2018//Tbicep2
+/libsphere.h/1.1.2.2/Thu Jul 26 21:02:58 2018//Tbicep2
+/libsphere_perf.m/1.1.2.1/Thu Jul 26 21:02:06 2018//Tbicep2
+/memory.c/1.1.2.1/Thu Jul 26 21:01:18 2018//Tbicep2
+/memory.h/1.1.2.1/Thu Jul 26 21:01:18 2018//Tbicep2
+D

@@ -1,0 +1,22 @@
+# MEX = /usr/local/matlab/matlab-R2009a/bin/mex
+FC = gfortran
+MEX = mex
+# FC = g77
+
+ifeq ($(FC),g77)
+FLIB = -lg2c
+else
+FLIB = -lgfortran
+endif
+
+%.o: %.F
+	$(FC) -fPIC -c -o $@ $<
+
+OBJ = mncntr.o mncuve.o mnerrs.o mnfree.o mnimpr.o mnlims.o mnmnot.o mnplot.o mnread.o mnseek.o mnstin.o mnwarn.o mnamin.o mncomd.o mnderi.o mneval.o mngrad.o mninex.o mnline.o mnparm.o mnpout.o mnrn15.o mnset.o mntiny.o mnwerr.o mnbins.o mncont.o mndxdi.o mnexcm.o mnhelp.o mninit.o mnmatu.o mnpars.o mnprin.o mnrset.o mnseti.o mnunpt.o stand.o mncalf.o mncrck.o mneig.o mnexin.o mnhes1.o mninpu.o mnmigr.o mnpfit.o mnpsdf.o mnsave.o mnsimp.o mnvers.o mncler.o mncros.o mnemat.o mnfixp.o mnhess.o mnintr.o mnmnos.o mnpint.o mnrazz.o mnscan.o mnstat.o mnvert.o
+
+matminc.mexa64: matminc.c makefile $(OBJ)
+	$(MEX) -Df2cFortran -Dextname matminc.c $(OBJ) $(FLIB)
+	mv matminc.mex* ..
+
+clean:
+	rm *.o *.mex*

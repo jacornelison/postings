@@ -1,0 +1,4 @@
+libsphere.so
+
+# Compiled matlab MEX functions for all platforms 
+*.mex*

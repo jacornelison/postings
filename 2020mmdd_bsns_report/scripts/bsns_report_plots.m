@@ -15,19 +15,24 @@ att_names = {...
     'milli','hughes';...
     'rocky','severe_backlash';...
     'att_2','att_3';...
-    'att_1','att_2'};
+    %'att_1','att_2';...
+    };
 
 att_titles = {...
     '30 GHz Att 1','30 GHz Att 2';...
     '90 GHz Att 1','90 GHz Att 2';...
     '150 GHz Att 1','150 GHz Att 2';...
-    '220 GHz Att 1','220 GHz Att 2'};
+    %'220 GHz Att 1','220 GHz Att 2';...
+    };
 
-
+nrows = size(att_names,1);
 figure(pltind); pltind=pltind+1;
 clf
-set(gcf,'Position',[50,50,700,700])
-for srcind = 1:4
+set(gcf,'Position',[50,50,700,175*nrows])
+
+srcorder = [1 2 3];
+nrows = length(srcorder);
+for srcind = srcorder
     att_curves = load(['data\' bsns_label{srcind} '\attenuation_curves.mat']);
     
 
@@ -50,7 +55,7 @@ for srcind = 1:4
             [B, sortind] = sort(att_obj(:,1));
         end
         
-        subplot(4,2,2*srcind+attind-2)
+        subplot(nrows,2,2*srcind+attind-2)
         plot(att_obj(sortind,1),att_obj(sortind,2),'-o','Color',src_color{srcind},...
         'MarkerFaceColor',src_color{srcind});
         grid on
@@ -62,7 +67,7 @@ for srcind = 1:4
         yticks(-45:10:5)
         if srcind == 1
             set(gca,'XDir','reverse')
-        elseif srcind == 4
+        elseif srcind == nrows
             xlabel('Dial Setting')
         end
         
@@ -104,19 +109,19 @@ for srcind = src_order
     
     xlabel('\tau (seconds)')
     ylim([5e-10,7e-1])
-    xlim([1e-1,5e4])
+    xlim([1e-1,1e5])
     grid on  
     end
 end
 
 pltlegend = pltlegend(src_order);
-pltlegend{end+1} = 'Target Stability';
-subplot(1,2,2)
-plot([1e-1, 4e4],1e-2*[1, 1],'k--')
+%pltlegend{end+1} = 'Target Stability';
+%subplot(1,2,2)
+%plot([1e-1, 4e4],1e-2*[1, 1],'k--')
 legend(pltlegend)
 
-subplot(1,2,1)
-plot([1e-1, 4e4],exp(-0.5*[1e-1, 4e4]/1e-1),'k-')
+%subplot(1,2,1)
+%plot([1e-1, 4e4],exp(-0.5*[1e-1, 4e4]/1e-1),'k-')
 
 %% Output Stability - Timestreams
 if 1

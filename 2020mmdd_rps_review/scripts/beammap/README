@@ -1,0 +1,68 @@
+Put all beam map (FFBM, FSL, RPS, NFBM, etc) analysis and reduction code here!
+
+Reducing ffbm into beam parameters
+1. Run tes_analysis/util/beammap_demod_par.m to demodulate
+2. Run tes_analysis/util/beamfitter.m to make maps and fits
+3. Use tes_analysis/util/beam_plotter.m to plot the maps
+4. Run ffbm_cutting_pixels to make the cuts on good/bad maps, 
+as well as position cuts. This saves a structure called mask
+that has flags on which to cut the measurements on.
+5. Run ffbm_param_manyfiles.m in order to calculate beam parameter
+distributions and save them as a file. This function takes the file
+output by ffbm_cutting_pixels.m
+6. Now make the cvs files using ffbm_makebeamparamcsv.m. This file
+goes into aux_data/beams.  
+6b. Make a total array csv file with makesinglebeamfile and symlink 
+   "beamwid_date.csv" to this
+7. Using the beam parameter files, make fp_data files using function
+ffbm_fpdata_beam.m. Make 2 types of files, aboffsetflags, and beamshapeflags
+8. If you want to have a summary of the beam parameters, mean, stddev across
+focal plane, and median measurement error use ffbm_evalbeamparam.m
+
+Notes:
+In general, the coordinate systems for the maps in the above set of 
+code is in az,el. Beam Parameters get rotated to account for dkangle,
+as well as to move it into x' and y' when we gather the statistics of
+the beam parameters, but I don't think the maps
+are ever in x' and y' coordinates.
+
+Ancillary files:
+ffbm_findbmruntimes.m finds the run times of all the beam maps taken
+ffbm_maskMaker.m creates a cut on the focal plane for specific receiver
+positions.
+dk_rx_pos_ffbm.m figures out which position the receiver is in.
+ffbm_findingparam.m calculates sigma, p and c given the A matrix that
+comes out from normfit2d.m
+
+Making composite maps from ffbm
+1. Make sure all the beamfitter files have been made, so
+we have map_time_rxNum files in beammap folder in working directory
+2. use ffbm_rotatemaps.m to rotate maps into right dk angle orientation (dk0)
+3. use ffbm_compositemaps.m to composite maps, save component maps, plot maps
+4. ffbm_plotCompMaps.m plots large component maps
+5. ffbm_plotmaps.m plots thumbnail sized maps to look at
+6. LOOK AT ALL THE MAPS
+7. Use ffbm_resizemaps.m to concatnate and resize all maps from different
+receivers into one combined map.
+8. ffbm_makesetofegauss.m will make a set of elliptical gaussian
+beam maps based on the measured beam parameters
+
+Notes:
+The maps here, once we've gotten them to the final map file
+to be fed into the sim code, are in x' and y' coordinates.
+Particularly, the map is a 3 dimensional matrix,
+the last dimension corresponding to the detector.
+The map is oriented so that when you imagesc(map)
+you get the map in x' and y' coordinates.
+The ad structure that comes along with the map has
+x'=ad.t_val{1}, but
+y'=-ad.t_val{2}. 
+
+%%%%%%%%%%%%%%%%%%
+Near field beam steer code:
+nfbm_beamsteer.m is really really rough. Need a lot of cleaning.
+
+%%%%%%%%%%%%%%
+Deprojecting the beam maps
+ffbm_makelintemp.m makes a linear template T of 
+derivatives of circular gaussians

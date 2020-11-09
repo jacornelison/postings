@@ -22,7 +22,7 @@ for i = 1:2
 end
 
 %% Spectra
-load('converted_spectra.mat')
+load('C:\Users\James\Documents\GitHub\postings\2019mmdd_30_40_bbns\data\converted_spectra.mat')
 
 [f1, ind] = sort(new_spect_2040(:,1));
 A1 = new_spect_2040(ind,2);
@@ -51,9 +51,9 @@ plot([1 1]*bc(2)*(1+bw(2)/2),[-50,0],'r--')
 
 ylim([-42,-25])
 xlim([20, 50])
-title('30/40GHz BBNS Spectrum')
+title('30/40GHz BSNS Spectrum')
 xlabel('Frequency (GHz)')
-ylabel('Amplitude (dBm)')
+ylabel('Power (dBm)')
 legend('30GHz BC','30GHz BW','40GHz BC','40GHz BW')
 grid on
 

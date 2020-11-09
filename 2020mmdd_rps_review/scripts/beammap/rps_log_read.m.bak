@@ -1,0 +1,425 @@
+function sch = rps_log_read(t1, t2, logdir)
+% sch = rps_log_read(t1, t2, logdir)
+%
+% Reads gcp log files to extract details of the RPS observing schedule.
+%
+% This function is somewhat fragile and could be easily broken if the 
+% format of gcp logging changes at all. In particular, it is looking for 
+% the following signals:
+%   1. Finds the start of a new schedule by looking for a line like
+%      "Starting schedule: " followed by a schedule name that includes 
+%      "rps" somewhere in the schedule name. Schedules that don't have 
+%      rps in their name will be ignored!
+%   2. Once inside a schedule, it looks for scans that are marked
+%      using feature bits f0+f1 and records the start and stop
+%      times of each scan.
+%   3. Meanwhile, keep track of all updates to the mount el and dk
+%      offsets, as well as the RPS grid angle. The mount offsets
+%      are well timed, so the function just tracks the current
+%      state. The log file record of RPS grid angle has extremely
+%      fuzzy timing, so we build up a time series of RPS position
+%      and then attempt to match up the grid position with scans.
+%
+% [Arguments]
+%   t1      Start time for RPS schedule(s). This can be approximate;
+%           the function will return results for all rps schedules
+%           running between t1 and t2.
+%   t2      End time for RPS schedule(s).
+%   logdir  Directory path for log files. Defaults to 'log'.
+%
+% [Returns]
+%   sch     Cell array of data structure(s) describing rps schedule(s).
+%
+%   Fields for sch data structure:
+%     sch.name     Name of the schedule
+%     sch.t1       Start time of the schedule (MJD).
+%     sch.t2       End time of the schedule (MJD).
+%     sch.dk_ofs   Dk offset for this schedule.
+%     sch.nrows    Number of elevation steps for this schedule.
+%     sch.nrps     Number of RPS grid angles for this schedule.
+%     sch.scans    Array of scan data structures for each RPS scan.
+%     sch.index    [nrows,nrps] array mapping scans to convenience arrays. 
+%                  Zero values in this array indicate missing scans
+%                  (i.e. because rps schedule was incomplete).
+%     sch.el_ofs   [nrows,nrps] convenience array containing elevation 
+%                  offsets. Use sch.index to map onto the sch.scans array.
+%     sch.tot_rot  [nrows,nrps] convenience array containing RPS total 
+%                  rotation values. Use sch.index to map on the sch.scans 
+%                  array.
+%     sch.abs_rot  [nrows,nrps] convenience array containing RPS absolute 
+%                  rotation values. Use sch.index to map on the sch.scans
+%                  array.
+%
+%   Fields for the sch.scans data structure: 
+%     sch.scans.t1       Start time of this scan (MJD).
+%     sch.scans.t2       End time of this scan (MJD).
+%     sch.scans.target   Target source for the scan (i.e. 'dslCal4').
+%     sch.scans.pattern  Scan pattern (i.e. 'keckrps2').
+%     sch.scans.el_ofs   Elevation offset for this scan.
+%     sch.scans.dk_ofs   Dk offset of this scan.
+%     sch.scans.tot_rot  RPS total rotation angle.
+%     sch.scans.abs_rot  RPS absolute rotation angle.
+
+% Started from Walt's version of rps_log_read.m, then heavily modified.
+% Last update: 2014-02-07 CAB
+
+% Convert t1, t2 to Modified Julian Date.
+mjd1 = datenum(t1, 'yyyy-mmm-dd:HH:MM:SS') - datenum(1858, 11, 17);
+mjd2 = datenum(t2, 'yyyy-mmm-dd:HH:MM:SS') - datenum(1858, 11, 17);
+
+% Default log directory is log
+if (nargin < 3) || isempty(logdir)
+  logdir = 'log';
+end
+
+% Get log files overlapping with this time span.
+lf = list_arc_files(logdir, t1, t2, '.log');
+lf = sort(lf);
+
+% Target source.
+target = '';
+% Tracking telescope offsets.
+el_ofs = NaN;
+dk_ofs = NaN;
+% Tracking RPS position.
+% Recording the RPS position in the log file has somewhat fuzzy timing, so 
+% we will keep track of all values, with timestamps, and then reconstruct
+% the RPS position for each scan at the end.
+tot_rot = [];
+abs_rot = [];
+
+% Tracking which level of the schedule we are in.
+sch = {};
+in_sched = false;
+in_scan = false;
+
+% Loop over log files.
+for ii=1:length(lf)
+  % Open file.
+  f = fopen(fullfile(logdir, lf{ii}), 'rt');
+  
+  while ~feof(f)
+    % Read line.
+    logline = fgetl(f);
+
+    % Extract date and time.
+    [logline, datestr, timestr, mjd] = datetime_from_log(logline);
+
+    % Track source.
+    pattern = 'telescope is now tracking source: ([_\-a-zA-Z0-9]+)';
+    tmp = regexp(logline, pattern, 'tokens');
+    if ~isempty(tmp)
+      % Update source target.
+      target = tmp{1}{1};
+    end
+    
+    % Track el offset.
+    % 1. Command to set offset.
+    pattern = 'offset .*el=(-?[0-9]+:[0-9]+:[0-9]+)';
+    tmp = regexp(logline, pattern, 'tokens');
+    if ~isempty(tmp)
+      % New offset value.
+      el_ofs = dmsstr(tmp);
+    end
+    % 2. Command to increment offset.
+    pattern = 'offset/add.*el=(-?[0-9]+:[0-9]+:[0-9]+)';
+    tmp = regexp(logline, pattern, 'tokens');
+    if ~isempty(tmp)
+      % Update offset value.
+      el_ofs = el_ofs + dmsstr(tmp);
+    end
+
+    % Track dk offset
+    % 1. Command to set offset.
+    pattern = 'offset .*dk=(-?[0-9]+:[0-9]+:[0-9]+)';
+    tmp = regexp(logline, pattern, 'tokens');
+    if ~isempty(tmp)
+      % New offset value.
+      dk_ofs = dmsstr(tmp);
+    end
+    % 2. Command to increment offset.
+    pattern = 'offset/add.*dk=(-?[0-9]+:[0-9]+:[0-9]+)';
+    tmp = regexp(logline, pattern, 'tokens');
+    if ~isempty(tmp)
+      % Update offset value.
+      dk_ofs = dk_ofs + dmsstr(tmp);
+    end
+
+    % Track RPS position: total rotation and absolute position.
+    % 1. Log output from successful rps_get.
+    pattern = 'total rotation is (-?[0-9]+.?[0-9]+)';
+    tmp = regexp(logline, pattern, 'tokens');
+    if ~isempty(tmp)
+      % Update total rotation.
+      tot_rot = [tot_rot; [mjd, str2num(tmp{1}{1})]];
+    end
+    pattern = 'abs position is (-?[0-9]+.?[0-9]+)';
+    tmp = regexp(logline, pattern, 'tokens');
+    if ~isempty(tmp)
+      % Update absolute position.
+      abs_rot = [abs_rot; [mjd, str2num(tmp{1}{1})]];
+    end
+    % 2. Log output from successful rps_move.
+    pattern = 'Moved rotating polarized source to (-?[0-9]+.?[0-9]+)';
+    tmp = regexp(logline, pattern, 'tokens');
+    if ~isempty(tmp)
+      % Update absolute position.
+      abs_rot = [abs_rot; [mjd, str2num(tmp{1}{1})]];
+    end
+    % 3. Log output from successful rps_home.
+    pattern = 'Rotating polarized source home completed';
+    if ~isempty(regexp(logline, pattern))
+      % Update absolute position.
+      abs_rot = [abs_rot; [mjd, 0.]];
+    end
+
+    % If we are not inside an RPS schedule, then keep searching
+    % through the log file until we find the start of the schedule.
+    if ~in_sched
+      % Looking for a line like:
+      % "Starting schedule: 7_ffflat_rps_keck_01a_000.sch"
+      tmp = regexp(logline, 'Starting schedule: (.*rps.*)', 'tokens');
+      if ~isempty(tmp)
+        % Check to see if the start time for this schedule falls
+        % within the range specified in the function arguments.
+        if (mjd >= mjd1 && mjd <= mjd2)
+          disp(tmp{1}{1});
+          % Initialize a new schedule data structure.
+          new_sch.name = tmp{1}{1};
+          new_sch.t1 = mjd;
+          new_sch.t2 = 0.;
+          new_sch.scans = [];
+          % Add new schedule to list.
+          sch(length(sch) + 1) = {new_sch};
+          % Update state.
+          in_sched = true;
+          in_scan = false;
+        end
+      end
+    else
+      % If we are currently inside an RPS schedule, then check to
+      % see if we have reached the end of the schedule.
+
+      % Look for line indicating end of schedule.
+      tmp = regexp(logline, 'Exiting schedule:');
+      if ~isempty(tmp)
+        % If we are still in the middle of a scan, then something is wrong. 
+        % Discard the incomplete scan.
+        if in_scan
+          disp('[rps_log_read] WARNING: Reached end of schedule mid-scan!');
+          disp('                        Discarding partial scan.');
+          sch{end}.scans = sch{end}.scans(1:end-1);
+        end
+        % Set dk offset for schedule to whatever was the most common dk 
+        % offset for the scans (should always be the same value).
+        if length(sch{end}.scans) > 0
+          scandk = zeros(size(sch{end}.scans));
+          for jj=1:length(scandk)
+            scandk(jj) = sch{end}.scans(jj).dk_ofs;
+          end
+          sch{end}.dk_ofs = mode(scandk);
+        end
+        % Time stamp for end of schedule.
+        sch{end}.t2 = mjd;
+        % Update state.
+        in_sched = false;
+        in_scan = false;
+      end
+
+      % Identify the start and end of scans based on adding and
+      % removing mark f0+f1.
+      if ~in_scan
+        % Look for the start of a scan.
+        pattern = 'mark add, f0\+f1';
+        tmp = regexp(logline, pattern);
+        if ~isempty(tmp)
+          % Initialize a new scan data structure.
+          new_scan.t1 = mjd;
+          new_scan.t2 = 0.;
+          new_scan.target = target;
+          new_scan.pattern = '';
+          new_scan.el_ofs = el_ofs;
+          new_scan.dk_ofs = dk_ofs;
+          new_scan.tot_rot = 0.;
+          new_scan.abs_rot = 0.;
+          % Add new scan to list.
+          sch{end}.scans = [sch{end}.scans; new_scan];
+          % Update state.
+          in_scan = true;
+        end
+      else
+        % If we are currently inside a scan, look for the end of scan, 
+        % indicated by taking off the feature marker.
+        pattern = 'mark remove, f0\+f1';
+        tmp = regexp(logline, pattern);
+        if ~isempty(tmp)
+          % Time stamp for end of scan.
+          sch{end}.scans(end).t2 = mjd;
+          % Update state.
+          in_scan = false;
+        end
+        
+        % Also, look for the actual scan command, to get the name of the 
+        % scan pattern.
+        pattern = 'scan ([_\-a-zA-Z0-9]+)';
+        tmp = regexp(logline, pattern, 'tokens');
+        if ~isempty(tmp)
+          sch{end}.scans(end).pattern = tmp{1}{1};
+        end
+      end
+    end
+  end
+
+  % Close file.
+  fclose(f);
+end
+
+% If we reached the end of the log files but are still mid-schedule, 
+% broadcast a warning, but don't delete the incomplete schedule.
+if in_sched
+  disp('[rps_log_read] WARNING: Reached end of log file(s) mid-schedule!');
+end
+
+% Drop any schedules that don't contain scans. These are rps_read,
+% rps_rotate, etc.
+keep_sch = zeros(size(sch));
+for ii=1:length(sch)
+  if ~isempty(sch{ii}.scans)
+    keep_sch(ii) = 1;
+  end
+end
+sch = sch(find(keep_sch));
+
+% Now we need to deal with the fuzzy timing of RPS position updates. 
+% For each scan, we will take the newest RPS position up to some dt *after* 
+% the start of the scan.
+% Trying dt = 30 seconds for now.
+dt = 30. / 86400.; % Convert to days.
+for ii=1:length(sch)
+  for jj=1:length(sch{ii}.scans)
+    % Get total rotation.
+    index = find(tot_rot(:,1) < (sch{ii}.scans(jj).t1 + dt), 1, 'last');
+    sch{ii}.scans(jj).tot_rot = tot_rot(index, 2);
+    % Get absolute position.
+    index = find(abs_rot(:,1) < (sch{ii}.scans(jj).t1 + dt), 1, 'last');
+    sch{ii}.scans(jj).abs_rot = abs_rot(index, 2);
+  end
+end
+
+% Now, for each schedule, create helper arrays that have shape
+% [nrows x nrps]. 
+for ii=1:length(sch)
+  % Get elevation offsets and RPS angles.
+  el_ofs = [];
+  tot_rot = [];
+  abs_rot = [];
+  for jj=1:length(sch{ii}.scans)
+    el_ofs(jj) = sch{ii}.scans(jj).el_ofs;
+    tot_rot(jj) = sch{ii}.scans(jj).tot_rot;
+    abs_rot(jj) = sch{ii}.scans(jj).abs_rot;
+  end
+  
+  % Find steps in elevation.
+  el_steps = unique(el_ofs);
+  sch{ii}.nrows = length(el_steps);
+
+  % Find steps in RPS angle.
+  rps_steps = unique(tot_rot);
+  sch{ii}.nrps = length(rps_steps);
+
+  % Convenience arrays describing the schedule.
+  sch{ii}.index = zeros(sch{ii}.nrows, sch{ii}.nrps);
+  sch{ii}.el_ofs = nan(sch{ii}.nrows, sch{ii}.nrps);
+  sch{ii}.tot_rot = nan(sch{ii}.nrows, sch{ii}.nrps);
+  sch{ii}.abs_rot = nan(sch{ii}.nrows, sch{ii}.nrps);
+
+  % Rearrange scans.
+  for jj=1:sch{ii}.nrows
+    for kk=1:sch{ii}.nrps
+      index = find((el_ofs == el_steps(jj)) & (tot_rot == rps_steps(kk)), 1);
+      
+      if ~isempty(index)
+        sch{ii}.index(jj,kk) = index;
+        sch{ii}.el_ofs(jj,kk) = sch{ii}.scans(index).el_ofs;
+        sch{ii}.tot_rot(jj,kk) = sch{ii}.scans(index).tot_rot;
+        sch{ii}.abs_rot(jj,kk) = sch{ii}.scans(index).abs_rot;
+      end
+    end
+  end
+end
+
+return
+
+% Subfunction: datetime_from_log
+% ---
+% Extracts the timestamp from a logfile line.
+function [logline, datestr, timestr, mjd] = datetime_from_log(logline)
+
+  % Check for empty line.
+  if isempty(logline)
+    datestr = '';
+    timestr = '';
+    mjd = 0.;
+    return 
+  end
+
+  % Get date and time.
+  try
+    % First two tokens should be date and time.
+    [datestr logline] = strtok(logline);
+    [timestr logline] = strtok(logline);
+    
+    % Convert date and time to MJD.
+    mjd = datenum([datestr ' ' timestr], 'yymmdd HH:MM:SS') - ...
+          datenum(1858, 11, 17);
+  catch
+    % Ignore line.
+    datestr = '';
+    timestr = '';
+    mjd = 0.;
+    return 
+  end
+
+  % Trim whitespace.
+  logline = strtrim(logline);
+
+  return
+  
+% Subfunction: dmsstr
+% ---
+% Convert sexagesimal strings like '90:00:00'
+% to numeric decimal degrees like 90.0000
+function x = dmsstr(s)
+  % Extract string from cell array, if necessary.
+  while iscell(s)
+    s=s{1};
+  end
+  
+  % Remove white space.
+  s(isspace(s)) = '';
+
+  % If empty, return nothing.
+  if isempty(s)
+    x = [];
+    return
+  end
+
+  % Check for negative sign.
+  if s(1) == '-'
+    sgn = -1;
+    s(1) = '';
+  else
+    sgn=+1;
+  end
+
+  % Extract degrees, minutes, seconds.
+  [dval s]=strtok(s,':');
+  [mval s]=strtok(s,':');
+  [sval s]=strtok(s,':');
+  dval=str2num(dval);
+  mval=str2num(mval);
+  sval=str2num(sval);
+
+  % Return decimal result.
+  x = sgn * (dval + mval/60 + sval/3600);
+  return

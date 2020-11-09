@@ -1,0 +1,8 @@
+# Standard build products
+*.o
+*.so
+*.mex*
+
+# Matlab auto-generated prototype files
+*_proto.m
+

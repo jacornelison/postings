@@ -1,0 +1,35 @@
+MEX = /usr/local/matlab/matlab-R2009a/bin/mex
+FC = gfortran
+# MEX = mex
+# FC = g77
+
+ifeq ($(FC),g77)
+FLIB = -lg2c
+else
+FLIB = -lgfortran
+endif
+
+
+# The default thing to make: everything
+all: hfillc.mexa64 hfill2c.mexa64 hprofc.mexa64 matminc.mexa64 azel2radecc.mexa64 healpix_neighborhood_c.mexa64
+
+hfillc.mexa64: hfillc.c
+	$(MEX) hfillc.c
+
+hfill2c.mexa64: hfill2c.c
+	$(MEX) hfill2c.c
+
+hprofc.mexa64: hprofc.c
+	$(MEX) hprofc.c
+
+matminc.mexa64: makefile
+	@cd minuit; make
+
+azel2radecc.mexa64: makefile point.h
+	$(MEX) CFLAGS='-std=gnu99' CFLAGS='-fPIC' azel2radecc.c
+
+healpix_neighborhood_c.mexa64: healpix_neighborhood_c.c
+        $(MEX) healpix_neighborhood_c.c
+
+clean:
+	rm *.mex*

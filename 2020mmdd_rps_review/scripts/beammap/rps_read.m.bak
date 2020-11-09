@@ -1,0 +1,233 @@
+function rpstod = rps_read(scan, ch, p, rpsopt)
+% rpstod = rps_read(scan, ch, p, rpsopt)
+%
+% Reads time-ordered data for one RPS scan from arc files and demodulates.
+%
+% [Arguments]
+%   scan    RPS scan data structure, returned by rps_log_read.m
+%   ch      List of channels, indexed from 1 and running across all MCEs,
+%           to read. For example, ch = [529, 530] would select the first
+%           two detectors from rx1.
+%   p       Detector parameter structure from get_array_info.m. This 
+%           should be the full p structure, even though we will downselect
+%           based on the specified channels.
+%   rpsopt  Data structure controlling options for RPS analysis.
+%
+%   Fields for rpsopt data structure:
+%     rpsopt.mount   Mount model data structure. Default value supplied by
+%                    keck_beam_map_pointing.m
+%     rpsopt.mirror  Mirror model data structure. Default value supplied
+%                    by keck_beam_map_pointing.m
+%     rpsopt.source  Source position data structure. Default value supplied
+%                    by keck_beam_map_pointing.m
+%     rpsopt.flip_dk Flips the sign of dk encoder offset for BICEP2 RPS 
+%                    schedules that use mirror online pointing model.
+%     rpsopt.fbit    Specify the value of the feature bit that indicates
+%                    scanning motion. Defaults to 3 (i.e. f0+f1).
+%     rpsopt.do_deconv       Set to true if you want deconvolution applied
+%                            to bolometer timestreams (default), false
+%                            otherwise. Deconvolution code doesn't seem to
+%                            work if rpsopt.rx is set to something other
+%                            than all rx.
+%     rpsopt.chop_channel    Specify which pmac fast_aux_input is used to
+%                            record the chop reference. Defaults to 1.
+%     rpsopt.chop_threshold  Specify the analog level used to differentiate
+%                            between chop reference high/low states. Default
+%                            value is 1250, which works well for Keck.
+%     rpsopt.chop_shift      Number of samples to shift the chop reference.
+%                            Defaults to zero, but you will want to set this
+%                            to a value that maximizes signal in the cosine 
+%                            demodulation channel.
+%     rpsopt.chop_deglitch   Set to true to remove single sample
+%                            transitions in the chop reference, which lead 
+%                            to glitchy looking spikes in the demodulated 
+%                            timestreams. False by default.
+%
+% [Returns]
+%   rpstod  Data structure containing demodulated TOD for selected channels.
+%
+%   Fields for rpstod data structure:
+%     rpstod.scan    Record of the scan data structure argument.
+%     rpstod.ch      Record of the channel list argument.
+%     rpstod.rpsopt  Record of the rpsopt argument.
+%     rpstod.p       Detector parameter data structure, cut down to include
+%                    only selected channels.
+%     rpstod.todcos  Cos demodulated time-ordered data for all detectors.
+%     rpstod.todsin  Sin demodulated time-ordered data for all detectors.
+%                    Note that all of the pointing arrays have been
+%                    downsampled to the locations of the cos demodulated
+%                    timestream.
+%     rpstod.az      Azimuth coordinates for telescope boresight.
+%     rpstod.el      Elevation coordinates for telescope boresight.
+%     rpstod.pa      Dk angle coordinate for telescope.
+%     rpstod.r       r coordinate of the source for all detectors.
+%     rpstod.theta   theta coordinate of the source for all detectors.
+%     rpstod.psi     psi coordinate of the detector co-polar axes projected
+%                    onto the source pointing.
+
+% Last update: 2014-02-06 CAB
+
+% Fill out rpsopt data structure with default parameters, if necessary.
+if ~exist('rpsopt', 'var')
+  rpsopt = [];
+end
+% Use default mount model from keck_beam_map_pointing.m
+if ~isfield(rpsopt, 'mount')
+  rpsopt.mount = [];
+end
+% Use default mirror model from keck_beam_map_pointing.m
+if ~isfield(rpsopt, 'mirror')
+  rpsopt.mirror = [];
+end
+% Use default source location from keck_beam_map_pointing.m
+if ~isfield(rpsopt, 'source')
+  rpsopt.source = [];
+end
+% For BICEP2, set the flip_dk keyword to 1 so that it correctly
+% handles the online pointing model that was used for RPS observations.
+if ~isfield(rpsopt, 'flip_dk')
+  rpsopt.flip_dk = 0;
+end
+% By default, scan feature bit is 3 (=f0+f1).
+if ~isfield(rpsopt, 'fbit')
+  rpsopt.fbit = 3;
+end
+% Deconvolve timestreams.
+if ~isfield(rpsopt, 'do_deconv')
+  rpsopt.do_deconv = true;
+end
+% Which fast_aux_input channel is used for the chop reference.
+if ~isfield(rpsopt, 'chop_channel')
+  % Usual value for Keck.
+  rpsopt.chop_channel = 1;
+  % Other useful values:
+  % BICEP2: chop_channel = 4
+end
+% Threshold somewhere in between chop reference high and low state.
+if ~isfield(rpsopt, 'chop_threshold')
+  % Chose value for Nov 2012 Keck RPS data.
+  rpsopt.chop_threshold = 1250;
+end
+% Can shift the chop reference by integer values.
+if ~isfield(rpsopt, 'chop_shift')
+  rpsopt.chop_shift = 0;
+end
+% By default, don't deglitch chop reference.
+if ~isfield(rpsopt, 'chop_deglitch')
+  rpsopt.chop_deglitch = false;
+end
+
+% Store input arguments in output data structure.
+rpstod.scan = scan;
+rpstod.ch = ch;
+rpstod.rpsopt = rpsopt;
+% Downselect p structure based on channel list.
+p = structcut(p, ch);
+% Add to results data structure.
+rpstod.p = p;
+
+% Exit if no channels were hit.
+if length(ch) == 0
+  return
+end
+
+% Select registers to read using load_arc.
+%   * array contains feature bits
+%   * antenna0 contains telescope encoders, timestamps
+%   * mceX.data.fb for selected channels
+%   * mceX.cc, mceX.rc1, mceX.frame are necessary for deconvolution
+reg = {'array', 'antenna0'};
+for rx=unique(p.rx')
+  mceselect = sprintf('mce%i', rx);
+  mce_channels = ch(floor((ch - 1) / 528) == rx) - 528 * rx;
+  if length(mce_channels) > 0
+    chselect = [mceselect sprintf('.data.fb(%i', mce_channels(1))];
+    for i=2:length(mce_channels)
+      chselect = [chselect ',' sprintf('%i', mce_channels(i))];
+    end
+    chselect = [chselect ')'];
+  else
+    chselect = [mceselect '.data.fb()'];
+  end
+  reg{length(reg) + 1} = chselect;
+  reg{length(reg) + 1} = [mceselect '.cc'];
+  reg{length(reg) + 1} = [mceselect '.rc1'];
+  reg{length(reg) + 1} = [mceselect '.frame'];
+end
+
+% Read arc files, selected channels only.
+data = load_arc('arc', mjd2datestr(scan(1).t1), mjd2datestr(scan(1).t2), reg);
+% If flip_dk keyword is set, flip the sign for the dk axis parts of
+% encoder_off.
+if rpsopt.flip_dk
+  data.antenna0.tracker.encoder_off(:,3) = ...
+      -1 * data.antenna0.tracker.encoder_off(:,3);
+end
+
+% Combine all mce into mce0 field of the data structure.
+if ~isfield(data, 'mce0')
+  data.mce0 = [];
+end
+for m = {'mce1', 'mce2', 'mce3', 'mce4'};
+  if isfield(data, m)
+    data.mce0 = structcat(2, [data.mce0, getfield(data, m{1})]);
+    data = rmfield(data, m);
+  end
+end
+
+% Apply offline pointing model.
+pm = get_pointing_model(scan.t1, 0, data);
+data = invpointing_model(data, pm, 0);
+
+% Select only data with the correct feature bit set.
+[mask_slow, mask_fast] = select_feature_bit(data, rpsopt.fbit);
+
+if rpsopt.do_deconv
+  % Deconvolve data.
+  % Just one continuous block for deconvolution.
+  dc.s = min(find(mask_slow));
+  dc.e = max(find(mask_slow));
+  dc.sf = min(find(mask_fast));
+  dc.ef = max(find(mask_fast));
+  % Calculate deconvolution kernel.
+  data = get_xferfunc(data, dc, 0, 0);
+  % Work-around for a bug when running get_xferfunc with low-pass
+  % filter off.
+  for ii=1:length(data.tf)
+    data.tf(ii).lpf = 1;
+  end
+  % Apply deconvolution.
+  data = deconv_scans(data, p);
+end
+  
+% Get chop reference.
+chopref = data.antenna0.pmac.fast_aux_input(mask_fast, rpsopt.chop_channel);
+chopref = chopref > rpsopt.chop_threshold;
+% Shift chop reference.
+chopref = circshift(chopref, rpsopt.chop_shift);
+% Deglitch chop reference.
+if rpsopt.chop_deglitch
+  chopref = chop_deglitch(chopref);
+end
+% Demodulate data.
+[todcos, todsin, indcos, indsin] = ...
+    square_demod(data.mce0.data.fb(mask_fast,:), chopref);
+% Store results.
+rpstod.todcos = todcos;
+rpstod.todsin = todsin;
+  
+% Calculate downsampled encoder positions.
+az = data.pointing.hor.az(mask_fast);
+rpstod.az = az(indcos);
+el = data.pointing.hor.el(mask_fast);
+rpstod.el = el(indcos);
+dk = data.pointing.hor.dk(mask_fast);
+rpstod.dk = dk(indcos);
+
+% Calculate pointing for detectors relative to source.
+[r, theta, psi] = ...
+    keck_beam_map_pointing(rpstod.az, rpstod.el, rpstod.dk, rpsopt.mount, ...
+                           rpsopt.mirror, rpsopt.source, rpstod.p);
+rpstod.r = r;
+rpstod.theta = theta;
+rpstod.psi = psi;
