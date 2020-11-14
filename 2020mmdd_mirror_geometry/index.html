@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Posting Title — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Posting title</h1>
+
+    <time datetime="2020-xx-xx" class="published updated">
+        2020 Mmm dd
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>Introduction summary paragraph.</p>
+<section><h2>First</h2>
+<hr>
+    <p>We first want to derive a generic equation that gives the apparent elevation $El'$ as a function of the detector pointing $(r,\,\theta)$, the mirror tilt $\alpha_{tilt}$ and the elevation $El$.</p>
+    <p>
+     The mirror comoves with the receiver so we reference comoving angles to the boresight where $r=0$ which I'm just calling the $r_0$-axis and the axis at which $r=90^\circ$ the $r_{90}$-axis.
+    </p>
+    <p>
+        $\alpha_{tilt}$ is defined such that when $\alpha_{tilt}=0$, $\beta_{inc}=0$ at the boresight. $\alpha_{norm}$ is the angle measured from the $r_{90}$-axis to the axis normal to the mirror, counter-clockwise as seen in the diagram. This is related to the mirror tilt by:
+    </p>
+
+    \begin{equation}
+\alpha_{norm} = \alpha_{tilt}-90
+    \end{equation}
+
+    Them from the diagram, we can see that the apparent elevation is
+
+    \begin{equation}
+    El' = El + \beta_{ref} + \alpha_{norm}
+    \end{equation}
+
+    where $\beta_{ref}$ is the angle of the reflected ray WRT the mirror normal. Since the mirror is flat, we know that the reflected angle is equal to the incident angle $\beta_{ref}=\beta_{inc}$. We can find $\beta_{inc}$ by exploiting the fact that internal triangle angles sum to 180&deg; and noting that a triangle is created by the intersections of the detector ray (in red), the $r_{90}$-axis, and the mirror.
+
+    \begin{equation}
+    180^\circ = \alpha_{tilt}+(90^\circ-r)+(90^\circ-\beta_{inc})
+    \end{equation}
+
+    Solving for $\beta_{inc}$ substituting for $\beta_{ref}$ gives
+
+    \begin{equation}
+    \beta_{ref} = \alpha_{tilt}-r
+    \end{equation}
+
+We can then rewrite equation 2 in terms of $r$ and $\alpha_{tilt}$.
+
+    \begin{equation}
+El' = El+2\alpha_{tilt}-r-90^\circ
+    \end{equation}
+
+<p>
+    Because the 
+</p>
+
+    <figure>
+        <img alt="Test" src="figs/mirror_diagram.png" />
+        <figcaption>
+
+        </figcaption>
+    </figure>
+</section>
+
+
+
+
+
+<hr>
+
+</body>
