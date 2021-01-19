@@ -26,50 +26,96 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Posting title</h1>
+    <h1>RPS Analysis: Rederiving Mirror Parameters </h1>
 
     <time datetime="2020-xx-xx" class="published updated">
-        2020 Mmm dd
+        2021 Mmm dd
     </time> —
     J. Cornelison
 </header>
 
 <hr>
 
-<p>Introduction summary paragraph.</p>
+<p>We found that the largest errors on absolute polarization angles estimated from the RPS analysis resulted from the mirror analysis. I did not perform moon observations during the Jan 2018 calibration campaign and so my RPS analysis involves using moon obervations and the RPS location from the previous year to derive the mirror parameters for 2018 which, if not handled properly, can easily propagate large errors into the final results. In this posting, I take a fresh look at the Jan 2017 moon data to acquire mirror parameters for 2018 with reduced systematic errors.</p>
 
 <hr>
 
-<section><h2>First</h2>
+<section><h2>Data</h2>
+
+<figure>
+    <table>
+        <tr>
+            <th>Schedule</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>DK</th>
+        </tr>
+        <tr>
+            <td>8_ffflat_moonraster_28_dk000_001.sch</td>
+            <td>170121 22:29:58</td>
+            <td>170121 23:25:36</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>8_ffflat_moonraster_28_dk045_001.sch</td>
+            <td>170121 23:26:36</td>
+            <td>170122 00:20:45</td>
+            <td>45</td>
+        </tr>
+        <tr>
+            <td>8_ffflat_moonraster_28_dk090_001.sch</td>
+            <td>170122 00:36:46</td>
+            <td>170122 01:31:05</td>
+            <td>90</td>
+        </tr>
+
+    </table>
+
+</figure>
+
+</section>
+
+
+<section><h2>Analysis</h2>
+
+
+
+    <h3>Drum Angle</h3>
     <figure>
-        <img alt="Test" src="#" />
+        <img src="figs/moonfit_residuals.png" />
         <figcaption>
             The caption.
         </figcaption>
     </figure>
-</section>
 
 
-<section><h2>Second</h2>
-<p>Words.
-    <figure>
-        <img alt="Maps pager" id="mapspager" src="#" />
-        <figcaption>
 
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#mapspager",
-                {
-                    'Parameter|p': ['P1|p1','P2|p2'],
-                },
-                function(params) {
-                    return 'figs/fig_'+params.p+'.png';
-                });
-            pager.setparams({
-                    'p': 'p1',
-                });
-        </script>
-    </figure>
+<!--    <p>Words.-->
+<!--    <figure>-->
+<!--        <img alt="Maps pager" id="mapspager" src="#" />-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#mapspager",-->
+<!--                {-->
+<!--                    'Parameter|p': ['P1|p1','P2|p2'],-->
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/fig_'+params.p+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                    'p': 'p1',-->
+<!--                });-->
+<!--        </script>-->
+<!--    </figure>-->
+
+    <h3>Beam Centroids</h3>
+    <p>
+        Using the max amplitude impinges an uncertainty on the beam centers which is half of the spacing the sample spacing for a given coordinate. In topocentric coordinates this corresponds to $\sigma_{az}<0.009^\circ$ and $\sigma_{el}<0.05^\circ$. 
+
+    </p>
+
 </section>
 
 
