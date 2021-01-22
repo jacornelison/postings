@@ -239,15 +239,32 @@
 </ul>
 
 
-<h3>References</h3>
+
+        <p id="demo"></p>
+
+        <script>
+            document.getElementById("demo").innerHTML =
+                "The full URL of this page is:<br>" + window.location.href;
+        </script>
+
+        <h3>References</h3>
 <p id="references"></p>
 	<script type="text/javascript">
+
 	// This my way of making shorthand links.
 	// We'll make a couple arrays with the 'tag' and href information
 	// and then look through each anchor element for the specified tag.
 	// The anchors should then just look like: <a href="tagname"></a>
 	// and the script will automatically fill in the hyperlings and text.
-	var tags = [
+
+    // Which logbook is this posting going in?
+    var posting_log = "bkcmb";
+
+    // What's the current url?
+    var posting_dir = window.location.href;
+
+    // Shorthand tags
+    var tags = [
         "CAB2012",
         "IDB2013",
         "CAB2014",
@@ -261,7 +278,9 @@
     // keck:    www/keck/analysis_logbook/analysis/
     // BICEP3:  www/bicep3/analysis_logbook/
     // BA:      www/bicep_array/analysis_logbook/
-	
+
+
+    // Links
 	var hrefs = [
         "../../../../keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
         "../20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
@@ -270,7 +289,9 @@
         "../20181207_B2018_beamcen/",
         "../20190409_moon_analysis_2017/"
 	];
-	
+
+
+	//
 	var desc = [
         "Pointing Model for Keck Beam Maps",
         "Calculations for Beam Mapping in Spherical Coordinates",

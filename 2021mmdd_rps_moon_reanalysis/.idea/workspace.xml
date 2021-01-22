@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cbb0713d-2948-4960-9b09-29638b4dc582" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../2020mmdd_mirror_geometry/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../2020mmdd_mirror_geometry/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2020mmdd_rps_review/figs/modcurve.png" beforeDir="false" afterPath="$PROJECT_DIR$/../2020mmdd_rps_review/figs/modcurve.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2020mmdd_rps_review/scripts/rps_review_posting_plots.m" beforeDir="false" afterPath="$PROJECT_DIR$/../2020mmdd_rps_review/scripts/rps_review_posting_plots.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
@@ -45,7 +42,7 @@
       <workItem from="1611076315830" duration="7215000" />
       <workItem from="1611170833219" duration="2698000" />
       <workItem from="1611241244265" duration="25800000" />
-      <workItem from="1611328738886" duration="474000" />
+      <workItem from="1611328738886" duration="1577000" />
     </task>
     <servers />
   </component>
