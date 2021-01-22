@@ -45,7 +45,7 @@
 
 <section><h2>Mirror Parameters 2017</h2>
 
-    <p>In the previous attempt, we estimated the mirror tilt and roll parameters by fitting 2D Gaussians to detector timestreams in boresight-centered ($r/\theta$) coordinates returned by a pointing model <tt>keck_beam_map_pointing.m</tt> (described in <a href="CAB2014"></a>):</p>
+    <p>In the previous attempt <a href="JAC2019"></a>, we estimated the mirror tilt and roll parameters by fitting 2D Gaussians to detector timestreams in boresight-centered ($r/\theta$) coordinates returned by a pointing model <tt>keck_beam_map_pointing.m</tt> (described in <a href="CAB2014"></a>):</p>
 
     \begin{equation}
     [r,\,\,\theta] = \text{keck_beam_map_pointing}(Tilt,\,Roll\,|\, Az,\,El,\,Dk,\,Mount,\, Moon)
@@ -80,61 +80,6 @@
         which is done using our Matlab wrapper of <i>MINUIT</i> called <tt>matmin.m</tt>. I estimate the statistical uncertainty using bootstrapping.
     </p>
 
-
-    <h3>Results</h3>
-    <table class="center">
-
-        <tr>
-            <th>Parameter</th>
-            <th>Best-Fit $(^\circ)$</th>
-            <th>Bootstrap $\mu\,(^\circ)$</th>
-            <th>Bootstrap $\sigma\,(^\circ)$</th>
-        </tr>
-        <tr>
-            <td>Tilt</td>
-            <td>44.5473</td>
-            <td>44.5472</td>
-            <td>0.0004</td>
-
-        </tr>
-        <tr>
-            <td>Roll</td>
-            <td>-0.9651</td>
-            <td>-0.9651</td>
-            <td>0.0006</td>
-        </tr>
-        <tr>
-            <td>DA</td>
-            <td>0.291</td>
-            <td>0.291</td>
-            <td>0.006</td>
-        </tr>
-    </table>
-
-
-    <!--
-    Things to think about:
-    1. Where do 'observed' r/th's come from?
-        - CMB-derived centers
-
-    2. How different are the residuals between max-amp centers and beam-fit centers?
-
-    3. Why doesn't changing the theta of the 'boresight' affect calculation of x/y?
-        A. x/y is defined by the orientation vector and aligned wrt the mount (dk) and not focal plane (dk+da)
-        B. theta (which includes drum angle) only determines the location of D, not the orientation vector.
-
-    4. What does a non-zero dk_off mean in the fit?
-        - .
-    -->
-
-    <p>We find a difference between the apparent drum angle and the CMB-derived drum angle of -1.21&deg;. The plot below shows the best-fit residuals when the drum angle is locked at the CMB-derived value and when it is allowed as a free parameter.</p>
-
-    <figure>
-        <img src="figs/moonfit_residuals_no_drumangle.png" />
-        <figcaption>
-            Best fit residuals with cmb-derived drum angle locked in <b>(left)</b>, left as a free parameter <b>(middle)</b>, and the difference between the two sets of residuals <b>(right)</b>.
-        </figcaption>
-    </figure>
 
 
     <h3>Data</h3>
@@ -197,6 +142,66 @@
     <p>This analysis uses the <tt>beamcen_20170101</tt> CMB-derived beam centers which is discussed in <a href="JBW2018"></a>. It should be noted that the $r/\theta$ values returned by <tt>get_array_info.m</tt> include an additional rotation from the drum angle. To remain agnostic of the drum angle for this analysis, we acquire the CMB-derived beam centers using <tt>find_file_by_date.m</tt> instead.
     </p>
 
+
+<h3>Results</h3>
+
+    The results shown in the table below are from fitting to observations at all three Deck angles. My 2019 results, which fit only to the DK=0 observation, were $[Tilt=44.51^\circ,\,Roll=0.11^\circ]$ for comparison.
+    <table class="center">
+
+        <tr>
+            <th>Parameter</th>
+            <th>Best-Fit $(^\circ)$</th>
+            <th>Bootstrap $\mu\,(^\circ)$</th>
+            <th>Bootstrap $\sigma\,(^\circ)$</th>
+        </tr>
+        <tr>
+            <td>Tilt</td>
+            <td>44.5473</td>
+            <td>44.5472</td>
+            <td>0.0004</td>
+
+        </tr>
+        <tr>
+            <td>Roll</td>
+            <td>-0.9651</td>
+            <td>-0.9651</td>
+            <td>0.0006</td>
+        </tr>
+        <tr>
+            <td>DA</td>
+            <td>0.291</td>
+            <td>0.291</td>
+            <td>0.006</td>
+        </tr>
+    </table>
+
+
+    <!--
+    Things to think about:
+    1. Where do 'observed' r/th's come from?
+        - CMB-derived centers
+
+    2. How different are the residuals between max-amp centers and beam-fit centers?
+
+    3. Why doesn't changing the theta of the 'boresight' affect calculation of x/y?
+        A. x/y is defined by the orientation vector and aligned wrt the mount (dk) and not focal plane (dk+da)
+        B. theta (which includes drum angle) only determines the location of D, not the orientation vector.
+
+    4. What does a non-zero dk_off mean in the fit?
+        - .
+    -->
+
+    <p>We find a difference between the apparent drum angle and the CMB-derived drum angle of -1.21&deg;. The plot below shows the best-fit residuals when the drum angle is locked at the CMB-derived value and when it is allowed as a free parameter.</p>
+
+    <figure>
+        <img src="figs/moonfit_residuals_no_drumangle.png" />
+        <figcaption>
+            Best fit residuals with cmb-derived drum angle locked in <b>(left)</b>, left as a free parameter <b>(middle)</b>, and the difference between the two sets of residuals <b>(right)</b>.
+        </figcaption>
+    </figure>
+
+
+
 </section>
 
 <section>
@@ -216,6 +221,7 @@
     <h3>Data</h3>
 
 </section>
+
 
 <hr>
 
@@ -247,6 +253,7 @@
         "CAB2014",
         "RWO2015",
         "JBW2018",
+        "JAC2019"
 	];
 	
 	// Logbook Site map:
@@ -261,6 +268,7 @@
         "../../../../keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
         "http://polar-array.stanford.edu/twiki/bin/view/BICEP3/Logbook150205RadioPointing",
         "../20181207_B2018_beamcen/",
+        "../20190409_moon_analysis_2017/"
 	];
 	
 	var desc = [
@@ -269,6 +277,7 @@
         "Spherical Coordinates for beam maps",
         "Radio pointing model from CMB",
         "B2016, B2017, and B2018 CMB-derived beam center correlations",
+        "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS"
 	];
 	
 	

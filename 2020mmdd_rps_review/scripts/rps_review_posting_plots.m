@@ -130,21 +130,31 @@ addpath('scripts\util')
 %% Show an example of the data
 fig = figure(2);
 clf
-set(fig,'Position',[2200,100,700,500])
+set(fig,'Position',[0*2200,100,700,500])
 mrk = {'o','x'};
 ch = [696,697];
 pols = ['A','B'];
 scaling = 20;
 limx = [-195 195];
 limy = [-0.1 1.3];
+
 dpair = 0.1;
 ybin = -20:dpair:20;
 xbin = limx(1):dpair:limx(2);
+
+dpix = 0.1;
+ybin = -20:dpix:20;
+xbin = limx(1):dpix:limx(2);
+
 [X,Y] = meshgrid(xbin,ybin);
 
 
 for chi = 1:2
-subplot(3,1,chi)
+subplot(4,1,chi)
+% subaxis(3,1,chi,...
+%     'S',0,'SV',0.0,'SH',0.0,...
+%     'P',0,...
+%     'M',0,'ML',0.075,'MR',0.05,'MT',0.025,'MB',0.075)
 %[data,x,y,phi,az,el,dk,quad] = rps_concat_data(tods,ch(chi));
 %plot(data/nanmax(data),'.')
 az_plot = [];
@@ -177,12 +187,17 @@ a.XTickLabel = [];
 a.YTick = [];
 a.GridAlpha = 1;
 title([pols(chi) ' Detector Rasterset Data'])
+axis image
 end
 %ylabel('Source Amplitude (Normalized)','FontSize',12)
 
 clr1 = clr([1,3],:);
 
-subplot(3,1,3)
+subplot(4,1,3:4)
+% subaxis(3,1,3,...
+%     'S',0,'SV',0.025,'SH',0.01,...
+%     'P',0,...
+%     'M',0,'ML',0.075,'MR',0.05,'MT',0.025,'MB',0.075)
 plot(-100,-100,'Color',clr1(1,:));
 hold on
 plot(-100,-100,'Color',clr1(2,:));
