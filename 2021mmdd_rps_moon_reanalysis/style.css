@@ -201,7 +201,11 @@ tr {
 /* Center the contents of any node */
 .center {
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
+
+
 
 /* Setup automatic numbering */
 /*
