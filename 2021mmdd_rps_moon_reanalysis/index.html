@@ -231,7 +231,7 @@
     <div class="footnote"><p>
         <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
         Using the max amplitude impinges an uncertainty on the beam centers which is half of the sample spacing for a given coordinate. In instrument-fixed coordinates, this corresponds to a median beam center uncertainty of $\sigma\sim0.05^\circ$ which is comparable to the quoted errors on the CMB-derived beam centers (median $\sigma\sim0.01^\circ$).
-
+    </p></div>
     <h3>Code</h3>
 
 <ul>
@@ -248,6 +248,7 @@
         </script>
 
         <h3>References</h3>
+    <p id="testp"></p>
 <p id="references"></p>
 	<script type="text/javascript">
 
@@ -257,11 +258,24 @@
 	// The anchors should then just look like: <a href="tagname"></a>
 	// and the script will automatically fill in the hyperlings and text.
 
-    // Which logbook is this posting going in?
-    var posting_log = "bkcmb";
 
-    // What's the current url?
-    var posting_dir = window.location.href;
+    var posting_log = "bkcmb"; // Which logbook is this posting going in?
+
+    var posting_dir = window.location.href; // What's the current url?
+
+    //var personal_log = "jcornelison/postings/"; // Do you have a personal logbook directory?
+    var personal_log = "Documents/GitHub";
+    var bkurl = "bicep.rc.fas.harvard.edu";
+    var spurl = "bicep.usap.gov";
+
+
+    // Logbook Site map:
+    // personal:www/jcornelison/postings/
+    // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+    // keck:    www/keck/analysis_logbook/analysis/
+    // BICEP3:  www/bicep3/analysis_logbook/
+    // BA:      www/bicep_array/analysis_logbook/
+
 
     // Shorthand tags
     var tags = [
@@ -272,12 +286,6 @@
         "JBW2018",
         "JAC2019"
 	];
-	
-	// Logbook Site map:
-    // bkcmb:   www/bkcmb/analysis_logbook/analysis/
-    // keck:    www/keck/analysis_logbook/analysis/
-    // BICEP3:  www/bicep3/analysis_logbook/
-    // BA:      www/bicep_array/analysis_logbook/
 
 
     // Links
@@ -290,8 +298,18 @@
         "../20190409_moon_analysis_2017/"
 	];
 
+    // Links
+    var hrefs = [
+        "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+        "bkcmb/analysis_logbook/analysis/20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
+        "keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
+        "http://polar-array.stanford.edu/twiki/bin/view/BICEP3/Logbook150205RadioPointing",
+        "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
+        "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/"
+    ];
 
-	//
+
+	// Posting titles
 	var desc = [
         "Pointing Model for Keck Beam Maps",
         "Calculations for Beam Mapping in Spherical Coordinates",
@@ -300,8 +318,25 @@
         "B2016, B2017, and B2018 CMB-derived beam center correlations",
         "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS"
 	];
-	
-	
+
+    var posty = document.getElementById("testp");
+    //var msg = "";
+
+    compstr = posting_dir.match(new RegExp("/"+personal_log+"/"));
+    posty.innerHTML = compstr;
+
+
+    // Depending on where you are, go back to the www directory
+    // then go directly to the posting.
+    // for (var ref in hrefs){
+    //     // Are we in our own directory?
+    //
+    // }
+
+
+
+
+	// Make a list of references
 	var post = document.getElementById("references");
 	var msg = "<table>";
 	for (var tag in tags){
@@ -310,6 +345,7 @@
 	msg = msg+ "</table>";
 	post.innerHTML = msg;
 
+	// Look through all the hyperlinks and insert the proper links to the postings
 	var links = document.getElementsByTagName("A");
 	for (var link in links){
 		for (var tag in tags){
