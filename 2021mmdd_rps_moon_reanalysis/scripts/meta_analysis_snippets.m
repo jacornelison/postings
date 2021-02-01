@@ -483,4 +483,36 @@ for schind = 1%:3
     end
 end
 
+% Fix starpoint pointing model
+
+for schind=2:3
+    fname = sprintf('moondata_sch_%03i',schind);
+    load([dirname fname]);    
+
+    pm = ParameterRead('aux_data/pointingmodels/pointingmodel_complete_v1.csv');
+    pm = structcut(pm,moonsch.strpnt);
+    d = invpointing_model(d, pm);
+    d.ch = ch;
+    
+    % Select only data with the correct feature bit set.
+    [mask_slow, mask_fast] = select_feature_bit(d, 3);
+    %mask_fast = true(size(d.mce0.data.fb,1),1);
+    
+    % Also get rid of skipped samples:
+    % They should be zero for all channels, so if the sum of the zeros is equal
+    % to the number of channels, the sample is considered skipped.
+    ind = find(sum(d.mce0.data.fb == 0,2)==size(d.mce0.data.fb,2));
+    mask_fast(ind) = false;
+    
+    % Calculate downsampled encoder positions.
+    az = d.pointing.hor.az(mask_fast);
+    el = d.pointing.hor.el(mask_fast);
+    dk = d.pointing.hor.dk(mask_fast);
+    
+    md{schind}.az=az;
+    md{schind}.el=el;
+    md{schind}.dk=dk;
+    
+end
+
 

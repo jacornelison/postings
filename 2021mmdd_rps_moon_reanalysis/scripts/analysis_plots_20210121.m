@@ -48,4 +48,23 @@ for schind = 1:3
     end
 end
 
+% Look at residuals
 
+ind = [1 find(diff(fd.fit_ch)<0)+1 length(fd.fit_ch)+1];
+scale = 10;
+fig = figure(3);
+clf; hold on;
+set(fig,'Position',[950,100,600,600])
+pxy = reshape(fd.data,[],2);
+count = 0;
+for schind = 1:3
+    chind = ind(schind):(ind(schind+1)-1);
+    
+    %plot((1:length(chind))+count,fd.fit_ch(chind),'color',clr{schind})
+    %count = count+length(chind);
+    quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{schind})
+    %plot(res(chind,1),res(chind,2),'.','color',clr{schind})
+end
+grid on
+legend({'DK=0','DK=45','DK=90'})
+title('Beam Center Best-Fit Residuals')
