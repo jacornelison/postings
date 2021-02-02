@@ -49,22 +49,51 @@ for schind = 1:3
 end
 
 % Look at residuals
-
-ind = [1 find(diff(fd.fit_ch)<0)+1 length(fd.fit_ch)+1];
-scale = 10;
+scale = 1;
 fig = figure(3);
 clf; hold on;
 set(fig,'Position',[950,100,600,600])
 pxy = reshape(fd.data,[],2);
-count = 0;
-for schind = 1:3
-    chind = ind(schind):(ind(schind+1)-1);
+%count = 0;
+pols = {'rgl100a','rgl100b'};
+
+for polind = 1:2
+    chind = ismember(fd.fit_ch,p_ind.(pols{polind}));
+    
     
     %plot((1:length(chind))+count,fd.fit_ch(chind),'color',clr{schind})
     %count = count+length(chind);
-    quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{schind})
+    quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{polind})
     %plot(res(chind,1),res(chind,2),'.','color',clr{schind})
 end
 grid on
-legend({'DK=0','DK=45','DK=90'})
+%legend({'DK=0','DK=45','DK=90'})
+legend({'Pol A','Pol B'})
 title('Beam Center Best-Fit Residuals')
+
+
+
+% Look at residuals
+scale = 1;
+fig = figure(3);
+clf; hold on;
+set(fig,'Position',[950,100,600,600])
+pxy = reshape(fd.data,[],2);
+%count = 0;
+pols = {'rgl100a','rgl100b'};
+
+for polind = 1:2
+    chind = ismember(fd.fit_ch,p_ind.(pols{polind}));
+    
+    
+    %plot((1:length(chind))+count,fd.fit_ch(chind),'color',clr{schind})
+    %count = count+length(chind);
+    %quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{polind})
+    plot(fd.resx(chind),fd.resy(chind),'.','color',clr{polind})
+end
+grid on
+%legend({'DK=0','DK=45','DK=90'})
+legend({'Pol A','Pol B'})
+title('Beam Center Best-Fit Residuals')
+
+

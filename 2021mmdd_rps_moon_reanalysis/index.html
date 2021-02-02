@@ -123,55 +123,43 @@
 
     <h4>Ephemeris Data</h4>
 
-    <p>Ephemeris data was acquired from <a href="https://ssd.jpl.nasa.gov/horizons.cgi">JPL Horizons</a> using the following settings:</p>
-
-    <pre>
-    Ephemeris Type : 	OBSERVER
-    Target Body :       Moon [Luna] [301]
-    Observer Location : Topocentric ( 315°21'00.0''E, 89°59'28.0''S, 3000 m )
-    Time Span :         Start=YYYY-MM-DD, Stop=YYYY-MM-DD, Step=1 m
-    Table Settings :    QUANTITIES=4,20; date/time format=JD; time digits=SECONDS; angle format=DEG; range units=KM;
-                        elevation cutoff=0; suppress range-rate=YES; CSV format=YES; object page=NO
-    Display/Output : 	download/save (plain text file)
-    </pre>
-
-    <p>The minimum timestep from JPL Horizons is 1 minute so moon positions are interpolated down to the sampling of the timestreams during analysis.</p>
-
-    <h4>Absolute Beam Centers</h4>
-    <p>This analysis uses the <tt>beamcen_20170101</tt> CMB-derived beam centers which is discussed in <a href="JBW2018"></a>. It should be noted that the $r/\theta$ values returned by <tt>get_array_info.m</tt> include an additional rotation from the drum angle. To remain agnostic of the drum angle for this analysis, we acquire the CMB-derived beam centers using <tt>find_file_by_date.m</tt> instead.
+    <p>In my previous effort, I used
     </p>
 
 
 <h3>Results</h3>
 
     The results shown in the table below are from fitting to observations at all three Deck angles. My 2019 results, which fit only to the DK=0 observation, were $[Tilt=44.51^\circ,\,Roll=0.11^\circ]$ for comparison.
+
+    <!--
+    Param	Best-Fit	Stat Uncert	Sys Uncert
+    -----	--------	-----------	----------
+    Tilt 	44.6014  	0.0004  	0.0010
+    Roll 	0.0007  	0.0007	    0.0247
+    -->
+
     <table class="center">
 
         <tr>
             <th>Parameter</th>
-            <th>Best-Fit $(^\circ)$</th>
-            <th>Bootstrap $\mu\,(^\circ)$</th>
-            <th>Bootstrap $\sigma\,(^\circ)$</th>
+            <th>Best-Fit (&deg;)</th>
+            <th>Stat. Uncert. (&deg;)</th>
+            <th>Sys. Uncert. (&deg;)</th>
         </tr>
         <tr>
             <td>Tilt</td>
-            <td>44.5473</td>
-            <td>44.5472</td>
-            <td>0.0004</td>
+            <td>44.601</td>
+            <td>0.004</td>
+            <td>0.001</td>
 
         </tr>
         <tr>
             <td>Roll</td>
-            <td>-0.9651</td>
-            <td>-0.9651</td>
-            <td>0.0006</td>
+            <td>0.0007</td>
+            <td>0.0007</td>
+            <td>0.0247</td>
         </tr>
-        <tr>
-            <td>DA</td>
-            <td>0.291</td>
-            <td>0.291</td>
-            <td>0.006</td>
-        </tr>
+
     </table>
 
     <p></p>
@@ -183,10 +171,155 @@
         </figcaption>
     </figure>
 
+<h3>Systematics</h3>
+
+    <p>
+        The list of possible sources of systematics includes the error on the CMB-derived beam centers; both the aperture height from the elevation axis and mirror height from the aperture given by solidworks drawings; and all of the relevant mount parameters estimated from starpointing. The CMB-derived parameters discussed in <a href="JWB2018"></a> have a quoted error of 0.012&deg; in x/y. For the elevation-axis-to-aperture distance, I use a conservative 1cm to account for any imprecision in the location of the aperture. For the mirror height, I use a conservative estimate of 10cm to account for the small amount of travel in the legs. The statistical error given with the starpointing data is the parabolic error returned by <tt>matmin</tt> which is not properly normalized. Instead, I acquire an estimate of the uncertainty once again using a bootstrap of the star pointing data used for this particular analysis. As a conservative estimate, I double the uncertainty returned by the bootstrap.
+    </p>
+    <h4>Methods</h4>
+    <p>Words</p>
+
+    <figure>
+<table class="center">
+    <tr>
+        <th>CMB-derived Beam Centers</th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+        <th>Parameter</th>
+        <th>Uncertainty (m)</th>
+        <th>Bias Tilt (&deg;)</th>
+        <th>Bias Roll (&deg;)</th>
+    </tr>
+    <tr>
+        <td>x/y</td>
+        <td>$0.0120$</td>
+        <td>$^{0.0002}_{-0.0002}$</td>
+        <td>$^{0.0002}_{-0.0002}$</td>
+    </tr>
+    <tr>
+        <th>Solidworks</th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+        <th>Parameter</th>
+        <th>Uncertainty (m)</th>
+        <th>Bias Tilt (&deg;)</th>
+        <th>Bias Roll (&deg;)</th>
+    </tr>
+    <tr>
+        <td>Aperture Height</td>
+        <td>$0.0100$</td>
+        <td>$^{0.0000}_{0.0000}$</td>
+        <td>$^{0.0001}_{0.0001}$</td>
+    </tr>
+    <tr>
+        <td>Mirror Height</td>
+        <td>$0.1000$</td>
+        <td>$^{0.0000}_{0.0000}$</td>
+        <td>$^{0.0001}_{0.0001}$</td>
+    </tr>
+    <tr>
+        <th>Star Pointing</th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+        <th>Parameter</th>
+        <th>$2\sigma$ Stat. Uncert. (&deg;)</th>
+        <th>Bias Tilt (&deg;)</th>
+        <th>Bias Roll (&deg;)</th>
+    </tr>
+    <tr>
+        <td>flex_cos</td>
+        <td>$0.0000$</td>
+        <td>$^{NaN}_{NaN}$</td>
+        <td>$^{NaN}_{NaN}$</td>
+    </tr>
+    <tr>
+        <td>flex_sin</td>
+        <td>$0.0000$</td>
+        <td>$^{NaN}_{NaN}$</td>
+        <td>$^{NaN}_{NaN}$</td>
+    </tr>
+    <tr>
+        <td>az_tilt_ha</td>
+        <td>$0.0015$</td>
+        <td>$^{0.0003}_{-0.0003}$</td>
+        <td>$^{0.0037}_{-0.0037}$</td>
+    </tr>
+    <tr>
+        <td>az_tilt_lat</td>
+        <td>$0.0015$</td>
+        <td>$^{0.0007}_{-0.0007}$</td>
+        <td>$^{-0.0014}_{0.0015}$</td>
+    </tr>
+    <tr>
+        <td>el_tilt</td>
+        <td>$0.0082$</td>
+        <td>$^{0.0001}_{-0.0001}$</td>
+        <td>$^{0.0223}_{-0.0223}$</td>
+    </tr>
+    <tr>
+        <td>collim_x</td>
+        <td>$0.0000$</td>
+        <td>$^{NaN}_{NaN}$</td>
+        <td>$^{NaN}_{NaN}$</td>
+    </tr>
+    <tr>
+        <td>collim_y</td>
+        <td>$0.0000$</td>
+        <td>$^{NaN}_{NaN}$</td>
+        <td>$^{NaN}_{NaN}$</td>
+    </tr>
+    <tr>
+        <td>collim_mag</td>
+        <td>$0.0012$</td>
+        <td>$^{0.0000}_{0.0000}$</td>
+        <td>$^{0.0000}_{0.0000}$</td>
+    </tr>
+    <tr>
+        <td>collim_dir</td>
+        <td>$0.1279$</td>
+        <td>$^{0.0000}_{0.0000}$</td>
+        <td>$^{0.0000}_{0.0000}$</td>
+    </tr>
+    <tr>
+        <td>az_zero</td>
+        <td>$0.0145$</td>
+        <td>$^{0.0001}_{-0.0001}$</td>
+        <td>$^{-0.0097}_{0.0098}$</td>
+    </tr>
+    <tr>
+        <td>el_zero</td>
+        <td>$0.0013$</td>
+        <td>$^{-0.0007}_{0.0006}$</td>
+        <td>$^{0.0000}_{-0.0000}$</td>
+    </tr>
+    <tr>
+        <th>Total</th>
+        <th></th>
+        <td>$\pm 0.0011$</td>
+        <td>$\pm 0.0247$</td>
+    </tr>
+
+</table>
+
+        <figcaption>
+            Table of possible sources of systematics and their propogated errors.
+        </figcaption>
+    </figure>
+
+
 
 
 </section>
-
+<!--
 <section>
     <h2>Source Parameters 2017</h2>
 
@@ -204,7 +337,7 @@
     <h3>Data</h3>
 
 </section>
-
+-->
 
 <hr>
 
