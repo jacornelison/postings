@@ -493,6 +493,8 @@
             "B2016, B2017, and B2018 CMB-derived beam center correlations",
             "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS"
         ];
+        // Debug
+        var posty = document.getElementById("testp");
 
 
         var preface = "";
@@ -505,7 +507,7 @@
             }
         else {
             for (key in keys){
-                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))!=""){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
                     preface = sitemap[keys[key]];
                 };
             };
@@ -526,9 +528,7 @@
             };
         };
 
-        // Debug
-        //var posty = document.getElementById("testp");
-        //posty.innerHTML = preface;
+       posty.innerHTML = preface;
 
         // Make a list of references
         var post = document.getElementById("references");
