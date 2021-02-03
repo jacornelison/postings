@@ -54,44 +54,126 @@ for schind = 1:3
     ylabel('y (^o)')
     end
 end
-%%
-% Look at residuals
+ 
+%% Look at residuals per Pol
+
+plts = {{'rgl100a'};{'rgl100b'};{'rgl100a','rgl100b'}};
+pltlabs = {'a','b','both'};
+for pltind = 1:length(plts)
 scale = 10;
 fig = figure(3);
 fig.Position = [700 400 500 500];
 clf; hold on;
 
 pxy = reshape(fd.data,[],2);
-%count = 0;
-pols = {'rgl100a','rgl100b'};
+
+pols = plts{pltind};
 clr = {'b','r'};
-for polind = 1:2
+for polind = 1:length(pols)
     chind = ismember(fd.fit_ch,p_ind.(pols{polind}));
-    
-    %plot((1:length(chind))+count,fd.fit_ch(chind),'color',clr{schind})
-    %count = count+length(chind);
     quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{polind})
-    %plot(res(chind,1),res(chind,2),'.','color',clr{schind})
+    
 end
 grid on
 %legend({'DK=0','DK=45','DK=90'})
-legend({'Pol A','Pol B'})
+legend(plts{pltind})
 title('Beam Center Best-Fit Residuals x10')
 xlabel('x (^o)')
 ylabel('y (^o)')
-figname = ['../figs/' 'moonfit_residuals_quiver_zoomed'];
+figname = ['../figs/' 'moonfit_residuals_quiver_zoomed_pol' pltlabs{pltind}];
 saveas(gcf,figname,'png')
+end
+
+%% Look at residuals per DK
+clr = {[0, 0.4470, 0.7410],...
+    [0.8500, 0.3250, 0.0980],...
+    [0.4660, 0.6740, 0.1880]*0.8,...
+    [0.9290, 0.6940, 0.1250]};
+
+plts = {[1];[2];[3];,[1,2,3]};
+pltlabs = {'0','45','90','all'};
+legs = {{'0'},{'45'},{'90'},{'0','45','90'}};
+for pltind = 1:length(plts)
+scale = 10;
+fig = figure(3);
+fig.Position = [700 400 500 500];
+clf; hold on;
+
+pxy = reshape(fd.data,[],2);
+
+dks = plts{pltind};
+
+for dkind = 1:length(dks)
+    chind = ismember(fd.sch,dks(dkind));
+    quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{dkind})
+    
+end
+grid on
+%legend({'DK=0','DK=45','DK=90'})
+legend(legs{pltind})
+title('Beam Center Best-Fit Residuals x10')
+xlabel('x (^o)')
+ylabel('y (^o)')
+xlim([-15 15])
+ylim([-15 15])
+figname = ['../figs/' 'moonfit_residuals_quiver_zoomed_dk' pltlabs{pltind}];
+saveas(gcf,figname,'png')
+end
 
 
 
-%%
+%% Special look at Tile 11
+
+clr = {[0, 0.4470, 0.7410],...
+    [0.8500, 0.3250, 0.0980],...
+    [0.4660, 0.6740, 0.1880]*0.8,...
+    [0.9290, 0.6940, 0.1250]};
+
+plts = {[1];[2];[3];,[1,2,3]};
+pltlabs = {'0','45','90','all'};
+legs = {{'0'},{'45'},{'90'},{'0','45','90'}};
+for pltind = 1:length(plts)
+scale = 5;
+fig = figure(3);
+fig.Position = [700 400 500 500];
+clf; hold on;
+
+pxy = reshape(fd.data,[],2);
+
+dks = plts{pltind};
+
+for dkind = 1:length(dks)
+    chind = ismember(fd.sch,dks(dkind)) & p.tile(fd.fit_ch)'==11;
+    quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{dkind})
+    
+end
+grid on
+legend(legs{pltind})
+title('Beam Center Best-Fit Residuals x5')
+xlabel('x (^o)')
+ylabel('y (^o)')
+xlim([-2.5 2.5])
+ylim([-2.5 2.5])
+figname = ['../figs/' 'moonfit_residuals_quiver_zoomed_dk' pltlabs{pltind} '_tile11'];
+saveas(gcf,figname,'png')
+end
+
+
+%% 
+
+plts = {[1];[2];[3];,[1,2,3]};
+pltlabs = {'0','45','90','all'};
+
+for pltind = 1:length(plts)
+chind = ismember(fd.sch,plts{pltind});
 lims = [0, 15];
 fig = figure(4);
 fig.Position = [700 400 500 500];
 clf; hold on;
 scaling = 0.15;
-h = scatterhist(fd.resx,fd.resy,'group',p.pol(fd.fit_ch),...
-    'Kernel','on','location','southeast','Color','br');
+h = scatterhist(fd.resx(chind),fd.resy(chind),'group',p.pol(fd.fit_ch(chind)),...
+    'Kernel','off','location','southeast','Color','br',...
+    'Marker','xo','MarkerSize',[5,3]);
 
 legend({'Pol A','Pol B'})
 title('Beam Center Best-Fit Residuals')
@@ -135,8 +217,8 @@ ax2 = axes('Position', h(2).Position,...
 ylabel(ax2, 'N');
 grid on
 
-figname = ['../figs/' 'moonfit_residuals_scatterhist'];
+figname = ['../figs/' 'moonfit_residuals_scatterhist_dk' pltlabs{pltind}];
 saveas(gcf,figname,'png')
 
-
+end
 

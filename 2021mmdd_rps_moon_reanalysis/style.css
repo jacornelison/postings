@@ -61,13 +61,13 @@ hr {
     height: 1px;
     width: 80%;
     background-image: -webkit-linear-gradient(left, rgba(0,0,0,0),
-        rgba(0,0,0,0.75), rgba(0,0,0,0));
+    rgba(0,0,0,0.75), rgba(0,0,0,0));
     background-image:    -moz-linear-gradient(left, rgba(0,0,0,0),
-        rgba(0,0,0,0.75), rgba(0,0,0,0));
+    rgba(0,0,0,0.75), rgba(0,0,0,0));
     background-image:     -ms-linear-gradient(left, rgba(0,0,0,0),
-        rgba(0,0,0,0.75), rgba(0,0,0,0));
+    rgba(0,0,0,0.75), rgba(0,0,0,0));
     background-image:      -o-linear-gradient(left, rgba(0,0,0,0),
-        rgba(0,0,0,0.75), rgba(0,0,0,0));
+    rgba(0,0,0,0.75), rgba(0,0,0,0));
     margin-top: 40px;
     margin-bottom: 40px;
 }
@@ -85,9 +85,6 @@ code.block {
     display: block;
     margin: 0.75em 40px 0.75em 40px;
     white-space: nowrap;
-}
-table {
-    border-spacing: 0.5em;
 }
 
 /* Make a prettier color for links */
@@ -137,14 +134,14 @@ a.posting {
     /* Make some nice looking box shadows in as many browsers as we
         can */
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2,Direction=135, Color='#BBBBBB')";
-        filter:  progid:DXImageTransform.Microsoft.Shadow(Strength=2,Direction=135, Color='#BBBBBB');
+    filter:  progid:DXImageTransform.Microsoft.Shadow(Strength=2,Direction=135, Color='#BBBBBB');
     -webkit-box-shadow: 2px 2px 12px #BBBBBB;
-       -moz-box-shadow: 2px 2px 12px #BBBBBB;
-            box-shadow: 2px 2px 12px #BBBBBB;
+    -moz-box-shadow: 2px 2px 12px #BBBBBB;
+    box-shadow: 2px 2px 12px #BBBBBB;
     /* then do some rounded box corners for eye candy as well */
     -webkit-border-radius: 8px;
-       -moz-border-radius: 8px;
-            border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
 }
 figure {
     text-align: center;
@@ -167,14 +164,14 @@ figure {
     /* Make some nice looking box shadows in as many browsers as we
         can */
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2,Direction=135, Color='#BBBBBB')";
-        filter:  progid:DXImageTransform.Microsoft.Shadow(Strength=2,Direction=135, Color='#BBBBBB');
+    filter:  progid:DXImageTransform.Microsoft.Shadow(Strength=2,Direction=135, Color='#BBBBBB');
     -webkit-box-shadow: 2px 2px 12px #BBBBBB;
-       -moz-box-shadow: 2px 2px 12px #BBBBBB;
-            box-shadow: 2px 2px 12px #BBBBBB;
+    -moz-box-shadow: 2px 2px 12px #BBBBBB;
+    box-shadow: 2px 2px 12px #BBBBBB;
     /* then do some rounded box corners for eye candy as well */
     -webkit-border-radius: 8px;
-       -moz-border-radius: 8px;
-            border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
 }
 figure img {
     max-width: 100%;
@@ -189,9 +186,39 @@ figure figcaption {
     text-align: left;
     font-size: 10pt;
 }
-tr {
+
+table {
+    /*border-spacing: 0.5em;*/
+    border-collapse: collapse;
+}
+
+.results tr {
     vertical-align: top;
 }
+
+.results tr:hover {background-color:#f5f5f5;}
+
+
+
+.results th {
+    border-bottom: 3px solid #000000;
+}
+
+.results td {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid #ddd;
+}
+
+.cstart {
+    border-left: 1px solid #000000
+}
+
+.cend {
+    border-right: 1px solid #000000
+}
+
+
 .rlabel {
     text-align: right;
     padding-right: 1em;
@@ -230,35 +257,79 @@ figure.table {
     counter-increment: table;
 }
 
+
+
+/*body{counter-reset: section}*/
+
+
+
+
+
 section {
     counter-increment: section;
     counter-reset: figure;
     counter-reset: table;
 }
-    h2:before {
-        content: counter(section, upper-roman) ': ';
-    }
-    figure > figcaption:before {
-        content: 'Figure ' counter(section) '.' counter(figure) ': ';
-    }
-    figure.table > figcaption:before {
-        content: 'Table ' counter(section) '.' counter(table) ': ';
-    }
+h2{counter-reset: sub-section}
+h3{counter-reset: composite}
+h4{counter-reset: detail}
+
+h2:before{
+    /*counter-increment: section;*/
+    content: counter(section) " ";
+}
+h3:before{
+    counter-increment: sub-section;
+    content: counter(section) "." counter(sub-section) " ";
+}
+h4:before{
+    counter-increment: composite;
+    content: counter(section) "." counter(sub-section) "." counter(composite) " ";
+}
+h5:before{
+    counter-increment: detail;
+    content: counter(section) "." counter(sub-section) "." counter(composite) "." counter(detail) " ";
+}
+
+
+/*h2:before {*/
+/*    content: counter(section, upper-roman) ': ';*/
+/*}*/
+figure > figcaption:before {
+    content: 'Figure ' counter(section) '.' counter(figure) ': ';
+}
+figure.table > figcaption:before {
+    content: 'Table ' counter(section) '.' counter(table) ': ';
+}
 
 section.appendix {
     counter-increment: appendix;
     counter-reset: figure;
     counter-reset: table;
 }
-    .appendix h2:before {
-        content: counter(appendix, upper-latin) ': ';
-    }
-    .appendix figure > figcaption:before {
-        content: 'Figure ' counter(appendix, upper-latin) '.' counter(figure) ': ';
-    }
-    .appendix figure.table > figcaption:before {
-        content: 'Table ' counter(appendix) '.' counter(table) ': ';
-    }
+.appendix h2:before {
+    content: counter(appendix, upper-latin) ': ';
+}
+.appendix h3:before{
+    counter-increment: sub-section;
+    content: counter(appendix, upper-latin) "." counter(sub-section) " ";
+}
+.appendix h4:before{
+    counter-increment: composite;
+    content: counter(appendix, upper-latin) "." counter(sub-section) "." counter(composite) " ";
+}
+.appendix h5:before{
+    counter-increment: detail;
+    content: counter(appendix, upper-latin) "." counter(sub-section) "." counter(composite) "." counter(detail) " ";
+}
+
+
+.appendix figure > figcaption:before {
+    content: 'Figure ' counter(appendix, upper-latin) '.' counter(figure) ': ';
+}
+.appendix figure.table > figcaption:before {
+    content: 'Table ' counter(appendix) '.' counter(table) ': ';
+}
 
 /***************************************************************************
  * Small screen modifications
@@ -285,69 +356,69 @@ section.appendix {
  ***************************************************************************/
 @media print {
 
-  @page {
-    margin: 0.5in;
-  }
+    @page {
+        margin: 0.5in;
+    }
 
-  /* Remove effects */
-  * {
-    background: #FFF !important;
-    -webkit-box-shadow: none !important;
-       -moz-box-shadow: none !important;
-            box-shadow: none !important;
-    -ms-filter: none !important;
+    /* Remove effects */
+    * {
+        background: #FFF !important;
+        -webkit-box-shadow: none !important;
+        -moz-box-shadow: none !important;
+        box-shadow: none !important;
+        -ms-filter: none !important;
         filter: none !important;
-  }
+    }
 
-  body {
-    width: 100%;
-    margin: 0px 0px;
-    padding: 0em 1em;
-  }
+    body {
+        width: 100%;
+        margin: 0px 0px;
+        padding: 0em 1em;
+    }
 
-  /* Cause print-outs to include the URL explicitly. */
-  a[href]:after {
-    content: " [" attr(href) "]";
-  }
-  /* Exceptions are javascript links, internal page references, and anything
-   * which links to an image should not have their links printed out. */
-  a[href^="javascript:"]:after,
-  a[href^="#"]:after,
-  a[href*=".jpg"]:after,
-  a[href*=".jpeg"]:after,
-  a[href*=".png"]:after,
-  a[href*=".gif"]:after
-  {
-    content: "";
-  }
+    /* Cause print-outs to include the URL explicitly. */
+    a[href]:after {
+        content: " [" attr(href) "]";
+    }
+    /* Exceptions are javascript links, internal page references, and anything
+     * which links to an image should not have their links printed out. */
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after,
+    a[href*=".jpg"]:after,
+    a[href*=".jpeg"]:after,
+    a[href*=".png"]:after,
+    a[href*=".gif"]:after
+    {
+        content: "";
+    }
 
-  /* Exclude adding explicit links to postings since the link text is
-   * already descriptive enough. */
-  a.posting[href]:after {
-    content: "";
-  }
+    /* Exclude adding explicit links to postings since the link text is
+     * already descriptive enough. */
+    a.posting[href]:after {
+        content: "";
+    }
 
-  figure {
-    width: 100%;
-    margin: 0px 0px;
-    border: 1px solid #000;
-    page-break-inside: avoid;
-  }
-  figure figcaption {
-    max-width: 100%;
-    margin: 0px 0px;
-  }
+    figure {
+        width: 100%;
+        margin: 0px 0px;
+        border: 1px solid #000;
+        page-break-inside: avoid;
+    }
+    figure figcaption {
+        max-width: 100%;
+        margin: 0px 0px;
+    }
 
-  /* Simple horizontal-rule */
-  hr {
-    width: 80%;
-    background-image: none;
-    border-top: #000 1px solid;
-    height: 0px;
-  }
+    /* Simple horizontal-rule */
+    hr {
+        width: 80%;
+        background-image: none;
+        border-top: #000 1px solid;
+        height: 0px;
+    }
 
-  /* Avoid page-breaks in bad locations. */
-  h1, h2, h3 {
-    page-break-after: avoid;
-  }
+    /* Avoid page-breaks in bad locations. */
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
 } /* @media print */

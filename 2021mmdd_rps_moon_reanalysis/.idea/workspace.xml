@@ -3,8 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cbb0713d-2948-4960-9b09-29638b4dc582" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figs/moonfit_residuals_quiver_zoomed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/figs/moonfit_residuals_scatterhist.png" beforeDir="false" afterPath="$PROJECT_DIR$/figs/moonfit_residuals_scatterhist.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/analysis_plots_20210121.m" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/analysis_plots_20210121.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +50,7 @@
       <workItem from="1611854712650" duration="4605000" />
       <workItem from="1612214265163" duration="2829000" />
       <workItem from="1612288793233" duration="13881000" />
+      <workItem from="1612362956053" duration="25672000" />
     </task>
     <servers />
   </component>
@@ -58,5 +62,9 @@
       <screen x="1920" y="0" width="1080" height="1880" />
     </state>
     <state x="2081" y="629" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/62.0.1858.1080/1920.0.1080.1880@1920.0.1080.1880" timestamp="1612288912085" />
+    <state x="2123" y="435" width="672" height="678" key="search.everywhere.popup" timestamp="1612394218042">
+      <screen x="1920" y="0" width="1080" height="1880" />
+    </state>
+    <state x="2123" y="435" width="672" height="678" key="search.everywhere.popup/62.0.1858.1080/1920.0.1080.1880@1920.0.1080.1880" timestamp="1612394218042" />
   </component>
 </project>

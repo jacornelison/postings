@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Posting Title — J. Cornelison</title>
+    <title>Mirror Parameters — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -10,14 +10,15 @@
             TeX: { equationNumbers: { autoNumber: "AMS" } }
         });
     </script>
-	<script type="text/x-mathjax-config">
+    <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
               tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
         });
     </script>
     <script type="text/javascript"
-        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
+
 </head>
 
 <body>
@@ -36,55 +37,30 @@
 
 <hr>
 
-<p>We found that the largest errors on absolute polarization angles estimated from the RPS analysis resulted from the mirror analysis. I did not perform moon observations during the Jan 2018 calibration campaign and so my RPS analysis involves using moon obervations and the RPS location from the previous year to derive the mirror parameters for 2018 which, if not handled properly, can easily propagate large errors into the final results. In this posting, I take a fresh look at the Jan 2017 moon data to acquire mirror parameters for 2018 with reduced systematic errors.</p>
+<p>We found that the largest errors on absolute polarization angles estimated from the RPS analysis resulted from the mirror analysis.
+    I did not perform moon observations during the Jan 2018 calibration campaign and so my RPS analysis involves using moon obervations and the RPS location from the previous year to derive the mirror parameters for 2018.
+    I found later on that uncertainties in these parameters ended up propagating into large errors on the final RPS results.
+</p>
+<p>
+    In this posting, I show my reattempt at deriving mirror parameters for the 2018 RPS campaign.
+    In addition to including all deck angles of the Jan 2017 moon data (as opposed to just a single deck previously), I look more deeply into the systematics.
+    <font color="red">So far, I present updated 2017 mirror parameters that now include DK's of 0, 45, and 90&deg; as well as an improvement on the systematic error by a factor of 40 and 20 for the mirror tilt and roll respectively.</font>
+</p>
 
 <hr>
 
-    <p>To summarize, we compare beam centroids from moon observations to estimate the mirror tilt, mirror roll, and drum angle. We then lock in these mirror and drum angle parameters and use beam centers from RPS data to estimate the location of the RPS. For the 2018 RPS data, no moon observations were taken so we estimate the location of the source from 2017 moon and (prelimenary) RPS observations and, assuming the RPS was placed at the same location the next year, we fit for the Jan 2018 mirror parameters using RPS data.</p>
+<p>To summarize, we compare beam centroids from moon observations to estimate the mirror tilt and mirror roll. We then lock in these mirror parameters and use beam centers from RPS data to estimate the location of the RPS. No moon observations were taken for the 2018 RPS data, so we estimate the location of the source from 2017 moon and (prelimenary) RPS observations and, assuming the RPS was placed at the same location the next year, we fit for the Jan 2018 mirror parameters using RPS data.</p>
 
 <section><h2>Mirror Parameters 2017</h2>
 
-    <p>In the previous attempt <a href="JAC2019"></a>, we estimated the mirror tilt and roll parameters by fitting 2D Gaussians to detector timestreams in boresight-centered ($r/\theta$) coordinates returned by a pointing model <tt>keck_beam_map_pointing.m</tt> (described in <a href="CAB2014"></a>):</p>
-
-    \begin{equation}
-    [r,\,\,\theta] = \text{keck_beam_map_pointing}(Tilt,\,Roll\,|\, Az,\,El,\,Dk,\,Mount,\, Moon)
-    \end{equation}
-
-
-    where $Mount$ contains the relevant mount information derived from Solidworks drawings; $Moon$ containts the on-sky, per-timestream-sample location of the moon; and $Az$, $El$, and $Dk$ are converted from raw encoder vlaues to topocentric coordinates using starpointing. We converted $r/\theta$ into $x/y$ coordinates using Lambert azimuthal equal-area projection (see <a href="IDB2013"></a>)
-
-
-    \begin{equation}
-    x = 2 \sin(r/2) \cos(\theta)\\
-    y = 2 \sin(r/2) \sin(\theta)
-    \end{equation}
-
-    and then fit the beams.
-
-    <p>The datasets for the moon observations are huge so re-estimating beam centroids from 2D Gaussian models for each permutation of the roll-tilt-drumangle parameter space isn't computationally feasible. In the previous analysis, I mitigated this by only analyzing a few detectors at a single deck angle. Instead, I take the Az/El/Dk position at the max amplitude of the timestream as the beam centroid. This drastically reduces computation time of the fit which allows me to quickly fit all of the available detectors across all three datasets at the expense of increased uncertainty of the beam centroids<sup>[<a name="sup1" href="#ftn1">1</a>]</sup>.</p>
-
-    <p>So Eq. 1 becomes</p>
-    \begin{equation}
-    [r_{0},\,\,\theta_{0}] = \text{keck_beam_map_pointing}(Tilt,\,Roll\,|\, Az_0,\,El_0,\,Dk_0,\,Mount,\, Moon)
-    \end{equation}
-
-    where $Az_0$, $El_0$, and $Dk_0$ are the per-detector positions at max amplitude and $r_{0}$ and $theta_{0}$ are the beam centers (converted to $x_0/y_0$ using Eq. 2).
-    <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
-
-    \begin{equation}
-    \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}
-    \end{equation}
-
-    <p>
-        which is done using our Matlab wrapper of <i>MINUIT</i> called <tt>matmin.m</tt>. I estimate the statistical uncertainty using bootstrapping.
-    </p>
-
-
-
     <h3>Data</h3>
     <h4>Moon Observations</h4>
-    <figure>
-        <table>
+    <p>
+    Observations of the moon were taken late January of 2017 at DK angles of 0&deg;, 45&deg;, and 90&deg;.
+    Each observation consisted of 50&deg;x6&deg; (Az/El) scans with 2.5 &deg;/s rasters in Az, stepping 0.1&deg; in El.
+    </p>
+    <figure class="table">
+        <table class="results">
             <tr>
                 <th>Schedule</th>
                 <th>Start</th>
@@ -111,7 +87,9 @@
             </tr>
 
         </table>
-
+    <figcaption>
+        Table of moon observation schedules used in this analysis.
+    </figcaption>
     </figure>
 
     <figure>
@@ -121,363 +99,458 @@
         </figcaption>
     </figure>
 
-    <h4>Ephemeris Data</h4>
+    <h4>Ephemeris</h4>
+    <p>
+    In my previous effort, I used ephemeris independently acquired from JPL Horizons. This was incorrect as we already have ephemeris built into GCP. For this analysis, I instead use the mount position as it tracks the moon which is returned through the slow GCP register <tt>antenna0.tracker.horiz_topo</tt>.
+    </p>
 
-    <p>In my previous effort, I used
+    <h3>Analysis</h3>
+
+    <p>In the previous attempt <a href="JAC2019"></a>, we estimated the mirror tilt and roll parameters by fitting 2D Gaussians to detector timestreams in boresight-centered ($r/\theta$) coordinates returned by a pointing model <tt>keck_beam_map_pointing.m</tt> <a href="CAB2014"></a>.</p>
+
+
+    <p>The datasets for the moon observations are huge so re-estimating beam centroids from 2D Gaussian models for each permutation of the roll-tilt parameter space isn't computationally feasible. In the previous analysis, I mitigated this by only analyzing a few detectors at a single deck angle. In this analysis, I take the Az/El/Dk position (converted from raw encoder values to topocentric coordinates using starpointing) at the max amplitude of the timestream as the beam centroid. This drastically reduces computation time of the fit which allows me to quickly fit all of the available detectors across all three datasets at the expense of increased uncertainty of the beam centroids<sup>[<a name="sup1" href="#ftn1">1</a>]</sup>.</p>
+
+    <p>So our model returns beam centers in instrument-fixed coordinates as a function of the mirror tilt and mirror roll.</p>
+    \begin{equation}
+    [r_{0},\,\,\theta_{0}] = \text{keck_beam_map_pointing}(Tilt,\,Roll\,|\, Az_0,\,El_0,\,Dk_0,\,Mount,\, Moon)
+    \end{equation}
+
+    where $Mount$ contains the relevant mount information derived from Solidworks drawings; $Moon$ containts the on-sky, per-timestream-sample location of the moon; $Az_0$, $El_0$, and $Dk_0$ are the per-detector positions at max amplitude; and $r_{0}$ and $theta_{0}$ are the beam centers, converted to $x_0/y_0$ using using Lambert azimuthal equal-area projection <a href="IDB2013"></a>:
+
+
+    \begin{equation}
+    x_0 = 2 \sin(r_0/2) \cos(\theta_0)\\
+    y_0 = 2 \sin(r_0/2) \sin(\theta_0)
+    \end{equation}
+
+
+    <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
+
+    \begin{equation}
+    \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}
+    \end{equation}
+
+    <p>
+        which is done using our Matlab wrapper of <i>MINUIT</i> called <tt>matmin.m</tt>. For consistency, I compare the best-fit parameters and normalized errors returned by <tt>matmin</tt> to the mean and standard deviation of a bootstrap.
     </p>
 
 
-<h3>Results</h3>
 
-    The results shown in the table below are from fitting to observations at all three Deck angles. My 2019 results, which fit only to the DK=0 observation, were $[Tilt=44.51^\circ,\,Roll=0.11^\circ]$ for comparison.
+    <h3>Results</h3>
 
+    <p>The results shown in the table below are from fitting to observations at all three Deck angles. My 2019 results, which fit only to the DK=0 observation, were $[Tilt=44.51^\circ,\,Roll=0.11^\circ]$ for comparison.
+    </p>
     <!--
     Param	Best-Fit	Stat Uncert	Sys Uncert
     -----	--------	-----------	----------
     Tilt 	44.6014  	0.0004  	0.0010
     Roll 	0.0007  	0.0007	    0.0247
     -->
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th></th>
+                <th  colspan="2">Matmin</th>
+                <th  colspan="2">Bootstrap</th>
+                <th ></th>
+            </tr>
+            <tr>
+                <th class="cstart cend">Parameter</th>
+                <th>Best-Fit (&deg;)</th>
+                <th class="cend">Stat. Uncert. (&deg;)</th>
+                <th>Mean (&deg;)</th>
+                <th class="cend">STD (&deg;)</th>
+                <th class="cend">Sys. Uncert. (&deg;)</th>
+            </tr>
+            <tr>
+                <td class="cstart cend">Tilt</td>
+                <td>44.6014</td>
+                <td class="cend">0.0007</td>
+                <td>44.6014</td>
+                <td class="cend">0.0005</td>
+                <td class="cend">0.0011</td>
 
-    <table class="center">
+            </tr>
+            <tr>
+                <td class="cstart cend">Roll</td>
+                <td>0.0007</td>
+                <td class="cend">0.0009</td>
+                <td>0.0007</td>
+                <td class="cend">0.0006</td>
+                <td class="cend">0.0247</td>
+            </tr>
 
-        <tr>
-            <th>Parameter</th>
-            <th>Best-Fit (&deg;)</th>
-            <th>Stat. Uncert. (&deg;)</th>
-            <th>Sys. Uncert. (&deg;)</th>
-        </tr>
-        <tr>
-            <td>Tilt</td>
-            <td>44.601</td>
-            <td>0.004</td>
-            <td>0.001</td>
-
-        </tr>
-        <tr>
-            <td>Roll</td>
-            <td>0.0007</td>
-            <td>0.0007</td>
-            <td>0.0247</td>
-        </tr>
-
-    </table>
-
-    <p></p>
-
-    <figure>
-        <img src="figs/moonfit_residuals_scatterhist.png" />
+        </table>
         <figcaption>
-            Best fit residuals</b>.
+            Table of best-fit parameters with normalized errors compared to the mean and STD of a bootstrap along with systematic uncertainty estimated through propagation of errors on mount pointing parameters discussed in the <a href="#sys">Systematics</a> section.
         </figcaption>
     </figure>
-    <figure>
-        <img src="figs/moonfit_residuals_quiver_zoomed.png" />
-        <figcaption>
-            Best fit residuals</b>.
-        </figcaption>
-    </figure>
-<h3>Systematics</h3>
 
     <p>
-        The list of possible sources of systematics includes the error on the CMB-derived beam centers; both the aperture height from the elevation axis and mirror height from the aperture given by solidworks drawings; and all of the relevant mount parameters estimated from starpointing. The CMB-derived parameters discussed in <a href="JWB2018"></a> have a quoted error of 0.012&deg; in x/y. For the elevation-axis-to-aperture distance, I use a conservative 1cm to account for any imprecision in the location of the aperture. For the mirror height, I use a conservative estimate of 10cm to account for the small amount of travel in the legs. The statistical error given with the starpointing data is the parabolic error returned by <tt>matmin</tt> which is not properly normalized. Instead, I acquire an estimate of the uncertainty once again using a bootstrap of the star pointing data used for this particular analysis. As a conservative estimate, I double the uncertainty returned by the bootstrap.
+        Various combinations of the best-fit residuals are shown below. In Fig. 1.2, we can see
     </p>
-    <h4>Methods</h4>
-    <p>Words</p>
 
     <figure>
-<table class="center">
-    <tr>
-        <th>CMB-derived Beam Centers</th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    <tr>
-        <th>Parameter</th>
-        <th>Uncertainty (m)</th>
-        <th>Bias Tilt (&deg;)</th>
-        <th>Bias Roll (&deg;)</th>
-    </tr>
-    <tr>
-        <td>x/y</td>
-        <td>$0.0120$</td>
-        <td>$^{0.0002}_{-0.0002}$</td>
-        <td>$^{0.0002}_{-0.0002}$</td>
-    </tr>
-    <tr>
-        <th>Solidworks</th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    <tr>
-        <th>Parameter</th>
-        <th>Uncertainty (m)</th>
-        <th>Bias Tilt (&deg;)</th>
-        <th>Bias Roll (&deg;)</th>
-    </tr>
-    <tr>
-        <td>Aperture Height</td>
-        <td>$0.0100$</td>
-        <td>$^{0.0000}_{0.0000}$</td>
-        <td>$^{0.0001}_{0.0001}$</td>
-    </tr>
-    <tr>
-        <td>Mirror Height</td>
-        <td>$0.1000$</td>
-        <td>$^{0.0000}_{0.0000}$</td>
-        <td>$^{0.0001}_{0.0001}$</td>
-    </tr>
-    <tr>
-        <th>Star Pointing</th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    <tr>
-        <th>Parameter</th>
-        <th>$2\sigma$ Stat. Uncert. (&deg;)</th>
-        <th>Bias Tilt (&deg;)</th>
-        <th>Bias Roll (&deg;)</th>
-    </tr>
-    <tr>
-        <td>flex_cos</td>
-        <td>$0.0000$</td>
-        <td>$^{NaN}_{NaN}$</td>
-        <td>$^{NaN}_{NaN}$</td>
-    </tr>
-    <tr>
-        <td>flex_sin</td>
-        <td>$0.0000$</td>
-        <td>$^{NaN}_{NaN}$</td>
-        <td>$^{NaN}_{NaN}$</td>
-    </tr>
-    <tr>
-        <td>az_tilt_ha</td>
-        <td>$0.0015$</td>
-        <td>$^{0.0003}_{-0.0003}$</td>
-        <td>$^{0.0037}_{-0.0037}$</td>
-    </tr>
-    <tr>
-        <td>az_tilt_lat</td>
-        <td>$0.0015$</td>
-        <td>$^{0.0007}_{-0.0007}$</td>
-        <td>$^{-0.0014}_{0.0015}$</td>
-    </tr>
-    <tr>
-        <td>el_tilt</td>
-        <td>$0.0082$</td>
-        <td>$^{0.0001}_{-0.0001}$</td>
-        <td>$^{0.0223}_{-0.0223}$</td>
-    </tr>
-    <tr>
-        <td>collim_x</td>
-        <td>$0.0000$</td>
-        <td>$^{NaN}_{NaN}$</td>
-        <td>$^{NaN}_{NaN}$</td>
-    </tr>
-    <tr>
-        <td>collim_y</td>
-        <td>$0.0000$</td>
-        <td>$^{NaN}_{NaN}$</td>
-        <td>$^{NaN}_{NaN}$</td>
-    </tr>
-    <tr>
-        <td>collim_mag</td>
-        <td>$0.0012$</td>
-        <td>$^{0.0000}_{0.0000}$</td>
-        <td>$^{0.0000}_{0.0000}$</td>
-    </tr>
-    <tr>
-        <td>collim_dir</td>
-        <td>$0.1279$</td>
-        <td>$^{0.0000}_{0.0000}$</td>
-        <td>$^{0.0000}_{0.0000}$</td>
-    </tr>
-    <tr>
-        <td>az_zero</td>
-        <td>$0.0145$</td>
-        <td>$^{0.0001}_{-0.0001}$</td>
-        <td>$^{-0.0097}_{0.0098}$</td>
-    </tr>
-    <tr>
-        <td>el_zero</td>
-        <td>$0.0013$</td>
-        <td>$^{-0.0007}_{0.0006}$</td>
-        <td>$^{0.0000}_{-0.0000}$</td>
-    </tr>
-    <tr>
-        <th>Total</th>
-        <th></th>
-        <td>$\pm 0.0011$</td>
-        <td>$\pm 0.0247$</td>
-    </tr>
-
-</table>
-
+        <img alt="Maps pager" id="histpager" src="#" width="65%"/>
         <figcaption>
-            Table of possible sources of systematics and their propogated errors.
+            Pager of scatter plots with marginal histograms of best-fit residuals for each dk angle and all DK's together. For the most part, we see that the residuals are evenly distributed around zero with standard deviations of 0.033&deg; and 0.035&deg; for x and y respectively.
         </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager",
+                {
+                    'DK|d': ['0','45','90','all'],
+                },
+                function(params) {
+                    return 'figs/moonfit_residuals_scatterhist_dk'+params.d+'.png';
+                });
+            pager.setparams({
+                'd': 'all',
+            });
+        </script>
     </figure>
 
 
+    <figure>
+        <img alt="Maps pager" id="dkspager" src="#" width="65%"/>
+        <figcaption>
+            Pager of quiver plots of best-fit residuals for each dk angle and all angles together. For the <b>All Tiles</b> pager, we see that the residuals point roughly inward toward the focal plane center. A zoom-in of <b>Tile 11</b> shows that the inward pointing is much weaker at the center.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#dkspager",
+                {
+                    'DK|d': ['0','45','90','all'],
+                    'Tile|t': ['11|_tile11','All|'],
+                },
+                function(params) {
+                    return 'figs/moonfit_residuals_quiver_zoomed_dk'+params.d+params.t+'.png';
+                });
+            pager.setparams({
+                'd': 'all',
+                't': '',
+            });
+        </script>
+    </figure>
 
+    <figure>
+        <img alt="Maps pager" id="polspager" src="#" />
+        <figcaption>
+            Pager of quiver plots of best-fit residuals for each 'Pol' orientation and both pol A and pol B. Note that for MCE 0, pol A and pol B have inverse polarization angles compared to other MCE's. We see in this figure that the residuals are very similar for a majority of detector pairs.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#polspager",
+                {
+                    'Pol|p': ['A|a','B|b','A/B|both'],
+                },
+                function(params) {
+                    return 'figs/moonfit_residuals_quiver_zoomed_pol'+params.p+'.png';
+                });
+            pager.setparams({
+                'p': 'both',
+            });
+        </script>
+    </figure>
+
+
+    <h3 id="sys">Systematics</h3>
+
+    <p>
+        The list of possible sources of systematics includes both the aperture height from the elevation axis and mirror height from the aperture given by solidworks drawings; and all of the relevant mount parameters estimated from starpointing. For the elevation-axis-to-aperture distance (<tt>aperture_offz</tt> in <a href="CAB2012"></a>), I use a conservative 1cm to account for any imprecision in the location of the aperture. For the mirror height, I use a conservative estimate of 10cm to account for the small amount of travel in the legs.
+    </p>
+    <h4>Starpointing</h4>
+    <p>In my previous iter
+
+        The statistical error given with the starpointing data
+
+        is the parabolic error returned by <tt>matmin</tt> which is not properly normalized. Instead, I acquire an estimate of the uncertainty once again using a bootstrap of the star pointing data used for this particular analysis. Because the number of data points is low $(N_{stars}=32)\,$, I double the uncertainty returned by the bootstrap to use as a conservative estimate. For a given parameter in Table 1.3, I estimate the level of systematic error by re-running a fit on the data with a parameter offset by $\pm1$ times its uncertainty while keeping the others fixed at their default values.</p>
+
+    <figure class="table">
+        <table class="center results">
+
+            <tr>
+                <th colspan="4">Solidworks</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>Uncertainty (m)</th>
+                <th>Bias Tilt (&deg;)</th>
+                <th>Bias Roll (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Aperture Height</td>
+                <td>$0.0100$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+                <td>$^{0.0001}_{0.0001}$</td>
+            </tr>
+            <tr>
+                <td>Mirror Height</td>
+                <td>$0.1000$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+                <td>$^{0.0001}_{0.0001}$</td>
+            </tr>
+            <tr>
+                <th colspan="4">Star Pointing</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>$2\sigma$ Stat. Uncert. (&deg;)</th>
+                <th>Bias Tilt (&deg;)</th>
+                <th>Bias Roll (&deg;)</th>
+            </tr>
+            <tr>
+                <td>flex_cos</td>
+                <td>$0.0000$</td>
+                <td>$^{NaN}_{NaN}$</td>
+                <td>$^{NaN}_{NaN}$</td>
+            </tr>
+            <tr>
+                <td>flex_sin</td>
+                <td>$0.0000$</td>
+                <td>$^{NaN}_{NaN}$</td>
+                <td>$^{NaN}_{NaN}$</td>
+            </tr>
+            <tr>
+                <td>az_tilt_ha</td>
+                <td>$0.0015$</td>
+                <td>$^{0.0003}_{-0.0003}$</td>
+                <td>$^{0.0037}_{-0.0037}$</td>
+            </tr>
+            <tr>
+                <td>az_tilt_lat</td>
+                <td>$0.0015$</td>
+                <td>$^{0.0007}_{-0.0007}$</td>
+                <td>$^{-0.0014}_{0.0015}$</td>
+            </tr>
+            <tr>
+                <td>el_tilt</td>
+                <td>$0.0082$</td>
+                <td>$^{0.0001}_{-0.0001}$</td>
+                <td>$^{0.0223}_{-0.0223}$</td>
+            </tr>
+            <tr>
+                <td>collim_x</td>
+                <td>$0.0000$</td>
+                <td>$^{NaN}_{NaN}$</td>
+                <td>$^{NaN}_{NaN}$</td>
+            </tr>
+            <tr>
+                <td>collim_y</td>
+                <td>$0.0000$</td>
+                <td>$^{NaN}_{NaN}$</td>
+                <td>$^{NaN}_{NaN}$</td>
+            </tr>
+            <tr>
+                <td>collim_mag</td>
+                <td>$0.0012$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+            </tr>
+            <tr>
+                <td>collim_dir</td>
+                <td>$0.1279$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+            </tr>
+            <tr>
+                <td>az_zero</td>
+                <td>$0.0145$</td>
+                <td>$^{0.0001}_{-0.0001}$</td>
+                <td>$^{-0.0097}_{0.0098}$</td>
+            </tr>
+            <tr>
+                <td>el_zero</td>
+                <td>$0.0013$</td>
+                <td>$^{-0.0007}_{0.0006}$</td>
+                <td>$^{0.0000}_{-0.0000}$</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th></th>
+                <th>$\pm 0.0011$</th>
+                <th>$\pm 0.0247$</th>
+            </tr>
+
+        </table>
+
+        <figcaption>
+            Table of possible sources of systematics and their propagated errors. Errors for the parameters derived from Solidworks models are extremely conservative upper limits. Lastly, uncertainties for starpointing were estimated by bootstrap. Because the number of data points is low $(N_{stars}=32)\,$, I double the uncertainty returned by the bootstrap to use as a conservative estimate.
+        </figcaption>
+    </figure>
+
+<h3>Conclusions</h3>
+    <p>More words.</p>
 
 </section>
-<!--
-<section>
-    <h2>Source Parameters 2017</h2>
 
-    <h3>Results</h3>
 
-    <h3>Data</h3>
+<!--<section>-->
+<!--    <h2>Source Parameters 2017</h2>-->
 
-</section>
+<!--    <h3>Results</h3>-->
 
-<section>
-    <h2>Mirror Parameters 2018</h2>
+<!--    <h3>Data</h3>-->
 
-    <h3>Results</h3>
+<!--</section>-->
 
-    <h3>Data</h3>
+<!--<section>-->
+<!--    <h2>Mirror Parameters 2018</h2>-->
 
-</section>
--->
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
+
 
 <hr>
 
-<section>
-
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
     <h3>Notes</h3>
-    <div class="footnote"><p>
+    <div class="footnote">
+        <p>
         <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
         Using the max amplitude impinges an uncertainty on the beam centers which is half of the sample spacing for a given coordinate. In instrument-fixed coordinates, this corresponds to a median beam center uncertainty of $\sigma\sim0.05^\circ$ which is comparable to the quoted errors on the CMB-derived beam centers (median $\sigma\sim0.01^\circ$).
-    </p></div>
+    </p>
+    </div>
     <h3>Code</h3>
 
-<ul>
-<li><tt>code1.py</tt> - Code desciption
-</ul>
+    <ul>
+        <li><tt>code1.py</tt> - Code desciption
+    </ul>
 
 
+    <h3>References</h3>
 
-        <p id="demo"></p>
+    <p id="references"></p>
 
-        <script>
-            document.getElementById("demo").innerHTML =
-                "The full URL of this page is:<br>" + window.location.href;
-        </script>
 
-        <h3>References</h3>
     <p id="testp"></p>
-<p id="references"></p>
-	<script type="text/javascript">
+    <script type="text/javascript">
 
-	// This my way of making shorthand links.
-	// We'll make a couple arrays with the 'tag' and href information
-	// and then look through each anchor element for the specified tag.
-	// The anchors should then just look like: <a href="tagname"></a>
-	// and the script will automatically fill in the hyperlings and text.
-
-
-    var posting_log = "bkcmb"; // Which logbook is this posting going in?
-
-    var posting_dir = window.location.href; // What's the current url?
-
-    //var personal_log = "jcornelison/postings/"; // Do you have a personal logbook directory?
-    var personal_log = "Documents/GitHub";
-    var bkurl = "bicep.rc.fas.harvard.edu";
-    var spurl = "bicep.usap.gov";
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
 
 
-    // Logbook Site map:
-    // personal:www/jcornelison/postings/
-    // bkcmb:   www/bkcmb/analysis_logbook/analysis/
-    // keck:    www/keck/analysis_logbook/analysis/
-    // BICEP3:  www/bicep3/analysis_logbook/
-    // BA:      www/bicep_array/analysis_logbook/
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "CAB2012",
+            "IDB2013",
+            "CAB2014",
+            "JBW2018",
+            "JAC2019"
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which is lies if you can.
+        var hrefs = [
+            "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+            "bkcmb/analysis_logbook/analysis/20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
+            "keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
+            "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
+            "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/",
+        ];
 
 
-    // Shorthand tags
-    var tags = [
-        "CAB2012",
-        "IDB2013",
-        "CAB2014",
-        "RWO2015",
-        "JBW2018",
-        "JAC2019"
-	];
+        // Posting titles
+        var desc = [
+            "Pointing Model for Keck Beam Maps",
+            "Calculations for Beam Mapping in Spherical Coordinates",
+            "Spherical Coordinates for beam maps",
+            "Radio pointing model from CMB",
+            "B2016, B2017, and B2018 CMB-derived beam center correlations",
+            "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS"
+        ];
 
 
-    // Links
-	var hrefs = [
-        "../../../../keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-        "../20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
-        "../../../../keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
-        "http://polar-array.stanford.edu/twiki/bin/view/BICEP3/Logbook150205RadioPointing",
-        "../20181207_B2018_beamcen/",
-        "../20190409_moon_analysis_2017/"
-	];
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))!=""){
+                    preface = sitemap[keys[key]];
+                };
+            };
 
-    // Links
-    var hrefs = [
-        "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-        "bkcmb/analysis_logbook/analysis/20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
-        "keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
-        "http://polar-array.stanford.edu/twiki/bin/view/BICEP3/Logbook150205RadioPointing",
-        "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
-        "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/"
-    ];
+        };
 
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
 
-	// Posting titles
-	var desc = [
-        "Pointing Model for Keck Beam Maps",
-        "Calculations for Beam Mapping in Spherical Coordinates",
-        "Spherical Coordinates for beam maps",
-        "Radio pointing model from CMB",
-        "B2016, B2017, and B2018 CMB-derived beam center correlations",
-        "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS"
-	];
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
 
-    var posty = document.getElementById("testp");
-    //var msg = "";
+        // Debug
+        //var posty = document.getElementById("testp");
+        //posty.innerHTML = preface;
 
-    compstr = posting_dir.match(new RegExp("/"+personal_log+"/"));
-    posty.innerHTML = compstr;
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
 
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
 
-    // Depending on where you are, go back to the www directory
-    // then go directly to the posting.
-    // for (var ref in hrefs){
-    //     // Are we in our own directory?
-    //
-    // }
-
-
-
-
-	// Make a list of references
-	var post = document.getElementById("references");
-	var msg = "<table>";
-	for (var tag in tags){
-		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
-	};
-	msg = msg+ "</table>";
-	post.innerHTML = msg;
-
-	// Look through all the hyperlinks and insert the proper links to the postings
-	var links = document.getElementsByTagName("A");
-	for (var link in links){
-		for (var tag in tags){
-			if (links[link].href.endsWith(tags[tag])){
-				links[link].text = "("+tags[tag]+")";
-				links[link].href = hrefs[tag];
-				links[link].target = "_blank";
-			}
-		}
-	}
-	
-	</script>
+    </script>
 </section>
 </body>
