@@ -182,26 +182,7 @@
         </figcaption>
     </figure>
 
-    <figure>
-        <img alt="Maps pager" id="histpager" src="#" width="65%"/>
-        <figcaption>
-            Pager of scatter plots with marginal histograms of best-fit residuals for each dk angle and all DK's together. For the most part, we see that the residuals are evenly distributed around zero with standard deviations of 0.033&deg; and 0.035&deg; for x and y respectively.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#histpager",
-                {
-                    'DK|d': ['0','45','90','all'],
-                    'Tile|t2': ['Max Amp|','Beam-fit|_beamfit'],
-                },
-                function(params) {
-                    return 'figs/moonfit_residuals_scatterhist_dk'+params.d+params.t2+'.png';
-                });
-            pager.setparams({
-                'd': 'all',
-                't2': '',
-            });
-        </script>
-    </figure>
+
     <p>
         In the table below, the effect of using the max amplitude position as the center becomes more apparent. Structure is visible across whole rows or whole columns in some tiles, corresponding to the steps taken in elevation. At the best-fit mirror parameters, fit for the beam centers and show the residuals.
     </p>
@@ -226,6 +207,29 @@
         </script>
     </figure>
 
+
+
+
+    <figure>
+        <img alt="Maps pager" id="histpager" src="#" width="65%"/>
+        <figcaption>
+            Pager of scatter plots with marginal histograms of best-fit residuals for each dk angle and all DK's together. For the most part, we see that the residuals are evenly distributed around zero with standard deviations of 0.033&deg; and 0.035&deg; for x and y respectively.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager",
+                {
+                    'DK|d': ['0','45','90','all'],
+                    'Tile|t2': ['Max Amp|','Beam-fit|_beamfit'],
+                },
+                function(params) {
+                    return 'figs/moonfit_residuals_scatterhist_dk'+params.d+params.t2+'.png';
+                });
+            pager.setparams({
+                'd': 'all',
+                't2': '',
+            });
+        </script>
+    </figure>
 
 
     <!--
