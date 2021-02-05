@@ -153,7 +153,6 @@
                 <th></th>
                 <th  colspan="2">Matmin</th>
                 <th  colspan="2">Bootstrap</th>
-                <th ></th>
             </tr>
             <tr>
                 <th class="cstart cend">Parameter</th>
@@ -161,7 +160,6 @@
                 <th class="cend">Stat. Uncert. (&deg;)</th>
                 <th>Mean (&deg;)</th>
                 <th class="cend">STD (&deg;)</th>
-                <th class="cend">Sys. Uncert. (&deg;)</th>
             </tr>
             <tr>
                 <td class="cstart cend">Tilt</td>
@@ -169,8 +167,6 @@
                 <td class="cend">0.0007</td>
                 <td>44.6014</td>
                 <td class="cend">0.0005</td>
-                <td class="cend">0.0011</td>
-
             </tr>
             <tr>
                 <td class="cstart cend">Roll</td>
@@ -178,18 +174,13 @@
                 <td class="cend">0.0009</td>
                 <td>0.0007</td>
                 <td class="cend">0.0006</td>
-                <td class="cend">0.0247</td>
             </tr>
 
         </table>
         <figcaption>
-            Table of best-fit parameters with normalized errors compared to the mean and STD of a bootstrap along with systematic uncertainty estimated through propagation of errors on mount pointing parameters discussed in the <a href="#sys">Systematics</a> section.
+            Table of best-fit parameters with normalized errors compared to the mean and STD of a bootstrap.
         </figcaption>
     </figure>
-
-    <p>
-        Various combinations of the best-fit residuals are shown below. In Fig. 1.2, we can see
-    </p>
 
     <figure>
         <img alt="Maps pager" id="histpager" src="#" width="65%"/>
@@ -200,17 +191,20 @@
             pager.link("#histpager",
                 {
                     'DK|d': ['0','45','90','all'],
+                    'Tile|t2': ['Max Amp|','Beam-fit|_beamfit'],
                 },
                 function(params) {
-                    return 'figs/moonfit_residuals_scatterhist_dk'+params.d+'.png';
+                    return 'figs/moonfit_residuals_scatterhist_dk'+params.d+params.t2+'.png';
                 });
             pager.setparams({
                 'd': 'all',
+                't2': '',
             });
         </script>
     </figure>
-
-
+    <p>
+        In the table below, the effect of using the max amplitude position as the center becomes more apparent. Structure is visible across whole rows or whole columns in some tiles, corresponding to the steps taken in elevation. At the best-fit mirror parameters, fit for the beam centers and show the residuals.
+    </p>
     <figure>
         <img alt="Maps pager" id="dkspager" src="#" width="65%"/>
         <figcaption>
@@ -220,7 +214,7 @@
             pager.link("#dkspager",
                 {
                     'DK|d': ['0','45','90','all'],
-                    'Tile|t': ['11|_tile11','All|'],
+                    'Tile|t': ['All|','11|_tile11','Beam-fit|_beamfit','Tile 11 (BF)|_beamfit11'],
                 },
                 function(params) {
                     return 'figs/moonfit_residuals_quiver_zoomed_dk'+params.d+params.t+'.png';
@@ -232,6 +226,9 @@
         </script>
     </figure>
 
+
+
+    <!--
     <figure>
         <img alt="Maps pager" id="polspager" src="#" />
         <figcaption>
@@ -250,19 +247,14 @@
             });
         </script>
     </figure>
-
-
+-->
     <h3 id="sys">Systematics</h3>
 
     <p>
         The list of possible sources of systematics includes both the aperture height from the elevation axis and mirror height from the aperture given by solidworks drawings; and all of the relevant mount parameters estimated from starpointing. For the elevation-axis-to-aperture distance (<tt>aperture_offz</tt> in <a href="CAB2012"></a>), I use a conservative 1cm to account for any imprecision in the location of the aperture. For the mirror height, I use a conservative estimate of 10cm to account for the small amount of travel in the legs.
     </p>
     <h4>Starpointing</h4>
-    <p>In my previous iter
-
-        The statistical error given with the starpointing data
-
-        is the parabolic error returned by <tt>matmin</tt> which is not properly normalized. Instead, I acquire an estimate of the uncertainty once again using a bootstrap of the star pointing data used for this particular analysis. Because the number of data points is low $(N_{stars}=32)\,$, I double the uncertainty returned by the bootstrap to use as a conservative estimate. For a given parameter in Table 1.3, I estimate the level of systematic error by re-running a fit on the data with a parameter offset by $\pm1$ times its uncertainty while keeping the others fixed at their default values.</p>
+    <p>In my previous iteration, I used the error given with the star pointing results to estimate the systematic error from the Az and El zeros. Looking through the code I found that the statistical error given with the star pointing data is the parabolic error returned by <tt>matmin</tt> which is not normalized. In this analysis, I instead estimate the uncertainty using a bootstrap of the star pointing data used for this particular analysis. Because the number of data points is low $(N_{stars}=32)\,$, I double the uncertainty returned by the bootstrap to use as a conservative estimate. For a given parameter in Table 1.3, I estimate the level of systematic error by re-running a fit on the data with a parameter offset by $\pm1$ times its uncertainty while keeping the others fixed at their default values.</p>
 
     <figure class="table">
         <table class="center results">
@@ -380,8 +372,35 @@
 <h3>Conclusions</h3>
     <p>More words.</p>
 
-</section>
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th>Parameter</th>
+                <th>Best-Fit (&deg;)</th>
+                <th>Stat. Uncert. (&deg;)</th>
+                <th>Sys. Uncert. (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Tilt</td>
+                <td>44.6014</td>
+                <td>0.0005</td>
+                <td>0.0011</td>
 
+            </tr>
+            <tr>
+                <td>Roll</td>
+                <td>0.0007</td>
+                <td>0.0006</td>
+                <td>0.0247</td>
+            </tr>
+
+        </table>
+        <figcaption>
+            Table of final results for 2017 mirror parameters.
+        </figcaption>
+    </figure>
+
+</section>
 
 <!--<section>-->
 <!--    <h2>Source Parameters 2017</h2>-->
@@ -414,10 +433,8 @@
     </p>
     </div>
     <h3>Code</h3>
-
-    <ul>
-        <li><tt>code1.py</tt> - Code desciption
-    </ul>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
 
 
     <h3>References</h3>
@@ -426,6 +443,41 @@
 
 
     <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "rps_fit_mirror_from_moon.m",
+            "rps_get_moon_model_v2.m",
+            "bootstrap_mirrorfit.m",
+            "rps_errorprop.m",
+            "bootstrap_starpoint.m",
+            "analysis_plots_20210121.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Derives mirror parameters from observations of the moon.",
+            "Returns the beam centers for inputs of mirror tilt and roll",
+            "Performs a statistical bootstrap on moonraster pointing data as a consistency check.",
+            "Estimates systematic error propagated through the fit due to uncertainties on the pointing information.",
+            "Performs a statistical bootstrap on star pointing data as a consistency check.",
+            "Code that was used to produce plots in this posting.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
     <script type="text/javascript">
 
         // This my way of making shorthand links.
@@ -528,7 +580,7 @@
             };
         };
 
-       posty.innerHTML = preface;
+        // posty.innerHTML = preface;
 
         // Make a list of references
         var post = document.getElementById("references");

@@ -210,6 +210,11 @@ table {
     border-bottom: 1px solid #ddd;
 }
 
+.code td {
+    padding: 0.25em;
+}
+
+
 .cstart {
     border-left: 1px solid #000000
 }
