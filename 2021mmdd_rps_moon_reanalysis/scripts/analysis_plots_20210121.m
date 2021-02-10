@@ -17,7 +17,6 @@ res_beam = reshape(fd.data-model,[],2);
 resx = res_beam(:,1);
 resy = res_beam(:,2);
 
-
 %%
 % Moon Obs Coverage
 
@@ -35,8 +34,8 @@ title('Moon Observation Coverage Jan 2017')
 legend({'DK = 0','DK = 45','DK = 90','CMB-derived pnts'})
 axis square
 
-% Looking at a specific detector
 
+% Looking at a specific detector
 figure();
 set(gcf,'Position',[100,400,1200,400])
 clf; hold on;
