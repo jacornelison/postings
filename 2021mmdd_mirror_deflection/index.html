@@ -40,7 +40,6 @@
 <hr>
 
 
-
 <section><h2>Photogrammetry</h2>
 
     <h3>Data</h3>
@@ -74,7 +73,7 @@
         <script type="text/javascript">
             pager.link("#qpager",
                 {
-                    'Residuals|q' : ['Beamfit|_beamfit','Calculated|'],
+                    'Residuals|q' : ['Beamfit|_beamfit','Tilt Error|_error_tilt','Roll Error|_error_roll','Calculated|'],
                 },
                 function(params) {
                     return 'figs/beamcen_residuals'+params.q+'.png';

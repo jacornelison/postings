@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cbb0713d-2948-4960-9b09-29638b4dc582" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../template/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../template/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals.png" beforeDir="false" afterPath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_dzdx.png" beforeDir="false" afterPath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_dzdx.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_dzdy.png" beforeDir="false" afterPath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_dzdy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_grid.png" beforeDir="false" afterPath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_grid.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_grid_pnt.png" beforeDir="false" afterPath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_grid_pnt.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_roll.png" beforeDir="false" afterPath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_roll.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_tilt.png" beforeDir="false" afterPath="$PROJECT_DIR$/../2021mmdd_mirror_deflection/figs/mirror_residuals_tilt.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +54,7 @@
       <workItem from="1612362956053" duration="26914000" />
       <workItem from="1612454093655" duration="13317000" />
       <workItem from="1613137401638" duration="619000" />
+      <workItem from="1613574794723" duration="9000" />
     </task>
     <servers />
   </component>
