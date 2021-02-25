@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Scratch — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1></h1>
+
+    <time datetime="2020-xx-xx" class="published updated">
+        2021 Mmm dd
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+</p>
+
+<hr>
+
+<section><h2>Start</h2>
+
+
+
+    <!--
+    <figure>
+        <img alt="pager" id="polspager" src="#" />
+        <figcaption>
+            The caption.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#polspager",
+                {
+                    'Param|p': ['1|_one','2|_two'],
+                },
+                function(params) {
+                    return 'figs/fig'+params.p+'.png';
+                });
+            pager.setparams({
+                'p': '2',
+            });
+        </script>
+    </figure>
+-->
+
+</section>
+
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "",
+            ];
+
+        // Posting titles
+        var desc = [
+            "",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which is lies if you can.
+        var hrefs = [
+            "",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
