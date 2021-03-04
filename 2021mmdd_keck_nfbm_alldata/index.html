@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link rel="stylesheet" href="harvard-cmb.css" />
+  <title>BICEP3 NFBM All Data</title>
+  <!-- MathJax -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+  </script>
+  <script type="text/javascript"
+          src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+</head>
+
+<body text="#000000" bgcolor="#E3DDE6" link="#0000dd" vlink="#dd0000" alink="#ff0000">
+<center>
+  <h1>BICEP3 NFBM All Data</h1>
+  <h2>Tyler St. Germaine</h2>
+  <h2>2020-03-03</h2>
+</center>
+<hr>
+
+<SCRIPT SRC="pager.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+param.fig1param = 'var1samplename';
+
+function make_fignames() {
+   fig.fig1={};    
+   fig.fig1.fname='figs/thisisanexamplefigure_'+param.fig1param+'.png';
+}
+
+set_figname_fun(make_fignames);
+set_autocolor(1,'Red','LightBlue');
+get_query_words();
+
+pager.fig1param = ['Param Name',
+   'Var1 Displayname','var1samplename'];
+
+//-->
+
+</SCRIPT>
+
+<hr>
+
+<h2>Introduction</h2>
+
+<p>
+  Near-field beam maps (NFBM) are taken by mounting a Velmex X/Y
+  stage carrying a chopped thermal source directly to the aperture
+  of the telescope.  The source is then rastered in steps over the entire 
+  to get a map for each detector.  The different parameters that
+  one can tune when taking NFBMs are: thermal source temperature,
+  thermal source chop rate,
+  the number of steps (e.g. 50x50 grid or 40x40 grid), and the integration
+  time at each step. The data is taken with the detectors on the Aluminum
+  transition.
+</p>
+
+<p>
+  We take NFBM as part of our usual suite of optical tests to check 
+  the health and functionality of the detectors and the optics.
+  Although problems in the near field don't necessarily 
+  translate to problems in the far field beams, they can still point
+  to non-idealities in receiver design, such as an out-of-focus optics
+  chain or phase errors in the detector antenna network and summing tree.
+  See Section 3.1 of BK-IV for a discussion on how NFBM have directly
+  fed back onto detector design. 
+</p>
+ 
+<p>
+  That being said, it is sometimes difficult to track down historical
+  NFBM data -- it has not been as well organized as other calibration
+  data.  Here I begin the effort to make the NFBMs more easily viewable 
+  and accessible, starting with BICEP3.
+</p>
+
+<p>
+  This is motivated by ongoing work to link together beam models with
+  measurements.  Collaborative work is underway here at Harvard between
+  the CMB lab and the SMA lab to model BICEP3 / BICEP Array beams
+  using GRASP, and link them together with beam data taken on those same
+  instruments, including NFBM, FFBM, far sidelobe maps (FSL), and rotating
+  polarized source (RPS) measurements.  We hope to use the data 
+  to improve the model, and to use the outputs of the model to learn 
+  more about non-idealities in our receivers.  These non-idealities 
+  could inform us about possible systematics in our current 
+  CMB data (e.g. T->P leakage) and influence the design of future receivers,
+  including BICEP Array and CMB-S4 SATs.
+</p>
+
+
+<hr>
+
+<h2>Table of NFBM Runs</h2>
+
+<p>
+  Below I tabulate the various NFBM runs taken on BICEP3 at Pole
+  in reverse chronological order.  Click the filename to view the
+  pager.  All this data is reanalyzed, so there may be slight differences
+  between the NFBMs shown in the new pager vs the original postings.
+</p>
+
+<p>
+  About the plots: the pagers are displayed
+  as the BICEP3 FPU as projected on the sky in our usual
+  x/y coordinate system, but the NFBMs themselves are shown
+  in the coordinates of the NFBM axes.  Comparing NFBMs
+  of the same detector across different measurements, you
+  may see a rotation based on the orientation the NFBM
+  was mounted onto the receiver for each measurement.
+</p>
+
+<center>
+<table>
+<tr>
+  <th>Time start</th>
+  <th>Time end</th>
+  <th>Filename</th>
+  <th>Original Posting</th>
+  <th>Notes</th>
+</tr>
+<tr>
+  <td>2017-Jan-16:21:20:35</td>
+  <td>2017-Jan-17:03:22:00</td>
+  <td><a href="nfbm_bicep3_mount_20170116/">nfbm_bicep3_mount_20170116</a></td>
+  <td>N/A</td>
+  <td>Taken after Ade filter swap of 2016/2017 summer</td>
+</tr>
+<tr>
+  <td>2016-Jan-13:22:49:30</td>
+  <td>2016-Jan-14:01:30:02</td>
+  <td><a href="nfbm_bicep3_mount_20160113_1/">nfbm_bicep3_mount_20160113_1</a></td>
+  <td><a href="../../../../bicep3/analysis_logbook/20160115_B3_SP_run08_NFBM_1/">20160115_B3_SP_run08_NFBM_1</a></td>
+  <td></td>
+</tr>
+<tr>
+  <td>2016-Jan-14:01:43:41</td>
+  <td>2016-Jan-14:04:24:09</td>
+  <td><a href="nfbm_bicep3_mount_20160113_2/">nfbm_bicep3_mount_20160113_2</a></td>
+  <td><a href="../../../../bicep3/analysis_logbook/20160115_B3_SP_run08_NFBM_1/">20160115_B3_SP_run08_NFBM_1</a></td>
+  <td>Fridge blew early, incomplete data.</td>
+</tr>
+<tr>
+  <td>2016-Jan-14:04:52:21</td>
+  <td>2016-Jan-14:07:32:30</td>
+  <td><a href="nfbm_bicep3_mount_20160113_3/">nfbm_bicep3_mount_20160113_3</a></td>
+  <td><a href="../../../../bicep3/analysis_logbook/20160115_B3_SP_run08_NFBM_1/">20160115_B3_SP_run08_NFBM_1</a></td>
+  <td></td>
+</tr>
+</table>
+</center>
+
+<hr>
+
+<h2>Data and Scripts</h2>
+
+<p>
+  The scripts for running the NFBM using the Velmex program 
+  <tt>COSMOS</tt> can be found on the BICEP Ops page 
+  (click Program-wide Calibration Hardware).
+</p>
+
+<p>
+  The analysis scripts are pipeline-committed on odyssey:
+</p>
+<ul>
+  <li><tt>beammap/nfbm_makemap.m</tt>: load arc files, demodulate, bin into maps</li>
+  <li><tt>beammap/nfbm_fitter.m</tt>: load maps, do Gaussian fits</li>
+  <li><tt>beammap/nfbm_plotter.m</tt>: load maps, make thumbnail + full size plots</li>
+  <li><tt>beammap/make_tileplot_html.m</tt>: this is a general-purpose script I wrote that will make an HTML pager in tileplot format, just like the NFBM pagers above.  It can work for any data that comes in thumbnail + full size plots.</li>
+</ul>
+
+<p>
+  The NFBM data all live in 
+  <tt>/n/holylfs02/LABS/kovac_lab/bicep3/beammaps/nfbm</tt>.  
+  The filenames in that directory match the filenames listed 
+  in each link above,
+</p>
+
+<hr>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+plupdate();
+-->
+</SCRIPT>
+
+</body>
+
+</html>

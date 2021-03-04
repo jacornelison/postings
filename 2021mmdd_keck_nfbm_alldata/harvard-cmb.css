@@ -1,0 +1,98 @@
+/** Stylesheet for harvard-cmb pages
+    2012-03-05 CAB **/
+
+body {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/** HEADER **/
+header {
+    border-bottom: thin solid black;
+}
+
+header h1 {
+    text-align: center;
+    font-size: xxlarge;
+}
+
+#header-img {
+    margin-bottom: 10px;
+    float: right;
+}
+
+/** MAIN **/
+h2 {
+    margin: 10px 100px 10px;
+    color: #bb0000;
+    font-size: xlarge;
+}
+
+h3 {
+    margin: 10px 100px 10px;
+}
+
+div#left {
+    float: left;
+    width: 40%;
+    margin: 10px;
+}
+
+div#right {
+    float: left;
+    margin: 10px auto 10px 10px;
+}
+
+p {
+    margin: 15px 100px 15px 100px
+}
+
+pre {
+    margin: 30px 100px 15px 100px
+}
+
+ul, ol {
+    margin: 15px 100px 15px 100px
+}
+
+hr {
+    margin: 15px 100px 15px 100px
+}
+
+/** FOOTER **/
+footer {
+    border-top: thin solid black;
+}
+
+/** TABLES **/
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    border: thin solid black;
+    padding: 2px 5px;
+}
+
+/** MISCELLANEOUS **/
+span.highlight {
+    color: #bb0000;
+}
+
+div.clear {
+    clear: both;
+}
+
+.center {
+    text-align: center;
+}
+
+p.code-block { 
+    background-color: #dddddd; 
+    padding: 2px;
+    font-family: monospace;
+}
+
+span.code-comment {
+    color: #bb0000;
+}
