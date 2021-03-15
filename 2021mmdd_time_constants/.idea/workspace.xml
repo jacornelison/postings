@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cbb0713d-2948-4960-9b09-29638b4dc582" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../2021mmdd_rps_moon_reanalysis/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../2021mmdd_rps_moon_reanalysis/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="cbb0713d-2948-4960-9b09-29638b4dc582" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,7 +23,6 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -38,7 +35,6 @@
       <option name="presentableId" value="Default" />
       <updated>1592339487187</updated>
       <workItem from="1592339491489" duration="81000" />
-      <workItem from="1613751261566" duration="4212000" />
     </task>
     <servers />
   </component>
