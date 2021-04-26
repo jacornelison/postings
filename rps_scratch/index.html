@@ -42,9 +42,88 @@
 
 <hr>
 
-<section><h2>Issues with Az/El tilts</h2>
+<ul>
+    <li>What are you doing? </li>
 
-    The RPS residuals look pretty strange compared to the mirror best-fit residuals.
+    <li>Why are you doing it?</li>
+</ul>
+
+<p>In most beams analysis (FFBM, RPS, FSL), the procedure to create beam maps from raw data is to first convert Raw Mount Coordinates $(A_0,E_0,K_0)$ into ideal topocentric coordinates $(A,E,K)$ using <tt>invpointing_model.m</tt> and then use <tt>keck_beam_map_pointing.m</tt> to convert to boresight-centered $(x,y,\psi)$ or detector-centered $(x',y',\psi')$ coordinates using mount, mirror, and source information as additional inputs.</p>
+
+<p>
+    ... because we lose the knowledge of the physical orientation of the source.
+</p>
+
+<section><h2>Beam Map Pointing Model</h2>
+
+    <p>Comparison is accomplished simply by passing no mirror or source parameters to <tt>beam_map_pointing_model</tt>.</p>
+
+    <figure>
+        <img alt="pager" id="pmpager" src="#" />
+        <figcaption>
+            The caption.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#pmpager",
+                {
+                    'Az Tilt Lat|lat':['-1','0','1'],
+                    'Az Tilt HA|ha': ['-1','0','1'],
+                    'El Tilt HA|el': ['-1','0','1'],
+                },
+                function(params) {
+                    return 'figs/pm_compare_lat_'+params.lat+'_ha_'+params.ha+'_el_'+params.el+'.png';
+                });
+            pager.setparams({
+                'lat': '0',
+                'ha': '0',
+                'el': '0',
+            });
+        </script>
+    </figure>
+
+<p>Note that the residuals are relatively high for any non-zero combination of Az tilt Lat/HA. It's not clear to me why that is. Regardless, the actual Az tilt lat/HA's from star pointing are much smaller (<0.5 arcmin) and the residuals are O($10^{-9}$ &deg;) at most so we should be okay to proceed.</p>
+
+</section>
+
+
+<section><h2>Physical tilt origins</h2>
+
+    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror.</p>
+
+
+    <figure>
+        <img src="figs/tilt_diagram.png" width="70%"/>
+    </figure>
+
+
+
+    <figure>
+        <img alt="pager" id="tiltspager" src="#" width="70%"/>
+        <figcaption>
+            The caption.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#tiltspager",
+                {
+                    'Axis|a':['az','el'],
+                    'Case|c': ['1','2'],
+                },
+                function(params) {
+                    return 'figs/'+params.a+'tilt_case_'+params.c+'.png';
+                });
+            pager.setparams({
+                'a': 'az',
+                'c': '1',
+            });
+        </script>
+    </figure>
+
+    <p>How much does this actually matter though?</p>
+
+
+
+
+    <p>The RPS residuals look pretty strange compared to the mirror best-fit residuals.</p>
 
     <figure>
         <table>
@@ -171,142 +250,142 @@
 
     <p id="testp"></p>
 
-    <script type="text/javascript">
+<!--    <script type="text/javascript">-->
 
-        // Shorthand tags
-        var codes = [
-            "",
-            ];
+<!--        // Shorthand tags-->
+<!--        var codes = [-->
+<!--            "",-->
+<!--            ];-->
 
-        // Posting titles
-        var desc = [
-            "",
-        ];
+<!--        // Posting titles-->
+<!--        var desc = [-->
+<!--            "",-->
+<!--        ];-->
 
-        // Make a list of references
-        var post = document.getElementById("code");
-        var msg = "<table class=\"code\">";
-        for (var code in codes){
-            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
-        };
-        msg = msg+ "</table>";
-        post.innerHTML = msg;
+<!--        // Make a list of references-->
+<!--        var post = document.getElementById("code");-->
+<!--        var msg = "<table class=\"code\">";-->
+<!--        for (var code in codes){-->
+<!--            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";-->
+<!--        };-->
+<!--        msg = msg+ "</table>";-->
+<!--        post.innerHTML = msg;-->
 
-    </script>
-
-
-    <script type="text/javascript">
-
-        // This my way of making shorthand links.
-        // We'll make a couple arrays with the 'tag' and href information
-        // and then look through each anchor element for the specified tag.
-        // The anchors should then just look like: <a href="tagname"></a>
-        // and the script will automatically fill in the hyperlings and text.
+<!--    </script>-->
 
 
-        var posting_dir = window.location.href; // What's the current url?
+<!--    <script type="text/javascript">-->
 
-        var bkurl = "bicep.rc.fas.harvard.edu";
-        var spurl = "bicep.usap.gov";
-
-        // These are the possible places to find postings
-        // The strings are for if you post your posting in that directory.
-        var sitemap = {
-            jcornelison: "../../../",   // /jcornelison/postings/
-            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
-            bicep3: "../../../",        //
-            bicep_array: "../../../",   //
-            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
-            keck  : "",                 // keck/analysis_logbook/analysis/
-            spuder: "",                 // ~spuder/hieno_analysis_logboo
-            bicep1: "",                 // ~bicep1/analysis_logbook_north/
-                   };
-        // Logbook Site map:
-        // personal:www/jcornelison/postings/
-        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
-        // keck:    www/keck/analysis_logbook/analysis/
-        // BICEP3:  www/bicep3/analysis_logbook/
-        // BA:      www/bicep_array/analysis_logbook/
-        // We shouldn't be posting in these, but still have postings.
-        // bicep2:
-        // keck:    www/keck/analysis_logbook/analysis/
-        // spuder:  www/~spuder/hieno_analysis_logbook/
-        // bicep1:  www/~bicep1/analysis_logbook_north/
-
-        // Shorthand tags
-        var tags = [
-            "",
-        ];
-
-        // Links
-        // Truncate the link down to the www directory in which is lies if you can.
-        var hrefs = [
-            "",
-        ];
+<!--        // This my way of making shorthand links.-->
+<!--        // We'll make a couple arrays with the 'tag' and href information-->
+<!--        // and then look through each anchor element for the specified tag.-->
+<!--        // The anchors should then just look like: <a href="tagname"></a>-->
+<!--        // and the script will automatically fill in the hyperlings and text.-->
 
 
-        // Posting titles
-        var desc = [
-            "",
-        ];
-        // Debug
-        var posty = document.getElementById("testp");
+<!--        var posting_dir = window.location.href; // What's the current url?-->
+
+<!--        var bkurl = "bicep.rc.fas.harvard.edu";-->
+<!--        var spurl = "bicep.usap.gov";-->
+
+<!--        // These are the possible places to find postings-->
+<!--        // The strings are for if you post your posting in that directory.-->
+<!--        var sitemap = {-->
+<!--            jcornelison: "../../../",   // /jcornelison/postings/-->
+<!--            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/-->
+<!--            bicep3: "../../../",        //-->
+<!--            bicep_array: "../../../",   //-->
+<!--            bicep2: "",                 // We shouldn't be posting in these, but still have postings.-->
+<!--            keck  : "",                 // keck/analysis_logbook/analysis/-->
+<!--            spuder: "",                 // ~spuder/hieno_analysis_logboo-->
+<!--            bicep1: "",                 // ~bicep1/analysis_logbook_north/-->
+<!--                   };-->
+<!--        // Logbook Site map:-->
+<!--        // personal:www/jcornelison/postings/-->
+<!--        // bkcmb:   www/bkcmb/analysis_logbook/analysis/-->
+<!--        // keck:    www/keck/analysis_logbook/analysis/-->
+<!--        // BICEP3:  www/bicep3/analysis_logbook/-->
+<!--        // BA:      www/bicep_array/analysis_logbook/-->
+<!--        // We shouldn't be posting in these, but still have postings.-->
+<!--        // bicep2:-->
+<!--        // keck:    www/keck/analysis_logbook/analysis/-->
+<!--        // spuder:  www/~spuder/hieno_analysis_logbook/-->
+<!--        // bicep1:  www/~bicep1/analysis_logbook_north/-->
+
+<!--        // Shorthand tags-->
+<!--        var tags = [-->
+<!--            "",-->
+<!--        ];-->
+
+<!--        // Links-->
+<!--        // Truncate the link down to the www directory in which is lies if you can.-->
+<!--        var hrefs = [-->
+<!--            "",-->
+<!--        ];-->
 
 
-        var preface = "";
-        var keys = Object.keys(sitemap);
-        // If we're not at pole or bicep, just post the full URL
-        // If we are, go back to the www directory.
-        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
-            posting_dir.match(new RegExp(spurl))!=spurl){
-                preface = "http://" + bkurl+"/";
-            }
-        else {
-            for (key in keys){
-                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
-                    preface = sitemap[keys[key]];
-                };
-            };
+<!--        // Posting titles-->
+<!--        var desc = [-->
+<!--            "",-->
+<!--        ];-->
+<!--        // Debug-->
+<!--        var posty = document.getElementById("testp");-->
 
-        };
 
-        // Add the prefixes we can.
-        // Only add prefixes to directories in the sitemap so we don't break
-        // external references.
-        for (ref in hrefs) {
-            for (key in keys) {
+<!--        var preface = "";-->
+<!--        var keys = Object.keys(sitemap);-->
+<!--        // If we're not at pole or bicep, just post the full URL-->
+<!--        // If we are, go back to the www directory.-->
+<!--        if (posting_dir.match(new RegExp(bkurl))!=bkurl &-->
+<!--            posting_dir.match(new RegExp(spurl))!=spurl){-->
+<!--                preface = "http://" + bkurl+"/";-->
+<!--            }-->
+<!--        else {-->
+<!--            for (key in keys){-->
+<!--                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){-->
+<!--                    preface = sitemap[keys[key]];-->
+<!--                };-->
+<!--            };-->
 
-            // If there's a match, at the prefix and move on.
-            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
-                hrefs[ref] = preface+hrefs[ref];
-                break;
-            }
-            };
-        };
+<!--        };-->
 
-        // posty.innerHTML = preface;
+<!--        // Add the prefixes we can.-->
+<!--        // Only add prefixes to directories in the sitemap so we don't break-->
+<!--        // external references.-->
+<!--        for (ref in hrefs) {-->
+<!--            for (key in keys) {-->
 
-        // Make a list of references
-        var post = document.getElementById("references");
-        var msg = "<table>";
-        for (var tag in tags){
-            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
-        };
-        msg = msg+ "</table>";
-        post.innerHTML = msg;
+<!--            // If there's a match, at the prefix and move on.-->
+<!--            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){-->
+<!--                hrefs[ref] = preface+hrefs[ref];-->
+<!--                break;-->
+<!--            }-->
+<!--            };-->
+<!--        };-->
 
-        // Look through all the hyperlinks and insert the proper links to the postings
-        var links = document.getElementsByTagName("A");
-        for (var link in links){
-            for (var tag in tags){
-                if (links[link].href.endsWith(tags[tag])){
-                    links[link].text = "("+tags[tag]+")";
-                    links[link].href = hrefs[tag];
-                    links[link].target = "_blank";
-                }
-            }
-        }
+<!--        // posty.innerHTML = preface;-->
 
-    </script>
+<!--        // Make a list of references-->
+<!--        var post = document.getElementById("references");-->
+<!--        var msg = "<table>";-->
+<!--        for (var tag in tags){-->
+<!--            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";-->
+<!--        };-->
+<!--        msg = msg+ "</table>";-->
+<!--        post.innerHTML = msg;-->
+
+<!--        // Look through all the hyperlinks and insert the proper links to the postings-->
+<!--        var links = document.getElementsByTagName("A");-->
+<!--        for (var link in links){-->
+<!--            for (var tag in tags){-->
+<!--                if (links[link].href.endsWith(tags[tag])){-->
+<!--                    links[link].text = "("+tags[tag]+")";-->
+<!--                    links[link].href = hrefs[tag];-->
+<!--                    links[link].target = "_blank";-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+
+<!--    </script>-->
 </section>
 </body>
