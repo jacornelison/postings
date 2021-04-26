@@ -61,7 +61,7 @@
     </figure>
 
     <p>
-        Looking at the RPS scans, we can see that both Azimuth and Deck appear to diverge at the elevation approaches 90&deg;. This results in the scan apparently bunching up in boresight-centered coordinates.
+        Looking at the RPS scans, we can see that both Azimuth and Deck appear to diverge at the elevation approaches 90&deg;. This is the expected behavior because the inverse pointing model projects the mount orientation into ideal topocentric coordinated. But because the pointing model doesn't know the actual orientation of the mount and converts these values literally, resulting in the scan apparently bunching up in boresight-centered coordinates.
     </p>
     <figure>
         <table>
@@ -75,8 +75,8 @@
         </table>
     </figure>
 
-    <p>This is because the solutions for the Azimuth and Elevation tilts become undefined when the telescope is pointing around Zenith. I didn't notice this in the moon data because the moon is higher on the horizon than the RPS.
-    </p>
+    <p>... But since <tt>keck_beam_map_pointing</tt> </p>
+
     <p>
         The <tt>keck_beam_map_pointing</tt> code has functionality to apply Az/El tilts. Without a  mirror, it still has the same problem when the telescope is pointed at zenith. But this problem goes away when using a mirror since the apparent az/el/pa are calculated after the mirror rotation when the apparent pointing is far away from Zenith.
     </p>
