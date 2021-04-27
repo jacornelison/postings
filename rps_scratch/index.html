@@ -38,6 +38,7 @@
 <hr>
 
 <p>
+    
 </p>
 
 <hr>
@@ -48,15 +49,49 @@
     <li>Why are you doing it?</li>
 </ul>
 
-<p>In most beams analysis (FFBM, RPS, FSL), the procedure to create beam maps from raw data is to first convert Raw Mount Coordinates $(A_0,E_0,K_0)$ into ideal topocentric coordinates $(A,E,K)$ using <tt>invpointing_model.m</tt> and then use <tt>keck_beam_map_pointing.m</tt> to convert to boresight-centered $(x,y,\psi)$ or detector-centered $(x',y',\psi')$ coordinates using mount, mirror, and source information as additional inputs.</p>
+<p>In most beams analysis (FFBM, RPS, FSL), the procedure to create beam maps from raw data is essentially the same:
+    <ol>
+    <li>
+        Convert Raw Mount Coordinates $(A_0,E_0,K_0)$ into topocentric ideal horizontal coordinates $(A,E,K)$
+        <ul>
+            <li>Uses <tt>invpointing_model.m</tt> with star pointing model as an additional input.</li>
+        </ul>
+    </li>
+    <li>
+        Convert ideal topocentric coordinates $(A,E,K)$ to detector-centered $(x',y',\psi')$ coordinates.
+        <ul>
+            <li>
+                Uses <tt>keck_beam_map_pointing.m</tt> with mount, mirror, source, and FPU information as additional inputs.
+            </li>
+        </ul>
+    </li>
+</ol>
 
 <p>
-    ... because we lose the knowledge of the physical orientation of the source.
+    The inverse pointing model returns the horizontal coordinates of the mount boresight pointing as they are projected on to the unit sphere.
+    As as result, we can expect to wide swings in Azimuth and Deck as the boresight approaches Zenith.
+     However, only these ideal coordinates are passed to the beam map pointing model and so we lose the knowledge of the physical orientation of the source.
+    As can be seen in Figure ##, this can introduce large errors in the scan as projected into instrument-fixed coordinates as the pointing model blindly assumes that the orientation of the focal plane rapidly changes as well.
+</p>
+<figure>
+    <table>
+        <tr>
+
+            <td><img src="figs/rps_scratch_tilt_norm_azel.png" width="500px"/></td>
+            <td><img src="figs/rps_scratch_tilt_norm_dkel.png" width="500px"/></td>
+            <td><img src="figs/rps_scratch_tilt_norm.png" width="500px"/></td>
+
+        </tr>
+    </table>
+</figure>
+
+<p>
+
 </p>
 
 <section><h2>Beam Map Pointing Model</h2>
 
-    <p>Comparison is accomplished simply by passing no mirror or source parameters to <tt>beam_map_pointing_model</tt>.</p>
+    <p>Comparison is accomplished simply by passing no mirror or source parameters to <tt>beam_map_pointing_model</tt>. For most cases, the residuals are close to (but not quite) machine precision.</p>
 
     <figure>
         <img alt="pager" id="pmpager" src="#" />
@@ -88,7 +123,7 @@
 
 <section><h2>Physical tilt origins</h2>
 
-    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror.</p>
+    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror. As I'll show below, accounting for the origin of tilt doesn't matter nearly as much as accounting for the tilt itself, but I've covered it for completeness.</p>
 
 
     <figure>
@@ -142,17 +177,6 @@
     <p>
         Looking at the RPS scans, we can see that both Azimuth and Deck appear to diverge at the elevation approaches 90&deg;. This is the expected behavior because the inverse pointing model projects the mount orientation into ideal topocentric coordinated. But because the pointing model doesn't know the actual orientation of the mount and converts these values literally, resulting in the scan apparently bunching up in boresight-centered coordinates.
     </p>
-    <figure>
-        <table>
-            <tr>
-
-                <td><img src="figs/rps_scratch_tilt_norm_azel.png" width="500px"/></td>
-                <td><img src="figs/rps_scratch_tilt_norm_dkel.png" width="500px"/></td>
-                <td><img src="figs/rps_scratch_tilt_norm.png" width="500px"/></td>
-
-            </tr>
-        </table>
-    </figure>
 
     <p>... But since <tt>keck_beam_map_pointing</tt> </p>
 
