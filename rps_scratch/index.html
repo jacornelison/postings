@@ -123,7 +123,7 @@
 
 <section><h2>Physical tilt origins</h2>
 
-    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror. As I'll show below, accounting for the origin of tilt doesn't matter nearly as much as accounting for the tilt itself, but I've covered it for completeness.</p>
+    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror. </p>
 
 
     <figure>
@@ -157,106 +157,107 @@
 
 
 
-
-    <p>The RPS residuals look pretty strange compared to the mirror best-fit residuals.</p>
-
-    <figure>
-        <table>
-            <tr>
-
-                <td><img src="figs/moonfit_residuals_quiver_zoomed_dk0_beamfit.png" width="500px"/></td>
-                <td><img src="figs/rps_scratch_rps_quiver_ipm_tilts.png" width="500px"/></td>
-
-            </tr>
-        </table>
-        <figcaption>
-            Mirror parameter best-fit beam-center residuals from Jan 2017 Moon observations (Left) and Source parameter best-fit beam-center residuals from Jan 2017 RPS observations. Note that there is no scaling on the source parameter residuals.
-        </figcaption>
-    </figure>
-
-    <p>
-        Looking at the RPS scans, we can see that both Azimuth and Deck appear to diverge at the elevation approaches 90&deg;. This is the expected behavior because the inverse pointing model projects the mount orientation into ideal topocentric coordinated. But because the pointing model doesn't know the actual orientation of the mount and converts these values literally, resulting in the scan apparently bunching up in boresight-centered coordinates.
-    </p>
-
-    <p>... But since <tt>keck_beam_map_pointing</tt> </p>
-
-    <p>
-        The <tt>keck_beam_map_pointing</tt> code has functionality to apply Az/El tilts. Without a  mirror, it still has the same problem when the telescope is pointed at zenith. But this problem goes away when using a mirror since the apparent az/el/pa are calculated after the mirror rotation when the apparent pointing is far away from Zenith.
-    </p>
-
-    <figure>
-        <table>
-            <tr>
-
-                <td><img src="figs/rps_scratch_app_azel_ipm_tilts.png" width="500px"/></td>
-                <td><img src="figs/rps_scratch_app_pael_ipm_tilts.png" width="500px"/></td>
-
-            </tr>
-            <tr>
-                <td><img src="figs/rps_scratch_app_azel_kbmp_tilts.png" width="500px"/></td>
-                <td><img src="figs/rps_scratch_app_pael_kbmp_tilts.png" width="500px"/></td>
-            </tr>
-
-        </table>
-        <figcaption>
-            Apparent az/el/parallactic angle are calculated via <tt>keck_beam_map_pointing</tt> using a grid of topocentric coords as inputs spanning 10 degrees in Azimuth and 20 degrees in Elevations at a DK=0; Az/El tilts given by 03 Feb 2017 starpointing; an ideal mirror (tilt=45&deg;, roll=0&deg;); and using (<b>Top Row</b>) tilts applied through <tt>invpointing_model</tt> and (<b>Bottom Row</b>) tilts applied through <tt>keck_beam_map_pointing</tt>.
-        </figcaption>
-    </figure>
-
-    <p>So I've elected instead to apply the tilts through <tt>keck_beam_map_pointing</tt> for moon analysis. The best-fit roll parameter changes by O(0.1&deg;)!</p>
-
-
-    <figure>
-        <table>
-            <tr>
-
-                <td><img src="figs/moonfit_residuals_quiver_zoomed_dkall_beamfit.png" width="500px"/></td>
-                <td><img src="figs/rps_scratch_moon_quiver_kbmp_tilts.png" width="500px"/></td>
-
-            </tr>
-        </table>
-
-    </figure>
-
-    <p>Applying the change to source derivation analysis, we see the beam-center residuals drastically reduced and appear to be more akin to the residuals we see in the mirror.</p>
-
-
-    <figure>
-        <table>
-            <tr>
-
-                <td><img src="figs/rps_scratch_rps_quiver_ipm_tilts.png" width="500px"/></td>
-                <td><img src="figs/rps_scratch_rps_quiver_kbmp_tilts.png" width="500px"/></td>
-
-            </tr>
-        </table>
-
-    </figure>
-
-
-
-    <!--
-    <figure>
-        <img alt="pager" id="polspager" src="#" />
-        <figcaption>
-            The caption.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#polspager",
-                {
-                    'Param|p': ['1|_one','2|_two'],
-                },
-                function(params) {
-                    return 'figs/fig'+params.p+'.png';
-                });
-            pager.setparams({
-                'p': '2',
-            });
-        </script>
-    </figure>
--->
-
 </section>
+<!--<section>-->
+<!--    <p>The RPS residuals look pretty strange compared to the mirror best-fit residuals.</p>-->
+
+<!--    <figure>-->
+<!--        <table>-->
+<!--            <tr>-->
+
+<!--                <td><img src="figs/moonfit_residuals_quiver_zoomed_dk0_beamfit.png" width="500px"/></td>-->
+<!--                <td><img src="figs/rps_scratch_rps_quiver_ipm_tilts.png" width="500px"/></td>-->
+
+<!--            </tr>-->
+<!--        </table>-->
+<!--        <figcaption>-->
+<!--            Mirror parameter best-fit beam-center residuals from Jan 2017 Moon observations (Left) and Source parameter best-fit beam-center residuals from Jan 2017 RPS observations. Note that there is no scaling on the source parameter residuals.-->
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--    <p>-->
+<!--        Looking at the RPS scans, we can see that both Azimuth and Deck appear to diverge at the elevation approaches 90&deg;. This is the expected behavior because the inverse pointing model projects the mount orientation into ideal topocentric coordinated. But because the pointing model doesn't know the actual orientation of the mount and converts these values literally, resulting in the scan apparently bunching up in boresight-centered coordinates.-->
+<!--    </p>-->
+
+<!--    <p>... But since <tt>keck_beam_map_pointing</tt> </p>-->
+
+<!--    <p>-->
+<!--        The <tt>keck_beam_map_pointing</tt> code has functionality to apply Az/El tilts. Without a  mirror, it still has the same problem when the telescope is pointed at zenith. But this problem goes away when using a mirror since the apparent az/el/pa are calculated after the mirror rotation when the apparent pointing is far away from Zenith.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <table>-->
+<!--            <tr>-->
+
+<!--                <td><img src="figs/rps_scratch_app_azel_ipm_tilts.png" width="500px"/></td>-->
+<!--                <td><img src="figs/rps_scratch_app_pael_ipm_tilts.png" width="500px"/></td>-->
+
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><img src="figs/rps_scratch_app_azel_kbmp_tilts.png" width="500px"/></td>-->
+<!--                <td><img src="figs/rps_scratch_app_pael_kbmp_tilts.png" width="500px"/></td>-->
+<!--            </tr>-->
+
+<!--        </table>-->
+<!--        <figcaption>-->
+<!--            Apparent az/el/parallactic angle are calculated via <tt>keck_beam_map_pointing</tt> using a grid of topocentric coords as inputs spanning 10 degrees in Azimuth and 20 degrees in Elevations at a DK=0; Az/El tilts given by 03 Feb 2017 starpointing; an ideal mirror (tilt=45&deg;, roll=0&deg;); and using (<b>Top Row</b>) tilts applied through <tt>invpointing_model</tt> and (<b>Bottom Row</b>) tilts applied through <tt>keck_beam_map_pointing</tt>.-->
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--    <p>So I've elected instead to apply the tilts through <tt>keck_beam_map_pointing</tt> for moon analysis. The best-fit roll parameter changes by O(0.1&deg;)!</p>-->
+
+
+<!--    <figure>-->
+<!--        <table>-->
+<!--            <tr>-->
+
+<!--                <td><img src="figs/moonfit_residuals_quiver_zoomed_dkall_beamfit.png" width="500px"/></td>-->
+<!--                <td><img src="figs/rps_scratch_moon_quiver_kbmp_tilts.png" width="500px"/></td>-->
+
+<!--            </tr>-->
+<!--        </table>-->
+
+<!--    </figure>-->
+
+<!--    <p>Applying the change to source derivation analysis, we see the beam-center residuals drastically reduced and appear to be more akin to the residuals we see in the mirror.</p>-->
+
+
+<!--    <figure>-->
+<!--        <table>-->
+<!--            <tr>-->
+
+<!--                <td><img src="figs/rps_scratch_rps_quiver_ipm_tilts.png" width="500px"/></td>-->
+<!--                <td><img src="figs/rps_scratch_rps_quiver_kbmp_tilts.png" width="500px"/></td>-->
+
+<!--            </tr>-->
+<!--        </table>-->
+
+<!--    </figure>-->
+
+
+
+<!--    &lt;!&ndash;-->
+<!--    <figure>-->
+<!--        <img alt="pager" id="polspager" src="#" />-->
+<!--        <figcaption>-->
+<!--            The caption.-->
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#polspager",-->
+<!--                {-->
+<!--                    'Param|p': ['1|_one','2|_two'],-->
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/fig'+params.p+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'p': '2',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+<!--&ndash;&gt;-->
+
+<!--</section>-->
 
 
 <hr>

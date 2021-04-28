@@ -490,16 +490,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4010174"
-     inkscape:cx="818.91951"
-     inkscape:cy="627.16556"
+     inkscape:cx="953.56203"
+     inkscape:cy="884.12168"
      inkscape:document-units="mm"
      inkscape:current-layer="layer2"
      showgrid="true"
      units="px"
-     inkscape:window-width="2400"
-     inkscape:window-height="1421"
-     inkscape:window-x="2391"
-     inkscape:window-y="-9"
+     inkscape:window-width="1857"
+     inkscape:window-height="1057"
+     inkscape:window-x="55"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:snap-grids="false"
      inkscape:snap-others="true"
@@ -517,7 +517,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -588,6 +588,50 @@
        inkscape:export-filename="C:\Users\James\Documents\GitHub\postings\rps_scratch\figs\aztilt_case_1.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="159.72853"
+       y="33.938965"
+       id="text1525"><tspan
+         sodipodi:role="line"
+         x="159.72853"
+         y="33.938965"
+         style="font-size:4.23333311px;stroke-width:0.26458332"
+         id="tspan1527">Case: Tilted Base</tspan></text>
+    <text
+       id="text1539"
+       y="33.938965"
+       x="268.20728"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         id="tspan1537"
+         style="font-size:4.23333311px;stroke-width:0.26458332"
+         y="33.938965"
+         x="268.20728"
+         sodipodi:role="line">Case: Lower Bearing</tspan></text>
+    <text
+       id="text1547"
+       y="162.52657"
+       x="159.72853"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         id="tspan1545"
+         style="font-size:4.23333311px;stroke-width:0.26458332"
+         y="162.52657"
+         x="159.72853"
+         sodipodi:role="line">Case: Upper Bearing</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="268.20728"
+       y="162.52657"
+       id="text1551"><tspan
+         sodipodi:role="line"
+         x="268.20728"
+         y="162.52657"
+         style="font-size:4.23333311px;stroke-width:0.26458332"
+         id="tspan1549">Case: Elev. Bearings</tspan></text>
   </g>
   <g
      inkscape:label="Layer 1"
