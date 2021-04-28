@@ -58,7 +58,7 @@
         </ul>
     </li>
     <li>
-        Convert ideal topocentric coordinates $(A,E,K)$ to detector-centered $(x',y',\psi')$ coordinates.
+        Convert ideal topocentric coordinates $(A,E,K)$ to detector-centered $(x',y',\phi')$ coordinates.
         <ul>
             <li>
                 Uses <tt>keck_beam_map_pointing.m</tt> with mount, mirror, source, and FPU information as additional inputs.
@@ -87,6 +87,20 @@
 
 <p>
 
+<ul>
+    <li>We combined the function <tt>invpointing_model</tt> with <tt>keck_beam_map_pointing</tt> into a new function called <tt>beam_map_pointing_model.m</tt>.
+    <ul>
+        <li>Converts Raw Mount Coordinates $(A_0,E_0,K_0)$ directly to detector-centered coordinates $(x',y',\phi')$ or any intermediate coordinate system.</li>
+        <li>Takes offline pointing model, mount, mirror, source, and focal plane information as additional inputs.</li>
+    </ul>
+    </li>
+    <li>Some of the <tt>keck_beam_map_pointing</tt> subfunctions have been updated, but have been done so in such a way that conserves backward compatibility.
+    <ul>
+        <li><tt>kbmp_mount</tt> can now account for the origin of az/el tilts.</li>
+        <li><tt>kbmp_mirror</tt> now applies az/el tilts to the mirror normal.</li>
+    </ul>
+    </li>
+</ul>
 </p>
 
 <section><h2>Beam Map Pointing Model</h2>
