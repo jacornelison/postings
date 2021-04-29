@@ -32,7 +32,7 @@
     <time datetime="2020-xx-xx" class="published updated">
         2021 Mmm dd
     </time> —
-    J. Cornelison
+    J. Cornelison, C. Verges
 </header>
 
 <hr>
@@ -42,12 +42,6 @@
 </p>
 
 <hr>
-
-<ul>
-    <li>What are you doing? </li>
-
-    <li>Why are you doing it?</li>
-</ul>
 
 <p>In most beams analysis (FFBM, RPS, FSL), the procedure to create beam maps from raw data is essentially the same:
     <ol>
@@ -74,21 +68,14 @@
     As can be seen in Figure ##, this can introduce large errors in the scan as projected into instrument-fixed coordinates as the pointing model blindly assumes that the orientation of the focal plane rapidly changes as well.
 </p>
 <figure>
-    <table>
-        <tr>
+    <img src="figs/rps_scratch_mount_horiz_compare.png" width="100%"/>
 
-            <td><img src="figs/rps_scratch_tilt_norm_azel.png" width="500px"/></td>
-            <td><img src="figs/rps_scratch_tilt_norm_dkel.png" width="500px"/></td>
-            <td><img src="figs/rps_scratch_tilt_norm.png" width="500px"/></td>
-
-        </tr>
-    </table>
 </figure>
 
 <p>
 
 <ul>
-    <li>We combined the function <tt>invpointing_model</tt> with <tt>keck_beam_map_pointing</tt> into a new function called <tt>beam_map_pointing_model.m</tt>.
+    <li>We move the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and rename it to <tt>beam_map_pointing_model.m</tt>.
     <ul>
         <li>Converts Raw Mount Coordinates $(A_0,E_0,K_0)$ directly to detector-centered coordinates $(x',y',\phi')$ or any intermediate coordinate system.</li>
         <li>Takes offline pointing model, mount, mirror, source, and focal plane information as additional inputs.</li>
@@ -96,8 +83,8 @@
     </li>
     <li>Some of the <tt>keck_beam_map_pointing</tt> subfunctions have been updated, but have been done so in such a way that conserves backward compatibility.
     <ul>
-        <li><tt>kbmp_mount</tt> can now account for the origin of az/el tilts.</li>
         <li><tt>kbmp_mirror</tt> now applies az/el tilts to the mirror normal.</li>
+        <li><tt>kbmp_mount</tt> can now account for the origin of az/el tilts.</li>
     </ul>
     </li>
 </ul>
@@ -108,7 +95,7 @@
     <p>Comparison is accomplished simply by passing no mirror or source parameters to <tt>beam_map_pointing_model</tt>. For most cases, the residuals are close to (but not quite) machine precision.</p>
 
     <figure>
-        <img alt="pager" id="pmpager" src="#" />
+        <img alt="pager" id="pmpager" src="#" width="100%"/>
         <figcaption>
             The caption.
         </figcaption>

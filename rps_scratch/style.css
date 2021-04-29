@@ -161,6 +161,7 @@ figure {
     margin-left:         calc(-50vw + 400px + 10*32px);
 
 
+
     /* Make some nice looking box shadows in as many browsers as we
         can */
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2,Direction=135, Color='#BBBBBB')";
@@ -173,9 +174,9 @@ figure {
     -moz-border-radius: 8px;
     border-radius: 8px;
 }
-figure img {
-    max-width: 100%;
-}
+/*figure img {*/
+/*    max-width: 70vw;*/
+/*}*/
 figure table {
     margin-left: auto;
     margin-right: auto;
