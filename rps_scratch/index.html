@@ -77,7 +77,7 @@
 <p>
 
 
-    <p>Simply put, we've been using these functions incorrectly, but neither pointing model adequately provides the functionality we need. To fix that, we move the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and rename it to <tt>beam_map_pointing_model.m</tt>. <tt>keck_beam_map_pointing</tt> still exists to avoid breaking other analysis pipelines and also because the <it>Keck</it> prefix is a bit confusing.
+    <p>Simply put, we've been using these functions incorrectly, but neither pointing model adequately provides the functionality we need. To fix that, we created a new function which moves the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and named it <tt>beam_map_pointing_model.m</tt>. We created this new function in lieu of just upgrading <tt>keck_beam_map_pointing</tt> to avoid breaking other analysis pipelines and also because the <it>Keck</it> prefix is a bit confusing since the experiment technically doesn't exist anymore. Th new function: 
     <ul>
         <li>Converts Raw Mount Coordinates $(A_0,E_0,K_0)$ directly to detector-centered coordinates $(x',y',\phi')$ or any intermediate coordinate system.</li>
         <li>Takes offline pointing model, mount, mirror, source, and focal plane information as additional inputs.</li>
