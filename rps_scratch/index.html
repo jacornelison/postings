@@ -32,7 +32,7 @@
     <time datetime="2020-xx-xx" class="published updated">
         2021 Mmm dd
     </time> —
-    J. Cornelison, C. Verges
+    J. Cornelison
 </header>
 
 <hr>
@@ -69,30 +69,32 @@
 </p>
 <figure>
     <img src="figs/rps_scratch_mount_horiz_compare.png" width="100%"/>
+    <figcaption>
 
+    </figcaption>
 </figure>
 
 <p>
 
-<ul>
-    <li>We move the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and rename it to <tt>beam_map_pointing_model.m</tt>.
+
+    <p>Simply put, we've been using these functions incorrectly. To fix that, we move the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and rename it to <tt>beam_map_pointing_model.m</tt> (<tt>keck_beam_map_pointing</tt> still exists to avoid breaking other analysis pipelines).
     <ul>
         <li>Converts Raw Mount Coordinates $(A_0,E_0,K_0)$ directly to detector-centered coordinates $(x',y',\phi')$ or any intermediate coordinate system.</li>
         <li>Takes offline pointing model, mount, mirror, source, and focal plane information as additional inputs.</li>
     </ul>
-    </li>
-    <li>Some of the <tt>keck_beam_map_pointing</tt> subfunctions have been updated, but have been done so in such a way that conserves backward compatibility.
+    </p>
+    <p>One thing Colin points out in his posting is that <tt>keck_beam_map_pointing</tt> doesn't apply mount tilts to the pointing of the mirror which we need to account for in RPS analyses. Some of the <tt>keck_beam_map_pointing</tt> subfunctions have been updated, but have been done so in such a way that conserves backward compatibility.
     <ul>
         <li><tt>kbmp_mirror</tt> now applies az/el tilts to the mirror normal.</li>
         <li><tt>kbmp_mount</tt> can now account for the origin of az/el tilts.</li>
     </ul>
-    </li>
-</ul>
+    </p>
+
 </p>
 
-<section><h2>Beam Map Pointing Model</h2>
+<section><h2>Code Tests</h2>
 
-    <p>Comparison is accomplished simply by passing no mirror or source parameters to <tt>beam_map_pointing_model</tt>. For most cases, the residuals are close to (but not quite) machine precision.</p>
+    <p>Below I compare the outputs of <tt>beam_map_pointing_model</tt> to <tt>invpointing_model.m</tt> and <tt>keck_beam_map_pointing.m</tt> to show that the internal mechanics are functionally unchanged. Comparison is accomplished simply by passing no mirror or source parameters to <tt>beam_map_pointing_model</tt>. For most cases, the residuals are close to (but not quite) machine precision.</p>
 
     <figure>
         <img alt="pager" id="pmpager" src="#" width="100%"/>
@@ -154,7 +156,7 @@
         </script>
     </figure>
 
-    <p>How much does this actually matter though? The worst-case scenarios are listed below. The upper limit on the individual possible bias is roughly on the level of the systematic error I calculated for the mirror roll from error propagation. BUT the direction of the tilts may serve to cancel-out some effects. So while not immediately worrying, this may need further investigation in the future.</p>
+    <p>How much does this actually matter though? The worst-case scenarios are listed below. The upper limit on the individual possible bias is roughly on the level of the systematic error I calculated for the mirror roll from error propagation. BUT the direction of the tilts may serve to cancel-out some effects. So while not immediately worrying, this may need further investigation in the future. For now, we place the origin of the Azimuth tilt at the base of the telescope and the origin of the Elevation tilt at elevation axis.</p>
         <table class="results center">
         <tr>
             <th>Tilt Dir.</th>
@@ -172,10 +174,10 @@
         </tr>
         <tr>
             <td>El HA</td>
-            <td>Upper Az bearing (<2m)</td>
+            <td>Upper Az bearing (<4m)</td>
             <td>~-0.03</td>
-            <td>~-0.02</td>
-            <td>~-0.02</td>
+            <td>~-0.03</td>
+            <td>~-0.03</td>
         </tr>
     </table>
 
