@@ -70,14 +70,14 @@
 <figure>
     <img src="figs/rps_scratch_mount_horiz_compare.png" width="100%"/>
     <figcaption>
-
+RPS Scans in Raw Mount Coordinates (top row), converted to ideal horizon coordaintes (bottom row, column 1 & 2) via <tt>invpointing_model</tt> and then converted into boresight-centered coordinates (bottom row, column 3) via <tt>keck_beam_map_pointing</tt>.
     </figcaption>
 </figure>
 
 <p>
 
 
-    <p>Simply put, we've been using these functions incorrectly, but neither pointing model adequately provides the functionality we need. To fix that, we created a new function which moves the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and named it <tt>beam_map_pointing_model.m</tt>. We created this new function in lieu of just upgrading <tt>keck_beam_map_pointing</tt> to avoid breaking other analysis pipelines and also because the <it>Keck</it> prefix is a bit confusing since the experiment technically doesn't exist anymore. Th new function: 
+    <p>Simply put, we've been using these functions incorrectly, but neither pointing model adequately provides the functionality we need. To fix that, we created a new function which moves the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and named it <tt>beam_map_pointing_model.m</tt>. We created this new function in lieu of just upgrading <tt>keck_beam_map_pointing</tt> to avoid breaking other analysis pipelines and also because the <it>Keck</it> prefix is a bit confusing since the experiment technically doesn't exist anymore. The new function:
     <ul>
         <li>Converts Raw Mount Coordinates $(A_0,E_0,K_0)$ directly to detector-centered coordinates $(x',y',\phi')$ or any intermediate coordinate system.</li>
         <li>Takes offline pointing model, mount, mirror, source, and focal plane information as additional inputs.</li>
@@ -91,6 +91,14 @@
     </p>
 
 </p>
+
+<figure>
+    <img src="figs/rps_scratch_mount_horiz_compare_fixed.png" width="100%"/>
+    <figcaption>
+    RPS scans as converted through <tt>beam_map_pointing_model</tt> with the same inputs as figure 0.1.
+    </figcaption>
+</figure>
+
 
 <section><h2>Code Tests</h2>
 
