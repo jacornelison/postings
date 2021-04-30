@@ -124,7 +124,7 @@
 
 <section><h2>Physical tilt origins</h2>
 
-    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror. </p>
+    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus may need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror. The tilted base case could also include the tilt of the entire building.</p>
 
 
     <figure>
@@ -154,7 +154,31 @@
         </script>
     </figure>
 
-    <p>How much does this actually matter though?</p>
+    <p>How much does this actually matter though? The worst-case scenarios are listed below. The upper limit on the possible bias is roughly on the level of the systematic error I calculated for the mirror roll from error propagation. So while not immediately worrying, this may need further investigation in the future.</p>
+        <table class="results center">
+        <tr>
+            <th>Tilt Dir.</th>
+            <th>Case</th>
+            <th>Tilt (from Starpointing) (&deg;)</th>
+            <th>Roll Bias (&deg;)</th>
+            <th>Angle Bias (&deg;)</th>
+        </tr>
+        <tr>
+            <td>Az HA</td>
+            <td>Tilted Building (<20m)</td>
+            <td>~0.003</td>
+            <td>~0.02</td>
+            <td>~0.02</td>
+        </tr>
+        <tr>
+            <td>El HA</td>
+            <td>Upper Az bearing (<2m)</td>
+            <td>~0.03</td>
+            <td>~0.02</td>
+            <td>~0.02</td>
+        </tr>
+    </table>
+
 
 
 
