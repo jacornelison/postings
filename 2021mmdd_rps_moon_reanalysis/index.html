@@ -113,10 +113,10 @@
 
     <p>So our model returns beam centers in instrument-fixed coordinates as a function of the mirror tilt and mirror roll.</p>
     \begin{equation}
-    [r_{0},\,\,\theta_{0}] = \text{keck_beam_map_pointing}(Tilt,\,Roll\,|\, Az_0,\,El_0,\,Dk_0,\,Mount,\, Moon)
+    [r_{0},\,\,\theta_{0}] = \text{beam_map_pointing_model}(Tilt,\,Roll\,|\, Az_0,\,El_0,\,Dk_0,\,PM,\,Mount,\, Moon)
     \end{equation}
 
-    where $Mount$ contains the relevant mount information derived from Solidworks drawings; $Moon$ containts the on-sky, per-timestream-sample location of the moon; $Az_0$, $El_0$, and $Dk_0$ are the per-detector positions at max amplitude; and $r_{0}$ and $theta_{0}$ are the beam centers, converted to $x_0/y_0$ using using Lambert azimuthal equal-area projection <a href="IDB2013"></a>:
+    where $PM$ and $Mount$ contain the relevant mount information derived from startpointing and Solidworks drawings resp.; $Moon$ containts the on-sky, per-timestream-sample location of the moon; $Az_0$, $El_0$, and $Dk_0$ are the per-detector positions at max amplitude; and $r_{0}$ and $theta_{0}$ are the beam centers, converted to $x_0/y_0$ using using Lambert azimuthal equal-area projection <a href="IDB2013"></a>:
 
 
     \begin{equation}
@@ -144,8 +144,8 @@
     <!--
     Param	Best-Fit	Stat Uncert	Sys Uncert
     -----	--------	-----------	----------
-    Tilt 	44.6014  	0.0004  	0.0010
-    Roll 	0.0007  	0.0007	    0.0247
+    Tilt 	44.5988  	0.0004  	0.0010
+    Roll 	0.1042  	0.0007	    0.0247
     -->
     <figure class="table">
         <table class="center results">
@@ -163,16 +163,16 @@
             </tr>
             <tr>
                 <td class="cstart cend">Tilt</td>
-                <td>44.6014</td>
+                <td>44.5988</td>
                 <td class="cend">0.0007</td>
-                <td>44.6014</td>
+                <td>44.5988</td>
                 <td class="cend">0.0005</td>
             </tr>
             <tr>
                 <td class="cstart cend">Roll</td>
-                <td>0.0007</td>
+                <td>0.1042</td>
                 <td class="cend">0.0009</td>
-                <td>0.0007</td>
+                <td>0.1042</td>
                 <td class="cend">0.0006</td>
             </tr>
 
@@ -195,7 +195,7 @@
             pager.link("#dkspager",
                 {
                     'DK|d': ['0','45','90','all'],
-                    'Tile|t': ['All|','11|_tile11','Beam-fit|_beamfit','Tile 11 (BF)|_beamfit11'],
+                    'Tile|t': ['All|','11|_tile11'],
                 },
                 function(params) {
                     return 'figs/moonfit_residuals_quiver_zoomed_dk'+params.d+params.t+'.png';
@@ -219,14 +219,14 @@
             pager.link("#histpager",
                 {
                     'DK|d': ['0','45','90','all'],
-                    'Tile|t2': ['Max Amp|','Beam-fit|_beamfit'],
+
                 },
                 function(params) {
-                    return 'figs/moonfit_residuals_scatterhist_dk'+params.d+params.t2+'.png';
+                    return 'figs/moonfit_residuals_scatterhist_dk'+params.d+'.png';
                 });
             pager.setparams({
                 'd': 'all',
-                't2': '',
+
             });
         </script>
     </figure>
@@ -386,14 +386,14 @@
             </tr>
             <tr>
                 <td>Tilt</td>
-                <td>44.6014</td>
+                <td>44.5988</td>
                 <td>0.0005</td>
                 <td>0.0011</td>
 
             </tr>
             <tr>
                 <td>Roll</td>
-                <td>0.0007</td>
+                <td>0.1042</td>
                 <td>0.0006</td>
                 <td>0.0247</td>
             </tr>
@@ -406,14 +406,50 @@
 
 </section>
 
-<!--<section>-->
-<!--    <h2>Source Parameters 2017</h2>-->
+<section>
+    <h2>Source Parameters 2017</h2>
+    <h3>Data</h3>
+    <figure>
+        <img src="figs/rps_coverage_2017.png" width="65%"/>
+        <figcaption>
+            Focal plane coverage of the three 2017 moon observations used for this analysis. Topocentric coordinates were converted into x/y coordinates using best-fit source azimuth/elevation parameters.
+        </figcaption>
+    </figure>
 
-<!--    <h3>Results</h3>-->
 
-<!--    <h3>Data</h3>-->
+    <h3>Results</h3>
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th>Parameter</th>
+                <th>Best-Fit (&deg;)</th>
+                <th>Stat. Uncert. (&deg;)</th>
+                <th>Sys. Uncert. (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Azimuth</td>
+                <td>-177.6148</td>
+                <td>--</td>
+                <td>--</td>
 
-<!--</section>-->
+            </tr>
+            <tr>
+                <td>Height</td>
+                <td>8.9717</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+
+        </table>
+        <figcaption>
+            Table of final results for 2017 source parameters.
+        </figcaption>
+    </figure>
+        <figure>
+            <img src="figs/rpsfit_residuals_quiver_zoomed_dk0.png" width="65%"/>
+        </figure>
+
+</section>
 
 <!--<section>-->
 <!--    <h2>Mirror Parameters 2018</h2>-->
