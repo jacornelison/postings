@@ -306,3 +306,96 @@ axis square
 figname = ['../figs/rps_coverage_2017'];
     saveas(gcf,figname,'png')
 
+    
+%%
+load('../data/rps18_fit_data_final.mat')
+
+clr = {[0, 0.4470, 0.7410],...
+    [0.8500, 0.3250, 0.0980],...
+    [0.4660, 0.6740, 0.1880]*0.8,...
+    [0.9290, 0.6940, 0.1250]};
+
+plts = {[1];[2];[3];[4];[1,2,3,4]};
+pltlabs = {'0','45','90','135','all'};
+legs = {{'0'},{'45'},{'90'},{'135'},{'0','45','90','135'}};
+dk = unique(fd.dk);
+for pltind = 1:length(plts)
+    scale = 10;
+    fig = figure(3);
+    fig.Position = [700 400 500 500];
+    clf; hold on;
+    
+    pxy = reshape(fd.data,[],2);
+    
+    dks = dk(plts{pltind});
+    
+    for dkind = 1:length(dks)
+        chind = ismember(fd.dk,dks(dkind));
+        quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{dkind})
+        
+    end
+    grid on
+    %legend({'DK=0','DK=45','DK=90'})
+    legend(legs{pltind})
+    title(['Beam Center Best-Fit Residuals x' num2str(scale)])
+    xlabel('x (^o)')
+    ylabel('y (^o)')
+    xlim([-15 15])
+    ylim([-15 15])
+    figname = ['../figs/' 'rpsfit18_residuals_quiver_zoomed_dk' pltlabs{pltind}];
+    saveas(gcf,figname,'png')
+end
+
+%%
+
+% RPS Obs Coverage
+
+load('../data/rps18_fit_data_temp.mat')
+load('../data/b3rpsfiles_2018.mat')
+rpsopt.pm = fd.rpsopt.pm;
+prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
+pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
+
+addpath('z:/pipeline/util')
+map = colormap('lines');
+
+plts = {[1];[2];[3];[4]};
+pltlabs = {'0','45','90','135'};
+dk = unique(fd.dk);
+
+for pltind = 1:length(plts)
+    dks = dk(plts{pltind});
+    figure(3)
+set(gcf,'Position',[1000 100 600 600])
+clf; hold on;
+    
+h = [];
+count = 1;
+for i = 1:length(md)
+    if md{i}.dk0 == dks;
+    [x,y,phi] = beam_map_pointing_model(md{i}.az,md{i}.el,md{i}.dk,...
+        rpsopt.pm,'bicep3',rpsopt.mirror,rpsopt.source,[]);
+    
+    h(end+1) = plot(x,y,'Color',map(count,:));
+    if count == size(map,1)
+        count = 1;
+    else
+        count = count+1;
+    end
+    
+    end
+end
+h(end+1) = plot(prx,pry,'kx');
+grid on
+xlabel('x (^o)')
+ylabel('y (^o)')
+title('RPS Observation Coverage Jan 2018')
+legend(h([1,end]),{'RPS Scan','CMB-derived pnts'})
+axis square
+xlim([-1 1]*20)
+ylim([-1 1]*20)
+figname = ['../figs/rps_coverage_2018_dk_' pltlabs{pltind}];
+    saveas(gcf,figname,'png')
+
+end
+
