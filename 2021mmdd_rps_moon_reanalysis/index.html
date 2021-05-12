@@ -362,41 +362,12 @@
         </figcaption>
     </figure>
 
-<h3>Conclusions</h3>
-    <p>More words.</p>
-
-    <figure class="table">
-        <table class="center results">
-            <tr>
-                <th>Parameter</th>
-                <th>Best-Fit (&deg;)</th>
-                <th>Stat. Uncert. (&deg;)</th>
-                <th>Sys. Uncert. (&deg;)</th>
-            </tr>
-            <tr>
-                <td>Tilt</td>
-                <td>44.5988</td>
-                <td>0.0005</td>
-                <td>0.0011</td>
-
-            </tr>
-            <tr>
-                <td>Roll</td>
-                <td>0.1042</td>
-                <td>0.0006</td>
-                <td>0.0247</td>
-            </tr>
-
-        </table>
-        <figcaption>
-            Table of final results for 2017 mirror parameters.
-        </figcaption>
-    </figure>
 
 </section>
 
 <section>
     <h2>Source Parameters 2017</h2>
+    <p>The approach to finding the RPS location parameters is identical to finding the mirror except we use beam centers derived from RPS </p>
     <h3>Data</h3>
     <figure>
         <img src="figs/rps_coverage_2017.png" width="65%"/>
@@ -407,6 +378,7 @@
 
 
     <h3>Results</h3>
+
     <figure class="table">
         <table class="center results">
             <tr>
@@ -423,8 +395,8 @@
 
             </tr>
             <tr>
-                <td>Height</td>
-                <td>8.9717</td>
+                <td>Elevation</td>
+                <td>2.6275</td>
                 <td>--</td>
                 <td>--</td>
             </tr>
@@ -447,7 +419,7 @@
     <figure>
         <img alt="Maps pager" id="covpager" src="#" width="65%"/>
         <figcaption>
-            Pager of scatter plots with marginal histograms of best-fit residuals for each dk angle and all DK's together. For the most part, we see that the residuals are evenly distributed around zero with standard deviations of 0.033&deg; and 0.035&deg; for x and y respectively.
+            Pager of RPS observations per DK. A single color represents the coverage of a single RPS scan.
         </figcaption>
         <script type="text/javascript">
             pager.link("#covpager",
@@ -518,8 +490,108 @@
         </script>
     </figure>
 
+    <h3>Comparing 2017/2018 Mirror residuals</h3>
+    <figure>
+        <img alt="Maps pager" id="comppager" src="#" width="65%"/>
+        <figcaption>
+            
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#comppager",
+                {
+                    'DK|dd': ['0','45','90'],
+                    'Obs|o': ['2017 Moon|moonfit', '2018 RPS|rpsfit18'],
 
-    <h3>Data</h3>
+                },
+                function(params) {
+                    return 'figs/'+params.o+'_residuals_quiver_zoomed_dk'+params.dd+'.png';
+                });
+            pager.setparams({
+                'dd': '0',
+                'o': 'moonfit',
+            });
+        </script>
+    </figure>
+
+</section>
+
+<section>
+    <h3>Conclusions</h3>
+    <p>More words.</p>
+
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th colspan="4">Mirror Params 2017</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>Best-Fit (&deg;)</th>
+                <th>Stat. Uncert. (&deg;)</th>
+                <th>Sys. Uncert. (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Tilt</td>
+                <td>44.5988</td>
+                <td>0.0005</td>
+                <td>0.0011</td>
+
+            </tr>
+            <tr>
+                <td>Roll</td>
+                <td>0.1042</td>
+                <td>0.0006</td>
+                <td>0.0247</td>
+            </tr>
+            <tr>
+                <th colspan="4">Source Params 2017</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>Best-Fit (&deg;)</th>
+                <th>Stat. Uncert. (&deg;)</th>
+                <th>Sys. Uncert. (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Azimuth</td>
+                <td>-177.6148</td>
+                <td>0.0003</td>
+                <td>--</td>
+
+            </tr>
+            <tr>
+                <td>Elevation</td>
+                <td>2.6275</td>
+                <td>0.0004</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <th colspan="4">Mirror Params 2018</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>Best-Fit (&deg;)</th>
+                <th>Stat. Uncert. (&deg;)</th>
+                <th>Sys. Uncert. (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Tilt</td>
+                <td>44.7738</td>
+                <td>0.0003</td>
+                <td>--</td>
+
+            </tr>
+            <tr>
+                <td>Roll</td>
+                <td>0.1204</td>
+                <td>0.0004</td>
+                <td>--</td>
+            </tr>
+        </table>
+        <figcaption>
+            Table of final results for 2017 mirror, 2017 source, and 2018 mirror parameters.
+        </figcaption>
+    </figure>
 
 </section>
 
