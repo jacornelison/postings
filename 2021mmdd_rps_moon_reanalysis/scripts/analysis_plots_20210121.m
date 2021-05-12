@@ -238,7 +238,38 @@ end
 
 %% Look at RPS fits
 
-%% Look at residuals per DK
+
+%% RPS Obs Coverage
+
+load('../data/rps_fit_data_temp.mat')
+load('../data/b3rpsfiles_2017.mat')
+prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
+pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
+
+addpath('z:/pipeline/util')
+map = colormap('lines');
+figure(3)
+set(gcf,'Position',[1000 100 600 600])
+clf; hold on;
+h = [];
+for i = 1:length(md)
+    [x,y,phi] = beam_map_pointing_model(md{i}.az,md{i}.el,md{i}.dk,...
+        rpsopt.pm,'bicep3',rpsopt.mirror,rpsopt.source,[]);
+    
+    h(end+1) = plot(x,y,'Color',map(i,:));
+end
+h(end+1) = plot(prx,pry,'kx');
+grid on
+xlabel('x (^o)')
+ylabel('y (^o)')
+title('Moon Observation Coverage Jan 2017')
+legend(h([1,end]),{'RPS Scan','CMB-derived pnts'})
+axis square
+figname = ['../figs/rps_coverage_2017'];
+    saveas(gcf,figname,'png')
+
+
+%% 2018 RPS Residuals
 load('../data/rps_fit_data_final.mat')
 
 clr = {[0, 0.4470, 0.7410],...
@@ -276,79 +307,8 @@ for pltind = 1:length(plts)
     saveas(gcf,figname,'png')
 end
 
-%%
-% RPS Obs Coverage
-
-load('../data/rps_fit_data_temp.mat')
-load('../data/b3rpsfiles_2017.mat')
-prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
-pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
-
-addpath('z:/pipeline/util')
-map = colormap('lines');
-figure(3)
-set(gcf,'Position',[1000 100 600 600])
-clf; hold on;
-h = [];
-for i = 1:length(md)
-    [x,y,phi] = beam_map_pointing_model(md{i}.az,md{i}.el,md{i}.dk,...
-        rpsopt.pm,'bicep3',rpsopt.mirror,rpsopt.source,[]);
     
-    h(end+1) = plot(x,y,'Color',map(i,:));
-end
-h(end+1) = plot(prx,pry,'kx');
-grid on
-xlabel('x (^o)')
-ylabel('y (^o)')
-title('Moon Observation Coverage Jan 2017')
-legend(h([1,end]),{'RPS Scan','CMB-derived pnts'})
-axis square
-figname = ['../figs/rps_coverage_2017'];
-    saveas(gcf,figname,'png')
-
-    
-%%
-load('../data/rps18_fit_data_final.mat')
-
-clr = {[0, 0.4470, 0.7410],...
-    [0.8500, 0.3250, 0.0980],...
-    [0.4660, 0.6740, 0.1880]*0.8,...
-    [0.9290, 0.6940, 0.1250]};
-
-plts = {[1];[2];[3];[4];[1,2,3,4]};
-pltlabs = {'0','45','90','135','all'};
-legs = {{'0'},{'45'},{'90'},{'135'},{'0','45','90','135'}};
-dk = unique(fd.dk);
-for pltind = 1:length(plts)
-    scale = 10;
-    fig = figure(3);
-    fig.Position = [700 400 500 500];
-    clf; hold on;
-    
-    pxy = reshape(fd.data,[],2);
-    
-    dks = dk(plts{pltind});
-    
-    for dkind = 1:length(dks)
-        chind = ismember(fd.dk,dks(dkind));
-        quiver(pxy(chind,1),pxy(chind,2),fd.resx(chind)*scale,fd.resy(chind)*scale,0,'Color',clr{dkind})
-        
-    end
-    grid on
-    %legend({'DK=0','DK=45','DK=90'})
-    legend(legs{pltind})
-    title(['Beam Center Best-Fit Residuals x' num2str(scale)])
-    xlabel('x (^o)')
-    ylabel('y (^o)')
-    xlim([-15 15])
-    ylim([-15 15])
-    figname = ['../figs/' 'rpsfit18_residuals_quiver_zoomed_dk' pltlabs{pltind}];
-    saveas(gcf,figname,'png')
-end
-
-%%
-
-% RPS Obs Coverage
+%% 2018 RPS Obs Coverage
 
 load('../data/rps18_fit_data_temp.mat')
 load('../data/b3rpsfiles_2018.mat')
@@ -398,4 +358,60 @@ figname = ['../figs/rps_coverage_2018_dk_' pltlabs{pltind}];
     saveas(gcf,figname,'png')
 
 end
+
+%% 2018 RPS residuals in map coords.
+load('../data/rps18_fit_data_final.mat')
+
+clr = {[0, 0.4470, 0.7410],...
+    [0.8500, 0.3250, 0.0980],...
+    [0.4660, 0.6740, 0.1880]*0.8,...
+    [0.9290, 0.6940, 0.1250]};
+
+plts = {[1];[2];[3];[4];[1,2,3,4]};
+pltlabs = {'0','45','90','135','all'};
+legs = {{'0'},{'45'},{'90'},{'135'},{'0','45','90','135'}};
+dk = unique(fd.dk);
+for pltind = 1:length(plts)
+    scale = 10;
+    fig = figure(3);
+    fig.Position = [700 100 500 500];
+    clf; hold on;
+    
+    pxy = reshape(fd.data,[],2);
+    mod = reshape(fd.model,[],2);
+    dks = dk(plts{pltind});
+    
+    for dkind = 1:length(dks)
+        chind = ismember(fd.dk,dks(dkind));
+        
+        [x_mirr, y_mirr] = get_mirror_coords(fd.dk(chind),pxy(chind,1),pxy(chind,2),1.5,rpsopt.mount,rpsopt.mirror);
+        [xmod_mirr, ymod_mirr] = get_mirror_coords(fd.dk(chind),mod(chind,1),mod(chind,2),1.5,rpsopt.mount,rpsopt.mirror);
+        resxm = x_mirr-xmod_mirr;
+        resym = y_mirr-ymod_mirr;
+        quiver(x_mirr,y_mirr,resxm*scale,resym*scale,0,'Color',clr{dkind})
+        
+    end
+    grid on
+    %legend({'DK=0','DK=45','DK=90'})
+    legend(legs{pltind})
+    title({['2018 RPS Beam Center Best-Fit Residuals x' num2str(scale)],'Mirror Coordinates'})
+    xlabel('x (m)')
+    ylabel('y (m)')
+    xlim([-1 1]*0.4)
+    ylim([-1 1.70]*0.4)
+    figname = ['../figs/' 'rpsfit18_residuals_quiver_mirrorcoords_dk' pltlabs{pltind}];
+    saveas(gcf,figname,'png')
+end
+
+%% Look at residuals of residuals
+
+fd1 = load('../data/fit_data_final.mat')
+fd2 = load('../data/rps18_fit_data_final.mat')
+
+
+fig = figure(3);
+fig.Position = [700 100 500 500];
+clf; hold on;
+    
+
 

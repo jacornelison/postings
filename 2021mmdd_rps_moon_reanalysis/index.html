@@ -183,14 +183,14 @@
         <script type="text/javascript">
             pager.link("#dkspager",
                 {
-                    'DK|d': ['0','45','90','all'],
+                    'DK|dk1': ['0','45','90','all'],
                     'Tile|t': ['All|','11|_tile11'],
                 },
                 function(params) {
-                    return 'figs/moonfit_residuals_quiver_zoomed_dk'+params.d+params.t+'.png';
+                    return 'figs/moonfit_residuals_quiver_zoomed_dk'+params.dk1+params.t+'.png';
                 });
             pager.setparams({
-                'd': 'all',
+                'dk1': 'all',
                 't': '',
             });
         </script>
@@ -207,14 +207,14 @@
         <script type="text/javascript">
             pager.link("#histpager",
                 {
-                    'DK|d': ['0','45','90','all'],
+                    'DK|dk1': ['0','45','90','all'],
 
                 },
                 function(params) {
-                    return 'figs/moonfit_residuals_scatterhist_dk'+params.d+'.png';
+                    return 'figs/moonfit_residuals_scatterhist_dk'+params.dk1+'.png';
                 });
             pager.setparams({
-                'd': 'all',
+                'dk1': 'all',
 
             });
         </script>
@@ -367,7 +367,16 @@
 
 <section>
     <h2>Source Parameters 2017</h2>
-    <p>The approach to finding the RPS location parameters is identical to finding the mirror except we use beam centers derived from RPS </p>
+    <p>The approach to finding the RPS location parameters is identical to finding the mirror except we use beam centers derived from RPS assuming the mirror parameters estimated from the Moon observations and fit for an Azimuth and Elevation of the RPS</p>
+
+    \begin{equation}
+    [x_0,\,y_0,\,\phi_0] = \text{beam_map_pointing_model}(Az_{src},\,El_{src}\,|\, A_{0,0},\,E_{0,0},\,K_{0,0},\,PM,\,Mount,\, Mirror,D_{src})
+    \end{equation}
+
+    <p>
+        Where $D_{src}$ is the distance to the source of $195.5\pm1\text{m}\,\,$, derived from this <a href="figs/Map4_SouthPole_ASMA_v16-LR.pdf">station layout</a>.
+    </p>
+
     <h3>Data</h3>
     <figure>
         <img src="figs/rps_coverage_2017.png" width="65%"/>
@@ -403,7 +412,7 @@
 
         </table>
         <figcaption>
-            Table of final results for 2017 source parameters.
+            Table of final results for 2017 RPS location parameters.
         </figcaption>
     </figure>
         <figure>
@@ -424,14 +433,14 @@
         <script type="text/javascript">
             pager.link("#covpager",
                 {
-                    'DK|k': ['0','45','90','135'],
+                    'DK|dk2': ['0','45','90','135'],
 
                 },
                 function(params) {
-                    return 'figs/rps_coverage_2018_dk_'+params.k+'.png';
+                    return 'figs/rps_coverage_2018_dk_'+params.dk2+'.png';
                 });
             pager.setparams({
-                'k': '0',
+                'dk2': '0',
 
             });
         </script>
@@ -464,7 +473,7 @@
 
         </table>
         <figcaption>
-            Table of final results for 2017 mirror parameters.
+            Table of final results for 2018 mirror parameters.
         </figcaption>
     </figure>
 
@@ -477,30 +486,38 @@
         <script type="text/javascript">
             pager.link("#dks2pager",
                 {
-                    'DK|d': ['0','45','90','135','all'],
+                    'DK|dk3': ['0','45','90','135','all'],
 
                 },
                 function(params) {
-                    return 'figs/rpsfit18_residuals_quiver_zoomed_dk'+params.d+'.png';
+                    return 'figs/rpsfit18_residuals_quiver_zoomed_dk'+params.dk3+'.png';
                 });
             pager.setparams({
-                'd': 'all',
+                'dk3': 'all',
                 't': '',
             });
         </script>
     </figure>
+</section>
+    <section>
+    <h2>Thoughts on residuals</h2>
+        <p>In all of these plots so far, we can definitive structure in the residuals. The question now is whether or not we should worry about it. While we don't necessarily need to address or mitigate these right away, it's hard to argue that we've acquired the mirror and source locations/orientations in absolute terms if we can't confidently explain the origin of these residuals.
+        </p>
 
-    <h3>Comparing 2017/2018 Mirror residuals</h3>
+        <h3>Comparing 2017/2018 Mirror residuals</h3>
+        <p>My first thought is that these residuals could be a result from small-but-coherent-on-important-scales deformations in the mirror. Before digging into things like photogrammetry, we should be able to confirm this by comparing the residuals between the different observations.
+            Since the 2017 Moon and RPS observations were done back-to-back and also since parameters on the mirror between years only changed by <0.1&deg;, it should be reasonable to expect all of the residuals to look relatively similar. However, looking at the pager in Figure 4.1 it's pretty obvious that they don't.</p>
+
     <figure>
-        <img alt="Maps pager" id="comppager" src="#" width="65%"/>
+        <img alt="Maps pager" id="comppager" src="#" onerror="if (this.src != 'figs/quiver_blank.jpg') this.src = 'figs/quiver_blank.png';" width="65%"/>
         <figcaption>
-            
+
         </figcaption>
         <script type="text/javascript">
             pager.link("#comppager",
                 {
                     'DK|dd': ['0','45','90'],
-                    'Obs|o': ['2017 Moon|moonfit', '2018 RPS|rpsfit18'],
+                    'Obs|o': ['2017 Moon|moonfit', '2017 RPS|rpsfit','2018 RPS|rpsfit18'],
 
                 },
                 function(params) {
@@ -513,11 +530,39 @@
         </script>
     </figure>
 
+        <p>As a consistency check, we can also argue that deformations in the mirror would create residuals that were constant with respect to a given location of on the mirror. As such, the residuals across different DK angles would be similar when plotted in a mirror-fixed coordinate system. I convert both the CMB- and RPS-derived pointings into a mirror-fixed coordinate system and show quiver plots of the residuals below. The difference in coverage makes doing a complete apples-to-apples comparison difficult, but the way the focal plane is configured allows easy comparisons between DK's 0 and 90 and DK's 45 and 135. We can see that while there's an obvious DK dependence in the residuals, it's not obviously coming from the mirror. Further investigation is needed, I think.
+        </p>
+
+
+    <figure>
+        <img alt="Maps pager" id="mcpager" src="#" width="65%"/>
+        <figcaption>
+            Quiver plots of best-fit beam center residuals from 2018 RPS data converted from instrument-fixed x-y coordinates to a physical location on the mirror.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#mcpager",
+                {
+                    'DK|dk3': ['0','45','90','135','all'],
+
+
+                },
+                function(params) {
+                    return 'figs/rpsfit18_residuals_quiver_mirrorcoords_dk'+params.dk3+'.png';
+                });
+            pager.setparams({
+                'dk3': '0',
+
+            });
+        </script>
+    </figure>
+
 </section>
 
 <section>
     <h3>Conclusions</h3>
-    <p>More words.</p>
+    <p>
+
+    </p>
 
     <figure class="table">
         <table class="center results">
@@ -600,7 +645,9 @@
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
-    <h3>Notes</h3>
+    <h3>Mirror-fixed coordinate system</h3>
+
+
 
     <h3>Code</h3>
     <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
