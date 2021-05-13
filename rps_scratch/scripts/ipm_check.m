@@ -21,11 +21,6 @@ mount.el_offx = 0;
 mount.el_offz = 0;
 mount.az_tilt_ha = 0;
 mount.az_tilt_lat = 0;
-mount.az_offz = 0;
-mount.az_tilt_org = 0*1.22;
-mount.el_tilt_org = 01*1.8355;
-mount.aperture_offz = 0.9970; 
-mount.az_offz = 1.8355;
 
 % Mirror
 mirror = [];

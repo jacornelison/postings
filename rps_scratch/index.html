@@ -67,9 +67,10 @@
     </li>
 </ol>
 
+
 <p>
     The inverse pointing model (IPM) returns the horizontal coordinates of the mount boresight pointing as they are projected on to the local topocentric unit sphere.
-    As as result, if we have non-zero Az/El tilts, we can expect to wide swings in Azimuth and Deck as the boresight approaches Zenith.
+    As a result, if we have non-zero Az/El tilts, we can expect to wide swings in Azimuth and Deck as the boresight approaches Zenith.
      However, only these ideal coordinates are passed to the beam map pointing model and so we lose the knowledge of the physical orientation of the mount.
     As can be seen in Figure 0.1, this can introduce large errors in the scan as projected into instrument-fixed coordinates as the pointing model blindly assumes that the orientation of the focal plane rapidly changes as well.
 </p>
@@ -81,9 +82,11 @@ RPS Scans in Raw Mount Coordinates (top row), converted to ideal horizon coordai
 </figure>
 
 <p>
-I've found that the standard method is to simply zero-out any Az/El tilts and move on. Most errors resulting in this decision are very subdominant for most cases.
+I've found that the standard method is to simply zero-out any Az/El tilts and move on. Most errors resulting in this decision are subdominant for most cases.
+    In the context of the measuring absolute polarization angles however, the measured tilts can affect us at the levels of precision we're interested in, so we can't just ignore them.
+    Simply put, we've been using these functions incorrectly, but we've been able to ignore the concequences until now. The problem is that neither pointing model adequately provides the functionality we need.
 </p>
-<p>Simply put, we've been using these functions incorrectly, but neither pointing model adequately provides the functionality we need. To fix that, we created a new function which moves the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and named it <tt>beam_map_pointing_model.m</tt> (BMPM for short). We created this new function in lieu of just upgrading <tt>keck_beam_map_pointing</tt> to avoid breaking other analysis pipelines and also because the <it>Keck</it> prefix is a bit confusing since the experiment technically doesn't exist anymore.</p>
+<p>To fix that, we created a new function which moves the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and named it <tt>beam_map_pointing_model.m</tt> (BMPM for short). We created this new function in lieu of just upgrading <tt>keck_beam_map_pointing</tt> to avoid breaking other analysis pipelines and also because the <it>Keck</it> prefix is a bit confusing since the experiment technically doesn't exist anymore. That said, BMPM is functionally similar to <tt>keck_beam_map_pointing</tt> -- the boresight pointing and orientation are transformed and rotated as vectors in a 3D cartesian space before being converted into the desired coordinates -- and uses all of the same subfunctions.</p>
 <p>The new function:
 
     \begin{equation}
@@ -92,7 +95,7 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
 
     <ul>
         <li>Converts Raw Mount Coordinates $(A_0,E_0,K_0)$ directly to detector-centered coordinates $(x',y',\phi')$ or any intermediate coordinate system (e.g. $(A,E,K)$, $(x,y,\phi)$, etc...).</li>
-        <li>Takes offline pointing model, mount, mirror, source, and focal plane information as additional inputs.</li>
+        <li>Takes offline pointing model ($PM$), mount, mirror, source, and focal plane ($FPU$) information as additional inputs.</li>
     </ul>
     </p>
 
@@ -102,10 +105,11 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
     <ul>
         <li><tt>kbmp_mirror</tt> now applies az/el tilts to the mirror normal.</li>
         <li><tt>kbmp_mount</tt> can now account for all of the offline pointing model parameters and can also account for the origin of az/el tilts as well.</li>
+        <li><tt>kbmp_parallax_sph</tt> can now output x'/y'/phi' coordinates.</li>
     </ul>
     </p>
 <p>
-    Below is the same RPS scans from Figure 0.1, but run completely through <tt>beam_map_pointing_model</tt> instead.
+    Below is the same set of RPS scans from Figure 0.1, but run entirely through <tt>beam_map_pointing_model</tt> instead.
 </p>
 
 <figure>
@@ -117,7 +121,7 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
 
 
 <section><h2>Code Tests</h2>
-
+    <p>This section compares BMPM to the other pointing model functions to ensure I didn't introduce any weird bugs.</p>
     <h3>BMPM vs. IPM</h3>
     <p>Below I compare the outputs of <tt>beam_map_pointing_model</tt> to <tt>invpointing_model.m</tt> and <tt>keck_beam_map_pointing.m</tt> to show that the internal mechanics are functionally unchanged. Comparison is accomplished simply by passing no mirror or source parameters to <tt>beam_map_pointing_model</tt><sup><a href="#apps">[1]</a></sup>. For most cases, the residuals are close to (but not quite) machine precision.</p>
 
@@ -148,7 +152,7 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
 
     <h3>BMPM vs. Reckon</h3>
     <p>
-    The per-detector ideal horizontal coordinates are calculated by passing the output of <tt>invpointing_model.m</tt> to MATLAB's <tt>reckon.m</tt>. Similar to the previous section this is done by passing only the pointing model parameters and FPU data to the BMPM<sup><a href="#apps">[1]</a></sup>.
+    The per-detector ideal horizontal coordinates are calculated by passing the output of <tt>invpointing_model.m</tt> to MATLAB's <tt>reckon.m</tt> <a href="RWO2013"></a>. Similar to the previous section this is done by passing only the pointing model parameters and FPU data to the BMPM<sup><a href="#apps">[1]</a></sup>.
     </p>
     <figure>
         <table>
@@ -163,12 +167,45 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
 
     </figure>
 
+    <h3>BMPM vs. KBMP</h3>
+    Lastly, assuming zeros for all offline pointing model parameters, the output for BMPM and <tt>keck_beam_map_pointing</tt> should be identical, regardless of the other inputs. The figures below show the x'/y' coordinates returned by both codes for some arbitrary mount, mirror, and source parameters.
+
+    <figure>
+        <table>
+            <tr>
+                <td><img src="figs/kbmp_compare_points.png" /></td>
+                <td><img src="figs/kbmp_compare_res.png" /></td>
+            </tr>
+        </table>
+        <figcaption>
+
+        </figcaption>
+
+    </figure>
+
 </section>
 
 
 <section><h2>Physical tilt origins</h2>
 
-    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus may need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror. The tilted base case could also include the tilt of the entire building.</p>
+    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus may need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror. Listed below are some possible cases that I've come up with.
+
+        <ul>
+        <li>Azimuth Tilt</li>
+        <ul>
+            <li>Lower Az Bearing Race: This could result from a thickness gradient in the lower race of the Azimuth bearing.</li>
+            <li>Tilted Base: This could be anywhere below the bearing ranging from the feet of the mount (pictured in Fig. 2.7) to the tilt of the entire building.</li>
+        </ul>
+        <li>Elevation Tilt</li>
+        <ul>
+            <li>Upper Az Bearing Race: Thickness gradients in the upper race of the Az bearing.</li>
+            <li>Elevation Bearings: Difference in heights between the rotational axis of the elevation bearings.</li>
+        </ul>
+    </ul>
+
+    In <tt>keck_beam_map_pointing</tt>, the tilts originate at the origin of the cartesian coordinate system which was arbitrarily defined to be at the floor of the groundshield.
+
+    </p>
 
 
     <figure>
@@ -198,9 +235,9 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
         </script>
     </figure>
 
-    <p>How much does this actually matter though? At worst, we're dealing with systematic errors on the location of the aperture/mirror or roughly <6 cm.
+    <p>How much does this actually matter though? At worst, we're dealing with systematic errors on the location of the aperture/mirror of roughly <6 cm.
 
-        The worst-case scenarios are listed below. The upper limit on the individual possible bias is roughly on the level of the systematic error I calculated for the mirror roll from error propagation. BUT the direction of the tilts may serve to cancel-out some effects. So while not immediately worrying, this may need further investigation in the future. For now, we place the origin of the Azimuth tilt at the base of the telescope and the origin of the Elevation tilt at elevation axis.</p>
+        The worst-case scenarios are listed below for a source that is ~200m away. The upper limit on the resulting bias on a derived mirror roll, which impinges a roughly one-to-one bias on polarization angles, is on the order of 0.02&deg;. BUT the direction of the real tilts may serve to cancel-out some effects. So while not immediately worrying for RPS analysis, this may need further investigation in the future. For now, we place the origin of the Azimuth tilt at the base of the telescope and the origin of the Elevation tilt at elevation axis.</p>
         <table class="results center">
         <tr>
             <th>Tilt Dir.</th>
@@ -224,6 +261,8 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
             <td>~-0.03</td>
         </tr>
     </table>
+
+    <p>I should note that for Far-sidelobe measurements where the source is very close, this affect may not only be much more significant but one might need to consider whether the source and mount are affected by the same tilt or not. Though in reality, we likely won't need precision in FSL mapping to this precision for some time.</p>
 
 </section>
 
@@ -291,6 +330,7 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
             "\<b\>Posting Code\</b\>",
             "ipm_check.m",
             "reckon_check.m",
+            "kbmp_check.m",
             ];
 
         // Short Code description
@@ -301,6 +341,7 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
             "",
             "Compares BMPM outputs to IPM for Fig. 1.3.",
             "Compares BMPM outputs to reckon for Fig. 1.4.",
+            "Compares BMPM outputs to KBMP for Fig. 1.5.",
         ];
 
         // Make a list of references
