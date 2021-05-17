@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="cbb0713d-2948-4960-9b09-29638b4dc582" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rps_scratch/figs/rps_scratch_mount_horiz_compare.png" beforeDir="false" afterPath="$PROJECT_DIR$/../rps_scratch/figs/rps_scratch_mount_horiz_compare.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rps_scratch/figs/rps_scratch_mount_horiz_compare_fixed.png" beforeDir="false" afterPath="$PROJECT_DIR$/../rps_scratch/figs/rps_scratch_mount_horiz_compare_fixed.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../rps_scratch/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../rps_scratch/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../rps_scratch/scripts/ipm_check.m" beforeDir="false" afterPath="$PROJECT_DIR$/../rps_scratch/scripts/ipm_check.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rps_scratch/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/../rps_scratch/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +54,8 @@
       <workItem from="1613137401638" duration="619000" />
       <workItem from="1613574794723" duration="9000" />
       <workItem from="1620664107231" duration="18001000" />
-      <workItem from="1620920120793" duration="1349000" />
+      <workItem from="1620920120793" duration="1354000" />
+      <workItem from="1621260926123" duration="3611000" />
     </task>
     <servers />
   </component>

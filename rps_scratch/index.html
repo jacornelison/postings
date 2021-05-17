@@ -37,7 +37,7 @@
 
 <hr>
 
-
+<section>
 <p>In most analyses in which we need to locate/orient a source in an instrument-fixed coordinate system (e.g. FFBM, RPS, FSL), the procedure to create beam maps from raw data is essentially the same:
 <ol>
     <li>
@@ -75,10 +75,23 @@
     As can be seen in Figure 0.1, this can introduce large errors in the scan as projected into instrument-fixed coordinates as the pointing model blindly assumes that the orientation of the focal plane rapidly changes as well.
 </p>
 <figure>
-    <img src="figs/rps_scratch_mount_horiz_compare.png" width="100%"/>
+    <img alt="pager" id="scanpager" src="#" width="100%"/>
     <figcaption>
 RPS Scans in Raw Mount Coordinates (top row), converted to ideal horizon coordaintes (bottom row, column 1 & 2) via <tt>invpointing_model</tt> and then converted into boresight-centered coordinates (bottom row, column 3) via <tt>keck_beam_map_pointing</tt>.
     </figcaption>
+    <script type="text/javascript">
+        pager.link("#scanpager",
+            {
+                'Tilts|t':['None|_nt','Applied|'],
+
+            },
+            function(params) {
+                return 'figs/rps_scratch_mount_horiz_compare'+params.t+'.png';
+            });
+        pager.setparams({
+            't': '',
+        });
+    </script>
 </figure>
 
 <p>
@@ -101,7 +114,7 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
 
 
 
-<p>One thing Colin points out in his posting <a href="CAB2012"></a> is that <tt>keck_beam_map_pointing</tt> doesn't apply mount tilts to the pointing of the mirror which we need to account for in instances where precision in the geometry is necessary (i.e. polarization angle analyses). Some of the <tt>keck_beam_map_pointing</tt> subfunctions have been updated, but have been done so in such a way that conserves backward compatibility.</p>
+<p>One thing Colin points out in his original posting <a href="CAB2012"></a> is that <tt>keck_beam_map_pointing</tt> doesn't apply mount tilts to the pointing of the mirror which we need to account for in instances where precision in the geometry is necessary (i.e. polarization angle analyses). Some of the <tt>keck_beam_map_pointing</tt> subfunctions have been updated, but have been done so in such a way that conserves backward compatibility.</p>
     <ul>
         <li><tt>kbmp_mirror</tt> now applies az/el tilts to the mirror normal.</li>
         <li><tt>kbmp_mount</tt> can now account for all of the offline pointing model parameters and can also account for the origin of az/el tilts as well.</li>
@@ -109,16 +122,43 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
     </ul>
     </p>
 <p>
-    Below is the same set of RPS scans from Figure 0.1, but run entirely through <tt>beam_map_pointing_model</tt> instead.
+    Below is the same set of scans from Figure 1.1, but run entirely through <tt>beam_map_pointing_model</tt> instead. Note the difference between the old and new methods in the what happens in ideal coordinates when the elevation moves past 90 degrees. This is because in <tt>invpointing_model</tt> elevations are wrapped between 0 and 90 but the shortcut that is taken to fix that is only accurate if no tilts are applied.
 </p>
 
 <figure>
-    <img src="figs/rps_scratch_mount_horiz_compare_fixed.png" width="100%"/>
+    <img alt="pager" id="scan2pager" src="#" width="100%"/>
     <figcaption>
-    RPS scans as converted through <tt>beam_map_pointing_model</tt> with the same inputs as figure 0.1.
+        Same scans as Figure 1.1, but now with 'Applied (New)' the pointing correction is now done through <tt>beam_map_pointing_model.m</tt>.
     </figcaption>
-</figure>
+    <script type="text/javascript">
+        pager.link("#scan2pager",
+            {
+                'Tilts|t':['None|_nt','Applied (Old)|','Applied (New)|_fixed'],
 
+            },
+            function(params) {
+                return 'figs/rps_scratch_mount_horiz_compare'+params.t+'.png';
+            });
+        pager.setparams({
+            't': '',
+        });
+    </script>
+</figure>
+<p>
+It's impossible to see the changes between 'None' and 'New' in the figure above. To get a better idea of how this impacts our absolute pointing, I computed the detector-centered coordinates of an arbitrary source using BICEP3's CMB-derived beam centers with and without tilts applied. Any differences in the pointing or copolar axis is the level of potential bias that this impinges on our analysis.
+</p>
+
+    <figure>
+        <img src="figs/compare_hist.png"/>
+        <figcaption>
+            CMB derived beam center residuals using some abritrary mirror and source positions with and without tilts applied.
+        </figcaption>
+    </figure>
+<p>
+    We can see that the difference in the pointing is relatively small compared to the
+</p>
+
+</section>
 
 <section><h2>Code Tests</h2>
     <p>This section compares BMPM to the other pointing model functions to ensure I didn't introduce any weird bugs.</p>
@@ -217,7 +257,7 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
     <figure>
         <img alt="pager" id="tiltspager" src="#" width="60%"/>
         <figcaption>
-            The caption.
+            Pager showing different scenarios in which Azimuth and Elevation Tilts can occur.
         </figcaption>
         <script type="text/javascript">
             pager.link("#tiltspager",
