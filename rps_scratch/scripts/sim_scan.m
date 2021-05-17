@@ -34,9 +34,9 @@ pm.meas_name = {'170203 02:32:23'};
 pm.mjd = 5.7787e+04;
 pm.flex_cos = 0;
 pm.flex_sin = 0;
-pm.az_tilt_ha = 0*0.0046;
-pm.az_tilt_lat = 0*0.0044;
-pm.el_tilt = 0*-0.0286;
+pm.az_tilt_ha = 0.0046;
+pm.az_tilt_lat = 0.0044;
+pm.el_tilt = -0.0286;
 pm.collim_x = 0;
 pm.collim_y = 0;
 pm.collim_mag = 0;%-0.5802;
@@ -160,7 +160,7 @@ for schind = 1:length(md)
     plot(md{schind}.dk,md{schind}.el,'Color',[schind,0,13]./13)
     grid on
     xlim([-3 3]-3)
-    ylim([2 8]+82)
+    ylim([-1 11]-pm.el_zero)
     xlabel('dk (^o)')
     ylabel('el (^o)')
     %title('Example RPS Scan: Ideal Horizontal Coordinates')
