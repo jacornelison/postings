@@ -30,7 +30,7 @@
     <h1>A New Pointing Model for Beam Mapping</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
-        2021 Mmm dd
+        2021 May 18
     </time> —
     J. Cornelison, C. Verges
 </header>
@@ -70,14 +70,14 @@
 
 <p>
     The inverse pointing model (IPM) returns the horizontal coordinates of the mount boresight pointing as they are projected on to the local topocentric unit sphere.
-    As a result, if we have non-zero Az/El tilts, we can expect to see wide swings in Azimuth and Deck as the boresight approaches Zenith.
+    As a result, if we have non-zero Az/El tilts, we can expect to see wide swings in Azimuth and Deck as the boresight approaches Zenith (<a href="figs/diag_withtilts.gif" target="_blank">example gif</a>).
      However, only these ideal coordinates are passed to the beam map pointing model and so we lose the knowledge of the physical orientation of the mount.
-    As can be seen in Figure 0.1, this can introduce large errors in the scan as projected into instrument-fixed coordinates as the pointing model blindly assumes that the orientation of the focal plane rapidly changes as well.
+    As can be seen in Figure 0.1, this can introduce large errors in the scan as projected into instrument-fixed coordinates as the pointing model blindly assumes that the orientation of the focal plane rapidly changes as well .
 </p>
 <figure>
     <img alt="pager" id="scanpager" src="#" width="100%"/>
     <figcaption>
-RPS Scans in Raw Mount Coordinates (top row), converted to ideal horizon coordaintes (bottom row, column 1 & 2) via <tt>invpointing_model</tt> and then converted into boresight-centered coordinates (bottom row, column 3) via <tt>keck_beam_map_pointing</tt>.
+RPS Scans in Raw Mount Coordinates (top row), converted to ideal horizon coordaintes (bottom row, column 1 & 2) via <tt>invpointing_model</tt> and then converted into boresight-centered coordinates (bottom row, column 3) via <tt>keck_beam_map_pointing</tt>. The 'None' option is without Az/El tilts applied and 'Applied' uses Az/El tilts from Feb 2017 starpointing.
     </figcaption>
     <script type="text/javascript">
         pager.link("#scanpager",
@@ -122,7 +122,7 @@ I've found that the standard method is to simply zero-out any Az/El tilts and mo
     </ul>
     </p>
 <p>
-    Below is the same set of scans from Figure 1.1, but run entirely through <tt>beam_map_pointing_model</tt> instead. Note the difference between the old and new methods in the what happens in ideal coordinates when the elevation moves past 90 degrees. This is because in <tt>invpointing_model</tt> elevations are wrapped between 0 and 90 but the shortcut that is taken to fix that is only accurate if no tilts are applied.
+    Below is the same set of scans from Figure 1.1, but run entirely through <tt>beam_map_pointing_model</tt> instead. Note the difference between the old and new methods in the what happens in ideal coordinates when the elevation moves past 90 degrees. This is because in <tt>invpointing_model</tt> elevations are wrapped between 0 and 90 but the shortcut that is taken to fix that is only accurate if no tilts are applied (<a href="figs/diag_invpointing_problem.gif" target="_blank">example gif</a>).
 </p>
 
 <figure>
@@ -310,6 +310,15 @@ It's impossible to see the changes between 'None' and 'New' in the figure above.
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+    <h3>Example</h3>
+    You can find an example of how to load real data, apply the pointing model, and do a basic plot of a beam <a href="scripts/example_load_and_plot.txt" target="_blank">here</a>. You can run or copy/paste this script using a BICEP3 pipeline and it should produce the following plot:
+
+    <figure>
+        <img src="figs/example_map.png" />
+    </figure>
+
+
+
     <h3 id="apps">Additional Applications</h3>
     <p>
         While the primary function of the BMPM is to convert pointing into instrument-fixed coordinates, it is possible to utilize this function to convert your pointing into a number of intermediate coordinate systems by passing empty arrays $([\,])\,$ as arguments instead.
@@ -368,10 +377,11 @@ It's impossible to see the changes between 'None' and 'New' in the figure above.
             "util/encoder_to_raw_mount_coords.m",
             "util/beam_map_pointing_model.m",
             "\<b\>Posting Code\</b\>",
-            "sim_scan.m"
+            "sim_scan.m",
             "ipm_check.m",
             "reckon_check.m",
             "kbmp_check.m",
+            "example_load_and_plot",
             ];
 
         // Short Code description
@@ -384,6 +394,7 @@ It's impossible to see the changes between 'None' and 'New' in the figure above.
             "Compares BMPM outputs to IPM for Fig. 1.3.",
             "Compares BMPM outputs to reckon for Fig. 1.4.",
             "Compares BMPM outputs to KBMP for Fig. 1.5.",
+            "Example code to load real data and apply the pointing model.",
         ];
 
         // Make a list of references

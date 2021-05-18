@@ -1,0 +1,75 @@
+function example_load_and_plot()
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Initialize Parameters %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Mirror -- This is usually known a priori
+mirror = [];
+mirror.height = 1.4592;
+mirror.tilt = 44.7738;
+mirror.roll = 0.1204;
+
+% Source -- This is usually known a priori
+source = [];
+source.distance = 195.5;
+source.azimuth = -177.6148;
+source.el = 2.6275;
+source.height = source.distance*tand(source.el);
+
+% Observation times -- Some random RPS scan at the center of the focal plane
+t1 = '2018-Jan-16:04:56:16';
+t2 = '2018-Jan-16:04:59:00';
+
+% FPU data -- We want the CMB-derived beam centers
+infodate = datestr(datenum(t1,'yyyy-mmm-dd:HH:MM:SS'),'yyyymmdd');
+[p, p_ind] = get_array_info(infodate,'obs');
+
+% Get the offline pointing model (from starpointing)
+[y,m,d,h,mi,s] = datevec(t1,'yyyy-mmm-dd:HH:MM:SS');
+pm = get_pointing_model(date2mjd(y,m,d,h,mi,s));
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Load the timestreams %
+%%%%%%%%%%%%%%%%%%%%%%%%
+d = load_arc('arc/',t1,t2);
+
+% Combine all mce into mce0 field of the data structure.
+if ~isfield(d, 'mce0')
+    d.mce0 = [];
+end
+for m = {'mce1', 'mce2', 'mce3', 'mce4'};
+    if isfield(d, m)
+        d.mce0 = structcat(2, [d.mce0, getfield(d, m{1})]);
+        d = rmfield(d, m);
+    end
+end
+
+% Grab a good detector and demodulate
+chind = 697;
+chopref = d.antenna0.pmac.fast_aux_input(:, 1);
+chopref = chopref > nanmean(chopref);
+t = d.antenna0.time.utcfast(:,2);
+ds = demod_lockin(d.mce0.data.fb(:,chind),chopref,...
+    t,1,60,[19,21],'setLowPass',9);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beam Map Pointing Model %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% From the timestreams, get the raw mount coordinates
+[A0,E0,K0] = encoder_to_raw_mount_coords(d);
+
+[xp, yp, phip] = beam_map_pointing_model(A0,E0,K0,pm,p.expt,mirror,source,p);
+
+% Do some plotting of a known good detector to show it's working.
+figure(1)
+clf; hold on;
+scatter(xp(ds.ind,chind),yp(ds.ind,chind),[],ds.X,'filled')
+grid on
+xlabel('x'' (^o)')
+ylabel('y'' (^o)')
+axis image
+xlim([-1 1]*2)
+ylim([-1 1]*2)
+colorbar()
+
+return

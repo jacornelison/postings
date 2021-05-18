@@ -336,6 +336,18 @@ section.appendix {
     content: 'Table ' counter(appendix) '.' counter(table) ': ';
 }
 
+/*
+Pre formatted text for code blocks
+ */
+pre.debian {color: rgb(0, 0, 0);width:800px;padding:6px;margin:9px;background-color: rgb(203, 170, 170);}
+pre.debian prompt {font-weight:bold;}
+pre.debian em {font-style:normal;}
+pre.debian user {color:rgb(182,231,142);}
+pre.debian path {color:rgb(159,215,254);}
+pre.debian .highlight {background-color:rgb(193,45,12);}
+pre.debian .grep {color:rgb(255,128,115);}
+
+
 /***************************************************************************
  * Small screen modifications
  ***************************************************************************/
