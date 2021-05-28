@@ -74,16 +74,16 @@ For the detectors on BICEP3, I use the functions in <tt>keck_beam_map_pointing</
 			pager.link("#tp",
                 {
                     'Deck|dk': ['0','45','90','135']
-					
-                
+
+
                 },
                 function(params) {
 					//return 'figs'+params.s+'/'+params.t+'_final_'+params.d+'.png';
-					return 'figs/tileplot_inc_angle_dk_'+params.dk+'.png';				
+					return 'figs/tileplot_inc_angle_dk_'+params.dk+'.png';
                 });
 
             pager.setparams({
-                
+
 					'dk': '0'
 
                 });
@@ -118,40 +118,41 @@ $$
 $$
 
 Figure 1.3 shows the effective pair-diff polarization due to reflections off of the mirror.
-<figure>
 
-<img alt="" id="tp2" src="#" onerror="this.src='plot_blank.png';" width=50% />
+    <figure>
+
+        <img alt="" id="tp2" src="#" onerror="this.src='plot_blank.png';" width=50% />
 
 
-       <script type="text/javascript">
+        <script type="text/javascript">
 
-			var pager = new Pager("tp2");
-			pager.link("#tp2",
+            var pager = new Pager("tp2");
+            pager.link("#tp2",
                 {
-                    'Deck|dk': ['0|dk_0','45|dk_45','90|dk_90','135|dk_135','mean']
-					
-                
+                    'Deck|dk': ['-180','-135','-90','-45','0','45','90','135','mean','mean (0-135)|mean_rps']
                 },
                 function(params) {
-					//return 'figs'+params.s+'/'+params.t+'_final_'+params.d+'.png';
-					return 'figs/tileplot_effq_angle_'+params.dk+'.png';				
+                    //return 'figs'+params.s+'/'+params.t+'_final_'+params.d+'.png';
+                    return 'figs/tileplot_phipair_dk_'+params.dk+'.png';
                 });
 
             pager.setparams({
-                
-					'dk': 'dk_0'
 
-                });
+                'dk': '0'
+
+            });
             pager.gridalign('#tp2', 4);
         </script>
 
-<figcaption>
-Effective change in $\phi_Q$ due to differential polarization reflection as a function of location on the focal plane per DK-angle.
-</figcaption>
-</figure>
+        <figcaption>
+            Effective change in $\phi_Q$ due to differential polarization reflection as a function of location on the focal plane per DK-angle.
+        </figcaption>
+    </figure>
 
 
-For DK-angles of 0 and 90, the bias on $\phi_Q$ is mean-zero and the variation is less than $0.01^\circ$ across the focal plane. For DK-angles of 45 and 135, however, the biases are $\pm0.025^\circ$ on average with variation of $\sim0.015^\circ$. Additionally, because this is a 1-theta dependent function, averaging $\phi_Q$ over DK-angles from 0 to 135, like we have for RPS data, doesn't go to zero.
+
+
+    For DK-angles of 0 and 90, the bias on $\phi_Q$ is mean-zero and the variation is less than $0.01^\circ$ across the focal plane. For DK-angles of 45 and 135, however, the biases are $\pm0.025^\circ$ on average with variation of $\sim0.015^\circ$. Additionally, because this is a 1-theta dependent function, averaging $\phi_Q$ over DK-angles from 0 to 135, like we have for RPS data, doesn't go to zero.
 
 For future polarization calibrations, we'll want to acquire measurements over $360^\circ$ of DK-angle so that it averages down more.
 
