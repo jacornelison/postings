@@ -1,4 +1,4 @@
-function [phipair,phia,phib,Ainc,epspair] = calc_mirror_diff_pol(p,n,k,dk)
+function [phipair,phia,phib,Ainc] = calc_mirror_diff_pol(p,n,k,dk)
 
 if isempty(p)
 p.r = 0;
