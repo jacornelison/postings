@@ -2,7 +2,7 @@ function rps_review_posting_plots()
 global p p_ind
 
 load('data/b3rpsfiles.mat')
-load('data/fitdata_20201013.mat')
+load('data/fitdata_20210526.mat')
 addpath('scripts\')
 addpath('scripts\util\')
 addpath('scripts\beammap\')
@@ -18,7 +18,7 @@ pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
 figdir = 'figs/';
 SVPLT = true; % Save plots?
 clr = get(groot,'DefaultAxesColorOrder');
-
+ampind = 5;
 
 % Cut Params
 % These are to show what cuts I'm making to the data.
@@ -26,12 +26,12 @@ clr = get(groot,'DefaultAxesColorOrder');
 
 % {Param, lower bound, upper bound, title}
 param_array = {...
-    {prx(fd.ch)-fd.bparam(:,1),-0.3,0.3,'x_{obs}-x_{fit}','dx'},...
-    {pry(fd.ch)-fd.bparam(:,2),-0.3,0.3,'y_{obs}-y_{fit}','dy'},...
+    {0*prx(fd.ch)-fd.bparam(:,1),-0.3,0.3,'x_{obs}-x_{fit}','dx'},...
+    {0*pry(fd.ch)-fd.bparam(:,2),-0.3,0.3,'y_{obs}-y_{fit}','dy'},...
     {fd.aparam(:,2),-0.05,0.05,'Xpol leakage','xpol'},...
-    {atand(tand(p.chi(fd.ch)+p.chi_thetaref(fd.ch)-fd.aparam(:,1))),-4,5,'\phi_{d,0}-\phi_{d,fit}','phid'},...
+    {atand(tand(p.chi(fd.ch)+p.chi_thetaref(fd.ch)-fd.phi_d(:,1))),-4,5,'\phi_{d,0}-\phi_{d,fit}','phid'},...
     {fd.stat,3,3,'Fit status','fit'},...
-    {fd.aparam(:,7)./fd.data_rms,1000,8600,'Sig.-to-Noise','snr'}...
+    {fd.aparam(:,ampind)./fd.data_rms,1000,8600,'Sig.-to-Noise','snr'}...
     };
 
 fd_cut = structcut(fd,make_cut_index(fd,param_array));
@@ -68,7 +68,7 @@ plt_array = {...
     {'xpol',[-0.02 0.02],[0,250],'\epsilon_{pair}'}
     };
 close all
-for pltind = 1:length(plt_array)
+for pltind = 1%:length(plt_array)
     
     %make_diff_hist(fd_dk,plt_array{pltind},figdir)
     make_diff_hist_matrix(fd_dk,plt_array{pltind},figdir)
@@ -80,7 +80,7 @@ end
 
 p.expt='bicep3';
 plt_array = {...
-    {'phip_corr',[-2.0,0.5],[-0.25 0.25],'\phi_{pair}'},...
+    {'phip_corr',[-1.0,1.0]-2.5,[-0.25 0.25],'\phi_{pair}'},...
     {'xpol',[-0.025 0.025],[-0.01,0.01],'\epsilon_{pair}'}
     };
 close all
@@ -218,7 +218,7 @@ legend('A Detector','B Detector')
 xlabel('Source Angle (^\circ)','FontSize',12)
 ylabel('Source Amplitude (Normalized)','FontSize',10)
 set(gca, 'XTick', [-180:60:180]);
-saveas(fig,[figdir 'modcurve.png'])
+%saveas(fig,[figdir 'modcurve.png'])
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -330,7 +330,7 @@ end
 disp([parm 'max diff: ' num2str(nanmax(abs(m)))])
 disp([parm 'mean std: ' num2str(nanstd(m))])
 disp([parm 'min std: ' num2str(nanmin(s))])
-saveas(gcf,[figdir 'diffhist_' parm '_sys.png'])
+%saveas(gcf,[figdir 'diffhist_' parm '_sys.png'])
 
 
 
@@ -427,7 +427,7 @@ end
 disp([parm 'max diff: ' num2str(nanmax(abs(m)))])
 disp([parm 'mean std: ' num2str(nanstd(m))])
 disp([parm 'min std: ' num2str(nanmin(s))])
-saveas(gcf,[figdir 'diffhist_' parm '_sys.png'])
+%saveas(gcf,[figdir 'diffhist_' parm '_sys.png'])
 
 
 
