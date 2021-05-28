@@ -2,7 +2,8 @@ function rps_review_posting_plots()
 global p p_ind
 
 load('data/b3rpsfiles.mat')
-load('data/fitdata_20210526.mat')
+load('data/fitdata_20201013.mat')
+%load('data/fitdata_20210526.mat')
 addpath('scripts\')
 addpath('scripts\util\')
 addpath('scripts\beammap\')
@@ -18,7 +19,7 @@ pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
 figdir = 'figs/';
 SVPLT = true; % Save plots?
 clr = get(groot,'DefaultAxesColorOrder');
-ampind = 5;
+ampind = 7;
 
 % Cut Params
 % These are to show what cuts I'm making to the data.
@@ -26,8 +27,8 @@ ampind = 5;
 
 % {Param, lower bound, upper bound, title}
 param_array = {...
-    {0*prx(fd.ch)-fd.bparam(:,1),-0.3,0.3,'x_{obs}-x_{fit}','dx'},...
-    {0*pry(fd.ch)-fd.bparam(:,2),-0.3,0.3,'y_{obs}-y_{fit}','dy'},...
+    {prx(fd.ch)-fd.bparam(:,1),-0.3,0.3,'x_{obs}-x_{fit}','dx'},...
+    {pry(fd.ch)-fd.bparam(:,2),-0.3,0.3,'y_{obs}-y_{fit}','dy'},...
     {fd.aparam(:,2),-0.05,0.05,'Xpol leakage','xpol'},...
     {atand(tand(p.chi(fd.ch)+p.chi_thetaref(fd.ch)-fd.phi_d(:,1))),-4,5,'\phi_{d,0}-\phi_{d,fit}','phid'},...
     {fd.stat,3,3,'Fit status','fit'},...
@@ -68,7 +69,7 @@ plt_array = {...
     {'xpol',[-0.02 0.02],[0,250],'\epsilon_{pair}'}
     };
 close all
-for pltind = 1%:length(plt_array)
+for pltind = 1:length(plt_array)
     
     %make_diff_hist(fd_dk,plt_array{pltind},figdir)
     make_diff_hist_matrix(fd_dk,plt_array{pltind},figdir)

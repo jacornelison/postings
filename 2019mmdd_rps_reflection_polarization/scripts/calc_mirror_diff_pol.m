@@ -96,11 +96,10 @@ for dkind = 1:ndk
         Vb = Vb/norm(Vb);
         
         % Calc the angles
-        phia(detind,dkind) = real(acosd(dot(Va,D1)));
+        % Calc the angles
+        phia(detind,dkind) = real(atan2(dot(Va,-D2),dot(Va,D1)))*180/pi;
         
-        phib(detind,dkind) = real(acosd(dot(Vb,-D2)))+90;
-               
-        
+        phib(detind,dkind) = real(atan2(dot(Vb,-D2),dot(Vb,D1)))*180/pi;
     end
 end
 
