@@ -27,7 +27,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>A New Pointing Model for Beam Mapping</h1>
+    <h1>RPS_scratch</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         2021 May 18
@@ -38,326 +38,31 @@
 <hr>
 
 <section>
-<p>In most analyses in which we need to locate/orient a source in an instrument-fixed coordinate system (e.g. FFBM, RPS, FSL), the procedure to create beam maps from raw data is essentially the same:
-<ol>
-    <li>
-        Convert Raw Mount Coordinates $(A_0,E_0,K_0)$ into topocentric ideal horizontal coordinates $(A,E,K)$ <a href="KWY2007"></a>.
-        <ul>
-            <li>Uses <tt>invpointing_model.m</tt> with star pointing model as an additional input.</li>
-        </ul>
-    </li>
-    <li>
-        Convert ideal topocentric coordinates $(A,E,K)$ to polar detector-centered $(r',\theta',\psi')$ coordinates <a href="CAB2014"></a>.
-        <ul>
-            <li>
-                Uses <tt>keck_beam_map_pointing.m</tt> with mount, mirror, source, and FPU information as additional inputs.
-            </li>
-        </ul>
-    </li>
-    <li>
-        Convert polar detector-centered $(r',\theta',\psi')$ coordinates to cartesian detector centered coordates $(x',y',\phi')$.
-    <ul>
-        <li>
-            Where $x'/y'$ are the detector-centered cartesian analogues of $r'/\theta'$ using Lambert azimuthal equal-area projection <a href="IDB2013"></a>.
-        </li>
-        <li>
-            And $\phi'$ is the angle measured from the source orientation axis to the source polarization axis as projected onto the unit sphere<a href="JAC2019"></a>.
-        </li>
-    </ul>
-    </li>
-</ol>
+    <p></p>
 
-
-<p>
-    The inverse pointing model (IPM) returns the horizontal coordinates of the mount boresight pointing as they are projected on to the local topocentric unit sphere.
-    As a result, if we have non-zero Az/El tilts, we can expect to see wide swings in Azimuth and Deck as the boresight approaches Zenith (<a href="figs/diag_withtilts.gif" target="_blank">example gif</a>).
-     However, only these ideal coordinates are passed to the beam map pointing model and so we lose the knowledge of the physical orientation of the mount.
-    As can be seen in Figure 0.1, this can introduce large errors in the scan as projected into instrument-fixed coordinates as the pointing model blindly assumes that the orientation of the focal plane rapidly changes as well .
-</p>
 <figure>
     <img alt="pager" id="scanpager" src="#" width="100%"/>
     <figcaption>
-RPS Scans in Raw Mount Coordinates (top row), converted to ideal horizon coordaintes (bottom row, column 1 & 2) via <tt>invpointing_model</tt> and then converted into boresight-centered coordinates (bottom row, column 3) via <tt>keck_beam_map_pointing</tt>. The 'None' option is without Az/El tilts applied and 'Applied' uses Az/El tilts from Feb 2017 starpointing.
+
     </figcaption>
     <script type="text/javascript">
         pager.link("#scanpager",
             {
-                'Tilts|t':['None|_nt','Applied|'],
+                'Sch|s':['7','8','9','13','14'],
 
             },
             function(params) {
-                return 'figs/rps_scratch_mount_horiz_compare'+params.t+'.png';
+                return 'figs/tilt_monitor_sch_'+params.s+'.png';
             });
         pager.setparams({
-            't': '',
+            's': '7',
         });
     </script>
 </figure>
 
-<p>
-I've found that the standard method is to simply zero-out any Az/El tilts and move on. Most errors resulting in this decision are subdominant for most cases.
-    In the context of the measuring absolute polarization angles however, the measured tilts can affect us at the levels of precision we're interested in, so we can't just ignore them.
-    Simply put, we've been using these functions incorrectly, but we've been able to ignore the concequences until now. The problem is that neither pointing model adequately provides the functionality we need.
-</p>
-<p>To fix that, we created a new function which moves the function of <tt>invpointing_model</tt> into <tt>keck_beam_map_pointing</tt> and named it <tt>beam_map_pointing_model.m</tt> (BMPM for short). We created this new function in lieu of just upgrading <tt>keck_beam_map_pointing</tt> to avoid breaking other analysis pipelines and also because the <it>Keck</it> prefix is a bit confusing since the experiment technically doesn't exist anymore. That said, BMPM is functionally similar to <tt>keck_beam_map_pointing</tt> -- the boresight pointing and orientation are transformed and rotated as vectors in a 3D cartesian space before being converted into the desired coordinates -- and uses all of the same subfunctions.</p>
-<p>The new function:
-
-    \begin{equation}
-    [x',\,y',\,\phi'] = \text{beam_map_pointing_model}(A_{0},\,E_{0},\,K_{0},\,PM,\,Mount,\,Mirror,\,Source,\,FPU)
-    \end{equation}
-
-    <ul>
-        <li>Converts Raw Mount Coordinates $(A_0,E_0,K_0)$ directly to detector-centered coordinates $(x',y',\phi')$ or any intermediate coordinate system (e.g. $(A,E,K)$, $(x,y,\phi)$, etc...).</li>
-        <li>Takes offline pointing model ($PM$), mount, mirror, source, and focal plane ($FPU$) information as additional inputs.</li>
-    </ul>
-    </p>
-
-
-
-<p>One thing Colin points out in his original posting <a href="CAB2012"></a> is that <tt>keck_beam_map_pointing</tt> doesn't apply mount tilts to the pointing of the mirror which we need to account for in instances where precision in the geometry is necessary (i.e. polarization angle analyses). Some of the <tt>keck_beam_map_pointing</tt> subfunctions have been updated, but have been done so in such a way that conserves backward compatibility.</p>
-    <ul>
-        <li><tt>kbmp_mirror</tt> now applies az/el tilts to the mirror normal.</li>
-        <li><tt>kbmp_mount</tt> can now account for all of the offline pointing model parameters and can also account for the origin of az/el tilts as well.</li>
-        <li><tt>kbmp_parallax_sph</tt> can now output x'/y'/phi' coordinates.</li>
-    </ul>
-    </p>
-<p>
-    Below is the same set of scans from Figure 1.1, but run entirely through <tt>beam_map_pointing_model</tt> instead. Note the difference between the old and new methods in the what happens in ideal coordinates when the elevation moves past 90 degrees. This is because in <tt>invpointing_model</tt> elevations are wrapped between 0 and 90 but the shortcut that is taken to fix that is only accurate if no tilts are applied (<a href="figs/diag_invpointing_problem.gif" target="_blank">example gif</a>).
-</p>
-
-<figure>
-    <img alt="pager" id="scan2pager" src="#" width="100%"/>
-    <figcaption>
-        Same scans as Figure 1.1, but now with 'Applied (New)' the pointing correction is now done through <tt>beam_map_pointing_model.m</tt>.
-    </figcaption>
-    <script type="text/javascript">
-        pager.link("#scan2pager",
-            {
-                'Tilts|t':['None|_nt','Applied (Old)|','Applied (New)|_fixed'],
-
-            },
-            function(params) {
-                return 'figs/rps_scratch_mount_horiz_compare'+params.t+'.png';
-            });
-        pager.setparams({
-            't': '',
-        });
-    </script>
-</figure>
-<p>
-It's impossible to see the changes between 'None' and 'New' in the figure above. To get a better idea of how this impacts our absolute pointing, I computed the detector-centered coordinates of an arbitrary source using BICEP3's CMB-derived beam centers with and without tilts applied. Any differences in the pointing or orientation axis is the level of potential bias that this impinged on our analysis.
-</p>
-
-    <figure>
-        <img src="figs/compare_hist.png"/>
-        <figcaption>
-            CMB derived beam center residuals using some abritrary mirror and source positions with and without tilts applied.
-        </figcaption>
-    </figure>
-<p>
-    We can see that the difference in the pointing is relatively small (compared to a statistical error of ~0.01&deg; from <a href="JBW2018"></a>). The difference in the orientation however which is ~0.02&deg; is at the level that we care about for absolute polarization calibration (see Table 2 of the <a href="https://arxiv.org/pdf/2012.05934.pdf">SPIE Paper</a>) and so the tilts can't simply be ignored for this type of analysis.
-</p>
-
 </section>
 
-<section><h2>Code Tests</h2>
-    <p>This section compares BMPM to the other pointing model functions to ensure I didn't introduce any weird bugs.</p>
-    <h3>BMPM vs. IPM</h3>
-    <p>Below I compare the outputs of <tt>beam_map_pointing_model</tt> to <tt>invpointing_model.m</tt> and <tt>keck_beam_map_pointing.m</tt> to show that the internal mechanics are functionally unchanged. Comparison is accomplished simply by passing no mirror or source parameters to <tt>beam_map_pointing_model</tt><sup><a href="#apps">[1]</a></sup>. For most cases, the residuals are close to (but not quite) machine precision.</p>
-
-    <figure>
-        <img alt="pager" id="pmpager" src="#" width="100%"/>
-        <figcaption>
-            The caption.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#pmpager",
-                {
-                    'Az Tilt Lat|lat':['-1','0','1'],
-                    'Az Tilt HA|ha': ['-1','0','1'],
-                    'El Tilt HA|el': ['-1','0','1'],
-                },
-                function(params) {
-                    return 'figs/pm_compare_lat_'+params.lat+'_ha_'+params.ha+'_el_'+params.el+'.png';
-                });
-            pager.setparams({
-                'lat': '0',
-                'ha': '0',
-                'el': '0',
-            });
-        </script>
-    </figure>
-
-<p>Note that the residuals are relatively high for any non-zero combination of Az tilt Lat/HA. It's not clear to me why that is. Regardless, the actual Az tilt lat/HA's from star pointing are much smaller (<0.5 arcmin) and the residuals are O($10^{-9}$ &deg;) at most so we should be okay to proceed.</p>
-
-    <h3>BMPM vs. Reckon</h3>
-    <p>
-    The per-detector ideal horizontal coordinates are calculated by passing the output of <tt>invpointing_model.m</tt> to MATLAB's <tt>reckon.m</tt> <a href="RWO2013"></a>. Similar to the previous section this is done by passing only the pointing model parameters and FPU data to the BMPM<sup><a href="#apps">[1]</a></sup>.
-    </p>
-    <figure>
-        <table>
-            <tr>
-                <td><img src="figs/reckon_compare_points.png" /></td>
-                <td><img src="figs/reckon_compare_res.png" /></td>
-            </tr>
-        </table>
-    <figcaption>
-
-    </figcaption>
-
-    </figure>
-
-    <h3>BMPM vs. KBMP</h3>
-    Lastly, assuming zeros for all offline pointing model parameters, the output for BMPM and <tt>keck_beam_map_pointing</tt> should be identical, regardless of the other inputs. The figures below show the x'/y' coordinates returned by both codes for some arbitrary mount, mirror, and source parameters.
-
-    <figure>
-        <table>
-            <tr>
-                <td><img src="figs/kbmp_compare_points.png" /></td>
-                <td><img src="figs/kbmp_compare_res.png" /></td>
-            </tr>
-        </table>
-        <figcaption>
-
-        </figcaption>
-
-    </figure>
-
 </section>
-
-
-<section><h2>Physical tilt origins</h2>
-
-    <p>Because we use nearby terrestrial sources, we account for parallactic effects and thus may need to consider the <i>origin</i> of the tilts as well since they affect the position of the aperture and mirror. Listed below are some possible cases that I've come up with.
-
-        <ul>
-        <li>Azimuth Tilt</li>
-        <ul>
-            <li>Lower Az Bearing Race: This could result from a thickness gradient in the lower race of the Azimuth bearing.</li>
-            <li>Tilted Base: This could be anywhere below the bearing ranging from the feet of the mount (pictured in Fig. 2.7) to the tilt of the entire building.</li>
-        </ul>
-        <li>Elevation Tilt</li>
-        <ul>
-            <li>Upper Az Bearing Race: Thickness gradients in the upper race of the Az bearing.</li>
-            <li>Elevation Bearings: Difference in heights between the rotational axis of the elevation bearings.</li>
-        </ul>
-    </ul>
-
-    In <tt>keck_beam_map_pointing</tt>, the tilts originate at the origin of the cartesian coordinate system which was arbitrarily defined to be at the floor of the groundshield.
-
-    </p>
-
-
-    <figure>
-        <img src="figs/tilt_diagram.png" width="60%"/>
-    </figure>
-
-
-
-    <figure>
-        <img alt="pager" id="tiltspager" src="#" width="60%"/>
-        <figcaption>
-            Pager showing different scenarios in which Azimuth and Elevation Tilts can occur.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#tiltspager",
-                {
-                    'Axis|a':['az','el'],
-                    'Case|c': ['1','2'],
-                },
-                function(params) {
-                    return 'figs/'+params.a+'tilt_case_'+params.c+'.png';
-                });
-            pager.setparams({
-                'a': 'az',
-                'c': '1',
-            });
-        </script>
-    </figure>
-
-    <p>How much does this actually matter though? At worst, we're dealing with systematic errors on the location of the aperture/mirror of roughly <6 cm.
-
-        The worst-case scenarios are listed below for a source that is ~200m away. The upper limit on the resulting bias on a derived mirror roll, which impinges a roughly one-to-one bias on polarization angles, is on the order of 0.02&deg;. BUT the direction of the real tilts may serve to cancel-out some effects. So while not immediately worrying for RPS analysis, this may need further investigation in the future. For now, we place the origin of the Azimuth tilt at the base of the telescope and the origin of the Elevation tilt at elevation axis.</p>
-        <table class="results center">
-        <tr>
-            <th>Tilt Dir.</th>
-            <th>Case</th>
-            <th>Tilt (from Starpointing) (&deg;)</th>
-            <th>Roll Bias (&deg;)</th>
-            <th>Angle Bias (&deg;)</th>
-        </tr>
-        <tr>
-            <td>Az HA</td>
-            <td>Tilted Building (<20m)</td>
-            <td>~0.003</td>
-            <td>~0.02</td>
-            <td>~0.02</td>
-        </tr>
-        <tr>
-            <td>El HA</td>
-            <td>Upper Az bearing (<4m)</td>
-            <td>~-0.03</td>
-            <td>~-0.03</td>
-            <td>~-0.03</td>
-        </tr>
-    </table>
-
-    <p>I should note that for Far-sidelobe measurements where the source is very close, this effect may not only be much more significant but one might need to consider whether the source and mount are affected by the same tilt or not (tilted bearing vs a tilted building, say). Though in reality, we likely won't need precision in FSL mapping to this precision for some time.</p>
-
-</section>
-
-<hr>
-
-<section class="appendix">
-<h2 class="appendix">Appendix</h2>
-    <h3>Example</h3>
-    You can find an example of how to load real data, apply the pointing model, and do a basic plot of a beam <a href="scripts/example_load_and_plot.txt" target="_blank">here</a>. You can run or copy/paste this script using a BICEP3 pipeline and it should produce the following plot:
-
-    <figure>
-        <img src="figs/example_map.png" />
-    </figure>
-
-
-
-    <h3 id="apps">Additional Applications</h3>
-    <p>
-        While the primary function of the BMPM is to convert pointing into instrument-fixed coordinates, it is possible to utilize this function to convert your pointing into a number of intermediate coordinate systems by passing empty arrays $([\,])\,$ as arguments instead.
-    </p>
-    <ul>
-        <li><b>Ideal Horizonal Coordinates:</b></li>
-        \begin{equation}
-        [A,\,E,\,PA] = \text{beam_map_pointing_model}(A_{0},\,E_{0},\,K_{0},\,PM,\,[\,],\,[\,],\,[\,],\,[\,])
-        \end{equation}
-        Where $PA$ is the parallactic angle measured from the boresight orientation vector to the great circle connecting the boresight pointing to zenith. From our definition of Deck, $K = 90^\circ-PA$.
-        This option is equivalent to <tt>invpointing_model.m</tt>.
-
-        <li><b>Per-Detector Ideal Horizontal Coordinates:</b></li>
-        \begin{equation}
-        [A_d,\,E_d,\,PA_d] = \text{beam_map_pointing_model}(A_{0},\,E_{0},\,K_{0},\,PM,\,[\,],\,[\,],\,[\,],\,FPU)
-        \end{equation}
-        This is equivalent to passing the output from <tt>invpointing_model.m</tt> into <it>MATLAB</it>'s <tt>reckon.m</tt> <a href="RWO2013"></a>.
-
-        <li><b>Reflected Apparent Horizonal Coordinates:</b></li>
-        \begin{equation}
-        [A_{app},\,E_{app},\,PA_{app}] = \text{beam_map_pointing_model}(A_{0},\,E_{0},\,K_{0},\,PM,\,[\,],\,Mirror,\,[\,],\,[\,])
-        \end{equation}
-
-        Or
-
-        \begin{equation}
-        [A_{app,d},\,E_{app,d},\,PA_{app,d}] = \text{beam_map_pointing_model}(A_{0},\,E_{0},\,K_{0},\,PM,\,[\,],\,Mirror,\,[\,],\,FPU)
-        \end{equation}
-
-        <li><b>Boresight Centered Coordinates:</b></li>
-        \begin{equation}
-        [x,\,y,\,\phi] = \text{beam_map_pointing_model}(A_{0},\,E_{0},\,K_{0},\,PM,\,Mount,\,Mirror,\,Source,\,[\,])
-        \end{equation}
-
-
-    </ul>
-
-
-
     <h3>Code</h3>
     <p>Below is a list of code that was used for this analysis. The entries under <tt>pipeline code</tt> is committed to the pipeline and can be found in the designated directories. Those under <tt>posting code</tt> can be found in the <tt>scripts/</tt> directory of this posting.</p>
     <p id="code"></p>

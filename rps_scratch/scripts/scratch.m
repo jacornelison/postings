@@ -15,6 +15,45 @@ data = textscan(f,'%f%f%f%f%f%f%f%f%f%s','delimiter',',','HeaderLines',1);
 % time.time() epoch is 01 Jan 1970 UTC
 time = data{1}/3600/24 + date2mjd(1970,01,01,0,0,0);
 
+[B,A] = butter(3,1/2000,'low');
+ind = (length(time)-3*24*3600):length(time);
+Tsrc = data{2};
+T = Tsrc(ind)*1000;
+Tfilt = medfilt1(filtfilt(B,A,T));
+st = datenum(mjd2datestr(time(ind(1))),'yyyy-mmm-dd:HH:MM:SS');
+et = datenum(mjd2datestr(time(ind(end))),'yyyy-mmm-dd:HH:MM:SS');
+xData = linspace(st,et,length(ind));
+P = 1-0.15*(Tfilt-mean(Tfilt));
+
+
+figure(1)
+clf;
+subplot(2,1,1)
+hold on;
+plot(xData,T)
+plot(xData,Tfilt,'LineWidth',2)
+grid on
+ylabel('BSNS Temp (K)')
+legend('Raw LabJack data','Filtered')
+ax = gca;
+ax.XTickLabel = [];
+
+subplot(2,1,2)
+plot(xData,P)
+grid on
+ylabel('BSNS Output Amplitude (Normalized)')
+ylim([-1 1]*0.1+1)
+ax = gca;
+ax.XTick = xData;
+datetick('x','dd-mmm-yyyy','keeplimits')
+xtickangle(20)
+
+sgtitle('BSNS Monitor Plot for FFBM 2018 Run')
+
+%%
+figure(2)
+hist(medfilt1(filtfilt(B,A,T)),100)
+
 %%
 %time, srctemp, PID, tiltout+, tiltout-,tilttemp+,tilttemp-
 az_offs = [-4.5,-13,4,-4.5,4.0];
