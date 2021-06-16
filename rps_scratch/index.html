@@ -48,13 +48,15 @@ Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 
     <script type="text/javascript">
         pager.link("#scanpager",
             {
+                'Plot|p':['Tilt|','Azimuth Offset|_azoff'],
                 'Obs|s':['2','3','4','5','6','7','8','9','10','11','12','13','14'],
 
             },
             function(params) {
-                return 'figs/tilt_monitor_sch_'+params.s+'.png';
+                return 'figs/tilt_monitor_sch_'+params.s+params.p+'.png';
             });
         pager.setparams({
+            'p':'_azoff',
             's': '7',
         });
     </script>
