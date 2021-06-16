@@ -43,12 +43,12 @@
 <figure>
     <img alt="pager" id="scanpager" src="#" width="100%"/>
     <figcaption>
-
+Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 correspond to DK=0; 4 to 6 at DK=90; 7 to 9 at DK=45; 10 to 12 at DK=135; and 13 to 14 at DK=45.
     </figcaption>
     <script type="text/javascript">
         pager.link("#scanpager",
             {
-                'Sch|s':['7','8','9','13','14'],
+                'Obs|s':['2','3','4','5','6','7','8','9','10','11','12','13','14'],
 
             },
             function(params) {
@@ -63,55 +63,56 @@
 </section>
 
 </section>
-    <h3>Code</h3>
-    <p>Below is a list of code that was used for this analysis. The entries under <tt>pipeline code</tt> is committed to the pipeline and can be found in the designated directories. Those under <tt>posting code</tt> can be found in the <tt>scripts/</tt> directory of this posting.</p>
-    <p id="code"></p>
+
+<!--    <h3>Code</h3>-->
+<!--    <p>Below is a list of code that was used for this analysis. The entries under <tt>pipeline code</tt> is committed to the pipeline and can be found in the designated directories. Those under <tt>posting code</tt> can be found in the <tt>scripts/</tt> directory of this posting.</p>-->
+<!--    <p id="code"></p>-->
 
 
-    <h3>References</h3>
+<!--    <h3>References</h3>-->
 
-    <p id="references"></p>
+<!--    <p id="references"></p>-->
 
-    <p id="testp"></p>
+<!--    <p id="testp"></p>-->
 
-    <script type="text/javascript">
+<!--    <script type="text/javascript">-->
 
-        // Code name
-        var codes = [
-            "\<b\>Pipeline Code\</b\>",
-            "util/encoder_to_raw_mount_coords.m",
-            "util/beam_map_pointing_model.m",
-            "\<b\>Posting Code\</b\>",
-            "sim_scan.m",
-            "ipm_check.m",
-            "reckon_check.m",
-            "kbmp_check.m",
-            "example_load_and_plot",
-            ];
+<!--        // Code name-->
+<!--        var codes = [-->
+<!--            "\<b\>Pipeline Code\</b\>",-->
+<!--            "util/encoder_to_raw_mount_coords.m",-->
+<!--            "util/beam_map_pointing_model.m",-->
+<!--            "\<b\>Posting Code\</b\>",-->
+<!--            "sim_scan.m",-->
+<!--            "ipm_check.m",-->
+<!--            "reckon_check.m",-->
+<!--            "kbmp_check.m",-->
+<!--            "example_load_and_plot",-->
+<!--            ];-->
 
-        // Short Code description
-        var desc = [
-            "",
-            "Converts raw encoder values from GCP arcfiles to Raw Mount Coordinates $(A_0,E_0,K_0)$.",
-            "Converts Raw Mount Coordinates to inst.-fixed coords.",
-            "",
-            "Makes example az/el/dk scans and runs them through the pointing models.",
-            "Compares BMPM outputs to IPM for Fig. 1.3.",
-            "Compares BMPM outputs to reckon for Fig. 1.4.",
-            "Compares BMPM outputs to KBMP for Fig. 1.5.",
-            "Example code to load real data and apply the pointing model.",
-        ];
+<!--        // Short Code description-->
+<!--        var desc = [-->
+<!--            "",-->
+<!--            "Converts raw encoder values from GCP arcfiles to Raw Mount Coordinates $(A_0,E_0,K_0)$.",-->
+<!--            "Converts Raw Mount Coordinates to inst.-fixed coords.",-->
+<!--            "",-->
+<!--            "Makes example az/el/dk scans and runs them through the pointing models.",-->
+<!--            "Compares BMPM outputs to IPM for Fig. 1.3.",-->
+<!--            "Compares BMPM outputs to reckon for Fig. 1.4.",-->
+<!--            "Compares BMPM outputs to KBMP for Fig. 1.5.",-->
+<!--            "Example code to load real data and apply the pointing model.",-->
+<!--        ];-->
 
-        // Make a list of references
-        var post = document.getElementById("code");
-        var msg = "<table class=\"code\">";
-        for (var code in codes){
-            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
-        };
-        msg = msg+ "</table>";
-        post.innerHTML = msg;
+<!--        // Make a list of references-->
+<!--        var post = document.getElementById("code");-->
+<!--        var msg = "<table class=\"code\">";-->
+<!--        for (var code in codes){-->
+<!--            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";-->
+<!--        };-->
+<!--        msg = msg+ "</table>";-->
+<!--        post.innerHTML = msg;-->
 
-    </script>
+<!--    </script>-->
 
 
     <script type="text/javascript">
