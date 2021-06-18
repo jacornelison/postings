@@ -48,23 +48,27 @@ Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 
     <script type="text/javascript">
         pager.link("#scanpager",
             {
-                'Plot|p':['Tilt|','Azimuth Offset|_azoff'],
-                'Obs|s':['2','3','4','5','6','7','8','9','10','11','12','13','14'],
+                'Plot|p':['Raw|','Destepped|_corr'],
+                'DK|k':['0','90','45','135','45_2'],
+                'Azoff|a':['-13','-4','4'],
 
             },
             function(params) {
-                return 'figs/tilt_monitor_sch_'+params.s+params.p+'.png';
+                return 'figs/tilt_monitor_dk_'+params.k+'_azoffs_'+params.a+params.p+'.png';
             });
         pager.setparams({
-            'p':'_azoff',
-            's': '7',
+            'p':'',
+            'k': '90',
+            'a':'-13'
         });
     </script>
 </figure>
 
-</section>
+    
 
 </section>
+
+
 
 <!--    <h3>Code</h3>-->
 <!--    <p>Below is a list of code that was used for this analysis. The entries under <tt>pipeline code</tt> is committed to the pipeline and can be found in the designated directories. Those under <tt>posting code</tt> can be found in the <tt>scripts/</tt> directory of this posting.</p>-->
