@@ -64,11 +64,48 @@ Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 
     </script>
 </figure>
 
-    
+
 
 </section>
 
+<section>
 
+    <figure>
+        <img alt="pager" id="tilepager" src="#" width="60%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            var tpager = new Pager("tilepager")
+            tpager.link("#tilepager",
+                {
+                    'Plot|p':['$\\theta_{tilt}$|tilt','$\\phi_{pair}$|phiq','phi0','phi90','tiltstd'],
+                    'DK|k':['0','90','45','135','45_2'],
+                    'Cuts|c':['None|','tilt std<0.05|_cut']
+
+
+                },
+                function(params) {
+                    return 'figs/tileplot_dk_'+params.k+'_'+params.p+params.c+'.png';
+                });
+            tpager.setparams({
+                'p':'tilt',
+                'k': '0',
+                'c': '_cut',
+
+            });
+        </script>
+    </figure>
+
+    <figure>
+        <img src="figs/scatterplot_alldk.png" width="50%"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+</section>
 
 <!--    <h3>Code</h3>-->
 <!--    <p>Below is a list of code that was used for this analysis. The entries under <tt>pipeline code</tt> is committed to the pipeline and can be found in the designated directories. Those under <tt>posting code</tt> can be found in the <tt>scripts/</tt> directory of this posting.</p>-->
