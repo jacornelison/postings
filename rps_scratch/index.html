@@ -30,9 +30,9 @@
     <h1>RPS_scratch</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
-        2021 May 18
+        YYYY MMM DD
     </time> —
-    J. Cornelison, C. Verges
+    J. Cornelison
 </header>
 
 <hr>
@@ -48,13 +48,13 @@ Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 
     <script type="text/javascript">
         pager.link("#scanpager",
             {
-                'Plot|p':['Raw|','Destepped|_corr'],
+                //'Plot|p':['Raw|','Destepped|_corr'],
                 'DK|k':['0','90','45','135','45_2'],
                 'Azoff|a':['-13','-4','4'],
 
             },
             function(params) {
-                return 'figs/tilt_monitor_dk_'+params.k+'_azoffs_'+params.a+params.p+'.png';
+                return 'figs/tilt_monitor_dk_'+params.k+'_azoffs_'+params.a+'.png';//params.p+'.png';
             });
         pager.setparams({
             'p':'',
@@ -70,7 +70,7 @@ Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 
 
 <section>
 
-    <figure>
+    <figure id="tilefig">
         <img alt="pager" id="tilepager" src="#" width="60%"/>
         <figcaption>
 
@@ -82,8 +82,6 @@ Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 
                     'Plot|p':['$\\theta_{tilt}$|tilt','$\\phi_{pair}$|phiq','phi0','phi90','tiltstd'],
                     'DK|k':['0','90','45','135','45_2'],
                     'Cuts|c':['None|','tilt std<0.05|_cut']
-
-
                 },
                 function(params) {
                     return 'figs/tileplot_dk_'+params.k+'_'+params.p+params.c+'.png';
