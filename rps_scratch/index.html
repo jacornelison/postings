@@ -38,48 +38,20 @@
 <hr>
 
 <section>
+    <h3>Is the </h3>
     <p></p>
-
-<figure>
-    <img alt="pager" id="scanpager" src="#" width="100%"/>
-    <figcaption>
-Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 correspond to DK=0; 4 to 6 at DK=90; 7 to 9 at DK=45; 10 to 12 at DK=135; and 13 to 14 at DK=45.
-    </figcaption>
-    <script type="text/javascript">
-        pager.link("#scanpager",
-            {
-                //'Plot|p':['Raw|','Destepped|_corr'],
-                'DK|k':['0','90','45','135','45_2'],
-                'Azoff|a':['-13','-4','4'],
-
-            },
-            function(params) {
-                return 'figs/tilt_monitor_dk_'+params.k+'_azoffs_'+params.a+'.png';//params.p+'.png';
-            });
-        pager.setparams({
-            'p':'',
-            'k': '90',
-            'a':'-13'
-        });
-    </script>
-</figure>
-
-
-
-</section>
-
-<section>
 
     <figure id="tilefig">
         <img alt="pager" id="tilepager" src="#" width="60%"/>
         <figcaption>
-
+            $\theta_{tilt}$: Raw tilt readout averaged over the whole rasterset. $\phi_{pair}$: RPS-derived 'pair-diff' polarization angle with the all-DK average subtracted. $\phi_{0}$: Per detector polarization angles for detectors designed to be close to $\phi=0^o$ (e.g. Pol B's for MCE0 and Pol A's for MCE's 1 thru 3). $\phi_{90}$: Per detector polarization angles for detectors designed to be close to $\phi=90^o$
         </figcaption>
         <script type="text/javascript">
             var tpager = new Pager("tilepager")
             tpager.link("#tilepager",
                 {
-                    'Plot|p':['$\\theta_{tilt}$|tilt','$\\phi_{pair}$|phiq','phi0','phi90','tiltstd'],
+                    'Plot|p':['$\\theta_{tilt}$|tilt','$\\phi_{pair}$|phiq','$\\phi_0' +
+                    '$|phi0','$\\phi_{90}$|phi90','$\\sigma_{tilt}$|tiltstd'],
                     'DK|k':['0','90','45','135','45_2'],
                     'Cuts|c':['None|','tilt std<0.05|_cut']
                 },
@@ -98,9 +70,63 @@ Raw and corrected timestreams of the tilt meter in the RPS. Observations 1 to 3 
     <figure>
         <img src="figs/scatterplot_alldk.png" width="50%"/>
         <figcaption>
+            Scatter plots of $\phi_{pair}$ vs $\theta_{tilt}$ for each DK-observation. No strong correlations can be seen in any of the plots.
+        </figcaption>
+    </figure>
+
+
+</section>
+
+In words, destepping is ...
+
+<section>
+
+    <figure>
+        <img src="figs/tilt_timestream_compare.png" width="100%"/>
+        <figcaption>
 
         </figcaption>
     </figure>
+
+
+    <figure>
+        <img src="figs/tilt_timestream_compare_with_pol.png" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+
+</section>
+
+<section>
+
+
+    <figure>
+        <img alt="pager" id="scanpager" src="#" width="100%"/>
+        <figcaption>
+            Raw timestreams of the tilt meter in the RPS. Observations 1 to 3 correspond to DK=0; 4 to 6 at DK=90; 7 to 9 at DK=45; 10 to 12 at DK=135; and 13 to 14 at DK=45.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#scanpager",
+                {
+                    //'Plot|p':['Raw|','Destepped|_corr'],
+                    'DK|k':['0','90','45','135','45_2'],
+                    'Azoff|a':['-13','-4','4'],
+
+                },
+                function(params) {
+                    return 'figs/tilt_monitor_dk_'+params.k+'_azoffs_'+params.a+'.png';//params.p+'.png';
+                });
+            pager.setparams({
+                'p':'',
+                'k': '90',
+                'a':'-13'
+            });
+        </script>
+    </figure>
+
 
 
 </section>
