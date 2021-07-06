@@ -37,9 +37,64 @@
 
 <hr>
 
+<!--
+- What are you doing?
+- Why are you doing it?
+- Who's your audience? Why should they care?
+- Can you boil this down to the most important parts?
+
+-->
+
+
 <section>
-    <h3>Is the tilt physical?</h3>
-    <p></p>
+    <h2></h2>
+    <h3>The Concept</h3>
+    <p>Knowledge of the RPS's polarization orientation is essential. We measure the orientation via a precision tilt meter built into the RPS itself. Either we need to actively keep the tilt stable to within some target threshold, or we need to track the tilt at all times so we can account for it during analysis. In previous RPS obs campaigns, the former approach was taken where the tilt was monitored by-eye via multimeter and zeroed at least once daily using the mast guy lines. In 2018, I opted for the latter approach where I performed an initial zeroing of the tilt meter and then digitally recorded the tilt (at 1 sample per second) over the course of the RPS campaign using a LabJack.</p>
+
+
+    <h3>The Problem</h3>
+    <p>The readout of the tilt meter is affected by electrical coupling with the 2-phase/50 pole stepper motor in the rotation stage. Whenever the rotation stage is moved, the tilt readout drops to some consistently lower, noiser value. When the stage completes its motion the tilt reading increases, but there is a chance that the tilt will not return to the previous level before the stage was moved and instead settle at some other value. This looks like a discontinuous step in the tilt readout. Thus, the relative tilt from raster-to-raster is unreliable. Further, because the stage was rotated between when the tilt calibration was completed and when the mast was zeroed, we cannot guarantee the the absolute tilt of the RPS either.</p>
+
+    <figure>
+        <img src="figs/tilt_timestream_annotated.png" width="100%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+    <p>
+        Note that when the stage not commanded for extended periods of time (during fridge cycles for instance), no stepping is seen and a diurnal fluctuation in tilt (likely from the sun) can be measured.
+    </p>
+
+    <h3>Hypothesis</h3>
+    <p>The amplitude of the tilt meter is electrically coupled to the current supplied to the various stators of the rotation stage's stepper motor. As a result, when the stage is stopped, a DC offset can be seen in the tilt which is proportional to the holding current supplied to a particular stator. When the stage is in motion, the coupling amplitude results from an averaging down over all of the possible currents. Thus the value that the tilt goes to when the stage is moving should be consistent from movement to movement.</p>
+
+
+
+    <h3>Evidence</h3>
+    <p>If the coupling of the amplitude of the stage while in motion is consistent between movements, then we should be able to see the same diurnal fluctuations that can be seen when the RPS is left unmoved for extended periods of time which is confirmed in Fig. ##. </p>
+
+    <figure>
+        <img src="figs/tilt_compare_moving_vs_extended_rest.png" width="100%">
+        <figcaption>
+            The median has been subtract for this plot to account for the DC offset from the rotation stage.
+        </figcaption>
+    </figure>
+
+
+    <h3>Conclusion</h3>
+    <p>
+        Figure ## confirms that the tilt offset is always the same while the stage is rotating. At the very least, this allows us to acquire an upper limit on the relative fluctuation of source from diurnal heating. Further, we could arguably account for these fluctuations in the timestreams themselves by interpolating between movements.
+    </p>
+
+    <p>
+        In order to reestablish the absolute calibration of the tilt, we would need ...
+    </p>
+
+    <p>
+        ... could be a likely cause, but more investigation is needed.
+    </p>
 
     <figure id="tilefig">
         <img alt="pager" id="tilepager" src="#" width="60%"/>
