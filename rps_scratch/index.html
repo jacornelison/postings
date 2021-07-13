@@ -27,7 +27,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS_scratch</h1>
+    <h1>Tilt Meter Systematics</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         YYYY MMM DD
@@ -45,6 +45,282 @@
 
 -->
 
+<!--
+<section>
+
+
+
+    <figure class="table">
+        <table class="center results">
+
+            <tr>
+                <th colspan="4">Beam Centers</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>Uncertainty</th>
+                <th>Bias $\phi_{pair}\,(^o)$</th>
+                <th>Reference</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td>$10\%$</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Ground Reflections</td>
+                <td>-25 dB</td>
+                <td>$<<0.01$</td>
+                <td><a href="RPR"></a> &sect; 5.2</td>
+            </tr>
+            <tr>
+                <td>Mirror Deformations</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Mast Swaying</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <th colspan="4">Mirror / Source Estimation</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>Uncertainty (m)</th>
+                <th>Bias $\phi_{pair}$</th>
+                <th>Reference</th>
+            </tr>
+            <tr>
+                <td>Starpointing</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Tilt Origins</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>CMB-derived pointing</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Mast Position Repeatability</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Diurnal Mirror Heating</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <th colspan="4">Polarization Angle</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>Uncertainty (m)</th>
+                <th>Bias $\phi_{pair}$</th>
+                <th>Reference</th>
+            </tr>
+            <tr>
+                <td>Wire Grid Horizontal</td>
+                <td>$0.01^o$</td>
+                <td>0.01</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>RPS Tiltmeter (Relative)</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>RPS Tiltmeter (Absolute)</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>RPS output stability</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>RPS Collimation</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>RPS Pointing / Beam Shape</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Mirror differential polarization reflection</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>DK-dependent Variation</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <th colspan="4"></th>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th></th>
+                <th>-</th>
+                <th></th>
+            </tr>
+
+        </table>
+
+        <figcaption>
+            Table of possible sources of systematics and their propagated errors.
+        </figcaption>
+    </figure>
+
+
+</section>
+
+
+<section>
+<h2></h2>
+
+    <figure class="table">
+        <table class="center results">
+
+            <tr>
+                <th colspan="4">Solidworks</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>Uncertainty (m)</th>
+                <th>Bias Tilt (&deg;)</th>
+                <th>Bias Roll (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Aperture Height</td>
+                <td>$0.0100$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+                <td>$^{0.0001}_{0.0001}$</td>
+            </tr>
+            <tr>
+                <td>Mirror Height</td>
+                <td>$0.1000$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+                <td>$^{0.0001}_{0.0001}$</td>
+            </tr>
+            <tr>
+                <th colspan="4">Star Pointing</th>
+            </tr>
+            <tr>
+                <th>Parameter</th>
+                <th>$2\sigma$ Stat. Uncert. (&deg;)</th>
+                <th>Bias Tilt (&deg;)</th>
+                <th>Bias Roll (&deg;)</th>
+            </tr>
+            <tr>
+                <td>flex_cos</td>
+                <td>$0.0000$</td>
+                <td>$^{NaN}_{NaN}$</td>
+                <td>$^{NaN}_{NaN}$</td>
+            </tr>
+            <tr>
+                <td>flex_sin</td>
+                <td>$0.0000$</td>
+                <td>$^{NaN}_{NaN}$</td>
+                <td>$^{NaN}_{NaN}$</td>
+            </tr>
+            <tr>
+                <td>az_tilt_ha</td>
+                <td>$0.0015$</td>
+                <td>$^{0.0003}_{-0.0003}$</td>
+                <td>$^{0.0037}_{-0.0037}$</td>
+            </tr>
+            <tr>
+                <td>az_tilt_lat</td>
+                <td>$0.0015$</td>
+                <td>$^{0.0007}_{-0.0007}$</td>
+                <td>$^{-0.0014}_{0.0015}$</td>
+            </tr>
+            <tr>
+                <td>el_tilt</td>
+                <td>$0.0082$</td>
+                <td>$^{0.0001}_{-0.0001}$</td>
+                <td>$^{0.0223}_{-0.0223}$</td>
+            </tr>
+            <tr>
+                <td>collim_x</td>
+                <td>$0.0000$</td>
+                <td>$^{NaN}_{NaN}$</td>
+                <td>$^{NaN}_{NaN}$</td>
+            </tr>
+            <tr>
+                <td>collim_y</td>
+                <td>$0.0000$</td>
+                <td>$^{NaN}_{NaN}$</td>
+                <td>$^{NaN}_{NaN}$</td>
+            </tr>
+            <tr>
+                <td>collim_mag</td>
+                <td>$0.0012$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+            </tr>
+            <tr>
+                <td>collim_dir</td>
+                <td>$0.1279$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+                <td>$^{0.0000}_{0.0000}$</td>
+            </tr>
+            <tr>
+                <td>az_zero</td>
+                <td>$0.0145$</td>
+                <td>$^{0.0001}_{-0.0001}$</td>
+                <td>$^{-0.0097}_{0.0098}$</td>
+            </tr>
+            <tr>
+                <td>el_zero</td>
+                <td>$0.0013$</td>
+                <td>$^{-0.0007}_{0.0006}$</td>
+                <td>$^{0.0000}_{-0.0000}$</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th></th>
+                <th>$\pm 0.0011$</th>
+                <th>$\pm 0.0247$</th>
+            </tr>
+
+        </table>
+
+        <figcaption>
+            Table of possible sources of systematics and their propagated errors. Errors for the parameters derived from Solidworks models are extremely conservative upper limits. Lastly, uncertainties for starpointing were estimated by bootstrap. Because the number of data points is low $(N_{stars}=32)\,$, I double the uncertainty returned by the bootstrap to use as a conservative estimate.
+        </figcaption>
+    </figure>
+
+</section>
+-->
 
 <section>
     <h2></h2>
@@ -81,6 +357,33 @@
             The median has been subtract for this plot to account for the DC offset from the rotation stage.
         </figcaption>
     </figure>
+
+    <h3>Pol Angle Relative Calibration</h3>
+    <p>At the most pessimistic, we can take the min and max deviation from the moving-stage DC offset and call that the upper limit on the systematic uncertainty of the relative calibration. This comes out to $\pm0.09^o$.</p>
+
+    <h3>Pol Angle Abs Cal</h3>
+    Facts:
+    <ul>
+        <li>I calibrated the tilt at some DC offset
+        <li>I levelled at (likely) some other DC offset. What if that was at the opposite end?
+        <li>The offset can either positive or negative WRT moving-source DC offset
+        <li>The max offset seen is ~0.25deg WRT moving-source offset
+    </ul>
+    Assumptions:
+    <ul>
+        <li>DC offset can go equally pos. or neg. WRT moving-source DC offset
+        <li>The DC offset when I levelled compared to when I calibrated was the exact opposite of what I calibrated at.</ul>
+
+    Result:
+        The systematic error on the abs cal of the tilt meter is $2\times0.25+2\times0.25\,=\,1^o$
+
+
+    <h3>Upper limit on mast swaying</h3>
+    <p>If we assume that the diurnal fluctuations in tilt is from heating of the mast's guy wires, then the source position would also be moving as the mast sways throughout the day. Using the same upper limit from the relative calibration ($\pm0.05^o$) we can calculate the apparent change in Azimuth of the source position:</p>
+
+    $$\sigma_{Az} = \tan^{-1}\left(\frac{H_{mast}\tan\left(\sigma_{tilt}\right)}{D_{src}}\right)$$
+
+    <p>Where $H_{mast}$ is the height of the mast from its pivot point (i.e. just the roof of MAPO) and $D_src$ is the distance from BICEP3 to the source, which are both known to be $H_{mast}=12\text{m}$ and $D_{src}=195.5\text{m}$. This gives us $\sigma_{Az} = \pm0.003^o$ which is currently subdominant to other systematics.</p>
 
 
     <h3>Conclusion</h3>
@@ -131,7 +434,7 @@
 
 
 </section>
-
+<!--
 <section>
 <h3>Comparing tilt during Fridge Cycles to RPS schedules</h3>
 
@@ -185,15 +488,15 @@
 
 
 </section>
-
+-->
 <!--    <h3>Code</h3>-->
 <!--    <p>Below is a list of code that was used for this analysis. The entries under <tt>pipeline code</tt> is committed to the pipeline and can be found in the designated directories. Those under <tt>posting code</tt> can be found in the <tt>scripts/</tt> directory of this posting.</p>-->
 <!--    <p id="code"></p>-->
 
 
-<!--    <h3>References</h3>-->
+    <h3>References</h3>
 
-<!--    <p id="references"></p>-->
+    <p id="references"></p>
 
 <!--    <p id="testp"></p>-->
 
@@ -277,37 +580,22 @@
 
         // Shorthand tags
         var tags = [
-            "KWY2007",
-            "CAB2012",
-            "RWO2013",
-            "IDB2013",
-            "CAB2014",
-            "JBW2018",
-            "JAC2019",
-        ];
+            "RPR",
+            "SPIE2020",
+            ];
 
         // Links
         // Truncate the link down to the www directory in which is lies if you can.
         var hrefs = [
-            "~bicep/analysis_logbook_north/20070318_pointing_supplement/pointing_article.pdf",
-            "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-            "bkcmb/analysis_logbook/analysis/20130430_reckon/reckon.html",
-            "bkcmb/analysis_logbook/analysis/20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
-            "keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
-            "/bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
-            "bkcmb/analysis_logbook/analysis/20190516_rps_pointing_defs/",
+            "https://drive.google.com/file/d/1gENnPU4MOMHUUR0Obk87jwCdb37JmVUb/view",
+            "https://arxiv.org/pdf/2012.05934.pdf",
         ];
 
 
         // Posting titles
         var desc = [
-            "BICEP Pointing Supplement",
-            "Pointing Model for Keck Beam Maps",
-            "Ki Won's pointing Note and Matlab Reckon()",
-            "Calculations for Beam Mapping in Spherical Coordinates",
-            "Spherical Coordinates for Beam Maps",
-            "B2016, B2017, and B2018 CMB-derived beam center correlations",
-            "Pointing Model Definitions for Polarized Beam Mapping",
+            "Cornelison Research Project Report",
+            "Cornelison SPIE 2020 Proceedings",
         ];
         // Debug
         var posty = document.getElementById("testp");
