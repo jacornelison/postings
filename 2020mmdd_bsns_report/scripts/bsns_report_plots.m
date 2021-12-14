@@ -1,4 +1,4 @@
-function bsns_report_plots()
+ function bsns_report_plots()
 
 %% Global Initializations
 close all

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Isaac Tests — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>In-Situ Angle Checker (ISAAC)</h1>
+
+    <time datetime="2021-12-15" class="published updated">
+        2021 Dec 15
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<section><h2>Motivation and Design</h2>
+
+
+    <figure>
+        <table>
+            <tr>
+                <td><img src="figs/PXL_20211209_021610655.jpg"></td>
+                <td><img src="figs/PXL_20211209_021639144.jpg"></td>
+            </tr>
+        </table>
+    </figure>
+
+    <p>The In-Situ Absolute Angle Checker (ISAAC) is a room-temperature, 90GHz receiver with a polarizing wire grid. The ISAAC would be placed on DSL along the BICEP-to-RPS line of site with the idea that it, having no moving parts, can serve as a sort of "control subject" receiver that possesses well known polarization properties, has precisely calibrated polarization orientation (WRT to gravity), and observes the RPS during normal observations.</p>
+</section>
+
+
+<section><h2>Baseline</h2>
+    <p>
+        We set the ISAAC receiver (sans wire grid) ~1m away from the RPS with the RPS unattenuated and chopping at 20Hz. We then
+        collected mock rastersets where the RPS rotated through 360 degrees (-180&deg; to 180&deg; in 30&deg;
+        increments), resting for 150 seconds at each angle. The ISAAC itself was exposed to ambient air and <i>not</i> under temperature control. While it was placed on the same table, the table was wooden and seemed to deform in unpredicable (but measureable) ways when people walked near it.
+        The ISAAC output was read out by an SRS lock-in amp, the
+        X and Y channels of which where digitally recorded by a LabJack.
+    </p>
+    <figure>
+        <img src="figs/20211122_162442_cropped.jpg">
+        <figcaption>
+
+        </figcaption>
+
+    </figure>
+    <p>Each mock rasterset takes ~30 minutes to complete, so the number of rastersets we could take was limited from time constraints. For the first 10 datasets, we homed the RPS between the mock rasters and for the following 20 or so, we only
+        homed before the first raster. The homing repeatability is worse than the bi-directional repeatability (0.06&deg;
+        vs 0.002&deg;), so the difference between the repeatability of angle estimates between the two groups of data should
+        reflect this.</p>
+
+    <figure>
+        <img alt="Maps pager" id="histpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager",
+                {
+                    'Angle Estimations|h': ['Homing|homing','No Homing|nohoming'],
+                },
+                function(params) {
+                    return 'figs/isaac_angle_hist_0dB_'+params.h+'.png';
+                });
+            pager.setparams({
+                'h': 'homing',
+            });
+        </script>
+    </figure>
+
+    <p>
+        The standard deviation of the angle estimates of the two groups are 0.08&deg; and 0.02&deg; for homing and no-homing respectively. For the homing rastersets, we're close to expected considering the low sample size. For the non-homing rastersets, we're expectedly lower but only by a factor of 3 instead of 30. Considering that the ISAAC wasn't under thermal feedback, nor secured to a particularly rigid surface, we're not particularly surprised we didn't get down to arcsecond-level repeatability.
+    </p>
+
+</section>
+
+<section><h2>Repeatability VS SNR</h2>
+    <p>Next we examined how the repeatability was affected by the SNR of the measurements. The final position of the ISAAC would be at DSL (~200m) which is too far to do in-lab, so we simulated this by attenuating the RPS instead. In addition, we typically attenuate the RPS by 10dB to prevent the detectors from saturating during observations. So in total, we estimate the effective observing amplitude to be ~-55dB, -45dB to account for the inverse square law and another 10 to account for the detectors. For this test, we first attenuated to 30dB, 45dB, and then to 55dB. We picked only three points because we were limited by time. The figure below shows the standard deviations on the angle estimations as a function of attenuation.</p>
+
+    <figure>
+        <img src="figs/plot_est_vs_att.png">
+        <figcaption>
+
+        </figcaption>
+
+    </figure>
+    <p>
+        The results aren't exactly promising. While the uncertainty is unchanged from 0db to 30db attenuation, the uncertainty increases by an order of magnitude going to 45dB. At 55dB, the angle is practically undetectable.</p>
+    <p>
+        The are some important aspects of this benchtop measurement that differ from our expectation of the outdoor measurements that should improve our constraining power.</p>
+    <ol>
+        <li>The gain of both the LNA and detector are expected to increase as they get colder out of doors by at least 3dB each.
+        <li>The ISAAC wasn't under thermal control and it was difficult to align properly on the fold-out table upon which is was placed.
+        <li>I expect the noise floor will be lower outside since we won't be surrounded by noisy electronics and a bunch of reflective metal surfaces.
+    </ol>
+    <p>
+        Whether or not the combination of these differences fixes things is still to be determined.  At worst, I've found that it serves as an excellent cross-check of the wire grid calibration that we do on the Bridgeport knee mill, so the current plan is to continue setting up the angle checker for outdoor measurements.
+    </p>
+</section>
+
+<section>
+    <h2>ISAAC as a wire grid calibration cross-check</h2>
+    <h3>Summary</h3>
+    <ul>
+        <li>Indoor benchtop tests show that measurements of the RPS grid angle using the ISAAC compare nicely to the measurements from counting wires on a knee mill.</li>
+        <li>Indoor tests also suggest we can achieve higher repeatability from scan-to-scan by <i>not</i> homing.</li>
+        <li>Outdoor tests, however, show the repeatability with and without homing degrade greatly and evidence suggests that the RPS, not the ISAAC, was the culprit.</li>
+        <li>After confirming the above using observations with BICEP3, I inspected the RPS hardware and found a loose connector. However, it is unclear whether reseating the connector improved performance.</li>
+        <li>After looking over the outside ISAAC and B3 obs results, I'm no longer convinced of quality of the indoor results since I took so little data and the outdoor measurements both sometimes gave reasonable looking results.</li>
+    </ul>
+    <h3>Indoor Tests</h3>
+
+    <p>
+        After installing and calibrating the wire grids in the Bridgeport, I set the RPS and ISAAC on a benchtop for indoor measurements. For these measurements, I rotated from -180&deg; to 180&deg; in 30&deg;. Because we were still building the parts for it, the ISAAC was not under thermal feedback control nor did we have continuous tilt monitoring. Instead, I placed a Starrett No 98 level on top the ISAAC grid holder and occasionally stopped by to ensure that it was still level.
+    </p>
+    <figure>
+        <img src="figs/20211202_163042.jpg">
+        <figcaption>
+            Indoor
+        </figcaption>
+    </figure>
+
+    <p>
+        The pager below shows the grid angle calibration from the knee mill to the angles estimated from the ISAAC.
+    </p>
+    <figure>
+        <img alt="" id="histpager2" src="#" width="700px"/>
+        <figcaption>
+            Histograms of angle estimates of the RPS wire grid compared to the wire grid calibration done on the Bridgeport. The "Homing" precision matches very nicely between the two. This also shows how much tighter the repeatability gets even over many scans if we stop homing.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager2",
+                {
+                    'Measurement|n1': ['Mill Cal|mill', 'With Homing|006','No Homing|007'],
+                },
+                function(params) {
+                    return 'figs/isaac_cal_'+params.n1+'.png';
+                });
+            pager.setparams({
+                'n1': 'mill',
+            });
+        </script>
+    </figure>
+
+
+
+    <h3>Outdoor Tests</h3>
+    <p>The outdoor tests were conducted the same way as the indoor tests except that the ISAAC was temperature controlled to within <1&deg;; the ISAAC tilt meter was operating and recorded; and the 360-degree rotations were completed in 15&deg; increments instead of 30&deg;.</p>
+    <figure>
+        <img src="figs/20211209_170731.jpg">
+    </figure>
+
+    <h4>Pager Descriptions</h4>
+    <ol>
+        <li>No Homing 1: Both the RPS and ISAAC were placed on wooden boxes and spaced ~2m away from each other.</li>
+        <li>No Homing 2: Seeing the strange distribution of angle estimates, I took another round of data to confirm.</li>
+        <li>No Homing 3: I took both the RPS and ISAAC off of the wooden boxes and placed them on the hatch above the MAPO control room so that I could align them better.</li>
+        <li>Relevel: When first I put them on the hatch, I only leveled them to within one or two ticks of the Starrett 98 level. After seeing ~0.3&deg; shift, I releveled both the RPS and ISAAC to <1 tick to verify that the tilt meters weren't the issue.</li>
+        <li>Grid Check: I brought the ISAAC inside, removed the grid holder (grid still installed) and checked the grid alignment in the Bridgeport mill. I confirmed that the grid horizontal was the same as when I first installed it. I then reassembled the ISAAC and placed it back on the roof for more measurements (level was <1 tick).</li>
+        <li>Homed Once: After seeing another huge shift in mean angle, I decided to home the RPS. I did not change anything about the setup between the RPS and ISAAC.</li>
+        <li>With Homing: Seeing the mean angle return to something reasonable, I decided to take more measurements except with homing after each 360-degree rotation.</li>
+    </ol>
+
+    <figure>
+        <img alt="" id="histpager3" src="#" />
+        <figcaption>
+            Angle estimates for the outside tests shows high repeatability but with large offsets that are inconsistent with the expected repeatability of the RPS motor. The difference between the 'Grid Check' and Homed Once' histograms shows strong evidence that the ISAAC is accurately measuring the motor behaving abnormally.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager3",
+                {
+                    'Measurement|n': ['No homing 1|008_1','No Homing 2|008_2','No Homing 3|009', 'Relevel|010','Grid Check|011','Homed Once|012','With Homing|013'],
+                },
+                function(params) {
+                    return 'figs/isaac_cal_'+params.n+'.png';
+                });
+            pager.setparams({
+                'n': '008_1',
+            });
+        </script>
+    </figure>
+
+    <h3>Tests with BICEP3</h3>
+    <p>
+        From the tests above, I had the suspicion that the ISAAC was doing its job and there was something perhaps wrong with the RPS, but to verify, I placed the RPS on the mast and took similar measurments using BICEP3. For these tests, I aligned a detector pair close to the boresight (MCE1 GCP:35 & 36) and had the RPS rotate from -180&deg; to 180&deg; in 30&deg; increments.
+    </p>
+
+    <ol>
+        <li>With Homing: I ran a schedule of 24 rotations with homing between each. The ~0.4&deg; distribution was larger than any of the outdoor tests, indicating that the we're dominated by the noise of the observation.</li>
+        <li>Reseated Connector: Just in case, I lowered the RPS to inspect the motor and cabling for interference or loose connections. I found that the stack of gender changers which serve as bulkhead connectors going to the motor were not correctly installed (<a href="figs/20211213_122900.jpg" target="_blank">image</a>). So I properally connected everything, raised and leveled the mast and ran another schedule. </li>
+        <li>No Homing: The scatter of angle estimates seemed to lower, so I ran a schedule without homing. The scatter lowered as expected.</li>
+        <li>No Homing 2: I ran another set of 24 schedules for redundancy, but accidently homed the RPS before running. The results of this measurement are unexpected because the scatter increases by a factor of two and look somewhat comparable to the 'No homing 1&2' histograms from the outdoor ISAAC tests.</li>
+    </ol>
+
+    <figure>
+        <img alt="" id="histpager4" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager4",
+                {
+                    'Measurement|n2': ['With Homing|1','Reseated Connector|2','No Homing|3', 'No Homing 2|4'],
+                },
+                function(params) {
+                    return 'figs/b3_obs_'+params.n2+'.png';
+                });
+            pager.setparams({
+                'n2': '1',
+            });
+        </script>
+    </figure>
+
+
+</section>
+
+<!--<section>-->
+<!--    <h2>Source Parameters 2017</h2>-->
+
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
+
+<!--<section>-->
+<!--    <h2>Mirror Parameters 2018</h2>-->
+
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
+
+
+<!--<hr>-->
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+    <!--
+    <h3>Notes</h3>
+    <div class="footnote">
+        <p>
+        <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
+        Using the max amplitude impinges an uncertainty on the beam centers which is half of the sample spacing for a given coordinate. In instrument-fixed coordinates, this corresponds to a median beam center uncertainty of $\sigma\sim0.05^\circ$ which is comparable to the quoted errors on the CMB-derived beam centers (median $\sigma\sim0.01^\circ$).
+    </p>
+    </div>
+    -->
+
+    <h3>Code</h3>
+<!--    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>-->
+    <p id="code"></p>
+
+
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            ""
+            ];
+
+        // Posting titles
+        var desc = [
+            "",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "N/A"
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which is lies if you can.
+        var hrefs = [
+            "NA"
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "-"
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
