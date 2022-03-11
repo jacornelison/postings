@@ -49,7 +49,9 @@
         </table>
     </figure>
 
-    <p>The In-Situ Absolute Angle Checker (ISAAC) is a room-temperature, 90GHz receiver with a polarizing wire grid. The ISAAC would be placed on DSL along the BICEP-to-RPS line of site with the idea that it, having no moving parts, can serve as a sort of "control subject" receiver that possesses well known polarization properties, has precisely calibrated polarization orientation (WRT to gravity), and observes the RPS during normal observations.</p>
+    <p>
+        The In-Situ Absolute Angle Checker (ISAAC) is a room-temperature, 90GHz receiver with a polarizing wire grid. The ISAAC would be placed on DSL along the BICEP-to-RPS line of site with the idea that it, having no moving parts, can serve as a sort of "control subject" receiver that possesses well known polarization properties, has precisely calibrated polarization orientation (WRT to gravity), and observes the RPS during normal observations. In the lab, the ISAAC can also serve as a supplementary cross-check of the RPS's wire grid orientation and motor rotational repeatability, both of which we normally calibrate using the Bridgeport knee mill in MAPO.
+    </p>
 </section>
 
 
@@ -124,15 +126,20 @@
 
 <section>
     <h2>ISAAC as a wire grid calibration cross-check</h2>
+    <p><b>Note:</b> The ISAAC was instrumental in discovering and fixing a critical flaw in the homing switch of the RPS's rotation stage. We spent pretty much the entire month of December 2021 characterizing this issue and fabricating an additional 'fine' homing switch.</p>
+
     <h3>Summary</h3>
     <ul>
-        <li>Indoor benchtop tests show that measurements of the RPS grid angle using the ISAAC compare nicely to the measurements from counting wires on a knee mill.</li>
-        <li>Indoor tests also suggest we can achieve higher repeatability from scan-to-scan by <i>not</i> homing.</li>
-        <li>Outdoor tests, however, show the repeatability with and without homing degrade greatly and evidence suggests that the RPS, not the ISAAC, was the culprit.</li>
-        <li>After confirming the above using observations with BICEP3, I inspected the RPS hardware and found a loose connector. However, it is unclear whether reseating the connector improved performance.</li>
-        <li>After looking over the outside ISAAC and B3 obs results, I'm no longer convinced of quality of the indoor results since I took so little data and the outdoor measurements both sometimes gave reasonable looking results.</li>
+        <li>Our first set of indoor benchtop tests appear to show that measurements of the RPS grid angle using the ISAAC compare nicely to the measurements from counting wires on a knee mill (Fig. 4.2).</li>
+        <li>The indoor results hint that something might be be wrong with the homing, but were within our 0.1&deg; uncertainty threshold so we moved on.</li>
+        <li>Our first set of outdoor tests using the ISAAC show a significant degradation in the homing precision of the RPS.</li>
+        <li>Quick observations with BICEP3 over a known good detector pair were relatively lower SNR, but appear to confirm the ISAAC results.</li>
+        <li>After adding a 'fine' homing switch to the RPS, the indoor and outdoor tests with the ISAAC show consistent, high-precision homing.</li>
     </ul>
-    <h3>Indoor Tests</h3>
+
+
+
+    <h3>First Indoor Tests</h3>
 
     <p>
         After installing and calibrating the wire grids in the Bridgeport, I set the RPS and ISAAC on a benchtop for indoor measurements. For these measurements, I rotated from -180&deg; to 180&deg; in 30&deg;. Because we were still building the parts for it, the ISAAC was not under thermal feedback control nor did we have continuous tilt monitoring. Instead, I placed a Starrett No 98 level on top the ISAAC grid holder and occasionally stopped by to ensure that it was still level.
@@ -168,7 +175,7 @@
 
 
 
-    <h3>Outdoor Tests</h3>
+    <h3>First Outdoor Tests</h3>
     <p>The outdoor tests were conducted the same way as the indoor tests except that the ISAAC was temperature controlled to within <1&deg;; the ISAAC tilt meter was operating and recorded; and the 360-degree rotations were completed in 15&deg; increments instead of 30&deg;.</p>
     <figure>
         <img src="figs/20211209_170731.jpg">
@@ -233,6 +240,39 @@
                 'n2': '1',
             });
         </script>
+    </figure>
+
+    <h3>Post-Fix Measurements</h3>
+    <p>Using the information from the ISAAC, we were eventually able to determine that the culprit</p>
+    <p>The indoor tests were conducted in the same manner as before except now the ISAAC was completely assembled and under thermal feedback to help with stability.</p>
+    <figure>
+        <img alt="" id="histpager5" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager5",
+                {
+                    'Measurement|n3': ['Indoor Pre|021','Outdoor Pre|022','Outdoor Post|023', 'Indoor Post 1|024','Indoor Post 2|025','Indoor Post 3|026'],
+                },
+                function(params) {
+                    return 'figs/isaac_cal_'+params.n3+'.png';
+                });
+            pager.setparams({
+                'n3': '021',
+            });
+        </script>
+    </figure>
+
+
+    <h3>RPS Test Schedules</h3>
+    This year, we included a test schedule, <tt>8_ffflat_rps_09_dk000_xxx.sch</tt> (called Type 9's), which map beams for a single known good detector pair at the center of the focal plane (Tile 11 Row 4 Col 5). The type-9's are run between each science RPS schedule to allow for quick-turnaround analysis and thus monitoring of the RPS's rotation stage. Throughout the campaign, I lowered, raised, and releveled the mast on several occasions. I once even purposely tilted the mast off-level to verify the tilt meter calibration. Over the entire month of calibrations, the STD of derived polarization angles for these schedules was $\sigma_\phi<0.09^\circ$.
+
+    <figure>
+        <img src="figs/type9_hist_pol_A_and_B.png">
+        <figcaption>
+        Histograms of estimated polarization angles from 41 type-9 RPS schedules.
+        </figcaption>
     </figure>
 
 
