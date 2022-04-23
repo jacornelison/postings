@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mirror Analysis — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+
+
+
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+
+
+
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Deriving Mirror Properties from the Moon</h1>
+
+    <time datetime="2022-04-28" class="published updated">
+        2022 Apr 28
+    </time>
+    —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+    During the 2021/2022 Austral Summer, we observed the moon to supplement the RPS and CMB data the was taken with the
+    calibration mirror, aka Far Field Flat (FFFlat). This posting covers the analysis of that data and presents the
+    best-fit mirror orientation with uncertainties. We also discuss an analysis of the systematics in detail.
+</p>
+
+<hr>
+
+<p></p>
+<!---------------->
+<section><h2>Observations</h2>
+
+    <p>The Moon observations this year were nearly identical to the RPS observations: each observation covered one-third
+        of the focal plane and consisted of 19 9&deg;Az-by-2&deg;El scans stepping in 1.5&deg; increments per scan from
+        -14&deg;El to 12.5&deg;El.
+        The only difference between these observations and RPS observations is that we only scanned over the Moon once
+        per elevation step. With these schedules, we were able to cover the entire focal plane at a single DK angle in
+        about 3 hours.</p>
+
+    <figure>
+        <img src="figs/coverage_2022_moon_dk0.png">
+        <figcaption>
+            Coverage of the focal plane at DK=0&deg; over 3 GCP schedules. Each schedule is delimited by shade and each
+            color represents a scan within a given schedule.
+        </figcaption>
+    </figure>
+
+    <h3>Data Sets</h3>
+    <p>We did two Moon observing runs. One from 30 Nov 2021 to 10 Dec 2021 and another over 25/26 Jan 2022. You can find
+        details about the observations here: <a href="2022_moon_obs"></a>.</p>
+
+
+</section>
+<!---------------->
+<section><h2>Analysis</h2>
+
+    <p>We fit beams per-detector per-scan in raw mount coordinates $\left(A_0,\,E_0\right)$ <a href="KWY2007"></a>
+        before fitting for the mirror parameters. The DK-angle isn't used for finding the beam, but we need it for
+        converting to focal plane coordinates, so the DK-at-beam-center is determined by 2D-interpolating the raw DK
+        coordinate timestream vs Az and EL at the as-fit beam center. The same process is applied to determining the
+        Moon's location at the beam center by interpolating the Moon's Az and El from the <tt>antenna0.tracker.horiz_topo</tt>
+        GCP register.</p>
+
+
+    <p>We then fit for the mirror's Tilt and Roll parameters using <tt>beam_map_pointing_model.m</tt> as our model:</p>
+
+    \begin{equation}
+    [x,\,y,\,\phi] = \text{beam_map_pointing_model}(Tilt,\,Roll | A_{0},\,E_{0},\,K_{0},\,Mount,\,Moon)
+    \end{equation}
+
+    where $A_0$, $E_0$, and $D_0$ are the as-fit beam centers in raw mount coordinates; $Mount$ comprises the relevant
+    mount information derived from both optical starpointing and Solidworks drawings; $Moon$ comprises the on-sky
+    position of the moon in topocentric horizontal coordinates.
+
+    <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
+
+    \begin{equation}
+    \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}
+    \end{equation}
+
+    <p>
+        We use our standard $MINUIT$ wrapper, <tt>matmin.m</tt>, using <tt>chisq.m</tt> as our GOF calculator. We
+        normalize the errors returned by <tt>matmin</tt> using the largest statistical uncertainty of the beam centers
+        of $\sigma=0.01^\circ$ which were derived by comparing moon observations at the same DK angle taken back-to-back
+        (see &sect;4.1 for more details).
+    </p>
+</section>
+<!---------------->
+<section><h2>Results</h2>
+
+
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th>Parameter</th>
+                <th>Measured (&deg;)</th>
+                <th>Best-Fit (&deg;)</th>
+                <th>Stat. Uncert. (&deg;)</th>
+                <th>Sys. Uncert. (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Tilt</td>
+                <td>44.4</td>
+                <td>44.887</td>
+                <td><0.001</td>
+                <td>0.004</td>
+            </tr>
+            <tr>
+                <td>Roll</td>
+                <td>N/A</td>
+                <td>-0.06</td>
+                <td><0.001</td>
+                <td>0.02</td>
+            </tr>
+
+        </table>
+        <figcaption>
+            Table of final results for 2021 mirror parameters. The 'Measured' tilt is from physically measuring the
+            mirror tilt using a Pro3600 digital protractor while the mount was commanded to an El=0&deg;. 'Stat Uncert'
+            is the statistical uncertainty given by our $MINUIT$ wrapper <tt>matmin.m</tt>. 'Sys. Uncert.' is the
+            systematic uncertainty determined by the systematic analysis in &sect;4.
+        </figcaption>
+    </figure>
+
+    <!---------------->
+    <section><h2>Systematics</h2>
+
+        <b>A quick note on derotating beam center residuals</b>
+
+        <p>The instrument-fixed coordinate system includes rotations in DK which can obfuscate phenomena intrinsic to
+            the geometry of the mirror. To migitate this, we can subtract out the DK angle by converting the residuals
+            from $x/y$ to $r/\theta$ and reconverting to $x/y$ using $r$ and $\theta-DK$. This displays the residuals in
+            a quasi-mirrored-fixed where the Tilt is along the Y axis and the Roll is along the X axis. Figure 4.1 shows
+            an example of the beam center residuals as a function of mirror tilt and roll in both boresight-centered and
+            'mirror-centered' space.
+        </p>
+
+        <figure>
+            <img alt="pager" id="demopager" src="#" width="65%"/>
+            <figcaption>
+
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#demopager",
+                    {
+                        'Tilt|tilt': ['1', '2', '3', '4', '5'],
+                        'Tilt|roll': ['1', '2', '3', '4', '5'],
+                        'Derotated|derot': ['Off|', 'On|Derotated']
+                    },
+                    function (params) {
+                        return 'figs/derot_demo_T_' + params.tilt + '_R_' + params.roll + '_' + params.derot + '.png';
+                    });
+                pager.setparams({
+                    'tilt': '3',
+                    'roll': '3',
+                    'derot': '',
+                });
+            </script>
+        </figure>
+
+        <p>
+            With that in mind, the figure below shows the best-fit beam center residuals with an without derotation.
+            With the derotation on, we see that the Y-axis is roughly Gaussian with $\sigma\sim0.05^\circ$ but the
+            X-axis has two peaks equally spaced around zero by $\sim0.025^\circ$.
+        </p>
+
+        <figure>
+            <img alt="pager" id="jointpager" src="#" width="65%"/>
+            <figcaption>
+
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#jointpager",
+                    {
+                        'Derotated|derot': ['Off|', 'On|Derotated']
+                    },
+                    function (params) {
+                        return 'figs/scatterhist_' + params.derot + '.png';
+                    });
+                pager.setparams({
+                    'derot': '',
+                });
+            </script>
+        </figure>
+
+
+        <p>The pager below shows a multitude of different parameters that I used to help try and identify potential
+            sources of systematics.
+            For the most part, everything looks fine. The most notable clicks are one in the Tilt axis are displayed as
+            a function of time: <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 't_cen'})">X vs. Obs
+                Time</a> and <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 'schind'})">X Vs.
+                Schedule #</a>.
+
+        </p>
+
+
+        <figure>
+            <img alt="pager" id="xyrespager" src="#" width="65%"/>
+            <figcaption>
+
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#xyrespager",
+                    {
+                        'Plot|t': ['Az|az_cen', 'El|el_cen', 'Dk|dk_cen', 'Obs Time|t_cen', 'GOF|gof',
+                            'Moon Az|az_cen_src', 'Moon El|el_cen_src', 'FPU T Mean|tfpumean',
+                            'FPU T STD|tfpustd', 'Wind Speed|windspeed', 'Wind Dir|winddir',
+                            'Ambient Temperature|airtemp', 'Schedule #|schind'],
+                        'Residuals|r': ['x/y|xy', 'r|r', 'x', 'y'],
+                        'Derotated|rot': ['Off|', 'On|_derot']
+                    },
+                    function (params) {
+                        return 'figs/scatter_' + params.t + '_' + params.r + 'res' + params.rot + '.png';
+                    });
+                pager.setparams({
+                    't': 'az_cen',
+                    'r': 'xy',
+                    'rot': '',
+                });
+            </script>
+        </figure>
+
+        <p>
+            The <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 'az_cen'})">X Vs. Boresight Az</a> is
+            also interesting, but it turns out that the the disparity comes from the difference in time.
+        </p>
+
+        <figure>
+            <img src="figs/scatter_az_cen_xres_derot_color_t_cen.png">
+            <figcaption>
+
+            </figcaption>
+        </figure>
+
+        <h3>Timing</h3>
+
+        <p>From figure 4.4 the bi-modality in the tilt axis is caused by a change of something over time. So then I
+            compared the residuals that were taken at the same DK angle at varying time scales. In the December dataset
+            we had selected a couple of DK angles at which to run back-to-back so the minimum spacing we have is on
+            ~1-hour timescales. Unfortunately, I missed the late-December window to observe the moon, so we only have
+            spacing of 1 hour, 1 week, and 2 months.</p>
+        <figure>
+            <img alt="Maps pager" id="tdiffpager" src="#" width="65%"/>
+            <figcaption>
+
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#tdiffpager",
+                    {
+                        'Time Diff|t2': ['short', 'mid1', 'mid2', 'long'],
+                        'Residual|r2': ['x', 'y']
+
+                    },
+                    function (params) {
+                        return 'figs/scatter_' + params.r2 + 'res_' + params.t2 + '_tdiff.png';
+                    });
+                pager.setparams({
+                    't2': 'short',
+                    'r2': 'x',
+
+                });
+            </script>
+        </figure>
+
+        <p>The short-timescale plots show us that the intrinsic measurement uncertainty on the beam centers is quite
+            good with the statistical uncertainty on the beam centers being 15arcsec and 43arcsec along the Roll and
+            Tilt axes respectively<sup>[<a name="sup1" href="#ftn1">1</a>]</sup>.</p>
+
+        <p>
+            In the 'Long' timescale plots, we see a definitive shift of ~3arcmin which suggests that the mirror tilt
+            shifted over time. However, given the issues we've been seeing in GPS timing and CMB data, I took a closer
+            look at the actual timestreams. In the timestreams I noticed that the Moon's elevation would jump around
+            sporadically even though the timing didn't appear to fluctuate.
+        </p>
+
+        <figure>
+            <img src="figs/timestream_azeltimediff.png">
+            <figcaption>
+
+            </figcaption>
+        </figure>
+
+
+        <p>I was worried that the moon's position as given by GCP might not be
+            reliable, so I compared this position to the position (Az/El) given by the JPL Horizons database.
+            Over the course of the whole campaign, the difference in elevation is small and appears to differ as a
+            function of the elevation of the moon itself. The difference in Azimuth however continues to grow over time,
+            which could lend itself to the idea that we're somehow drifting from the moon's actual location.
+        </p>
+
+        <figure>
+            <img src="figs/gcp_vs_horizons_all.png">
+            <figcaption>
+
+            </figcaption>
+        </figure>
+
+        <p>
+            I don't think this is what's actually happening because we would see a similarly large shift in the tilt
+            between the data from December and that of January. In the table below, I show the fits for the mirror tilt
+            for the first moon dataset and the second separately as well as with the GCP moon position and Horizons moon
+            position. We can see that the magnitude of the change in tilt is inconsistent with this hyposthesis.
+        </p>
+
+        <figure class="table">
+            <table class="center results">
+                <tr>
+                    <th>Moon Pos</th>
+                    <th>Data Set</th>
+                    <th>Tilt</th>
+                    <th>Effective Az Diff</th>
+                    <th>Expected Az Diff</th>
+                </tr>
+                <tr>
+                    <td rowspan="2" valign="middle">GCP</td>
+                    <td>December</td>
+                    <td>-0.0802</td>
+                    <td rowspan="2" valign="middle">0.0584</td>
+                    <td rowspan="2" valign="middle">0.16</td>
+                </tr>
+                <tr>
+                    <td>January</td>
+                    <td>-0.0390</td>
+                </tr>
+                <tr>
+                    <td rowspan="2" valign="middle">Horizons</td>
+                    <td>December</td>
+                    <td>-0.1902</td>
+                    <td rowspan="2" valign="middle">-0.0958</td>
+                    <td rowspan="2" valign="middle">0</td>
+
+                </tr>
+                <tr>
+                    <td>January</td>
+                    <td>-0.2578</td>
+                </tr>
+            </table>
+            <figcaption>
+
+            </figcaption>
+        </figure>
+
+        <b>Takeaway's here:</b>
+        <ul>
+            <li>Mirror measurements are pretty consistent on short (1hr/1wk) timescales.</li>
+            <li>There's a measurable shift in roll of ~0.05&deg; between the early Dec and Late Jan Moon obs.</li>
+            <li>The shape and scatter of the of the residuals is consistent between months. This implies that the
+                overall roll shifted but the mirror stayed the same shape (along the roll axis).
+            </li>
+            <li>The tilt is the exact opposite: There's no discernible shift in tilt, but the scatter is consistently
+                lower in the January compared to December implying that the mirror deformed slightly in tilt (for the
+                better)
+            </li>
+            <li>Unlikely to be caused by timing issues in GCP.</li>
+        </ul>
+
+        <p>
+            So it's still not clear why there's a difference in the tilt -- it very well could have physically shifted
+            over time -- but I believe I've ruled out timing issues as the culprit. This also gives me confidence that
+            the position of the Moon as given by GCP is correct on the levels that I care about. I establish a
+            systematic error on the fits
+            by fitting the mirror parameters for the two different datasets and dividing that in half.
+        </p>
+
+
+        <figure class="table">
+            <table class="center results">
+                <tr>
+                    <th>Parameter</th>
+                    <th>December (&deg;)</th>
+                    <th>January (&deg;)</th>
+                    <th>Difference (&deg;)</th>
+                    <th>Sys Uncert. (&deg;)</th>
+                </tr>
+                <tr>
+                    <td>Tilt</td>
+                    <td>44.878</td>
+                    <td>44.886</td>
+                    <td>-0.008</td>
+                    <td>0.004</td>
+                </tr>
+                <tr>
+                    <td>Roll</td>
+                    <td>-0.080</td>
+                    <td>-0.039</td>
+                    <td>0.041</td>
+                    <td>0.02</td>
+                </tr>
+
+            </table>
+            <figcaption>
+
+            </figcaption>
+        </figure>
+
+        <p>
+            At some point in the future, we'll also want to look into how imperfections in mirror flatness affect the
+            residuals. However in the context of the RPS analysis, which I'm more focused on, this should be sufficient
+            work to go off of for now.
+        </p>
+
+    </section>
+
+
+</section>
+<!---------------->
+
+
+<hr>
+
+<section class="appendix">
+    <h2 class="appendix">Appendix</h2>
+    <h3>Effect of wind on the mirror</h3>
+    <p>
+        I was also interested in what sort of effect the wind had on our measurements. Especially in the context of
+        BICEP Array and future experiments where the mirrors are larger, how the wind affects our calibrations is
+        going to become more and more of an issue. Fortunately, there's no evidence in the data that the wind plays a
+        large role just yet.
+    </p>
+    <figure>
+        <img src="figs/polarscatter_winddir_vs_az.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+    <h3>Notes</h3>
+    <div class="footnote">
+        <p>
+            <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
+            I calculate the statistical uncertainty by subtracting the best-fit beam centers of detectors between two
+            datasets at the same DK, taking the standard deviation, and then dividing that by $\sqrt{2}$ to account for
+            the drop in N by 2 when subtracting.
+        </p>
+    </div>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found
+        in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+    <h3>Data Products</h3>
+    <p>Final data products used in this analysis which can be found in the <tt>data/</tt> directory of this posting.</p>
+    <p id="data"></p>
+
+
+    <h3>References And Related Postings</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "rps_log_read.m",
+            "moon_reduc_driver.m",
+            "moon_reduc.m",
+            "moon_read.m",
+            "rps_find_channels.m",
+            "moon_farm_center_fits.m",
+            "moon_fit_centers.",
+            "moon_collect_parms.m",
+            "moon_fit_mirror.m",
+            "moon_analysis_plots_apr2022.m",
+            "moon_driver_driver_2022.m",
+        ];
+
+        // Posting titles
+        var desc = [
+            "Parses GCP log files for Moon and RPS observation metadata.",
+            "Farms moon observation reduc jobs.",
+            "Wrapper for Moon obs reduc to facilitate farming.",
+            "Reduces raw archival Moon obs data into deconvolved and filtered TOD's.",
+            "Downselects TODs to only contain data from channels where the FP was actually covered.",
+            "Farms beam center fitting of moon obs TODs.",
+            "Derives beam center parameters from observations of the moon.",
+            "Collects all of the beam center fit results for moon obersvations in an observing campaign.",
+            "Derives mirror parameters from moon-derived beam centers.",
+            "Code that was used to produce plots in this posting. Located in <tt>scripts/</tt> directory of this posting.",
+            "Wrapper for farming Moon obs reduc data. Located in <tt>scripts/</tt> directory of this posting.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes) {
+            msg = msg + "<tr><td><tt>" + codes[code] + "</tt></td><td> - </td><td>" + desc[code] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "moonsch.mat",
+            "moon_beam_fits.mat",
+            "timestream_moonsch_4_scan_1.mat",
+            "fpu_data_obs.mat",
+            "pm.mat",
+            "horizons_results.txt",
+            "horizons_moonsch_4_scan_1.txt",
+        ];
+
+        // Posting titles
+        var desc = [
+            "Metadata of Moon observations",
+            "Best-fit beam centers and supplemental data.",
+            "Timestream for a single scan of the moon.",
+            "FPU data with CMB-derived pointing beam params",
+            "Pointing model data from optical starpointing",
+            "Moon position from JPL horizons from 30 Nov to 26 Jan in 1-minute increments.",
+            "Horizons data in 0.5-second intervals over a particular scan.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb: "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            general_projects: "../../../", // General Projects
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
+            keck: "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+        };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "KWY2007",
+            "JAB2010a",
+            "JAB2010b",
+            "RWA2010a",
+            "RWA2010b",
+            "RWA2010c",
+            "CDD2010",
+            "RWA2010d",
+            "JAB2010c",
+            "JAB2010d",
+            "RWA2010e",
+            "JAB2011",
+            "RWO2011",
+            "RWA2011a",
+            "RWA2011b",
+            "JAB2012",
+            "JPK2012",
+            "RWO2016",
+            "JAC2018",
+            "JHK2019",
+            "2022_moon_obs",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which is lies if you can.
+        var hrefs = [
+            "~bicep/analysis_logbook_north/20070318_pointing_supplement/pointing_article.pdf",
+            "bkcmb/analysis_logbook/analysis/20100318_moonbeam/",
+            "bkcmb/analysis_logbook/analysis/20100401_moonbeam_dk90/",
+            "bkcmb/analysis_logbook/analysis/20100421_moon_params/",
+            "bkcmb/analysis_logbook/analysis/20100421_beammap_summary/",
+            "bkcmb/analysis_logbook/analysis/20100803_moon_point/",
+            "bkcmb/analysis_logbook/analysis/20100921_moon_availability/",
+            "bkcmb/analysis_logbook/analysis/20101018_oct_moon/",
+            "bkcmb/analysis_logbook/analysis/20101116_moonxtalk/",
+            "bkcmb/analysis_logbook/analysis/20101130_moonxtalk2/",
+            "bkcmb/analysis_logbook/analysis/20101208_moon_obs_sum/",
+            "bkcmb/analysis_logbook/analysis/20110121_settlingxtalk/",
+            "bkcmb/analysis_logbook/analysis/20111114_beamfit_discrep/",
+            "bkcmb/analysis_logbook/analysis/20111004_bm_pointing/",
+            "bkcmb/analysis_logbook/analysis/20111005_thermal_beammap/",
+            "bkcmb/analysis_logbook/analysis/20120122_moon26/",
+            "bkcmb/analysis_logbook/analysis/20121116_moon_maps/",
+            "bicep3/analysis_logbook/20160120_moon_planets/",
+            "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/",
+            "bkcmb/analysis_logbook/analysis/20191025_cold_spot_obs_IX/",
+            "general_projects/rps/#moon_schedule_2022",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "BICEP Pointing Supplement",
+            "Preliminary moon beam map analysis",
+            "Moon beam map follow-up, dk=90",
+            "Beam parameters - Moon raster (dk=90)",
+            "Multi-run beammap comparison, moon comparison",
+            "Run 8 Moon pointing parameters",
+            "Moon Availability in Late 2010",
+            "Summary of October moon observations",
+            "crosstalk in moon rasters",
+            "Summary Moon / MAPO rasters for Xtalk",
+            "Moon observation summary",
+            "25kHz mux evaluation: mapo & moon rasters ",
+            "Beam center discrepancy between CMB and Moon / MAPO",
+            "Beammap pointing model and Moon vs. MAPO comparison",
+            "Chopped thermal source beammaps plus Moon/MAPO comparison",
+            "Moon raster for rotating pol source",
+            "Moon Raster Beam Maps",
+            "2016 Moon + planet obs opportunities",
+            "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS",
+            "The Cold Spot observation study for B3 IX: Plan moon raster schedule",
+            "2022 Moon Observations Metadata",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl)) != bkurl &
+            posting_dir.match(new RegExp(spurl)) != spurl) {
+            preface = "http://" + bkurl + "/";
+        } else {
+            for (key in keys) {
+                if (posting_dir.match(new RegExp("/" + keys[key] + "/")) == "/" + keys[key] + "/") {
+                    preface = sitemap[keys[key]];
+                }
+                ;
+            }
+            ;
+
+        }
+        ;
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+                // If there's a match, at the prefix and move on.
+                if (hrefs[ref].match(new RegExp(keys[key] + "/")) == keys[key] + "/") {
+                    hrefs[ref] = preface + hrefs[ref];
+                    break;
+                }
+            }
+            ;
+        }
+        ;
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags) {
+            msg = msg + "<tr><td><a href=" + tags[tag] + "></a></td><td> - </td><td>" + desc[tag] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links) {
+            for (var tag in tags) {
+                if (links[link].href.endsWith(tags[tag])) {
+                    links[link].text = "(" + tags[tag] + ")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+
+
+<!--
+
+    <figure>
+        <img alt="Maps pager" id="dkpager" src="#" width="65%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#dkpager",
+                {
+                    'DK|d2': [
+                        '-81_1',
+                        '-81_2',
+                        '-81_3',
+                        '0_1',
+                        '23_1',
+                        '23_2',
+                        '23_3',
+                        '45_1',
+                        '68_1',
+                        '68_2',
+                        '68_3',
+                        '68_4',
+                        '90_1',
+                        '135_1',
+                        '174_1',
+                        '174_2',
+                        '174_3',
+                        '-68',
+                        '-23',
+                        '0_2',
+                        '45_2',
+                        '90_2',
+                        '112',
+                        '135_2',
+                        '157',],
+                    'DK|d3' : [
+                        '-81_1',
+                        '-81_2',
+                        '-81_3',
+                        '0_1',
+                        '23_1',
+                        '23_2',
+                        '23_3',
+                        '45_1',
+                        '68_1',
+                        '68_2',
+                        '68_3',
+                        '68_4',
+                        '90_1',
+                        '135_1',
+                        '174_1',
+                        '174_2',
+                        '174_3',
+                        '-68',
+                        '-23',
+                        '0_2',
+                        '45_2',
+                        '90_2',
+                        '112',
+                        '135_2',
+                        '157',],
+                    'Residual|r3' : ['x','y']
+                },
+                function(params) {
+                    return 'figs/scatter_dk'+params.d2+'vs_dk'+params.d3+'_'+params.r3+'res.png';
+                });
+            pager.setparams({
+                'd2': '0_1',
+                'd3': '0_1',
+                'r3': 'x',
+
+            });
+        </script>
+    </figure>
+
+    <figure>
+        <img alt="Maps pager" id="quivdkpager" src="#" width="65%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#quivdkpager",
+                {
+                    'DK|d4': [
+                        '-81_1',
+                        '-81_2',
+                        '-81_3',
+                        '0_1',
+                        '23_1',
+                        '23_2',
+                        '23_3',
+                        '45_1',
+                        '68_1',
+                        '68_2',
+                        '68_3',
+                        '68_4',
+                        '90_1',
+                        '135_1',
+                        '174_1',
+                        '174_2',
+                        '174_3',
+                        '-68',
+                        '-23',
+                        '0_2',
+                        '45_2',
+                        '90_2',
+                        '112',
+                        '135_2',
+                        '157',],
+
+                },
+                function(params) {
+                    return 'figs/quiver_dk'+params.d4+'_mdesub.png';
+                });
+            pager.setparams({
+                'd4': '0_1',
+
+            });
+        </script>
+    </figure>
+-->
+
+</body>
