@@ -12,11 +12,15 @@
 
 
 
+
+
     </script>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
               tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
         });
+
+
 
 
 
@@ -248,15 +252,52 @@
 
         <p>
             The <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 'az_cen'})">X Vs. Boresight Az</a> is
-            also interesting, but it turns out that the the disparity comes from the difference in time.
+            also interesting. However, a more useful plot (Figure 4.4) is when we account for the moon azimuth such that we're
+            looking at the residual along the roll axis as a function of offset in az from the moon's position. If we
+            also include Time along the color axis, we see that the large disparity comes from the difference in time.
+            Similarly, we plot the residuals along the tilt axis as a function of El offset WRT the moon's elevation.
         </p>
 
         <figure>
-            <img src="figs/scatter_az_cen_xres_derot_color_t_cen.png">
+            <table>
+                <tr>
+                    <td>
+                        <img src="figs/scatter_az_cen_xres_derot_color_t_cen.png">
+                    </td>
+                    <td>
+                        <img src="figs/scatter_el_cen_yres_derot_color_t_cen.png">
+                    </td>
+                </tr>
+            </table>
+
             <figcaption>
 
             </figcaption>
         </figure>
+
+        <p>
+            There are a couple major stand-outs from these plots:
+            <ul>
+            <li>X-res vs. Az</li>
+            <ul>
+                <li>There's a major shift of ~0.05&deg; between the Early December and Late January data.</li>
+                <li>A slight negative trend can be seen as a function of azimuth, independent of time. </li>
+            </ul>
+            <li>Y-res vs. El</li>
+            <ul>
+                <li>The very early December data shows a slight negative trend, but this goes away by the following week.</li>
+                <li>The behavior of the residuals is roughly consistent (at least much moreso than the X-residuals vs. Az) between the early December and late January data.</li>
+                <li>There's a large scatter in the residuals that appears to be spaced descretely (~1.4&deg;) in elevation offset.</li>
+            </ul>
+        </ul>
+        </p>
+
+        <p>
+            The negative trends in X vs. Az and (early) Y Vs. El be physically explained by a uniform bowing in the mirror along the roll and tilt axis respectively. Why the tilt-axis would flatten out over the span of a week and then stay that way is unclear. Why we see descrete points of increased scatter is also a mystery. My instinct would be to look directly at the TOD's for that data to see if there's anything particularly different about them from the others.
+            </p>
+            <p>
+            In the context of the RPS analysis that I'm doing, the shift in Roll is by far the most important as a bias in $\phi$ scales almost 1:1 with a bias in Roll. As such, I spend the rest of this posting addressing where this shift originates from. Still there are the questions regarding the other points that could be answered with more effort...
+        </p>
 
         <h3>Timing</h3>
 

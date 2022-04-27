@@ -204,8 +204,11 @@ table {
     border-bottom: 3px solid #000000;
 }
 
+
 .results td {
     padding-top: 0.25em;
+    padding-left: .75em;
+    padding-right: .75em;
     padding-bottom: 0.25em;
     border-bottom: 1px solid #ddd;
 }
@@ -263,35 +266,12 @@ figure.table {
 }
 
 
+
 /*body{counter-reset: section}*/
 
-/* Remove default bullets */
-ul, #myUL {
-    list-style-type: none;
-}
 
-.collapsible {
-    background-color: #777;
-    color: white;
-    cursor: pointer;
-    padding: 18px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
-}
 
-.active, .collapsible:hover {
-    background-color: #555;
-}
 
-.content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
-    background-color: #f1f1f1;
-}
 
 section {
     counter-increment: section;

@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>RPS Update — J. Cornelison</title>
+    <title>Posting Title — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -27,110 +27,135 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Update</h1>
+    <h1>RPS analysis for 2021/2022 data</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
-        2021 Jan 11
+        yyyy Mmm dd
     </time> —
     J. Cornelison
 </header>
 
 <hr>
 
-<section>
-<h2>RPS Type-9 Schedules</h2>
+<p>
+    Abstract
+</p>
 
-    <figure>
-        <img src="figs/angle_vs_schedule.png" width="700">
-        <figcaption>
-            Estimated angles as a function of their schedule number shows a periodic shifts of ~5 degrees consistent between both detectors.
-        </figcaption>
+<hr>
+
+<section><h2>Section 1</h2>
+
+    <h3>Subsection 1</h3>
+    <p>
+    Words
+    </p>
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th>Schedule</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>DK</th>
+            </tr>
+            <tr>
+                <td>8_ffflat_moonraster_28_dk000_001.sch</td>
+                <td>170121 22:29:58</td>
+                <td>170121 23:25:36</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>8_ffflat_moonraster_28_dk045_001.sch</td>
+                <td>170121 23:26:36</td>
+                <td>170122 00:20:45</td>
+                <td>45</td>
+            </tr>
+            <tr>
+                <td>8_ffflat_moonraster_28_dk090_001.sch</td>
+                <td>170122 00:36:46</td>
+                <td>170122 01:31:05</td>
+                <td>90</td>
+            </tr>
+
+        </table>
+    <figcaption>
+        Example results table
+    </figcaption>
     </figure>
+<p>
+    Example equation:
+</p>
 
-    <figure>
-        <img src="figs/mod_curves.png">
-        <figcaption>
-        (Top) Plot of a modulation curve where the fit is 0&deg; (Schedule 04) compared to another where the fit is off by 5&deg; (Schedule 17). (Middle) The simulated mod curve of a detector at 0&deg; and another at 5&deg;. (Bottom) Plots of the differences between the real and simulated mod curves shows that we would expect the differences in the real mod curves to be significantly higher than they are at difference in angle of 5&deg; and thus the angle of Schedule 17 is really much closer to zero than what the fit is giving.
-        </figcaption>
-    </figure>
+    \begin{equation}
+    x_0 = 2 \sin(r_0/2) \cos(\theta_0)\\
+    y_0 = 2 \sin(r_0/2) \sin(\theta_0)
+    \end{equation}
 
+
+<p>An example footnote<sup><a href="#ftn1">1</a></sup> and reference citation <a href="CAB2012"></a>.</p>
+      <p>
+ Example pager:
+    </p>
     <figure>
-        <img alt="Maps pager" id="histpager" src="#" width="65%"/>
+        <img alt="Name pager" id="namepager" src="#" width="65%"/>
         <figcaption>
-        Histograms of Type-9 schedule fits after cutting out poor fits and FP warming events. I've implemented code that now corrects for diurnal fluctuations in tilt by averaging over the tilt meter timestreams per-raster. We can see that this correction actually spreads the distribution by ~0.015&deg;.
+            Example pager
         </figcaption>
         <script type="text/javascript">
-            pager.link("#histpager",
+            pager.link("#namepager",
                 {
-                    'Pol|p': ['A','B'],
-                    'Tilt Correction|t': ['Off|no','On|with'],
-                    //'Homing Correction|h': ['Off|','On|_home_corrected'],
+                    'Select A|a': ['Yesname|yesparam', 'No|no'],
+                    'Select B|b': ['One|1','Two|2'],
                 },
                 function(params) {
-                    return 'figs2/type9_hist_pol_'+params.p+'_'+params.t+'_tilt_cut.png';
+                    return 'figs/plot_param1_'+params.a+'_param2_'+params.b+'.png';
                 });
             pager.setparams({
-                'p': 'A',
-                't': 'no',
-                //'h': '',
+                'a': 'no',
+                'b': '1',
             });
         </script>
     </figure>
 
 
-    <!--
-    <figure>
-        <img alt="Maps pager" id="polspager" src="#" />
-        <figcaption>
-            Pager of quiver plots of best-fit residuals for each 'Pol' orientation and both pol A and pol B. Note that for MCE 0, pol A and pol B have inverse polarization angles compared to other MCE's. We see in this figure that the residuals are very similar for a majority of detector pairs.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#polspager",
-                {
-                    'Pol|p': ['A|a','B|b','A/B|both'],
-                },
-                function(params) {
-                    return 'figs/moonfit_residuals_quiver_zoomed_pol'+params.p+'.png';
-                });
-            pager.setparams({
-                'p': 'both',
-            });
-        </script>
-    </figure>
--->
-
-</section>
-<section>
-    <h2>Moon Observations</h2>
-
-    <figure>
-        <img src="figs/moon_beam_cominbed.png">
-        <figcaption>
-            My goal with the filter was to get rid of atmospheric effects without distorting the beam too much.
-        </figcaption>
-    </figure>
-
-    <figure>
-        <img src="figs/moon_hits_2021.png" width="1600">
-        <figcaption>
-            Number of 'Good' beams passing first-round cuts per-DK. Most detectors at the CMB DK angles have at least 3 good measurements and some have as many as 12 (the colorbar is clamped at 6 to make it easier to see low-hit detectors). Most detectors at our RPS 'Standard' DK-angles (i.e. 0,45,90,135) have and expected two beams each as we only ran two schedules apiece at those angles.
-        </figcaption>
-    </figure>
 
 </section>
 
+<!--<section>-->
+<!--    <h2>Source Parameters 2017</h2>-->
+
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
+
+<!--<section>-->
+<!--    <h2>Mirror Parameters 2018</h2>-->
+
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
 
 
 <hr>
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
-
+    <h3>Notes</h3>
+    <div class="footnote">
+        <p>
+        <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
+        This is a footnote. Click the number to return to main text.
+    </p>
+    </div>
     <h3>Code</h3>
     <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
-<!--    <p id="code"></p>-->
+    <p id="code"></p>
 
-
+    <h3>Data</h3>
+    <p id="data"></p>
     <h3>References</h3>
 
     <p id="references"></p>
@@ -143,21 +168,11 @@
         // Shorthand tags
         var codes = [
             "rps_fit_mirror_from_moon.m",
-            "rps_get_moon_model_v2.m",
-            "bootstrap_mirrorfit.m",
-            "rps_errorprop.m",
-            "bootstrap_starpoint.m",
-            "analysis_plots_20210121.m",
             ];
 
         // Posting titles
         var desc = [
             "Derives mirror parameters from observations of the moon.",
-            "Returns the beam centers for inputs of mirror tilt and roll",
-            "Performs a statistical bootstrap on moonraster pointing data as a consistency check.",
-            "Estimates systematic error propagated through the fit due to uncertainties on the pointing information.",
-            "Performs a statistical bootstrap on star pointing data as a consistency check.",
-            "Code that was used to produce plots in this posting.",
         ];
 
         // Make a list of references
@@ -170,6 +185,31 @@
         post.innerHTML = msg;
 
     </script>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "moonsch.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Metadata of Moon observations",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
 
 
     <script type="text/javascript">
@@ -213,31 +253,18 @@
         // Shorthand tags
         var tags = [
             "CAB2012",
-            "IDB2013",
-            "CAB2014",
-            "JBW2018",
-            "JAC2019"
         ];
 
         // Links
         // Truncate the link down to the www directory in which is lies if you can.
         var hrefs = [
             "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-            "bkcmb/analysis_logbook/analysis/20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
-            "keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
-            "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
-            "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/",
         ];
 
 
         // Posting titles
         var desc = [
             "Pointing Model for Keck Beam Maps",
-            "Calculations for Beam Mapping in Spherical Coordinates",
-            "Spherical Coordinates for beam maps",
-            "Radio pointing model from CMB",
-            "B2016, B2017, and B2018 CMB-derived beam center correlations",
-            "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS"
         ];
         // Debug
         var posty = document.getElementById("testp");

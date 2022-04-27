@@ -9,14 +9,14 @@ load('z://dev/moon_analysis/moonsch.mat')
 load('z://dev/moon_analysis/fpu_data_obs.mat')
 load('z://dev/moon_analysis/pm.mat')
 % JPL Horizons data
-fname = 'z:/dev/moon_analysis/horizons_results.txt';
+fname = 'z:/dev/moon_analysis/horizons_result.txt';
 f = fopen(fname);
 horz_data = textscan(f,'%f%s%s%f%f%f%f%f%f','delimiter',',','HeaderLines',61);
 fclose(f);
 
 
 inrange = @(A,B,C) A<=C & A>=B;
-figdir = 'C:\Users\James\Documents\GitHub\postings\2022mmdd_mirror_analysis\figs\';
+figdir = 'C:\Users\James\Documents\GitHub\postings\20220428_mirror_analysis\figs\';
 
 prx = 2 * sind(p.r / 2) .* cosd(p.theta) * 180 / pi;
 pry = 2 * sind(p.r / 2) .* sind(p.theta) * 180 / pi;
@@ -138,20 +138,20 @@ fd = structcut(fd,cutind);
 titles = {'','Derotated'};
 vals = {fd.resx,fd.resy; fd.resx_rot, fd.resy_rot};
 for pltind = 1:length(titles)
-
-fig = figure(pltind);
-fig.Position = [400 0*300 500 450]*1.2;
-clf;
-
+    
+    fig = figure(pltind);
+    fig.Position = [400 0*300 500 450]*1.2;
+    clf;
+    
     h = scatterhist(vals{pltind,1},vals{pltind,2},'NBins',[30,50],'Marker','.');
-grid on
-xlim([-1 1]*0.3)
-ylim([-1 1]*0.3)
-title({'Beam Center Residuals [CMB beams-fit]',titles{pltind}})
-xlabel('X [Deg]')
-ylabel('Y [Deg]')
-fname = fullfile(figdir,['scatterhist_' titles{pltind} '.png']);
-saveas(fig,fname)
+    grid on
+    xlim([-1 1]*0.3)
+    ylim([-1 1]*0.3)
+    title({'Beam Center Residuals [CMB beams-fit]',titles{pltind}})
+    xlabel('X [Deg]')
+    ylabel('Y [Deg]')
+    fname = fullfile(figdir,['scatterhist_' titles{pltind} '.png']);
+    saveas(fig,fname)
 end
 
 clear vals
@@ -169,42 +169,42 @@ rolls = linspace(-0.2,0.1,5);
 titles = {'','Derotated'};
 
 for tiltind = 1:length(tilts)
-for rollind = 1:length(rolls)
-mirror = struct();
-mirror.height = 1.3;
-mirror.tilt = tilts(tiltind);
-mirror.roll = rolls(rollind);
-
-[x, y, phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
-resx = reshape(prx(fd.ch)-x,size(fd.ch));
-resy = reshape(pry(fd.ch)-y,size(fd.ch));
-[resth, resr] = cart2pol(resx,resy);
-resth = resth - fd.dk_cen*pi/180;
-[resx_rot, resy_rot] = pol2cart(resth,resr);
-
-vals = {resx,resy; resx_rot, resy_rot};
-
-for pltind = 1:2
-    
-fig = figure(pltind);
-fig.Position = [400 0*300 500 450]*1.2;
-clf;
-
-scatter(vals{pltind,1},vals{pltind,2},10,fd.dk_cen,'filled')
-grid on
-xlim([-1 1]*0.3)
-ylim([-1 1]*0.3)
-title({'Beam Center Residuals [CMB beams-fit]',sprintf('Tilt: %2.1f  Roll: %1.2f',tilts(tiltind),rolls(rollind))})
-xlabel('X [Deg]')
-ylabel('Y [Deg]')
-c = colorbar();
-c.Title.String = 'DK [Deg]';
-mirrname = sprintf('T_%i_R_%i_',tiltind,rollind);
-fname = fullfile(figdir,['derot_demo_' mirrname titles{pltind} '.png']);
-saveas(fig,fname)
-
-end
-end
+    for rollind = 1:length(rolls)
+        mirror = struct();
+        mirror.height = 1.3;
+        mirror.tilt = tilts(tiltind);
+        mirror.roll = rolls(rollind);
+        
+        [x, y, phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
+        resx = reshape(prx(fd.ch)-x,size(fd.ch));
+        resy = reshape(pry(fd.ch)-y,size(fd.ch));
+        [resth, resr] = cart2pol(resx,resy);
+        resth = resth - fd.dk_cen*pi/180;
+        [resx_rot, resy_rot] = pol2cart(resth,resr);
+        
+        vals = {resx,resy; resx_rot, resy_rot};
+        
+        for pltind = 1:2
+            
+            fig = figure(pltind);
+            fig.Position = [400 0*300 500 450]*1.2;
+            clf;
+            
+            scatter(vals{pltind,1},vals{pltind,2},10,fd.dk_cen,'filled')
+            grid on
+            xlim([-1 1]*0.3)
+            ylim([-1 1]*0.3)
+            title({'Beam Center Residuals [CMB beams-fit]',sprintf('Tilt: %2.1f  Roll: %1.2f',tilts(tiltind),rolls(rollind))})
+            xlabel('X [Deg]')
+            ylabel('Y [Deg]')
+            c = colorbar();
+            c.Title.String = 'DK [Deg]';
+            mirrname = sprintf('T_%i_R_%i_',tiltind,rollind);
+            fname = fullfile(figdir,['derot_demo_' mirrname titles{pltind} '.png']);
+            saveas(fig,fname)
+            
+        end
+    end
 end
 
 %% Plot and save residual plots
@@ -274,62 +274,82 @@ resval = {fd.resx,fd.resy,fd.resr;...
     fd.resx_rot,fd.resy_rot,fd.resr;};
 
 for rotind = 1:2
-% First in XY
-for pltind = 1:length(titles)
-    clf;
-    val = cals(pltind,1)*fd.(fnames{pltind})+cals(pltind,2);
-    q = quantile(val,[0.05 0.95]);
-    [b ind] = sort(val);
-    ind = ind(end:-1:1);
-    pl = scatter(resval{rotind,1}(ind),resval{rotind,2}(ind),4,val(ind),'filled');
-    axis equal
-    c = colorbar();
-    c.Title.String = units{pltind};
-    xlabel('X-Residual [Deg]')
-    ylabel('Y-residual [Deg]')
-    title({'Beam Center Residuals [CMB beams-fit]', titles{pltind}})
-    grid on
-    xlim([-1 1]*0.3)
-    ylim([-1 1]*0.3)
-    colormap jet
-    figname = fullfile(figdir,['scatter_' fnames{pltind} '_xyres' rotname{rotind} '.png']);
-    saveas(fig,figname)
+    % First in XY
+    for pltind = 1:length(titles)
+        clf;
+        val = cals(pltind,1)*fd.(fnames{pltind})+cals(pltind,2);
+        q = quantile(val,[0.05 0.95]);
+        [b ind] = sort(val);
+        ind = ind(end:-1:1);
+        pl = scatter(resval{rotind,1}(ind),resval{rotind,2}(ind),4,val(ind),'filled');
+        axis equal
+        c = colorbar();
+        c.Title.String = units{pltind};
+        xlabel('X-Residual [Deg]')
+        ylabel('Y-residual [Deg]')
+        title({'Beam Center Residuals [CMB beams-fit]', titles{pltind}})
+        grid on
+        xlim([-1 1]*0.3)
+        ylim([-1 1]*0.3)
+        colormap jet
+        figname = fullfile(figdir,['scatter_' fnames{pltind} '_xyres' rotname{rotind} '.png']);
+        saveas(fig,figname)
+    end
+    
+    % Next in R/Theta
+    for resind = 1:3
+        for pltind = 1:length(titles)
+            clf;
+            val = cals(pltind,1)*fd.(fnames{pltind})+cals(pltind,2);
+            plot(val,resval{rotind,resind},'.')
+            ylabel([resname{resind} '-Residual [Deg]'])
+            xlabel([titles{pltind} ' ' units{pltind}])
+            title({'Beam Center Residuals [CMB beams-fit]', titles{pltind}})
+            grid on
+            %xlim([min(val) max(val)]*1.1)
+            ylim([-1 1]*0.3)
+            figname = fullfile(figdir,['scatter_' fnames{pltind} '_' resname{resind} 'res' rotname{rotind} '.png']);
+            saveas(fig,figname)
+        end
+    end
 end
 
-% Next in R/Theta
-for resind = 1:3
-for pltind = 1:length(titles)
-    clf;
-    val = cals(pltind,1)*fd.(fnames{pltind})+cals(pltind,2);
-    plot(val,resval{rotind,resind},'.')
-    ylabel([resname{resind} '-Residual [Deg]'])
-    xlabel([titles{pltind} ' ' units{pltind}])
-    title({'Beam Center Residuals [CMB beams-fit]', titles{pltind}})
-    grid on
-    %xlim([min(val) max(val)]*1.1)
-    ylim([-1 1]*0.3)
-    figname = fullfile(figdir,['scatter_' fnames{pltind} '_' resname{resind} 'res' rotname{rotind} '.png']);
-    saveas(fig,figname)
-end
-end
-end
-
-%%
+%% Az versus X res
 
 fig = figure(2);
 fig.Position = [400 0*300 500 450]*1.2;
 clf;
 
-scatter(fd.az_cen,fd.resx_rot,4,fd.t_cen,'filled')
+[b ind] = sort(fd.t_cen);
+scatter(wrapTo360((fd.az_cen(ind)-model.az_zero)-fd.az_cen_src(ind))-180,fd.resx_rot(ind),4,fd.t_cen(ind)-nanmin(fd.t_cen),'filled')
 grid on
-xlabel('Boresight Az @ Beam Center [Deg]')
+xlabel({'Az offset WRT Moon [Deg]','(Boresight Az - Moon Az - 180)'})
 ylabel('X-Residual [Deg]')
 title({'Beam Center Residuals [CMB beams-fit]','Derotated'})
 c = colorbar();
-c.Title.String = 'Time [MJD]';
-
+c.Title.String = 'Time [Days]';
+ylim([-1 1]*0.15)
 fname = fullfile(figdir,'scatter_az_cen_xres_derot_color_t_cen.png');
 saveas(fig,fname)
+colormap default
+
+%%
+fig = figure(3);
+fig.Position = [400 0*300 500 450]*1.2;
+clf;
+
+[b ind] = sort(fd.t_cen);
+scatter(wrapTo180((fd.el_cen(ind)-model.el_zero)+fd.el_cen_src(ind))-90,fd.resy_rot(ind),4,fd.t_cen(ind)-nanmin(fd.t_cen),'filled')
+grid on
+xlabel({'El Offset WRT Moon','(Boresight El + Moon El - 90)'})
+ylabel('Y-Residual [Deg]')
+title({'Beam Center Residuals [CMB beams-fit]','Derotated'})
+c = colorbar();
+c.Title.String = 'Time [Days]';
+ylim([-1 1]*0.3)
+fname = fullfile(figdir,'scatter_el_cen_yres_derot_color_t_cen.png');
+saveas(fig,fname)
+colormap default
 
 
 %% Look at fits as a function of time difference:
@@ -702,7 +722,7 @@ schb = [31 33 35 38 40 42 44 46 48 50 52];
 % source.azimuth = reshape(fd.az_cen_horz,[],1);
 % source.distance = 3.8e8*cosd(reshape(fd.el_cen_horz,[],1));
 % source.height = 3.8e8*sind(reshape(fd.el_cen_horz,[],1));
-% 
+%
 % [xish,yish,phiish] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',[],source,[]);
 
 val = {fd.resx_rot,fd.resy_rot};
@@ -747,8 +767,8 @@ for pltind = 1:2
         
         
         grid on
-%        xlim([-1 1]*0.15)
-%        ylim([-1 1]*0.15)
+        %        xlim([-1 1]*0.15)
+        %        ylim([-1 1]*0.15)
         xlabel('Schedule on 01 Dec 21')
         ylabel('Schedule on 25 Jan 22')
         title(sprintf('DK: %03i',-dk))

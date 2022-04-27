@@ -204,8 +204,11 @@ table {
     border-bottom: 3px solid #000000;
 }
 
+
 .results td {
     padding-top: 0.25em;
+    padding-left: .75em;
+    padding-right: .75em;
     padding-bottom: 0.25em;
     border-bottom: 1px solid #ddd;
 }
