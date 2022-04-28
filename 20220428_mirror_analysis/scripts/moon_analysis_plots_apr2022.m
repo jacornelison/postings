@@ -129,6 +129,24 @@ for fldind = 1:length(flds)
 end
 
 fd = structcut(fd,cutind);
+thresh = 0.1;
+cutind = true(size(fd.ch));
+for schind = 1:length(moonsch)
+    for scanind = 1:19
+        ind = find(fd.schind==schind & fd.scanind==scanind);
+        if ~isempty(ind)
+            q1 = quantile(fd.resx_rot(ind),[thresh, 1-thresh]);
+            q2 = quantile(fd.resy_rot(ind),[thresh, 1-thresh]);
+            
+            ind2 = inrange(fd.resx_rot(ind),q1(1),q1(2)) &...
+                inrange(fd.resy_rot(ind),q2(1),q2(2));
+            cutind(ind(~ind2)) = false;
+            
+        end
+    end
+end
+
+fd = structcut(fd,cutind);
 
 %%%%%%%%%%%
 % REAL Posting plots
@@ -164,7 +182,7 @@ source.azimuth = reshape(fd.az_cen_src,[],1);
 source.distance = 3.8e8*cosd(reshape(fd.el_cen_src,[],1));
 source.height = 3.8e8*sind(reshape(fd.el_cen_src,[],1));
 
-tilts = linspace(44.7,45,5);
+tilts = linspace(44.8,45,5);
 rolls = linspace(-0.2,0.1,5);
 titles = {'','Derotated'};
 
@@ -184,7 +202,7 @@ for tiltind = 1:length(tilts)
         
         vals = {resx,resy; resx_rot, resy_rot};
         
-        for pltind = 1:2
+        for pltind = 2%1:2
             
             fig = figure(pltind);
             fig.Position = [400 0*300 500 450]*1.2;
@@ -200,6 +218,7 @@ for tiltind = 1:length(tilts)
             c = colorbar();
             c.Title.String = 'DK [Deg]';
             mirrname = sprintf('T_%i_R_%i_',tiltind,rollind);
+            colormap default
             fname = fullfile(figdir,['derot_demo_' mirrname titles{pltind} '.png']);
             saveas(fig,fname)
             
@@ -314,9 +333,9 @@ for rotind = 1:2
     end
 end
 
-%% Az versus X res
+%% X Res versus Az
 
-fig = figure(2);
+fig = figure(4);
 fig.Position = [400 0*300 500 450]*1.2;
 clf;
 
@@ -333,8 +352,8 @@ fname = fullfile(figdir,'scatter_az_cen_xres_derot_color_t_cen.png');
 saveas(fig,fname)
 colormap default
 
-%%
-fig = figure(3);
+%% Y Res vs El
+fig = figure(5);
 fig.Position = [400 0*300 500 450]*1.2;
 clf;
 
@@ -360,7 +379,6 @@ scha = [ 2  3  4  7  5  6 22 24 23 26 27 28];
 schb = [53 54 55 56 57 58 59 60 61 62 63 64];
 
 val = {fd.resx_rot,fd.resy_rot};
-val = {fd.resx_rot_horz,fd.resy_rot_horz};
 
 valname = {'xres','yres'};
 titles = {'X-residual [Deg]','Y-Residual [Deg]'};
@@ -427,7 +445,6 @@ for midind = 1:2
     
     
     val = {fd.resx_rot,fd.resy_rot};
-    val = {fd.resx_rot_horz,fd.resy_rot_horz};
     titles = {'X-residual [Deg]','Y-Residual [Deg]'};
     winscale = 1.2;
     for pltind = 1:2
@@ -800,27 +817,47 @@ fig = figure(1);
 fig.Position = [2000+500*winscale 0*300 900*winscale 450*winscale];
 clf; hold on;
 
-subplot(1,3,1)
+subplot(2,3,1)
 plot(ts,daz)
 grid on
-xlabel('Time [sec]')
-ylabel({'antenna0.pmac.tracker.horiz\_topo[1]'})
+%xlabel('Time [sec]')
+ylabel({'pmac.tracker.horiz\_topo[1]'})
 title('GCP Moon Az [Deg]')
 
-subplot(1,3,2)
+subplot(2,3,2)
 plot(ts,del)
 grid on
-xlabel('Time [sec]')
-ylabel({'antenna0.pmac.tracker.horiz\_topo[2]'})
+%xlabel('Time [sec]')
+ylabel({'pmac.tracker.horiz\_topo[2]'})
 title('GCP Moon El [Deg]')
 
-subplot(1,3,3)
+subplot(2,3,3)
 hold on;
 plot(ts,(tarray-tpmac)*24*3600)
 grid on
 xlabel('Time [sec]')
-ylabel({'array.frame.utc-antenna0.pmac.time.utcslow [sec]'})
+ylabel({'frame.utc-time.utcslow [sec]'})
 title('Array Time Minus PMAC Time')
+
+subplot(2,3,4)
+plot(ts(2:end),diff(daz))
+grid on
+xlabel('Time [sec]')
+ylabel({'Diff Az [Deg]'})
+ylim([-5 1]*1e-3)
+%title('GCP Moon Az [Deg]')
+
+subplot(2,3,5)
+plot(ts(2:end),diff(del))
+ylim([-14 2]*1e-4)
+yticks([-14:2:2]*1e-4)
+xticks([0:30:210])
+grid on
+xlabel('Time [sec]')
+ylabel({'Diff El [Deg]'})
+%title('GCP Moon El [Deg]')
+
+
 
 fname = fullfile(figdir,'timestream_azeltimediff.png');
 saveas(fig,fname)
@@ -881,7 +918,7 @@ saveas(fig,fname)
 
 %% Wind dir and Azimuth pointing
 
-val = fd.resr;
+val = fd.resr_perdk;
 
 fig = figure(5);
 clf;
@@ -896,7 +933,7 @@ ax = gca;
 ax.RAxis.Label.String = 'Wind Sp. [m/s]';
 ax.ThetaDir = 'clockwise';
 ax.ThetaZeroLocation = 'top';
-caxis([0,0.3])
+caxis([0,0.2])
 c = colorbar();
 c.Title.String = 'r-Res [Deg]';
 %colormap jet
@@ -909,7 +946,7 @@ ax = gca;
 ax.RAxis.Label.String = 'Wind Sp. [m/s]';
 ax.ThetaDir = 'clockwise';
 ax.ThetaZeroLocation = 'top';
-caxis([0,0.3])
+caxis([0,0.2])
 c = colorbar();
 c.Title.String = 'r-Res [Deg]';
 %colormap jet
@@ -922,7 +959,7 @@ ax = gca;
 %ax.RAxis.Label.String = 'Wind Sp. [m/s]';
 ax.ThetaDir = 'clockwise';
 ax.ThetaZeroLocation = 'top';
-caxis([0,0.3])
+caxis([0,0.2])
 c = colorbar();
 c.Title.String = 'r-Res [Deg]';
 %colormap jet
@@ -941,6 +978,118 @@ xlabel('Wind Dir - Boresight Az [Deg]')
 title('Wind Dir - Boresight Az')
 ylabel('r_{cmb} - r_{fit} [Deg]')
 sgtitle('Beam Center Residuals [CMB beams-fit]')
-
+ylim([0 1]*0.2)
 saveas(fig,fullfile(figdir,'polarscatter_winddir_vs_az.png'))
+
+%% Quiver plots per "DK"
+% Copy this into Cannon Matlab.
+% scheds = {...
+%     [2 3 4],...
+%     [5 6 7],...
+%     [8 9 10],...
+%     [11 12 13],...
+%     [14 15 18],...
+%     [16 17 19],...
+%     [20 21],...
+%     [22 23 24],...
+%     [26 27 28],...
+%     [30 32 34],...
+%     [31 33 35],...
+%     [37 39 41],...
+%     [38 40 42],...
+%     [43 45 47],...
+%     [44 46 48],...
+%     [49 51],...
+%     [50 52],...
+%     [53 54 55],...
+%     [56 57 58],...
+%     [59 60 61],...
+%     [62 63 64],...
+%     [65 66 67],...
+%     [68 69 70],...
+%     [71 72 73],...
+%     [74 75 76]};
+% 
+% parms = NaN(length(scheds),2);
+% 
+% for schind = 1:length(scheds)
+% ind = ismember(fd.schind,scheds{schind});
+% fdsch = structcut(fd,ind);
+% 
+% fdsch = moon_fit_mirror(fdsch);
+% 
+% parms(schind,:) = fdsch.fitparam;
+% 
+% end
+% 
+
+
+load('z:/dev/moon_analysis/perdk_mirror_parms.mat')
+
+winscale = 1.5;
+scaling = 15;
+fig = figure(1);
+fig.Position = [2000+500*0*winscale 0*300 500*winscale 450*winscale];
+clf; hold on;
+
+clear fdsch;
+[fd.resx_rot_perdk,...
+fd.resy_rot_perdk,...
+fd.resr_perdk] = deal(NaN(size(fd.ch)));
+for schind = 1:length(scheds)
+    ind = ismember(fd.schind,scheds{schind});
+    
+    fdsch = structcut(fd,ind);
+    mirror = struct();
+    mirror.height = 1.3;
+    mirror.tilt = parms(schind,1);
+    mirror.roll = parms(schind,2);
+    
+    source = struct();
+    source.azimuth = reshape(fdsch.az_cen_src,[],1);
+    source.distance = 3.8e8*cosd(reshape(fdsch.el_cen_src,[],1));
+    source.height = 3.8e8*sind(reshape(fdsch.el_cen_src,[],1));
+    
+    [x, y, phi] = beam_map_pointing_model(fdsch.az_cen,fdsch.el_cen,fdsch.dk_cen,model,'bicep3',mirror,source,[]);
+    prxsch = prx(fdsch.ch);
+    prysch = pry(fdsch.ch);
+    resx = reshape(prxsch-x,size(fdsch.ch));
+    resy = reshape(prysch-y,size(fdsch.ch));
+    [resth, resr] = cart2pol(resx,resy);
+    resth = resth - fdsch.dk_cen*pi/180;
+    [resx_rot, resy_rot] = pol2cart(resth,resr);
+    
+    fd.resx_rot_perdk(ind) = resx_rot;
+    fd.resy_rot_perdk(ind) = resy_rot;
+    fd.resr_perdk(ind) = resr;
+    
+    clf;
+    quiver(prxsch',prysch',resx_rot*scaling,resy_rot*scaling,0)
+    grid on;
+    xlim([-1 1]*15)
+    ylim([-1 1]*15)
+    xlabel('X [Deg]')
+    ylabel('Y [Deg]')
+    title({sprintf('Beam Center Residuals, Derotated, x%i',scaling),sprintf('Tilt: %1.2f  Roll: %1.2f',parms(schind,1),parms(schind,2))})
+    figname = fullfile(figdir,['quiver_dk' titles{schind} '_fitperdk.png']);
+    saveas(fig,figname)
+end
+
+%%
+ind = true(size(fd.ch));
+ind = inrange(((fd.el_cen(ind)-model.el_zero)+fd.el_cen_src(ind))-90,-1,1) &...
+      fd.resy_rot>0.1;
+ind = find(ind);
+[b i] = min(fd.resy_rot(ind))
+
+fd.ch(ind(i))
+moonsch{fd.schind(ind(i))}.name
+fd.scanind(ind(i))
+
+%%
+clf
+
+
+hist(fd.resy_rot_perdk(fd.schind==35&fd.scanind==10),20)
+
 

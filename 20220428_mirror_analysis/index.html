@@ -9,29 +9,12 @@
         MathJax.Hub.Config({
             TeX: { equationNumbers: { autoNumber: "AMS" } }
         });
-
-
-
-
-
-
-
-
-
     </script>
+
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
               tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
         });
-
-
-
-
-
-
-
-
-
     </script>
     <script type="text/javascript"
             src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -100,7 +83,17 @@
         GCP register.</p>
 
 
-    <p>We then fit for the mirror's Tilt and Roll parameters using <tt>beam_map_pointing_model.m</tt> as our model:</p>
+    <figure>
+        <img src="figs/mirror_coords2.png">
+        <figcaption>
+            Diagram of the mirror geometry. The mirror orientation is parameterized by the $Tilt$ and $Roll$ parameters.
+            $\hat{n}$ is the mirror normal, $\overrightarrow{A}$ is the aperture position and $\overrightarrow{A}'$ is
+            the apparant aperature position from the mirror's reflection.
+        </figcaption>
+    </figure>
+
+    <p>We then fit for the mirror's Tilt and Roll parameters (Fig. 2.1) using <tt>beam_map_pointing_model.m</tt> as our
+        model:</p>
 
     \begin{equation}
     [x,\,y,\,\phi] = \text{beam_map_pointing_model}(Tilt,\,Roll | A_{0},\,E_{0},\,K_{0},\,Mount,\,Moon)
@@ -131,21 +124,21 @@
         <table class="center results">
             <tr>
                 <th>Parameter</th>
-                <th>Measured (&deg;)</th>
+                <!--                <th>Measured (&deg;)</th>-->
                 <th>Best-Fit (&deg;)</th>
                 <th>Stat. Uncert. (&deg;)</th>
                 <th>Sys. Uncert. (&deg;)</th>
             </tr>
             <tr>
                 <td>Tilt</td>
-                <td>44.4</td>
+                <!--                <td>44.4</td>-->
                 <td>44.887</td>
                 <td><0.001</td>
                 <td>0.004</td>
             </tr>
             <tr>
                 <td>Roll</td>
-                <td>N/A</td>
+                <!--                <td>N/A</td>-->
                 <td>-0.06</td>
                 <td><0.001</td>
                 <td>0.02</td>
@@ -153,344 +146,364 @@
 
         </table>
         <figcaption>
-            Table of final results for 2021 mirror parameters. The 'Measured' tilt is from physically measuring the
-            mirror tilt using a Pro3600 digital protractor while the mount was commanded to an El=0&deg;. 'Stat Uncert'
-            is the statistical uncertainty given by our $MINUIT$ wrapper <tt>matmin.m</tt>. 'Sys. Uncert.' is the
-            systematic uncertainty determined by the systematic analysis in &sect;4.
+            Table of final results for 2021 mirror parameters. 'Stat Uncert' is the statistical uncertainty given by our
+            $MINUIT$ wrapper <tt>matmin.m</tt>. 'Sys. Uncert.' is the systematic uncertainty determined by the
+            systematic analysis in &sect;4.
         </figcaption>
     </figure>
 
     <!---------------->
-    <section><h2>Systematics</h2>
+    <h2>Systematics</h2>
 
-        <b>A quick note on derotating beam center residuals</b>
+    <b>A quick note on derotating beam center residuals</b>
 
-        <p>The instrument-fixed coordinate system includes rotations in DK which can obfuscate phenomena intrinsic to
-            the geometry of the mirror. To migitate this, we can subtract out the DK angle by converting the residuals
-            from $x/y$ to $r/\theta$ and reconverting to $x/y$ using $r$ and $\theta-DK$. This displays the residuals in
-            a quasi-mirrored-fixed where the Tilt is along the Y axis and the Roll is along the X axis. Figure 4.1 shows
-            an example of the beam center residuals as a function of mirror tilt and roll in both boresight-centered and
-            'mirror-centered' space.
-        </p>
+    <p>The instrument-fixed coordinate system includes rotations in DK which can obfuscate phenomena intrinsic to
+        the geometry of the mirror. To migitate this, we can subtract out the DK angle by converting the residuals
+        from $x/y$ to $r/\theta$ and reconverting to $x/y$ using $r$ and $\theta-DK$. This displays the residuals in
+        a quasi-mirrored-fixed where the Tilt is along the Y axis and the Roll is along the X axis. Figure 4.1 shows
+        an example of the beam center residuals as a function of mirror tilt and roll in both boresight-centered and
+        'mirror-centered' space.
+    </p>
 
-        <figure>
-            <img alt="pager" id="demopager" src="#" width="65%"/>
-            <figcaption>
+    <figure>
+        <img alt="pager" id="demopager" src="#" width="65%"/>
+        <figcaption>
 
-            </figcaption>
-            <script type="text/javascript">
-                pager.link("#demopager",
-                    {
-                        'Tilt|tilt': ['1', '2', '3', '4', '5'],
-                        'Roll|roll': ['1', '2', '3', '4', '5'],
-                        'Derotated|derot': ['Off|', 'On|Derotated']
-                    },
-                    function (params) {
-                        return 'figs/derot_demo_T_' + params.tilt + '_R_' + params.roll + '_' + params.derot + '.png';
-                    });
-                pager.setparams({
-                    'tilt': '3',
-                    'roll': '3',
-                    'derot': '',
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#demopager",
+                {
+                    'Tilt|tilt': ['1', '2', '3', '4', '5'],
+                    'Roll|roll': ['1', '2', '3', '4', '5'],
+                    'Derotated|derot': ['Off|', 'On|Derotated']
+                },
+                function (params) {
+                    return 'figs/derot_demo_T_' + params.tilt + '_R_' + params.roll + '_' + params.derot + '.png';
                 });
-            </script>
-        </figure>
+            pager.setparams({
+                'tilt': '3',
+                'roll': '3',
+                'derot': '',
+            });
+        </script>
+    </figure>
 
-        <p>
-            With that in mind, the figure below shows the best-fit beam center residuals with an without derotation.
-            With the derotation on, we see that the Y-axis is roughly Gaussian with $\sigma\sim0.05^\circ$ but the
-            X-axis has two peaks equally spaced around zero by $\sim0.025^\circ$.
-        </p>
+    <p>
+        With that in mind, the figure below shows the best-fit beam center residuals with an without derotation.
+        With the derotation on, we see that the Y-axis is roughly Gaussian with $\sigma\sim0.05^\circ$ but the
+        X-axis has two peaks equally spaced around zero by $\sim0.025^\circ$.
+    </p>
 
-        <figure>
-            <img alt="pager" id="jointpager" src="#" width="65%"/>
-            <figcaption>
+    <figure>
+        <img alt="pager" id="jointpager" src="#" width="65%"/>
+        <figcaption>
 
-            </figcaption>
-            <script type="text/javascript">
-                pager.link("#jointpager",
-                    {
-                        'Derotated|derot': ['Off|', 'On|Derotated']
-                    },
-                    function (params) {
-                        return 'figs/scatterhist_' + params.derot + '.png';
-                    });
-                pager.setparams({
-                    'derot': '',
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#jointpager",
+                {
+                    'Derotated|derot': ['Off|', 'On|Derotated']
+                },
+                function (params) {
+                    return 'figs/scatterhist_' + params.derot + '.png';
                 });
-            </script>
-        </figure>
+            pager.setparams({
+                'derot': '',
+            });
+        </script>
+    </figure>
 
 
-        <p>The pager below shows a multitude of different parameters that I used to help try and identify potential
-            sources of systematics.
-            For the most part, everything looks fine. The most notable clicks are one in the Tilt axis are displayed as
-            a function of time: <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 't_cen'})">X vs. Obs
-                Time</a> and <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 'schind'})">X Vs.
-                Schedule #</a>.
+    <p>
+        The left plot of Figure 4.3 shows the derotated X-residuals as a function of the boresight's azimuthal
+        offset from the Moon's azimuth. The right plot similarly shows the elevation offset from the Moon's
+        elevation. Finally, we scale the color of the plots in time. These plots are useful for identifying trends
+        across the entire mirror in the roll and tilt axes respectively.
+    </p>
 
-        </p>
+    <figure>
+        <table>
+            <tr>
+                <td>
+                    <img src="figs/scatter_az_cen_xres_derot_color_t_cen.png">
+                </td>
+                <td>
+                    <img src="figs/scatter_el_cen_yres_derot_color_t_cen.png">
+                </td>
+            </tr>
+        </table>
 
+        <figcaption>
 
-        <figure>
-            <img alt="pager" id="xyrespager" src="#" width="65%"/>
-            <figcaption>
+        </figcaption>
+    </figure>
 
-            </figcaption>
-            <script type="text/javascript">
-                pager.link("#xyrespager",
-                    {
-                        'Plot|t': ['Az|az_cen', 'El|el_cen', 'Dk|dk_cen', 'Obs Time|t_cen', 'GOF|gof',
-                            'Moon Az|az_cen_src', 'Moon El|el_cen_src', 'FPU T Mean|tfpumean',
-                            'FPU T STD|tfpustd', 'Wind Speed|windspeed', 'Wind Dir|winddir',
-                            'Ambient Temperature|airtemp', 'Schedule #|schind'],
-                        'Residuals|r': ['x/y|xy', 'r|r', 'x', 'y'],
-                        'Derotated|rot': ['Off|', 'On|_derot']
-                    },
-                    function (params) {
-                        return 'figs/scatter_' + params.t + '_' + params.r + 'res' + params.rot + '.png';
-                    });
-                pager.setparams({
-                    't': 'az_cen',
-                    'r': 'xy',
-                    'rot': '',
-                });
-            </script>
-        </figure>
-
-        <p>
-            The <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 'az_cen'})">X Vs. Boresight Az</a> is
-            also interesting. However, a more useful plot (Figure 4.4) is when we account for the moon azimuth such that
-            we're
-            looking at the residual along the roll axis as a function of offset in az from the moon's position. If we
-            also include Time along the color axis, we see that the large disparity comes from the difference in time.
-            Similarly, we plot the residuals along the tilt axis as a function of El offset WRT the moon's elevation.
-        </p>
-
-        <figure>
-            <table>
-                <tr>
-                    <td>
-                        <img src="figs/scatter_az_cen_xres_derot_color_t_cen.png">
-                    </td>
-                    <td>
-                        <img src="figs/scatter_el_cen_yres_derot_color_t_cen.png">
-                    </td>
-                </tr>
-            </table>
-
-            <figcaption>
-
-            </figcaption>
-        </figure>
-
-        <p>
-            There are a couple major stand-outs from these plots:
+    <p>
+        There are a couple major stand-outs from these plots:
+    <ul>
+        <li>X-res vs. Az</li>
         <ul>
-            <li>X-res vs. Az</li>
-            <ul>
-                <li>There's a major shift of ~0.05&deg; between the Early December and Late January data.</li>
-                <li>A slight negative trend can be seen as a function of azimuth, independent of time.</li>
-            </ul>
-            <li>Y-res vs. El</li>
-            <ul>
-                <li>The very early December data shows a slight negative trend, but this goes away by the following
-                    week.
-                </li>
-                <li>The behavior of the residuals is roughly consistent (at least much moreso than the X-residuals vs.
-                    Az) between the early December and late January data.
-                </li>
-                <li>There's a large scatter in the residuals that appears to be spaced descretely (~1.4&deg;) in
-                    elevation offset.
-                </li>
-            </ul>
+            <li>There's a major shift of ~0.05&deg; between the Early December and Late January data.</li>
+            <li>A slight negative trend can be seen as a function of azimuth, independent of time.</li>
         </ul>
-        </p>
-
-        <p>
-            The negative trends in X vs. Az and (early) Y Vs. El be physically explained by a uniform bowing in the
-            mirror along the roll and tilt axis respectively. Why the tilt-axis would flatten out over the span of a
-            week and then stay that way is unclear. Why we see descrete points of increased scatter is also a mystery.
-            My instinct would be to look directly at the TOD's for that data to see if there's anything particularly
-            different about them from the others.
-        </p>
-        <p>
-            In the context of the RPS analysis that I'm doing, the shift in Roll is by far the most important as a bias
-            in $\phi$ scales almost 1:1 with a bias in Roll. As such, I spend the rest of this posting addressing where
-            this shift originates from. Still there are the questions regarding the other points that could be answered
-            with more effort...
-        </p>
-
-        <h3>Timing</h3>
-
-        <p>From figure 4.4 the bi-modality in the tilt axis is caused by a change of something over time. So then I
-            compared the residuals that were taken at the same DK angle at varying time scales. In the December dataset
-            we had selected a couple of DK angles at which to run back-to-back so the minimum spacing we have is on
-            ~1-hour timescales. Unfortunately, I missed the late-December window to observe the moon, so we only have
-            spacing of 1 hour, 1 week, and 2 months.</p>
-        <figure>
-            <img alt="Maps pager" id="tdiffpager" src="#" width="65%"/>
-            <figcaption>
-
-            </figcaption>
-            <script type="text/javascript">
-                pager.link("#tdiffpager",
-                    {
-                        'Time Diff|t2': ['short', 'mid1', 'mid2', 'long'],
-                        'Residual|r2': ['x', 'y']
-
-                    },
-                    function (params) {
-                        return 'figs/scatter_' + params.r2 + 'res_' + params.t2 + '_tdiff.png';
-                    });
-                pager.setparams({
-                    't2': 'short',
-                    'r2': 'x',
-
-                });
-            </script>
-        </figure>
-
-        <p>The short-timescale plots show us that the intrinsic measurement uncertainty on the beam centers is quite
-            good with the statistical uncertainty on the beam centers being 15arcsec and 43arcsec along the Roll and
-            Tilt axes respectively<sup>[<a name="sup1" href="#ftn1">1</a>]</sup>.</p>
-
-        <p>
-            In the 'Long' timescale plots, we see a definitive shift of ~3arcmin which suggests that the mirror tilt
-            shifted over time. However, given the issues we've been seeing in GPS timing and CMB data, I took a closer
-            look at the actual timestreams. In the timestreams I noticed that the Moon's elevation would jump around
-            sporadically even though the timing didn't appear to fluctuate.
-        </p>
-
-        <figure>
-            <img src="figs/timestream_azeltimediff.png">
-            <figcaption>
-
-            </figcaption>
-        </figure>
-
-
-        <p>I was worried that the moon's position as given by GCP might not be
-            reliable, so I compared this position to the position (Az/El) given by the JPL Horizons database.
-            Over the course of the whole campaign, the difference in elevation is small and appears to differ as a
-            function of the elevation of the moon itself. The difference in Azimuth however continues to grow over time,
-            which could lend itself to the idea that we're somehow drifting from the moon's actual location.
-        </p>
-
-        <figure>
-            <img src="figs/gcp_vs_horizons_all.png">
-            <figcaption>
-
-            </figcaption>
-        </figure>
-
-        <p>
-            I don't think this is what's actually happening because we would see a similarly large shift in the tilt
-            between the data from December and that of January. In the table below, I show the fits for the mirror tilt
-            for the first moon dataset and the second separately as well as with the GCP moon position and Horizons moon
-            position. If the Horizons position was the real position, then we would expect the tilts from December and
-            January data to be the same and the effective difference in Azimuth for a given position from the
-            GCP-source-derived tilts to be ~0.16 degrees. However, neither of these are true.
-        </p>
-
-        <figure class="table">
-            <table class="center results">
-                <tr>
-                    <th>Moon Pos</th>
-                    <th>Data Set</th>
-                    <th>Tilt</th>
-                    <th>Effective Az Diff</th>
-                    <th>Expected Az Diff</th>
-                </tr>
-                <tr>
-                    <td rowspan="2" valign="middle">GCP</td>
-                    <td>December</td>
-                    <td>-0.0802</td>
-                    <td rowspan="2" valign="middle">0.0584</td>
-                    <td rowspan="2" valign="middle">0.16</td>
-                </tr>
-                <tr>
-                    <td>January</td>
-                    <td>-0.0390</td>
-                </tr>
-                <tr>
-                    <td rowspan="2" valign="middle">Horizons</td>
-                    <td>December</td>
-                    <td>-0.1902</td>
-                    <td rowspan="2" valign="middle">-0.0958</td>
-                    <td rowspan="2" valign="middle">0</td>
-
-                </tr>
-                <tr>
-                    <td>January</td>
-                    <td>-0.2578</td>
-                </tr>
-            </table>
-            <figcaption>
-
-            </figcaption>
-        </figure>
-
-        <b>Takeaway's here:</b>
+        <li>Y-res vs. El</li>
         <ul>
-            <li>Mirror measurements are pretty consistent on short (1hr/1wk) timescales.</li>
-            <li>There's a measurable shift in roll of ~0.05&deg; between the early Dec and Late Jan Moon obs.</li>
-            <li>The shape and scatter of the of the residuals is consistent between months. This implies that the
-                overall roll shifted but the mirror stayed the same shape (along the roll axis).
+            <li>The very early December data shows a slight negative trend, but this goes away by the following
+                week.
             </li>
-            <li>The tilt is the exact opposite: There's no discernible shift in tilt, but the scatter is consistently
-                lower in the January compared to December implying that the mirror deformed slightly in tilt (for the
-                better)
+            <li>The behavior of the residuals is roughly consistent (at least much moreso than the X-residuals vs.
+                Az) between the early December and late January data.
             </li>
-            <li>Unlikely to be caused by timing issues in GCP.</li>
         </ul>
+    </ul>
+    </p>
 
-        <p>
-            So it's still not clear why there's a difference in the tilt -- it very well could have physically shifted
-            over time -- but I believe I've ruled out timing issues as the culprit. This also gives me confidence that
-            the position of the Moon as given by GCP is correct on the levels that I care about. I establish a
-            systematic error on the fits
-            by fitting the mirror parameters for the two different datasets and dividing that in half.
-        </p>
+    <p>
+        The negative trends in X vs. Az and (early) Y Vs. El could be physically explained by a uniform bowing in
+        the mirror along the roll and tilt axis respectively, but more investigation would be needed. Why the
+        tilt-axis would flatten out over the span of a week and then stay that way is unclear.
+    </p>
+    <p>
+        In the context of the RPS analysis that I'm doing, the shift in Roll is by far the most important as a bias
+        in $\phi$ scales almost 1:1 with a bias in Roll. As such, I spend the rest of this posting addressing where
+        this shift originates from. Still there are the questions regarding the other points that could be answered
+        with more effort...
+    </p>
+
+    <h3>Timing</h3>
+
+    <p>From figure 4.3 the bi-modality in the roll axis is caused by a change of something over time. So then I
+        compared the residuals that were taken at the same DK angle at varying time scales. In the December dataset
+        we had selected a couple of DK angles at which to run back-to-back so the minimum spacing we have is on
+        ~1-hour timescales. Unfortunately, I missed the late-December window to observe the moon, so we only have
+        spacing of 1 hour, 1 week, and 2 months.</p>
+    <figure>
+        <img alt="Maps pager" id="tdiffpager" src="#" width="65%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#tdiffpager",
+                {
+                    'Time Diff|t2': ['short', 'mid1', 'mid2', 'long'],
+                    'Residual|r2': ['x', 'y']
+
+                },
+                function (params) {
+                    return 'figs/scatter_' + params.r2 + 'res_' + params.t2 + '_tdiff.png';
+                });
+            pager.setparams({
+                't2': 'short',
+                'r2': 'x',
+
+            });
+        </script>
+    </figure>
+
+    <p>The short-timescale plots show us that the intrinsic measurement uncertainty on the beam centers is quite
+        good with the statistical uncertainty on the beam centers being 15arcsec and 43arcsec along the Roll and
+        Tilt axes respectively<sup>[<a name="sup1" href="#ftn1">1</a>]</sup>.</p>
+
+    <p>
+        In the 'Long' timescale plots, we see a definitive shift of ~3arcmin which suggests that the mirror tilt
+        shifted over time. However, given the issues we've been seeing in GPS timing and CMB data, I took a closer
+        look at the actual timestreams (Fig 4.5).
+    </p>
 
 
-        <figure class="table">
-            <table class="center results">
-                <tr>
-                    <th>Parameter</th>
-                    <th>December (&deg;)</th>
-                    <th>January (&deg;)</th>
-                    <th>Difference (&deg;)</th>
-                    <th>Sys Uncert. (&deg;)</th>
-                </tr>
-                <tr>
-                    <td>Tilt</td>
-                    <td>44.878</td>
-                    <td>44.886</td>
-                    <td>-0.008</td>
-                    <td>0.004</td>
-                </tr>
-                <tr>
-                    <td>Roll</td>
-                    <td>-0.080</td>
-                    <td>-0.039</td>
-                    <td>0.041</td>
-                    <td>0.02</td>
-                </tr>
+    <p>
+        Both Elevation and Azimuth only update every 1 second by $7\times{10^{-5}}^\circ$ / $4\times{10^{-3}}^\circ$
+        which is in agreement with what I calculate for the difference in El and Az to be over 1 second using the
+        JPL Horizons database. However, there's another jump in Elevation that occurs at 60-second intervals and are
+        $O\left(-10^{-4}\right)$.
+    </p>
 
-            </table>
-            <figcaption>
+    <figure>
+        <img src="figs/timestream_azeltimediff.png">
+        <figcaption>
 
-            </figcaption>
-        </figure>
+        </figcaption>
+    </figure>
 
-        <p>
-            At some point in the future, we'll also want to look into how imperfections in mirror flatness affect the
-            residuals. However in the context of the RPS analysis, which I'm more focused on, this should be sufficient
-            work to go off of for now.
-        </p>
 
-    </section>
+    <p>I was worried that the moon's position as given by GCP might not be
+        reliable, so I compared this position to the position (Az/El) given by the JPL Horizons database.
+        Over the course of the whole campaign, the difference in elevation is small and appears to differ as a
+        function of the elevation of the moon itself. The difference in Azimuth however continues to grow over time,
+        which could lend itself to the idea that we're somehow drifting from the moon's actual location.
+    </p>
+
+    <figure>
+        <img src="figs/gcp_vs_horizons_all.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>
+        I don't think this is what's actually happening because we would see a similarly large shift in the tilt
+        between the data from December and that of January. In the table below, I show the fits for the mirror tilt
+        for the first moon dataset and the second separately as well as with the GCP moon position and Horizons moon
+        position. If the Horizons position was the real position, then we would expect the tilts from December and
+        January data to be the same and the effective difference in Azimuth for a given position from the
+        GCP-source-derived tilts to be ~0.16 degrees. However, neither of these are true.
+    </p>
+
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th>Moon Pos</th>
+                <th>Data Set</th>
+                <th>Roll</th>
+                <th>Effective Az Diff</th>
+                <th>Expected Az Diff</th>
+            </tr>
+            <tr>
+                <td rowspan="2" valign="middle">GCP</td>
+                <td>December</td>
+                <td>-0.0802</td>
+                <td rowspan="2" valign="middle">0.0584</td>
+                <td rowspan="2" valign="middle">0.16</td>
+            </tr>
+            <tr>
+                <td>January</td>
+                <td>-0.0390</td>
+            </tr>
+            <tr>
+                <td rowspan="2" valign="middle">Horizons</td>
+                <td>December</td>
+                <td>-0.1902</td>
+                <td rowspan="2" valign="middle">-0.0958</td>
+                <td rowspan="2" valign="middle">0</td>
+
+            </tr>
+            <tr>
+                <td>January</td>
+                <td>-0.2578</td>
+            </tr>
+        </table>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <b>Takeaway's here:</b>
+    <ul>
+        <li>Mirror measurements are pretty consistent on short (1hr/1wk) timescales.</li>
+        <li>There's a measurable shift in roll of ~0.05&deg; between the early Dec and Late Jan Moon obs.</li>
+        <li>The shape and scatter of the of the residuals is consistent between months. This implies that the
+            overall roll shifted but the mirror stayed the same shape (along the roll axis).
+        </li>
+        <li>The tilt is the exact opposite: There's no discernible shift in tilt, but the scatter is consistently
+            lower in the January compared to December implying that the mirror deformed slightly in tilt (for the
+            better)
+        </li>
+        <li>Unlikely to be caused by timing issues in GCP.</li>
+    </ul>
+
+    <p>
+        So it's still not clear why there's a difference in the roll -- it very well could have physically shifted
+        over time -- but I believe I've ruled out timing issues as the culprit. In order to start looking at the RPS
+        data taken over January, I fit the mirror parameters for the two different datasets and assuming that the
+        real mirror position is halfway between the two and select half of the difference between the best fit
+        parameters of the Dec and Jan data as my systematic uncertainty.
+    </p>
+
+
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th>Parameter</th>
+                <th>December (&deg;)</th>
+                <th>January (&deg;)</th>
+                <th>Difference (&deg;)</th>
+                <th>Sys Uncert. (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Tilt</td>
+                <td>44.878</td>
+                <td>44.886</td>
+                <td>-0.008</td>
+                <td>0.004</td>
+            </tr>
+            <tr>
+                <td>Roll</td>
+                <td>-0.080</td>
+                <td>-0.039</td>
+                <td>0.041</td>
+                <td>0.02</td>
+            </tr>
+
+        </table>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <h3>Residual Quiver Plots Fit Per-Obs</h3>
+    <p>
+        The last plot I wanted to look at was quiver plots of the residuals fit per-DK. As we saw in Figure 3.1, the roll parameter also has the effect of twisting the residuals and this effect increases as you get farther away from the true roll. Quiver plots are quite good at showing us this effect. A spiral pattern in the residuals tells us that even though we've converged, there's something still off about our best-fit roll parameter. Using the best-fit roll over all datasets would show a twist in all of the data, so I show the quivers for each observation where the tilt and roll parameters have been fit for each.
+    </p>
+    <figure>
+        <img alt="Maps pager" id="quivdkpager" src="#" width="65%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#quivdkpager",
+                {
+                    'DK|d4': [
+                        '-81_1',
+                        '-81_2',
+                        '-81_3',
+                        '0_1',
+                        '23_1',
+                        '23_2',
+                        '23_3',
+                        '45_1',
+                        '68_1',
+                        '68_2',
+                        '68_3',
+                        '68_4',
+                        '90_1',
+                        '135_1',
+                        '174_1',
+                        '174_2',
+                        '174_3',
+                        '-68',
+                        '-23',
+                        '0_2',
+                        '45_2',
+                        '90_2',
+                        '112',
+                        '135_2',
+                        '157',],
+
+                },
+                function(params) {
+                    return 'figs/quiver_dk'+params.d4+'_fitperdk.png';
+                });
+            pager.setparams({
+                'd4': '0_1',
+
+            });
+        </script>
+    </figure>
+
+
+
+
+    <h3>Next Steps</h3>
+    <p>A significant part of the model that I had not considered so far is the phase of the moon which, due to the
+        uneven brightness temperature of the surface can affect the apparent location. <a href="Xu2019"></a> discuss
+    how this was addressed with the CLASS experiment and seems like a good starting point.
+    </p>
+    <p>
+
+    </p>
+
+
+</section>
 
 
 </section>
@@ -515,6 +528,42 @@
         </figcaption>
     </figure>
 
+    <h3>Extra Troubleshooting Pager</h3>
+
+    <p>The pager below shows a multitude of different parameters that I used to help try and identify potential
+        sources of systematics.
+        For the most part, everything looks fine. The most notable clicks are one in the Tilt axis are displayed as
+        a function of time: <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 't_cen'})">X vs. Obs
+            Time</a> and <a href="javascript:pager.setparams({'rot': '_derot','r': 'x','t': 'schind'})">X Vs.
+            Schedule #</a>.
+    </p>
+
+
+    <figure>
+        <img alt="pager" id="xyrespager" src="#" width="65%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#xyrespager",
+                {
+                    'Plot|t': ['Az|az_cen', 'El|el_cen', 'Dk|dk_cen', 'Obs Time|t_cen', 'GOF|gof',
+                        'Moon Az|az_cen_src', 'Moon El|el_cen_src', 'FPU T Mean|tfpumean',
+                        'FPU T STD|tfpustd', 'Wind Speed|windspeed', 'Wind Dir|winddir',
+                        'Ambient Temperature|airtemp', 'Schedule #|schind'],
+                    'Residuals|r': ['x/y|xy', 'r|r', 'x', 'y'],
+                    'Derotated|rot': ['Off|', 'On|_derot']
+                },
+                function (params) {
+                    return 'figs/scatter_' + params.t + '_' + params.r + 'res' + params.rot + '.png';
+                });
+            pager.setparams({
+                't': 'az_cen',
+                'r': 'xy',
+                'rot': '',
+            });
+        </script>
+    </figure>
 
     <h3>Notes</h3>
     <div class="footnote">
@@ -685,6 +734,7 @@
             "JPK2012",
             "RWO2016",
             "JAC2018",
+            "Xu2019",
             "JHK2019",
             "2022_moon_obs",
         ];
@@ -711,6 +761,7 @@
             "bkcmb/analysis_logbook/analysis/20121116_moon_maps/",
             "bicep3/analysis_logbook/20160120_moon_planets/",
             "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/",
+            "https://arxiv.org/pdf/1911.04499.pdf",
             "bkcmb/analysis_logbook/analysis/20191025_cold_spot_obs_IX/",
             "general_projects/rps/#moon_schedule_2022",
         ];
@@ -737,6 +788,7 @@
             "Moon Raster Beam Maps",
             "2016 Moon + planet obs opportunities",
             "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS",
+            "Two-year Cosmology Large Angular Scale Surveyor (CLASS) Observations: 40 GHz Telescope Pointing, Beam Profile, Window Function, and Polarization Performance",
             "The Cold Spot observation study for B3 IX: Plan moon raster schedule",
             "2022 Moon Observations Metadata",
         ];
@@ -882,52 +934,5 @@
             });
         </script>
     </figure>
-
-    <figure>
-        <img alt="Maps pager" id="quivdkpager" src="#" width="65%"/>
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#quivdkpager",
-                {
-                    'DK|d4': [
-                        '-81_1',
-                        '-81_2',
-                        '-81_3',
-                        '0_1',
-                        '23_1',
-                        '23_2',
-                        '23_3',
-                        '45_1',
-                        '68_1',
-                        '68_2',
-                        '68_3',
-                        '68_4',
-                        '90_1',
-                        '135_1',
-                        '174_1',
-                        '174_2',
-                        '174_3',
-                        '-68',
-                        '-23',
-                        '0_2',
-                        '45_2',
-                        '90_2',
-                        '112',
-                        '135_2',
-                        '157',],
-
-                },
-                function(params) {
-                    return 'figs/quiver_dk'+params.d4+'_mdesub.png';
-                });
-            pager.setparams({
-                'd4': '0_1',
-
-            });
-        </script>
-    </figure>
--->
 
 </body>
