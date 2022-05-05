@@ -224,7 +224,7 @@ fclose(f);
 [stos, sto0s, illums, illum0s] = deal(NaN(size(hd_sun{1})));
 
 
-lims = {[0,90], [100 300], [0 1]};
+lims = {[90 270], [100 300], [0 1]};
 clab = {'\phi [Deg]','T [K]',''};
 valname  = {'phase','temp','conv'};
 valtitle = {'Local Phase','Brightness Temperature','Beam-Convolved Map'};
@@ -274,7 +274,7 @@ for dayind = 1:length(hd_sun{1})
     
     if 1
     for valind = 1:3
-        vals = {asind(phasebin),cbin,M};
+        vals = {phasebin,cbin,M};
         val = vals{valind};
         
         

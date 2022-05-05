@@ -43,6 +43,8 @@ STO = acosd(dot(mvec,svec));
 
 
 if 0
+    
+    % Z X Y
 fig = figure(2);
 clf; hold on;
 plot3(-Mpoints(3,:)*0.5,Mpoints(1,:)*0.5,Mpoints(2,:)*0.5,'.')
@@ -51,7 +53,19 @@ quiver3(0,0,0,0,1,0,'Color','r')
 quiver3(0,0,0,0,0,1,'Color','b')
 
 %quiver3(0,0,0,svec(1),svec(2),svec(3))
-%quiver3(0,0,0,eq_vec(1),eq_vec(2),eq_vec(3),'Color','m')
+%quiver3(0,0,0,np_vec(3),np_vec(1),np_vec(2),'Color','m')
+%quiver3(0,0,0,eq_vec(3),eq_vec(1),eq_vec(2),'Color','m')
+ang = 0;
+V = Z*0.5;
+V2 = V;
+for i = -90:90%1:360
+    V = [V rodmatrix(i,np_vec)*Z*0.5];
+    V2 = [V2 rodmatrix(i,eq_vec)*Z*0.5];
+end
+
+plot3(V(3,:),V(1,:),V(2,:),'k.','MarkerSize',3)    
+plot3(V2(3,:),V2(1,:),V2(2,:),'k.','MarkerSize',3)
+
 grid on;
 xlabel('Z')
 ylabel('X')
@@ -76,12 +90,12 @@ local_phase = dot(Mpoints,repmat(dirvec,1,size(Mpoints,2)));
 % Flat projection toward the observer
 saz = atan2(dot(svec,Z),dot(svec,eq_vec))*180/pi;
 Maz = atan2(dot(Mpoints,repmat(Z,1,samples)),dot(Mpoints,repmat(eq_vec,1,samples)))*180/pi;
-local_phase = cosd(saz-Maz);
+local_phase = saz-Maz+180;
 
 
 % Create an Temperature profile based on Bruce et al. 1965 Fig 34/35.
 load('z:/dev/moon_analysis/moon_temp_data.mat');
-Tmap = griddata(phase,lat,BT,wrapTo180(acosd(local_phase)),Mlat);
+Tmap = griddata(phase,lat,BT,wrapTo180(local_phase),Mlat,'v4');
 
 
 if 0
@@ -109,12 +123,10 @@ end
 xbin = (-0.3:1/ppd/2:0.3);
 ybin = (-0.3:1/ppd/2:0.3);
 phasebin = grid_map_simple(Mpoints(1,:)*ang_diam/2,Mpoints(2,:)*ang_diam/2,local_phase,xbin,ybin);
-local_phase(local_phase>=0) = 1;
-local_phase(local_phase<0) = 0;
 
 %cbin = grid_map_simple(Mpoints(1,:)*ang_diam/2,Mpoints(2,:)*ang_diam/2,local_phase,xbin,ybin);
 cbin = grid_map_simple(Mpoints(1,:)*ang_diam/2,Mpoints(2,:)*ang_diam/2,Tmap,xbin,ybin);
-
+%cbin = grid_map_simple(Mpoints(1,:)*ang_diam/2,Mpoints(2,:)*ang_diam/2,asind(Mpoints_latlon(1,:)),xbin,ybin);
 
 
 function M = fibonacci_sphere(samples,clip)

@@ -44,7 +44,7 @@
     calibration mirror, aka Far Field Flat (FFFlat). In our previous posting <a href="JAC2022"></a>, I found a significant discrepancy in Mirror roll between December and January data set and I showed some inconsistencies between JPL Horizons data and GCP positions for the moon which needed more investigation. I've solidified my understanding of how GCP calculates coordinates and now find the Horizons data in good agreement with GCP (to ~1arcsec).
 </p>
 <p>
-    Now that I'm confident that timing isn't the issue, I looked into modelling the temperature profile of the Moon as a function of Sun position. Preliminary work shows that differences in Moon phases can shift the apparent beam center for a given detector by $\sim\pm0.05^\circ$, which is on the order of the discrepancy we see in the data. However, these offsets aren't consistent with what we see in the data.
+    Now that I'm confident that timing isn't the issue, I looked into modelling the temperature profile of the Moon as a function of Sun position. Preliminary work shows that differences in Moon phases can shift the apparent beam center for a given detector by $\sim\pm0.05^\circ$, which is on the order of the discrepancy we see in the data. However, the actual offsets for each observation doesn't line up with the model based on the time at which we observed the Moon.
 </p>
 
 
@@ -182,7 +182,7 @@
     </figure>
 
     <p>
-       For map-making, I project the x/y positions of the point cloud scaled by the Moon's on-sky diameter onto a 2D surface and bin the phases. I'm pretty sure I got the pointing right because the local phase lines up with the selenographic meridian during a full moon (see click). The pager below shows maps of the local phase and brightness temperature from 30 Nov 2021 to 02 Feb 2022. The vertical black line is (approximately) the selenographic meridian, drawn from the center of the moon to the North pole (black X). The horizontal black line is the equator.
+        For map-making, I project the x/y positions of the point cloud scaled by the Moon's on-sky diameter onto a 2D surface and bin the phases. I'm pretty sure I got the pointing right because the local phase lines up with the selenographic meridian during a full moon (<a href="javascript: pager.setparams({'m': 'phase', 'd':'20'})">pager click</a>). The pager below shows maps of the local phase and brightness temperature from 30 Nov 2021 to 02 Feb 2022. The vertical black line is (approximately) the selenographic meridian, drawn from the center of the moon to the North pole (black X). The horizontal black line is the equator.
     </p>
 
 
@@ -274,7 +274,7 @@
                 });
 
             pager.setparams({
-                'd2': '19',
+                'd2': '1',
                 'm2': 'conv',
             });
 
@@ -287,7 +287,7 @@
     </figure>
 
     <p>
-    I plot the Az and El offsets in the figure below. The black X's represent the times at which we observed the moon. While the overall amplitude of the offset is on the same order-of-magnitude as what we saw in my previous posting, the actual amplitudes don't line up at all. For comparison, I've included a scatter plot of Roll-axis residuals Vs. Az offset and color-scaled by time.
+    Since we're at pole, the beam centroid offset in topocentric Az (and El) is approximately the same as the offset in RA (Dec). I plot the Az and El offsets in the figure below. The black X's represent the times at which we observed the moon. While the overall amplitude of the offset is on the same order-of-magnitude as what we saw in my previous posting, the actual amplitudes don't line up at all. For comparison, I've included a scatter plot of Roll-axis residuals Vs. Az offset and color-scaled by time.
 </p>
 
     <figure>

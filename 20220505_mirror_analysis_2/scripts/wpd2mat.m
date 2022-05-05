@@ -14,7 +14,7 @@ for ind = 1:(length(Tdata)/2)
         BT = [BT; ones(size(Tdata{1}))*T(ind)];
 end
 
-phase = wrapTo180(phase+180);
+phase = wrapTo180(phase);
 
 ind = ~isnan(phase) & ~isnan(lat);
 phase = phase(ind);
