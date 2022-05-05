@@ -805,9 +805,16 @@ f = fopen(fname);
 horz_data_sch = textscan(f,'%f%s%s%f%f%f%f%f%f','delimiter',',','HeaderLines',61);
 fclose(f);
 
+fname = 'z:/dev/moon_analysis/horizons_moonsch_4_scan_1_geo.txt';
+f = fopen(fname);
+horz_data_sch_geo = textscan(f,'%f%s%s%f%f%f%f%s%s','delimiter',',','HeaderLines',61);
+fclose(f);
+
+
 %%
-tarray = d.array.frame.utc;
-tpmac = d.antenna0.time.utcslow;
+tarray = double(d.array.frame.utc);
+tpmac = double(d.antenna0.time.utcslow);
+ttrack = double(d.antenna0.tracker.utc);
 daz = double(d.antenna0.tracker.horiz_topo(:,1))./3.6e6;
 del = double(d.antenna0.tracker.horiz_topo(:,2))./3.6e6;
 ts = (tarray-tarray(1))*24*3600;
@@ -857,27 +864,87 @@ xlabel('Time [sec]')
 ylabel({'Diff El [Deg]'})
 %title('GCP Moon El [Deg]')
 
-
-
 fname = fullfile(figdir,'timestream_azeltimediff.png');
 saveas(fig,fname)
 
 %% Offset over the course of the scan
+% -44.65E -88.99N 2.843
+%2459549.532418982,*,m,   202.48816,   -4.87726,    202.76492,    -4.98750,  165.812519,     4.978869,
+%2459549.532418982, , ,   202.48734,   -5.86587,    202.76488,    -5.97603,        n.a.,         n.a.,
+a = 14.5539;
+b = -0.0157;
+refract = @(el) (a.*cosd(el).*sind(el).^3 + b.*sind(el).*cosd(el).^3) ./...
+    (sind(el).^4 + (a.*sind(el).^2+3.0*b.*cosd(el).^2));
+
 
 az_horz_arr = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{end-1},tarray);
 el_horz_arr = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{end},tarray);
+ra_horz_arr = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{6},tarray);
+dec_horz_arr = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{7},tarray);
+az_horz_trk = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{end-1},ttrack);
+el_horz_trk = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{end},ttrack);
+ra_horz_trk = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{6},ttrack);
+dec_horz_trk = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{7},ttrack);
 az_horz_pmc = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{end-1},tpmac);
 el_horz_pmc = interp1(horz_data_sch{1}-2400000.5,horz_data_sch{end},tpmac);
+%az_horz_arr_no_ref = interp1(horz_data_sch_geo{1}-2400000.5,horz_data_sch_geo{end-1},tarray);
+%el_horz_arr_no_ref = interp1(horz_data_sch_geo{1}-2400000.5,horz_data_sch_geo{end},tarray);
+ra_horz_arr_no_ref = interp1(horz_data_sch_geo{1}-2400000.5,horz_data_sch_geo{6},tarray);
+dec_horz_arr_no_ref = interp1(horz_data_sch_geo{1}-2400000.5,horz_data_sch_geo{7},tarray);
+%az_horz_pmc_no_ref = interp1(horz_data_sch_geo{1}-2400000.5,horz_data_sch_geo{end-1},tpmac);
+%el_horz_pmc_no_ref = interp1(horz_data_sch_geo{1}-2400000.5,horz_data_sch_geo{end},tpmac);
+
+tarraystr = mjd2datestr(tarray);
+tarraystr = datestr(datenum(tarraystr,'yyyy-mmm-dd:HH:MM:SS'),'yyyy/mm/dd HH:MM:SS');
+[az_horz_arr_no_ref2 el_horz_arr_no_ref2] = RADec2AzEl_no_c(ra_horz_arr_no_ref, dec_horz_arr_no_ref,tarraystr,...
+    -89.9911,-44.65,2.843);
+% [az_horz_arr_no_ref2 el_horz_arr_no_ref2] = RADec2AzEl_no_c(dra, ddec,tarraystr,...
+%     -89.9911,-44.65,2.843);
+
+% [az_horz_arr_no_ref2 el_horz_arr_no_ref2] = radec2azel(dra, ddec,tarray,...
+% -89.9911,-44.65);
+
+dra = double(d.antenna0.tracker.equat_geoc(:,1))./3.6e6;
+ddec = double(d.antenna0.tracker.equat_geoc(:,2))./3.6e6;
 
 fig = figure(2);
-fig.Position = [2000+500*(pltind-1)*winscale 0*300 900*winscale 450*winscale];
+%fig.Position = [2000+500*0*winscale -1*200 900*winscale 900*winscale];
 clf; hold on;
 
-subplot(1,2,1)
+subplot(2,2,1)
 plot(ts,daz-az_horz_arr)
+title('With Refraction')
 
-subplot(1,2,2)
+subplot(2,2,2)
+plot(ts,daz-az_horz_arr_no_ref2)
+title('Without Refraction')
+
+subplot(2,2,3)
 plot(ts,del-el_horz_arr)
+
+subplot(2,2,4)
+plot(ts,del-el_horz_arr_no_ref2)
+
+
+
+fig = figure(3);
+fig.Position = [2000+500*1.7*winscale -1*200 900*winscale 900*winscale];
+clf; hold on;
+
+subplot(2,2,1)
+plot(ts,dra-ra_horz_arr)
+title('With Refraction')
+
+subplot(2,2,2)
+plot(ts,dra-ra_horz_arr_no_ref)
+title('Without Refraction')
+
+subplot(2,2,3)
+plot(ts,ddec-dec_horz_arr)
+
+subplot(2,2,4)
+plot(ts,ddec-dec_horz_arr_no_ref)
+
 
 
 

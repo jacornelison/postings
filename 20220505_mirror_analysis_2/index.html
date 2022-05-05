@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mirror Analysis — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases</h1>
+
+    <time datetime="2022-04-28" class="published updated">
+        2022 May 05
+    </time>
+    —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+    During the 2021/2022 Austral Summer, we observed the moon to supplement the RPS and CMB data the was taken with the
+    calibration mirror, aka Far Field Flat (FFFlat). In our previous posting <a href="JAC2022"></a>, I found a significant discrepancy in Mirror roll between December and January data set and I showed some inconsistencies between JPL Horizons data and GCP positions for the moon which needed more investigation. I've solidified my understanding of how GCP calculates coordinates and now find the Horizons data in good agreement with GCP (to ~1arcsec).
+</p>
+<p>
+    Now that I'm confident that timing isn't the issue, I looked into modelling the temperature profile of the Moon as a function of Sun position. Preliminary work shows that differences in Moon phases can shift the apparent beam center for a given detector by $\sim\pm0.05^\circ$, which is on the order of the discrepancy we see in the data. However, these offsets aren't consistent with what we see in the data.
+</p>
+
+
+<hr>
+
+<p></p>
+<!---------------->
+<section><h2>GCP Coordinate Systems</h2>
+    <p>
+        When tracking a source, GCP calculates the source position in three different coordinate systems when determining where to point the telescope. In the code, this occurs under the function <tt>Tracker::sourcePositionTrack</tt> in <tt>gcp/antenna/control/bicep/Tracker.cc : L1843</tt>.
+    </p>
+
+    <h3>Geocentric Equatorial</h3>
+    <p>
+        We start in Geocentric Coordinates which is acquired from the JPL Horizons database. Since we don't have 24-hour internet at Pole, we run a batch script once per year to request roughly 1.5 years worth of ephemeris data. The ephemeris file (e.g. <tt>gcp/control/ephem/moon.ephem</tt>) contains Terrestrial Time (TT) in JD format, RA (HMS), Dec (HMS), and distance (AU) to object in 6-hour increments. Other than unit conversion, GCP does no other operations on this data. For a given data point, the ephemeris data is interpolated over the Tracker's UTC time and the RA (mas), Dec (mas), and distance (&mu;AU) of the Moon are stored in <tt>antenna0.tracker.equat_geoc</tt>.
+    </p>
+
+    <figure>
+        <img src="figs/gcp_vs_mat_equat_geoc.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+    <h3>Geocentric Horizontal</h3>
+    <p>
+        GCP then converts from Equatorial to Horizontal to account for the Site's location in a pretty straightforward way using our LST and Latitude given by <tt>antenna0.tracker.lst</tt> and <tt>antenna0.tracker.siteActual[1]</tt>:
+    </p>
+
+    \begin{equation}
+    \begin{split}
+    HA &= LST-RA\\
+    &\\
+    AZ &= \text{atan2}\left(\frac{-\cos(D)\sin(HA)}{\sin(D)\cos(L)-\cos(D)\sin(L)\cos(HA)} \right)\\
+    &\\
+    EL &= \sin\left[\sin(D)\sin(L)+\cos(D)\cos(L)\cos(HA)\right]^{-1}\\
+    &\\
+    PA &= \text{atan2}\left(\frac{\sin(HA)\cos(L)}{\sin(L)\cos(D)-\sin(D)\cos(L)\cos(HA)}\right)\\
+    \end{split}
+    \end{equation}
+
+    <p>Where $D$ is Dec, $L$ is the site Latitude, $HA$ is the Hour angle, and $AZ$, $EL$, $PA$ are the horizontal Azimuth, Elevation, and parallctic angle respectively. These values are saved in the <tt>antenna0.tracker.horiz_geoc</tt> register.</p>
+
+    <figure>
+        <img src="figs/gcp_vs_mat_horiz_geoc.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+    <h3>Topocentric Horizontal</h3>
+
+    <p>
+        Going to topocentric coordinates is also pretty straightforward, but isn't well advertised in the code. Conversion to topocentric occurs when accounting for parallax between observing at the Earth's center versus observing at Pole which is in contrast to the previous two functions, which explicitly calls out a coordinate system change.
+    </p>
+
+    \begin{equation}
+    \begin{split}
+    \Delta &= -\text{atan2}\left(\frac{\cos(EL)}{D/R_\bigoplus-\sin(EL)}\right)\\
+    &\\
+    &EL_{topo} = EL+\Delta\\
+    \end{split}
+    \end{equation}
+
+    <p>Where $D$ is the distance to the objeect and $R_\bigoplus$ is the distance to the geocentric origin. Interestingly, there's no azimuthal correction, but I assume this is because we're at Pole and the correction would be trivially small.</p>
+
+    <h4>Atmospheric Refraction and Diurnal Aberration</h4>
+
+    <p>Before saving the position to the archival data, there's a couple more corrections that GCP makes. The first is accounting for refraction from the atmosphere:</p>
+
+    \begin{equation}
+    \begin{split}
+    \Delta &= \frac{A\cos(EL)\sin(EL)^3+B\sin(El)\cos(EL)^3}{\sin(EL)^4+\left(A\sin(EL)+3B\cos(EL)^2\right)}\\
+    &\\
+    &EL_{corrected} = EL + \Delta\\
+    \end{split}
+    \end{equation}
+
+    <p>
+    Where $A$ and $B$ are atmospheric correction coefficients in radians and update every 60 seconds. These coefficients are calculated in <tt>gcp/control/code/share/lsalib/refro.c</tt> using optical and radio refraction models for various layers of the atmosphere based on ambient temperature, pressure, humidity, and a number of other hard-coded factors. I assume we acquire the ambient temperature from SPT's weather station, but it's not clear where the other day-to-day varying parameters (e.g. pressure, humidity) come from. It might be worth looking into to confirm the accuracy of these corrections.
+    </p>
+
+
+    <p>Lastly, there's a correction for Diurnal Abberation which, as far as I can tell, is insignificant and is probably a remnant from our interferometer days. The details can be found in <tt>gcp/antenna/control/bicep/Site.cc:L128</tt></p>
+
+    <figure>
+        <img src="figs/gcp_vs_mat_horiz_topo.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>
+
+    </p>
+
+
+</section>
+<!---------------->
+<section><h2>Modelling Moon Phases</h2>
+
+    <p>
+        This next section covers my current foray into modelling how the apparent beam centroid of a detector is affected by phases of the Moon. My approach to this was to develop a temperature map of the Moon based on it's position in the sky relative to the Sun and then convolve that map with a 2D Gaussian beam of the size of our detectors (~0.16&deg; for B3).
+    </p>
+
+    <h3>Temperature Model</h3>
+    <p>I use the emperical model from <a href="GaryEtAl1965"></a> which presented nice high resolution images of the Moon's surface temperature throughout a number of phases. I digitized Figure 35 of that paper and interpolate the temperature using the local phase and latitude as inputs. The figure below shows the original figure and my reconstruction of it using <a href="https://apps.automeris.io/wpd/">WebPlotDigitizer</a>.</p>
+
+    <figure>
+        <table>
+            <tr><td><img src="figs/temp_contour_gary_et_al.png"></td></tr>
+            <tr><td><img src="figs/fig_38_recon.png"></td></tr>
+        </table>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <h3>Local Phase Calculation</h3>
+    <p>
+        I took a ray-tracing approach to this. I started by acquiring the Moon and Sun positions from Horizons and creating cartesian system centered on the observer where $\hat{y}$ pointed to zenith, $\hat{z}$ pointed toward the Moon and $\hat{x}$ pointed in the direction of increasing RA. Since the Moon's position is fixed at $\hat{z}$ in this coordinate system, the location of the Sun is its RA/DEC with an additional offset of the Moon's RA/Dec. The vector drawn from the Sun's position to the origin defines (to high precision) the direction of sunlight on the Moon.
+    </p>
+
+    <p>
+        <a href="GaryEtAl1965"></a> defines the local phase of the Moon, $\phi$, as the "'selenographic longitude of subsolar point' minus 'selenographic longitude of location on moon' + 180&deg;". To compute this, I first create spherical point cloud to represent normals of the moon's surface (Figure 2.2). I then find the subsolar longitude and longitude of the surface normals by calculating their projection onto the Moon's selenographic equator (which I get from rotating the line drawn the moon's position to its North Pole [also from Horizons]).
+        </p>
+
+    <figure>
+        <img src="figs/pointcloud.png">
+        <figcaption>
+            A spherical point cloud of 100 points representing normals of the visible surface of the Moon. During actual map making, 20000 points are used to ensure complete filling of the bins. The black lines indicate the prime meridian and equator.
+        </figcaption>
+    </figure>
+
+    <p>
+       For map-making, I project the x/y positions of the point cloud scaled by the Moon's on-sky diameter onto a 2D surface and bin the phases. I'm pretty sure I got the pointing right because the local phase lines up with the selenographic meridian during a full moon (see click). The pager below shows maps of the local phase and brightness temperature from 30 Nov 2021 to 02 Feb 2022. The vertical black line is (approximately) the selenographic meridian, drawn from the center of the moon to the North pole (black X). The horizontal black line is the equator.
+    </p>
+
+
+    <figure>
+
+        <img alt="Maps pager" id="mapspager" src="#" />
+
+        <script type="text/javascript">
+
+            var drumlist = new Array(64);
+            for (var ii=1; ii<=64; ++ii) {
+                drumlist[ii] = ii;
+            }
+
+            var drumopt = new Pager.DataList(drumlist);
+            drumopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 2) { val = "0"+val; }
+                return val;
+            }
+            drumopt.fromString = function(val) {
+                return parseInt(val);
+            }
+            pager.link("#mapspager",
+                {
+                    'Map Type|m':['phase','temp'],
+                    'Day|d': drumopt,
+
+                },
+                function(params) {
+                    return 'figs/moonmap_day_'+params.d+'_'+params.m+'.png';
+                });
+
+            pager.setparams({
+                'd': '19',
+                'm': 'phase',
+            });
+
+        </script>
+
+        <figcaption>
+
+        </figcaption>
+
+    </figure>
+
+
+    <h3>Convolution with B3 Beams</h3>
+
+    <p>This part is pretty straightforward. I create a 2D gaussian with the mean beam width of the detectors across the BICEP3 focal plane.</p>
+
+    <figure>
+        <img src="figs/b3beam.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>The pager below now includes the beam-convolved maps. In addition, I've marked with a black X the maximum amplitude of the map which serves as a proxy for the apparent beam center. As expected, the apparent centroid of the beam deviates from zero as function of Moon phase.</p>
+
+    <figure>
+
+        <img alt="Maps pager" id="maps2pager" src="#" />
+
+        <script type="text/javascript">
+
+            var drumlist = new Array(64);
+            for (var ii=1; ii<=64; ++ii) {
+                drumlist[ii] = ii;
+            }
+
+            var drumopt = new Pager.DataList(drumlist);
+            drumopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 2) { val = "0"+val; }
+                return val;
+            }
+            drumopt.fromString = function(val) {
+                return parseInt(val);
+            }
+            pager.link("#maps2pager",
+                {
+                    'Map Type|m2':['phase','temp','conv'],
+                    'Day|d2': drumopt,
+
+                },
+                function(params) {
+                    return 'figs/moonmap_day_'+params.d2+'_'+params.m2+'.png';
+                });
+
+            pager.setparams({
+                'd2': '19',
+                'm2': 'conv',
+            });
+
+        </script>
+
+        <figcaption>
+
+        </figcaption>
+
+    </figure>
+
+    <p>
+    I plot the Az and El offsets in the figure below. The black X's represent the times at which we observed the moon. While the overall amplitude of the offset is on the same order-of-magnitude as what we saw in my previous posting, the actual amplitudes don't line up at all. For comparison, I've included a scatter plot of Roll-axis residuals Vs. Az offset and color-scaled by time.
+</p>
+
+    <figure>
+        <table>
+            <tr><td><img src="figs/azeloffs_vs_time.png"></td></tr>
+            <tr><td><img src="figs/scatter_az_cen_xres_derot_color_t_cen.png"></td></tr>
+        </table>
+
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+
+</section>
+<!---------------->
+
+
+<hr>
+
+<section class="appendix">
+    <h2 class="appendix">Appendix</h2>
+
+    <h3>Notes</h3>
+    <div class="footnote">
+        <p>
+            <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
+
+        </p>
+    </div>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. This code can be found in the <tt>scripts/</tt> directory of this posting.</p>
+    <p id="code"></p>
+
+    <h3>Data Products</h3>
+    <p>Final data products used in this analysis which can be found in the <tt>data/</tt> directory of this posting.</p>
+    <p id="data"></p>
+
+
+    <h3>References And Related Postings</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "ma_posting_plots_20220505.m",
+            "moon_illumination.m",
+            "wpd2mat.m"
+
+        ];
+
+        // Posting titles
+        var desc = [
+            "Creates the plots for this posting",
+            "Creates binned Temperature maps of the moon for a given moon-sun position on the sky.",
+            "Converts the csv output of WebPlotDigitizer into a useful .mat file."
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes) {
+            msg = msg + "<tr><td><tt>" + codes[code] + "</tt></td><td> - </td><td>" + desc[code] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "timestream_moonsch_4_scan_1.mat",
+            "horizons_moonsch_4_scan_1_geo.txt",
+            "timestream_moonsch_54_scan_10.mat",
+            "horizons_moonsch_54_scan_10.txt",
+            "moon_temp_data.mat",
+            "illum_test_moon.txt",
+            "illum_test_sun.txt",
+            "wpd_data_gary_et_al.csv"
+        ];
+
+        // Posting titles
+        var desc = [
+            "Timestream for a single scan of the moon.",
+            "Horizons data in 0.5-second intervals over a particular scan.",
+            "Timestream for a single scan of the moon.",
+            "Horizons data in 0.5-second intervals over a particular scan.",
+            "Reconstructed brightness temperature data from Gary et al. 1965.",
+            "Horizons ephemeris data of the moon for computing local phase.",
+            "Horizons ephemeris data of the sun for computing local phase.",
+            "Extracted data from Figure 38 of Gary et al. 1965."
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb: "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            general_projects: "../../../", // General Projects
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
+            keck: "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+        };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "GaryEtAl1965",
+            "KWY2007",
+            "JAB2010a",
+            "JAB2010b",
+            "RWA2010a",
+            "RWA2010b",
+            "RWA2010c",
+            "CDD2010",
+            "RWA2010d",
+            "JAB2010c",
+            "JAB2010d",
+            "RWA2010e",
+            "JAB2011",
+            "RWO2011",
+            "RWA2011a",
+            "RWA2011b",
+            "JAB2012",
+            "JPK2012",
+            "RWO2016",
+            "JAC2018",
+            "Xu2019",
+            "JHK2019",
+            "2022_moon_obs",
+            "JAC2022",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which is lies if you can.
+        var hrefs = [
+            "https://articles.adsabs.harvard.edu/pdf/1965ApJS...12..239G",
+            "~bicep/analysis_logbook_north/20070318_pointing_supplement/pointing_article.pdf",
+            "bkcmb/analysis_logbook/analysis/20100318_moonbeam/",
+            "bkcmb/analysis_logbook/analysis/20100401_moonbeam_dk90/",
+            "bkcmb/analysis_logbook/analysis/20100421_moon_params/",
+            "bkcmb/analysis_logbook/analysis/20100421_beammap_summary/",
+            "bkcmb/analysis_logbook/analysis/20100803_moon_point/",
+            "bkcmb/analysis_logbook/analysis/20100921_moon_availability/",
+            "bkcmb/analysis_logbook/analysis/20101018_oct_moon/",
+            "bkcmb/analysis_logbook/analysis/20101116_moonxtalk/",
+            "bkcmb/analysis_logbook/analysis/20101130_moonxtalk2/",
+            "bkcmb/analysis_logbook/analysis/20101208_moon_obs_sum/",
+            "bkcmb/analysis_logbook/analysis/20110121_settlingxtalk/",
+            "bkcmb/analysis_logbook/analysis/20111114_beamfit_discrep/",
+            "bkcmb/analysis_logbook/analysis/20111004_bm_pointing/",
+            "bkcmb/analysis_logbook/analysis/20111005_thermal_beammap/",
+            "bkcmb/analysis_logbook/analysis/20120122_moon26/",
+            "bkcmb/analysis_logbook/analysis/20121116_moon_maps/",
+            "bicep3/analysis_logbook/20160120_moon_planets/",
+            "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/",
+            "https://arxiv.org/pdf/1911.04499.pdf",
+            "bkcmb/analysis_logbook/analysis/20191025_cold_spot_obs_IX/",
+            "general_projects/rps/#moon_schedule_2022",
+            "bicep3/analysis_logbook/20220428_mirror_analysis/",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Radiometric Mapping of the Moon at 3 Millimeters Wavelength",
+            "BICEP Pointing Supplement",
+            "Preliminary moon beam map analysis",
+            "Moon beam map follow-up, dk=90",
+            "Beam parameters - Moon raster (dk=90)",
+            "Multi-run beammap comparison, moon comparison",
+            "Run 8 Moon pointing parameters",
+            "Moon Availability in Late 2010",
+            "Summary of October moon observations",
+            "crosstalk in moon rasters",
+            "Summary Moon / MAPO rasters for Xtalk",
+            "Moon observation summary",
+            "25kHz mux evaluation: mapo & moon rasters ",
+            "Beam center discrepancy between CMB and Moon / MAPO",
+            "Beammap pointing model and Moon vs. MAPO comparison",
+            "Chopped thermal source beammaps plus Moon/MAPO comparison",
+            "Moon raster for rotating pol source",
+            "Moon Raster Beam Maps",
+            "2016 Moon + planet obs opportunities",
+            "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS",
+            "Two-year Cosmology Large Angular Scale Surveyor (CLASS) Observations: 40 GHz Telescope Pointing, Beam Profile, Window Function, and Polarization Performance",
+            "The Cold Spot observation study for B3 IX: Plan moon raster schedule",
+            "2022 Moon Observations Metadata",
+            "Deriving Mirror Properties from the Moon",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl)) != bkurl &
+            posting_dir.match(new RegExp(spurl)) != spurl) {
+            preface = "http://" + bkurl + "/";
+        } else {
+            for (key in keys) {
+                if (posting_dir.match(new RegExp("/" + keys[key] + "/")) == "/" + keys[key] + "/") {
+                    preface = sitemap[keys[key]];
+                }
+                ;
+            }
+            ;
+
+        }
+        ;
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+                // If there's a match, at the prefix and move on.
+                if (hrefs[ref].match(new RegExp(keys[key] + "/")) == keys[key] + "/") {
+                    hrefs[ref] = preface + hrefs[ref];
+                    break;
+                }
+            }
+            ;
+        }
+        ;
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags) {
+            msg = msg + "<tr><td><a href=" + tags[tag] + "></a></td><td> - </td><td>" + desc[tag] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links) {
+            for (var tag in tags) {
+                if (links[link].href.endsWith(tags[tag])) {
+                    links[link].text = "(" + tags[tag] + ")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+
+
+</body>
