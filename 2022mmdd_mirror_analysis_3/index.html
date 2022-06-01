@@ -122,7 +122,7 @@
                         '112',
                         '157',],
                     'Correction|corr': ['off|nocorr','on|withcorr'],
-                    //'Fit Type|f': ['x/y|','r/theta|_rtheta'],
+
                 },
                 function(params) {
                     //return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
@@ -130,15 +130,15 @@
                 });
             pager.setparams({
                 'd4': '0_1',
-                'corr': 'nocorr',
-                //'f': '',
+                'corr': 'withcorr',
+
 
             });
         </script>
     </figure>
 
     <p>
-        This is more easily seen in the pager below where I plot the residuals in $r/\theta$ coordinates. The x-axis is the distance of the detector from the focal plane and the y-axis is the residual between the CMB-observed &theta; and our best-fit &theta; converted from x/y. The plot is color-coded by time since the start of the dataset's first schedule.
+        This is more easily seen in the pager below where I plot the residuals in $r/\theta$ coordinates. The x-axis is the derotated X or Y axis serving as a proxy for the Tilt- and Roll-axis respectively. The y-axis is the residual between the CMB-observed &theta; and our best-fit &theta; converted from x/y. The plot is color-coded by time since the start of the dataset's first schedule.
     </p>
 
     <p>
@@ -180,16 +180,16 @@
                         '112',
                         '157',],
                     'Correction|corr': ['off|nocorr','on|withcorr'],
-                    //'Fit Type|f': ['x/y|','r/theta|_rtheta'],
+                    'Axis|ax': ['X|_x', 'Y|_y'],
                 },
                 function(params) {
                     //return 'figs/thetares_vs_r_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
-                    return 'figs/thetares_vs_r_dk'+params.d4+'_fitperdk_'+params.corr+'_rtheta.png';
+                    return 'figs/thetares_vs_r_dk'+params.d4+'_fitperdk_'+params.corr+'_rtheta'+params.ax+'.png';
                 });
             pager.setparams({
                 'd4': '0_1',
-                'corr': 'nocorr',
-                //'f': '',
+                'corr': 'withcorr',
+                'ax': '_x',
 
             });
         </script>

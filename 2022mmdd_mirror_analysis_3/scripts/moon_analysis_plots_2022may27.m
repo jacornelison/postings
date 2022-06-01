@@ -576,40 +576,40 @@ corrtitle = {'No Phase Correction','With Phase Correction'};
 valname = {'tilt','roll'};
 lims = {[44.84 44.92], [-0.13 -0.02]};
 for valind = 1:2
-for corrind = 1:2
-    if corrind == 1
-        load('z:/dev/moon_analysis/perdk_mirror_parms_rtheta.mat')
-    else
-        load('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected_rtheta.mat')
+    for corrind = 1:2
+        if corrind == 1
+            load('z:/dev/moon_analysis/perdk_mirror_parms_rtheta.mat')
+        else
+            load('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected_rtheta.mat')
+            
+        end
+        
+        val = mirrorparms(:,valind)';
+        
+        times = NaN(1,length(val));
+        for schedind = 1:length(scheds)
+            t = moonsch{scheds{schedind}(1)}.t1;
+            times(schedind) = datenum(mjd2datestr(t),'yyyy-mmm-dd:HH:MM:SS');
+            
+        end
+        
+        
+        fig = figure(7+corrind);
+        fig.Position = [2000 200 1000 280];
+        clf; hold on;
+        scatter(times,val,14,dks,'filled')
+        grid on
+        datetick('x','mmm-dd')
+        ylabel([valname{valind} ' Fit [Degrees]'])
+        xlabel('Date [mmm-dd]')
+        c = colorbar();
+        c.Title.String = 'DK [Deg]';
+        ylim(lims{valind})
+        title({['Best-Fit Mirror ' valname{valind}  ' per-Obs'],corrtitle{corrind}})
+        fname = fullfile(figdir,[valname{valind} '_vs_time_perdk_' corrname{corrind} '.png']);
+        saveas(fig,fname)
         
     end
-    
-    val = mirrorparms(:,valind)';
-    
-    times = NaN(1,length(val));
-    for schedind = 1:length(scheds)
-        t = moonsch{scheds{schedind}(1)}.t1;
-        times(schedind) = datenum(mjd2datestr(t),'yyyy-mmm-dd:HH:MM:SS');
-        
-    end
-    
-    
-    fig = figure(7+corrind);
-    fig.Position = [2000 200 1000 280];
-    clf; hold on;
-    scatter(times,val,14,dks,'filled')
-    grid on
-    datetick('x','mmm-dd')
-    ylabel([valname{valind} ' Fit [Degrees]'])
-    xlabel('Date [mmm-dd]')
-    c = colorbar();
-    c.Title.String = 'DK [Deg]';
-    ylim(lims{valind})
-    title({['Best-Fit Mirror ' valname{valind}  ' per-Obs'],corrtitle{corrind}})
-    fname = fullfile(figdir,[valname{valind} '_vs_time_perdk_' corrname{corrind} '.png']);
-    saveas(fig,fname)
-    
-end
 end
 
 %% DK vs. DK scatter plots.
@@ -758,6 +758,8 @@ clf;
 fittype = {'','_rtheta'};
 corrname = {'nocorr','withcorr'};
 corrtitle = {'No Correction','Phase Corrected'};
+axisname = {'_x','_y'};
+axistitle = {'X','Y'};
 
 theta_means = NaN(2,length(scheds));
 for fitind = 2%1:2
@@ -793,40 +795,45 @@ for fitind = 2%1:2
             %[r, th, chi] = beam_map_pointing_model(fdsch.az_cen,fdsch.el_cen,fdsch.dk_cen,model,'bicep3',mirror,source,[],'rtheta');
             [th, r] = cart2pol(x,y);
             th = rad2deg(th);
-                        
+            
             th_diff = wrapTo180(p.theta(fdsch.ch)-th);
             ind = p.r(fdsch.ch)>6 & abs(th_diff)<0.4;
             theta_means(valind,schind) = nanmedian(th_diff(ind));
             
             
             if 1
-            prsch = p.r(fdsch.ch)';
-            pthsch = p.theta(fdsch.ch)'-fdsch.dk_cen;
-            [xsch ysch] = pol2cart(pthsch*pi/180,prsch);
-            %scatter(p.r(fdsch.ch),th_diff,14,(fdsch.t_cen-nanmin(fdsch.t_cen))*24,'filled')
-            scatter(xsch,th_diff,14,(fdsch.t_cen-nanmin(fdsch.t_cen))*24,'filled')
-            grid on
-            c = colorbar();
-            %caxis([0,3])
-            %caxis([-10,10])
-            c.Title.String = 'Time [Hours]';
-            ylim([-1 1]*1)
-            xlim([-1 1]*15)
-            xlabel('X Derotated CMB-Observed [Degrees]')
-            ylabel('\theta_{CMB} - \theta_{fit} [Degrees]')
-            title({sprintf('Beam Center Residuals, Derotated, %s', corrtitle{valind}),...
-                sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirrorparms(schind,1),mirrorparms(schind,2),mjd2datestr(moonsch{scheds{schind}(1)}.t1))...
-                })
-            colormap jet
-            figname = fullfile(figdir,sprintf('thetares_vs_r_dk%s_fitperdk_%s%s.png',titles{schind},corrname{valind},fittype{fitind}));
-            saveas(fig,figname)
+                prsch = p.r(fdsch.ch)';
+                pthsch = p.theta(fdsch.ch)'-fdsch.dk_cen;
+                [xsch ysch] = pol2cart(pthsch*pi/180,prsch);
+                xval = {xsch, ysch};
+                for axind = 1:2
+                    
+                    %scatter(p.r(fdsch.ch),th_diff,14,(fdsch.t_cen-nanmin(fdsch.t_cen))*24,'filled')
+                    scatter(xval{axind},th_diff,14,(fdsch.t_cen-nanmin(fdsch.t_cen))*24,'filled')
+                    grid on
+                    c = colorbar();
+                    %caxis([0,3])
+                    %caxis([-10,10])
+                    c.Title.String = 'Time [Hours]';
+                    ylim([-1 1]*1)
+                    xlim([-1 1]*15)
+                    xlabel(sprintf('%s Derotated CMB-Observed [Degrees]',axistitle{axind}))
+                    ylabel('\theta_{CMB} - \theta_{fit} [Degrees]')
+                    title({sprintf('Beam Center Residuals, Derotated, %s', corrtitle{valind}),...
+                        sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirrorparms(schind,1),mirrorparms(schind,2),mjd2datestr(moonsch{scheds{schind}(1)}.t1))...
+                        })
+                    colormap parula
+                    figname = fullfile(figdir,sprintf('thetares_vs_r_dk%s_fitperdk_%s%s%s.png',titles{schind},corrname{valind},fittype{fitind},axisname{axind}));
+                    saveas(fig,figname)
+                    
+                end
             end
         end
         
     end
 end
 
-%% plot FP orientation per-DK
+%% FP ort vs time.
 
 winscale = 1;
 scaling = 15;
@@ -935,8 +942,8 @@ timesch = {{[1:6, 8:9], 10:17, 18:25},{[1:6, 8:9], 10:17, 18:25},{10:17, 18:25}}
 [mn, sstat, ssys] = deal(NaN(length(casesch),2));
 
 txt{1,1} =  ['|         Uncorrected       |'...
-              '          Corrected        |'...
-              '      Corrected (Excl.)    |'];
+    '          Corrected        |'...
+    '      Corrected (Excl.)    |'];
 [txt{2,1}, txt{3,1}, txt{4,1}] = deal('|');
 txthdr2 = '  mean   |  stat  |   sys  |';
 txtrslt = ' %02.4f | %02.4f | %02.4f |';
@@ -975,7 +982,7 @@ for caseind = 1:length(casesch)
 end
 
 disp(txt)
-    
+
 
 
 
