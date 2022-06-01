@@ -1,0 +1,208 @@
+*******************************************************************************
+ Revised: July 31, 2013             Moon / (Earth)                          301
+ 
+ GEOPHYSICAL DATA (updated 2018-Aug-15):
+  Vol. mean radius, km  = 1737.53+-0.03    Mass, x10^22 kg       =    7.349
+  Radius (gravity), km  = 1738.0           Surface emissivity    =    0.92
+  Radius (IAU), km      = 1737.4           GM, km^3/s^2          = 4902.800066
+  Density, g/cm^3       =    3.3437        GM 1-sigma, km^3/s^2  =  +-0.0001  
+  V(1,0)                =   +0.21          Surface accel., m/s^2 =    1.62
+  Earth/Moon mass ratio = 81.3005690769    Farside crust. thick. = ~80 - 90 km
+  Mean crustal density  = 2.97+-.07 g/cm^3 Nearside crust. thick.= 58+-8 km 
+  Heat flow, Apollo 15  = 3.1+-.6 mW/m^2   Mean angular diameter = 31'05.2"
+  Heat flow, Apollo 17  = 2.2+-.5 mW/m^2   Sid. rot. rate, rad/s = 0.0000026617
+  Geometric Albedo      = 0.12             Mean solar day        = 29.5306 d
+  Obliquity to orbit    = 6.67 deg         Orbit period          = 27.321582 d
+  Semi-major axis, a    = 384400 km        Eccentricity          = 0.05490
+  Mean motion, rad/s    = 2.6616995x10^-6  Inclination           = 5.145 deg
+  Apsidal period        = 3231.50 d        Nodal period          = 6798.38 d
+                                 Perihelion  Aphelion    Mean
+  Solar Constant (W/m^2)         1414+-7     1323+-7     1368+-7
+  Maximum Planetary IR (W/m^2)   1314        1226        1268
+  Minimum Planetary IR (W/m^2)      5.2         5.2         5.2
+********************************************************************************
+
+
+*******************************************************************************
+Ephemeris / WWW_USER Wed May  4 17:04:14 2022 Pasadena, USA      / Horizons    
+*******************************************************************************
+Target body name: Moon (301)                      {source: DE441}
+Center body name: Earth (399)                     {source: DE441}
+Center-site name: GEOCENTRIC
+*******************************************************************************
+Start time      : A.D. 2021-Nov-30 00:00:00.0000 UT      
+Stop  time      : A.D. 2022-Feb-01 00:00:00.0000 UT      
+Step-size       : 1440 minutes
+*******************************************************************************
+Target pole/equ : MOON_ME                         {East-longitude positive}
+Target radii    : 1737.4 x 1737.4 x 1737.4 km     {Equator, meridian, pole}    
+Center geodetic : 0.00000000,0.00000000,0.0000000 {E-lon(deg),Lat(deg),Alt(km)}
+Center cylindric: 0.00000000,0.00000000,0.0000000 {E-lon(deg),Dxy(km),Dz(km)}
+Center pole/equ : ITRF93                          {East-longitude positive}
+Center radii    : 6378.1 x 6378.1 x 6356.8 km     {Equator, meridian, pole}    
+Target primary  : Earth
+Vis. interferer : MOON (R_eq= 1737.400) km        {source: DE441}
+Rel. light bend : Sun, EARTH                      {source: DE441}
+Rel. lght bnd GM: 1.3271E+11, 3.9860E+05 km^3/s^2                              
+Atmos refraction: NO (AIRLESS)
+RA format       : DEG
+Time format     : JD  
+EOP file        : eop.220502.p220726                                           
+EOP coverage    : DATA-BASED 1962-JAN-20 TO 2022-MAY-02. PREDICTS-> 2022-JUL-25
+Units conversion: 1 au= 149597870.700 km, c= 299792.458 km/s, 1 day= 86400.0 s 
+Table cut-offs 1: Elevation (-90.0deg=NO ),Airmass (>38.000=NO), Daylight (NO )
+Table cut-offs 2: Solar elongation (  0.0,180.0=NO ),Local Hour Angle( 0.0=NO )
+Table cut-offs 3: RA/DEC angular rate (     0.0=NO )                           
+Table format    : Comma Separated Values (spreadsheet)
+*******************************************************************************************************
+Date_________JDUT, , ,R.A._(a-app), DEC_(a-app),      Illu%,  Ang-diam,    NP.ang,  NP.dist,     S-T-O,
+*******************************************************************************************************
+$$SOE
+2459548.500000000, , ,   189.62557,     0.46196,   24.65107,  1920.230,   22.2351, -955.738,  120.4599,
+2459549.500000000, , ,   202.34243,    -5.77359,   15.50669,  1950.911,   20.4327, -972.711,  133.6156,
+2459550.500000000, , ,   215.75963,   -11.90402,    7.95589,  1977.774,   17.4522, -987.692,  147.2286,
+2459551.500000000, , ,   230.13043,   -17.50407,    2.66144,  1997.639,   13.2704, -998.631,  161.2163,
+2459552.500000000, , ,   245.57414,   -22.07651,    0.16175,  2007.825,    7.9558, 1003.838,  175.3844,
+2459553.500000000, , ,   261.94684,   -25.13118,    0.73939,  2006.864,    1.7836, 1002.506,  170.1399,
+2459554.500000000, , ,   278.77131,   -26.32098,    4.34069,  1994.945,  355.3037,  994.990,  155.9547,
+2459555.500000000, , ,   295.35562,   -25.56833,   10.58956,  1973.852,  349.2342,  982.672,  142.0230,
+2459556.500000000, , ,   311.07795,   -23.08384,   18.88800,  1946.423,  344.1992,  967.480,  128.4835,
+2459557.500000000, , ,   325.61340,   -19.25912,   28.55160,  1915.818,  340.5276,  951.346,  115.4046,
+2459558.500000000, , ,   338.95349,   -14.52391,   38.92367,  1884.904,  338.2545,  935.826,  102.8001,
+2459559.500000000, , ,   351.29257,    -9.25421,   49.43988,  1855.895,  337.2468,  921.954,   90.6420,
+2459560.500000000, , ,     2.90959,    -3.74577,   59.64604,  1830.267,  337.3250,  910.267,   78.8757,
+2459561.500000000, , ,    14.09692,     1.77384,   69.18655,  1808.819,  338.3316,  900.915,   67.4329,
+2459562.500000000, , ,    25.12867,     7.12042,   77.78173,  1791.826,  340.1545,  893.783,   56.2424,
+2459563.500000000, , ,    36.24816,    12.12924,   85.20600,  1779.195,  342.7237,  888.605,   45.2375,
+2459564.500000000, , ,    47.65854,    16.63738,   91.27262,  1770.611,  345.9942,  885.057,   34.3609,
+2459565.500000000, , ,    59.50794,    20.47489,   95.82641,  1765.659,  349.9180, -882.829,   23.5710,
+2459566.500000000, , ,    71.86696,    23.46666,   98.74329,  1763.931,  354.4100, -881.690,   12.8675,
+2459567.500000000, , ,    84.70536,    25.44669,   99.93412,  1765.097,  359.3143, -881.522,    2.9375,
+2459568.500000000, , ,    97.88448,    26.28253,   99.35011,  1768.964,    4.3880, -882.350,    9.2533,
+2459569.500000000, , ,   111.18368,    25.90198,   96.98717,  1775.499,    9.3201, -884.331,   19.9968,
+2459570.500000000, , ,   124.36252,    24.30931,   92.88814,  1784.817,   13.7859, -887.736,   30.9386,
+2459571.500000000, , ,   137.23377,    21.58233,   87.14276,  1797.141,   17.5109, -892.888,   42.0291,
+2459572.500000000, , ,   149.71338,    17.85300,   79.88732,  1812.727,   20.3118, -900.104,   53.2948,
+2459573.500000000, , ,   161.83261,    13.28361,   71.30663,  1831.751,   22.0969, -909.598,   64.7801,
+2459574.500000000, , ,   173.72278,     8.05058,   61.64102,  1854.177,   22.8388, -921.394,   76.5382,
+2459575.500000000, , ,   185.59127,     2.34206,   51.19995,  1879.599,   22.5364, -935.222,   88.6250,
+2459576.500000000, , ,   197.70012,    -3.63063,   40.38061,  1907.079,   21.1843, -950.423,  101.0911,
+2459577.500000000, , ,   210.34600,    -9.61089,   29.68493,  1935.032,   18.7540, -965.899,  113.9704,
+2459578.500000000, , ,   223.82888,   -15.27131,   19.72178,  1961.204,   15.2015, -980.142,  127.2660,
+2459579.500000000, , ,   238.38750,   -20.19927,   11.17653,  1982.850,   10.5121, -991.425,  140.9339,
+2459580.500000000, , ,   254.08516,   -23.91984,    4.73416,  1997.159,    4.7999,  998.142,  154.8608,
+2459581.500000000, , ,   270.67702,   -25.98442,    0.96084,  2001.890,  358.4287,  999.247,  168.7438,
+2459582.500000000, , ,   287.57979,   -26.11649,    0.17957,  1996.004,  352.0388,  994.583,  175.1464,
+2459583.500000000, , ,   304.06102,   -24.33072,    2.39386,  1980.020,  346.3680,  984.930,  162.2041,
+2459584.500000000, , ,   319.54999,   -20.92366,    7.29850,  1955.892,  341.9640,  971.739,  148.6576,
+2459585.500000000, , ,   333.81584,   -16.34346,   14.37031,  1926.484,  339.0361,  956.697,  135.4505,
+2459586.500000000, , ,   346.92860,   -11.04541,   22.99248,  1894.896,  337.5208,  941.354,  122.6970,
+2459587.500000000, , ,   359.12610,    -5.41060,   32.56169,  1863.906,  337.2306,  926.904,  110.4139,
+2459588.500000000, , ,    10.70394,     0.27055,   42.55107,  1835.668,  337.9681,  914.142,   98.5686,
+2459589.500000000, , ,    21.95677,     5.78036,   52.52981,  1811.626,  339.5787,  903.506,   87.0995,
+2459590.500000000, , ,    33.15396,    10.94585,   62.15393,  1792.580,  341.9604,  895.162,   75.9303,
+2459591.500000000, , ,    44.52832,    15.61320,   71.14447,  1778.810,  345.0505,  889.077,   64.9804,
+2459592.500000000, , ,    56.26395,    19.62971,   79.26440,  1770.206,  348.8000,  885.098,   54.1733,
+2459593.500000000, , ,    68.47670,    22.83613,   86.30076,  1766.389,  353.1398, -883.006,   43.4424,
+2459594.500000000, , ,    81.18911,    25.07193,   92.05468,  1766.813,  357.9432, -882.563,   32.7394,
+2459595.500000000, , ,    94.31243,    26.19416,   96.33972,  1770.852,    2.9992, -883.560,   22.0542,
+2459596.500000000, , ,   107.65559,    26.10541,   98.98777,  1777.880,    8.0146, -885.844,   11.5432,
+2459597.500000000, , ,   120.97350,    24.77944,   99.86021,  1787.339,   12.6560, -889.340,    4.2855,
+2459598.500000000, , ,   134.04129,    22.27143,   98.86171,  1798.799,   16.6176, -894.049,   12.2544,
+2459599.500000000, , ,   146.71966,    18.70763,   95.95347,  1811.984,   19.6782, -900.030,   23.2148,
+2459600.500000000, , ,   158.98443,    14.26219,   91.16360,  1826.770,   21.7203, -907.355,   34.5910,
+2459601.500000000, , ,   170.92030,     9.13376,   84.59363,  1843.140,   22.7109, -916.055,   46.2254,
+2459602.500000000, , ,   182.69712,     3.53175,   76.42241,  1861.090,   22.6628, -926.059,   58.1023,
+2459603.500000000, , ,   194.54519,    -2.32475,   66.90947,  1880.510,   21.5975, -937.125,   70.2353,
+2459604.500000000, , ,   206.73456,    -8.19648,   56.40026,  1901.035,   19.5189, -948.794,   82.6464,
+2459605.500000000, , ,   219.55204,   -13.80602,   45.33269,  1921.907,   16.4072, -960.365,   95.3555,
+2459606.500000000, , ,   233.26059,   -18.82012,   34.24058,  1941.887,   12.2425, -970.918,  108.3703,
+2459607.500000000, , ,   248.02283,   -22.84756,   23.74381,  1959.268,    7.0700,  979.405,  121.6735,
+2459608.500000000, , ,   263.78891,   -25.47625,   14.51277,  1972.048,    1.1033,  984.818,  135.2100,
+2459609.500000000, , ,   280.20785,   -26.36630,    7.19878,  1978.278,  354.8061,  986.409,  148.8682,
+2459610.500000000, , ,   296.67723,   -25.37227,    2.33754,  1976.529,  348.8405,  983.879,  162.4057,
+2459611.500000000, , ,   312.56804,   -22.61379,    0.25299,  1966.325,  343.8490,  977.461,  174.2306,
+$$EOE
+*******************************************************************************************************
+Column meaning:
+ 
+TIME
+
+  Times PRIOR to 1962 are UT1, a mean-solar time closely related to the
+prior but now-deprecated GMT. Times AFTER 1962 are in UTC, the current
+civil or "wall-clock" time-scale. UTC is kept within 0.9 seconds of UT1
+using integer leap-seconds for 1972 and later years.
+
+  Conversion from the internal Barycentric Dynamical Time (TDB) of solar
+system dynamics to the non-uniform civil UT time-scale requested for output
+has not been determined for UTC times after the next July or January 1st.
+Therefore, the last known leap-second is used as a constant over future
+intervals.
+
+  Time tags refer to the UT time-scale conversion from TDB on Earth
+regardless of observer location within the solar system, although clock
+rates may differ due to the local gravity field and no analog to "UT"
+may be defined for that location.
+
+  Any 'b' symbol in the 1st-column denotes a B.C. date. First-column blank
+(" ") denotes an A.D. date. Calendar dates prior to 1582-Oct-15 are in the
+Julian calendar system. Later calendar dates are in the Gregorian system.
+
+  NOTE: "n.a." in output means quantity "not available" at the print-time.
+ 
+ 'R.A._(a-app), DEC_(a-app),' =
+  Airless apparent right ascension and declination of the target center with
+respect to an instantaneous reference frame defined by the Earth equator of-dat
+(z-axis) and meridian containing the Earth equinox of-date (x-axis, EOP-correct
+IAU76/80). Compensated for down-leg light-time delay, gravitational deflection
+of light, stellar aberration, precession & nutation. Note: equinox (RA origin)
+is offset -53 mas from the of-date frame defined by the IAU06/00a P & N system.
+
+  Units: RA  in decimal degrees, ddd.fffff{ffff}
+         DEC in decimal degrees  sdd.fffff{ffff}
+
+ 
+ 'Illu%,' =
+   Fraction of the target objects' assumed circular disk illuminated by Sun
+(phase), as seen by the observer.  Units: PERCENT
+ 
+ 'Ang-diam,' =
+   The equatorial angular width of the target body full disk, if it were fully
+illuminated and visible to the observer. If the target body diameter is unknown
+"n.a." is output.
+
+   Units: ARCSECONDS
+ 
+ 'NP.ang,  NP.dist,' =
+  Targets' apparent north-pole position angle (counter-clockwise with respect
+to the direction of the true-of-date reference-frame north-pole) and its
+angular distance from the sub-observer point (center of disk) at observation
+time.  A negative distance indicates the planets' north-pole is on the hidden
+hemisphere.  Units: DEGREES and ARCSECONDS
+ 
+ 'S-T-O,' =
+   The Sun-Target-Observer angle; the interior vertex angle at target center
+formed by a vector from the target to the apparent center of the Sun (at
+reflection time on the target) and the apparent vector from target to the
+observer at print-time. Slightly different from true PHASE ANGLE (requestable
+separately) at the few arcsecond level in that it includes stellar aberration
+on the down-leg from target to observer.  Units: DEGREES
+
+Computations by ...
+
+    Solar System Dynamics Group, Horizons On-Line Ephemeris System
+    4800 Oak Grove Drive, Jet Propulsion Laboratory
+    Pasadena, CA  91109   USA
+
+    General site: https://ssd.jpl.nasa.gov/
+    Mailing list: https://ssd.jpl.nasa.gov/email_list.html
+    System news : https://ssd.jpl.nasa.gov/horizons/news.html
+    User Guide  : https://ssd.jpl.nasa.gov/horizons/manual.html
+    Connect     : browser        https://ssd.jpl.nasa.gov/horizons/app.html#/x
+                  API            https://ssd-api.jpl.nasa.gov/doc/horizons.html
+                  command-line   telnet ssd.jpl.nasa.gov 6775
+                  e-mail/batch   https://ssd.jpl.nasa.gov/ftp/ssd/hrzn_batch.txt
+                  scripts        https://ssd.jpl.nasa.gov/ftp/ssd/SCRIPTS
+    Author      : Jon.D.Giorgini@jpl.nasa.gov
+
+*******************************************************************************************************

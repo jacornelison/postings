@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mirror Analysis — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>2022 Moon Analysis III: Moon Phase Correction</h1>
+
+    <time datetime="2022-04-28" class="published updated">
+        2022 May 05
+    </time>
+    —
+    J. Cornelison
+</header>
+
+<hr>
+<p>In my previous posting <a href="JAC2022B"></a>, I walked through the procedure of modelling the phases of the moon and estimating an offset in Azimuth and Elevation resulting from convolving our beams with a non-uniform brightness temperature profiles of the moon. In this posting, I apply a moon phase correction to the beam centroids estimated from beam maps of the moon. I then fit for mirror parameters with and without this phase correction per-DK and examine how those corrections improve the results by looking at the best-fit residuals.
+</p>
+
+<!--<p>-->
+<!--    I find a very slight difference in the residuals after applying the phase correction corresponding to a shift in the overall orientation of the focal plan. The mean Roll all per-DK fits shifts by $\sim-0.002^\circ \left(-0.071^\circ\rightarrow-0.073^\circ\right)$ and improves the standard deviation by a factor of 1.5 ($\sigma_{ROLL}=0.03^\circ\rightarrow0.02^\circ$).-->
+
+<!--</p>-->
+
+<hr>
+
+<p></p>
+<!---------------->
+<section><h2>Moon Phase Correction</h2>
+
+    <p>
+        In this moon analysis, I fit 2D Gaussians to beam maps in Az/EL before converting to instrument-fixed coordinates.
+        On a scan-by-scan basis, I estimate a correction factor for both Azimuth and Elevation and apply them to the best-fit beam centroids using the modelling procedure outlined in <a href="JAC2022B"></a> &sect;2. After converting all the beam centroids from Az/El to instrument-fixed coordinates, I fit for mirror parameters using beam centroids at a single DK angle across the three consecutive schedules that comprise an entire coverage of the focal plane at that DK angle. In the pager below, I show the best-fit Tilt and Roll parameters per-DK with and without this phase correction. The pager is also color-coded based on DK angle.
+    </p>
+
+    <figure>
+        <img alt="Maps pager" id="fitpager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#fitpager",
+                {
+                    'Param|param': ['Tilt|tilt', 'Roll|roll'],
+                    'Correction|corr': ['off|nocorr','on|withcorr'],
+                },
+                function(params) {
+                    return 'figs/'+params.param+'_vs_time_perdk_'+params.corr+'.png';
+                });
+            pager.setparams({
+                'param': 'roll',
+                'corr': 'withcorr',
+
+            });
+        </script>
+    </figure>
+
+    <p>
+        As we can see from the pager above, the grouping of both the Tilt and Roll move closer together. This is more apparent in the Roll parameter.
+    </p>
+
+    <p>
+        In the pager below I plot quivers of best-fit beam center residuals (where the observed data is CMB-derived beam centroids without a mirror). The pager arranges the DK angles in chronological order where "0_1" to "135_1" was taken before the December 4th solar eclipse, "23_2" to "68_4" were taken a few days after the eclipse (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken after the completion of the RPS observation period. We see only a <i>slight</i> difference in the residuals after the correction is made -- a minute rotation of the focal plane.
+    </p>
+
+    <figure>
+        <img alt="Maps pager" id="quivdkpager" src="#" width="65%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#quivdkpager",
+                {
+                    'DK|d4': [
+                        '0_1',
+                        '90_1',
+                        '23_1',
+                        '174_1',
+                        '68_1',
+                        '-81_1',
+                        '68_2',
+                        '45_1',
+                        '135_1',
+                        '23_2',
+                        '23_3',
+                        '174_2',
+                        '174_3',
+                        '-81_2',
+                        '-81_3',
+                        '68_3',
+                        '68_4',
+                        '0_2',
+                        '90_2',
+                        '45_2',
+                        '135_2',
+                        '-23',
+                        '-68',
+                        '112',
+                        '157',],
+                    'Correction|corr': ['off|nocorr','on|withcorr'],
+                    //'Fit Type|f': ['x/y|','r/theta|_rtheta'],
+                },
+                function(params) {
+                    //return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
+                    return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+'_rtheta.png';
+                });
+            pager.setparams({
+                'd4': '0_1',
+                'corr': 'nocorr',
+                //'f': '',
+
+            });
+        </script>
+    </figure>
+
+    <p>
+        This is more easily seen in the pager below where I plot the residuals in $r/\theta$ coordinates. The x-axis is the distance of the detector from the focal plane and the y-axis is the residual between the CMB-observed &theta; and our best-fit &theta; converted from x/y. The plot is color-coded by time since the start of the dataset's first schedule.
+    </p>
+
+    <p>
+
+    </p>
+
+    <figure>
+        <img alt="Maps pager" id="thetarespager" src="#" width="65%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#thetarespager",
+                {
+                    'DK|d4': [
+                        '0_1',
+                        '90_1',
+                        '23_1',
+                        '174_1',
+                        '68_1',
+                        '-81_1',
+                        '68_2',
+                        '45_1',
+                        '135_1',
+                        '23_2',
+                        '23_3',
+                        '174_2',
+                        '174_3',
+                        '-81_2',
+                        '-81_3',
+                        '68_3',
+                        '68_4',
+                        '0_2',
+                        '90_2',
+                        '45_2',
+                        '135_2',
+                        '-23',
+                        '-68',
+                        '112',
+                        '157',],
+                    'Correction|corr': ['off|nocorr','on|withcorr'],
+                    //'Fit Type|f': ['x/y|','r/theta|_rtheta'],
+                },
+                function(params) {
+                    //return 'figs/thetares_vs_r_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
+                    return 'figs/thetares_vs_r_dk'+params.d4+'_fitperdk_'+params.corr+'_rtheta.png';
+                });
+            pager.setparams({
+                'd4': '0_1',
+                'corr': 'nocorr',
+                //'f': '',
+
+            });
+        </script>
+    </figure>
+
+
+<!--    <h3>Results</h3>-->
+<!--    <p>-->
+<!--        While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the mean of the normalized errors returned by <tt>matmin.m</tt> during the mirror fitting procedure. There's two significant contributors to the systematic error: the DK-dependent scatter and the scatter on the mean over the three 24-hour observing periods. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of DK-to-DK scatter per-24-hour period and the largest difference between the means of those 24-hour periods.-->
+<!--    </p>-->
+
+
+
+<!--    <figure class="table">-->
+<!--        <table class="center results">-->
+<!--            <tr>-->
+<!--                <th></th>-->
+<!--                <th colspan="3">Uncorrected</th>-->
+<!--                <th colspan="3">Corrected</th>-->
+<!--            </tr>-->
+
+<!--            <tr>-->
+<!--                <th>Parameter</th>-->
+<!--                <th class="cstart">Mean (&deg;)</th>-->
+<!--                <th>stat (&deg;)</th>-->
+<!--                <th>sys (&deg;)</th>-->
+<!--                <th class="cstart">Mean (&deg;)</th>-->
+<!--                <th>stat (&deg;)</th>-->
+<!--                <th>sys (&deg;)</th>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Tilt</td>-->
+<!--                <td class="cstart">44.89</td>-->
+<!--                <td>&lt;0.001</td>-->
+<!--                <td>0.022</td>-->
+<!--                <td class="cstart">44.88</td>-->
+<!--                <td>&lt;0.001</td>-->
+<!--                <td>0.022</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Roll</td>-->
+<!--                <td class="cstart">-0.071</td>-->
+<!--                <td>&lt;0.001</td>-->
+<!--                <td>0.033</td>-->
+<!--                <td class="cstart">-0.073</td>-->
+<!--                <td>&lt;0.001</td>-->
+<!--                <td>0.020</td>-->
+<!--            </tr>-->
+
+<!--        </table>-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--    <p>-->
+
+<!--    </p>-->
+
+
+</section>
+<!---------------->
+
+<!---------------->
+
+
+<hr>
+
+<section class="appendix">
+    <h2 class="appendix">Appendix</h2>
+
+    <h3>Notes</h3>
+    <div class="footnote">
+        <p>
+            <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
+
+        </p>
+    </div>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. This code can be found in the <tt>scripts/</tt> directory of this posting.</p>
+    <p id="code"></p>
+
+    <h3>Data Products</h3>
+    <p>Final data products used in this analysis which can be found in the <tt>data/</tt> directory of this posting.</p>
+    <p id="data"></p>
+
+
+    <h3>References And Related Postings</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "ma_posting_plots_20220505.m",
+            "moon_illumination.m",
+            "wpd2mat.m"
+
+        ];
+
+        // Posting titles
+        var desc = [
+            "Creates the plots for this posting",
+            "Creates binned Temperature maps of the moon for a given moon-sun position on the sky.",
+            "Converts the csv output of WebPlotDigitizer into a useful .mat file."
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes) {
+            msg = msg + "<tr><td><tt>" + codes[code] + "</tt></td><td> - </td><td>" + desc[code] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "timestream_moonsch_4_scan_1.mat",
+            "horizons_moonsch_4_scan_1_geo.txt",
+            "timestream_moonsch_54_scan_10.mat",
+            "horizons_moonsch_54_scan_10.txt",
+            "moon_temp_data.mat",
+            "illum_test_moon.txt",
+            "illum_test_sun.txt",
+            "wpd_data_gary_et_al.csv"
+        ];
+
+        // Posting titles
+        var desc = [
+            "Timestream for a single scan of the moon.",
+            "Horizons data in 0.5-second intervals over a particular scan.",
+            "Timestream for a single scan of the moon.",
+            "Horizons data in 0.5-second intervals over a particular scan.",
+            "Reconstructed brightness temperature data from Gary et al. 1965.",
+            "Horizons ephemeris data of the moon for computing local phase.",
+            "Horizons ephemeris data of the sun for computing local phase.",
+            "Extracted data from Figure 38 of Gary et al. 1965."
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb: "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            general_projects: "../../../", // General Projects
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
+            keck: "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+        };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "GaryEtAl1965",
+            "KWY2007",
+            "JAB2010a",
+            "JAB2010b",
+            "RWA2010a",
+            "RWA2010b",
+            "RWA2010c",
+            "CDD2010",
+            "RWA2010d",
+            "JAB2010c",
+            "JAB2010d",
+            "RWA2010e",
+            "JAB2011",
+            "RWO2011",
+            "RWA2011a",
+            "RWA2011b",
+            "JAB2012",
+            "JPK2012",
+            "RWO2016",
+            "JAC2018",
+            "Xu2019",
+            "JHK2019",
+            "2022_moon_obs",
+            "JAC2022A",
+            "JAC2022B",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which is lies if you can.
+        var hrefs = [
+            "https://articles.adsabs.harvard.edu/pdf/1965ApJS...12..239G",
+            "~bicep/analysis_logbook_north/20070318_pointing_supplement/pointing_article.pdf",
+            "bkcmb/analysis_logbook/analysis/20100318_moonbeam/",
+            "bkcmb/analysis_logbook/analysis/20100401_moonbeam_dk90/",
+            "bkcmb/analysis_logbook/analysis/20100421_moon_params/",
+            "bkcmb/analysis_logbook/analysis/20100421_beammap_summary/",
+            "bkcmb/analysis_logbook/analysis/20100803_moon_point/",
+            "bkcmb/analysis_logbook/analysis/20100921_moon_availability/",
+            "bkcmb/analysis_logbook/analysis/20101018_oct_moon/",
+            "bkcmb/analysis_logbook/analysis/20101116_moonxtalk/",
+            "bkcmb/analysis_logbook/analysis/20101130_moonxtalk2/",
+            "bkcmb/analysis_logbook/analysis/20101208_moon_obs_sum/",
+            "bkcmb/analysis_logbook/analysis/20110121_settlingxtalk/",
+            "bkcmb/analysis_logbook/analysis/20111114_beamfit_discrep/",
+            "bkcmb/analysis_logbook/analysis/20111004_bm_pointing/",
+            "bkcmb/analysis_logbook/analysis/20111005_thermal_beammap/",
+            "bkcmb/analysis_logbook/analysis/20120122_moon26/",
+            "bkcmb/analysis_logbook/analysis/20121116_moon_maps/",
+            "bicep3/analysis_logbook/20160120_moon_planets/",
+            "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/",
+            "https://arxiv.org/pdf/1911.04499.pdf",
+            "bkcmb/analysis_logbook/analysis/20191025_cold_spot_obs_IX/",
+            "general_projects/rps/#moon_schedule_2022",
+            "bicep3/analysis_logbook/20220428_mirror_analysis/",
+            "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Radiometric Mapping of the Moon at 3 Millimeters Wavelength",
+            "BICEP Pointing Supplement",
+            "Preliminary moon beam map analysis",
+            "Moon beam map follow-up, dk=90",
+            "Beam parameters - Moon raster (dk=90)",
+            "Multi-run beammap comparison, moon comparison",
+            "Run 8 Moon pointing parameters",
+            "Moon Availability in Late 2010",
+            "Summary of October moon observations",
+            "crosstalk in moon rasters",
+            "Summary Moon / MAPO rasters for Xtalk",
+            "Moon observation summary",
+            "25kHz mux evaluation: mapo & moon rasters ",
+            "Beam center discrepancy between CMB and Moon / MAPO",
+            "Beammap pointing model and Moon vs. MAPO comparison",
+            "Chopped thermal source beammaps plus Moon/MAPO comparison",
+            "Moon raster for rotating pol source",
+            "Moon Raster Beam Maps",
+            "2016 Moon + planet obs opportunities",
+            "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS",
+            "Two-year Cosmology Large Angular Scale Surveyor (CLASS) Observations: 40 GHz Telescope Pointing, Beam Profile, Window Function, and Polarization Performance",
+            "The Cold Spot observation study for B3 IX: Plan moon raster schedule",
+            "2022 Moon Observations Metadata",
+            "Deriving Mirror Properties from the Moon",
+            "2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl)) != bkurl &
+            posting_dir.match(new RegExp(spurl)) != spurl) {
+            preface = "http://" + bkurl + "/";
+        } else {
+            for (key in keys) {
+                if (posting_dir.match(new RegExp("/" + keys[key] + "/")) == "/" + keys[key] + "/") {
+                    preface = sitemap[keys[key]];
+                }
+                ;
+            }
+            ;
+
+        }
+        ;
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+                // If there's a match, at the prefix and move on.
+                if (hrefs[ref].match(new RegExp(keys[key] + "/")) == keys[key] + "/") {
+                    hrefs[ref] = preface + hrefs[ref];
+                    break;
+                }
+            }
+            ;
+        }
+        ;
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags) {
+            msg = msg + "<tr><td><a href=" + tags[tag] + "></a></td><td> - </td><td>" + desc[tag] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links) {
+            for (var tag in tags) {
+                if (links[link].href.endsWith(tags[tag])) {
+                    links[link].text = "(" + tags[tag] + ")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+
+
+</body>
