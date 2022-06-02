@@ -1,6 +1,6 @@
 function moon_analysis_plots_apr2022()
 % For making moon analysis posting plots.
-% This was run in Matlab 2019a and if only sparsely commented.
+% This was run in Matlab 2019a and is only sparsely commented.
 % Contact James Cornelison if you need help.
 
 datadir = 'data/';
@@ -551,7 +551,6 @@ nanmean(phi2-phi1)/2
 
 %% Look diffs from DK to DK
 
-%%
 
 [res_mat, res_mat_rot] = deal(NaN(2640,length(scheds),2));
 
@@ -683,7 +682,7 @@ corrname = {'nocorr','withcorr'};
 corrtitle = {'No Correction','Phase Corrected'};
 
 for fitind = 2%1:2
-    for corrind = 1:2
+    for corrind = 2%1:2
         if corrind == 1
             load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',fittype{fitind}))
             load('z:/dev/moon_analysis/moon_beam_fits_cut.mat')
@@ -712,6 +711,24 @@ for fitind = 2%1:2
             source.distance = 3.8e8*cosd(reshape(fdsch.el_cen_src,[],1));
             source.height = 3.8e8*sind(reshape(fdsch.el_cen_src,[],1));
             
+            mount = struct();
+            mount.aperture_offr = 0;
+            mount.aperture_offz = 0;
+            mount.dk_offy = 0;
+            mount.dk_offx = 0;
+            mount.el_tilt = 0;
+            mount.el_offx = 0;
+            mount.el_offz = 0;
+            mount.az_tilt_ha = 0;
+            mount.az_tilt_lat = 0;
+            mount.az_offz = 0;
+            mount.az_tilt_org = 0; % 1.22l;
+            mount.el_tilt_org = 0;
+            mount.aperture_offz = 0.9970;
+            mount.az_offz = 1.8355;
+            
+            
+            
             [x, y, phi] = beam_map_pointing_model(fdsch.az_cen,fdsch.el_cen,fdsch.dk_cen,model,'bicep3',mirror,source,[]);
             
             prxsch = prx(fdsch.ch);
@@ -726,14 +743,33 @@ for fitind = 2%1:2
             fd.resy_rot_perdk(ind) = resy_rot;
             fd.resr_perdk(ind) = resr;
             
-            %[prxsch, prysch] = pol2cart((p.theta(fdsch.ch)+fdsch.dk_cen')*pi/180,p.r(fdsch.ch));
+            %[prxsch, prysch] = pol2cart((p.theta(fdsch.ch)-fdsch.dk_cen')*pi/180,p.r(fdsch.ch));
+            xtrack = [1, -1]*10;
+            ytrack = [1, -1]*10;
+            [x_track_mirr, y_track_mirr] = get_mirror_coords(fdsch.dk_cen,xtrack,ytrack,zeros(size(fdsch.ch)),mount,mirror);
+            
+            [x_mirr, y_mirr] = get_mirror_coords(fdsch.dk_cen,prxsch',prysch',zeros(size(fdsch.ch)),mount,mirror);
+            [x_fit_mirr, y_fit_mirr] = get_mirror_coords(fdsch.dk_cen,x',y',zeros(size(fdsch.ch)),mount,mirror);
+            resx_mirr = x_mirr-x_fit_mirr;
+            resy_mirr = y_mirr-y_fit_mirr;
             
             clf;
             %quiver(prxsch',prysch',resx_rot*scaling,resy_rot*scaling,0)
-            quiver(prxsch',prysch',resx*scaling,resy*scaling,0)
+            %quiver(prxsch',prysch',resx*scaling,resy*scaling,0)
+            quiver(x_mirr,y_mirr, resx_mirr*scaling,resy_mirr*scaling,0)
+            hold on;
+            
+            mk = {'^','+'};
+            for j = 1:length(xtrack)
+                plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
+            end
+            %plot(x_mirr,y_mirr,'.')
+            %hold on; plot(x_fit_mirr,y_fit_mirr,'.')
             grid on;
-            xlim([-1 1]*15)
-            ylim([-1 1]*15)
+            %xlim([-1 1]*15)
+            %ylim([-1 1]*15)
+            xlim([-1 1]*0.5)
+            ylim([-1 1]*0.8)
             xlabel('X [Deg]')
             ylabel('Y [Deg]')
             title({sprintf('Beam Center Residuals, x%i, %s', scaling,corrtitle{corrind}),...
