@@ -44,7 +44,7 @@
 <hr>
 
 <section><h2>Section 1</h2>
-
+<!--
     <h3>Subsection 1</h3>
     <p>
     Words
@@ -95,6 +95,7 @@
       <p>
  Example pager:
     </p>
+    -->
     <figure>
         <img alt="Name pager" id="namepager" src="#" width="65%"/>
         <figcaption>
@@ -103,15 +104,16 @@
         <script type="text/javascript">
             pager.link("#namepager",
                 {
-                    'Select A|a': ['Yesname|yesparam', 'No|no'],
-                    'Select B|b': ['One|1','Two|2'],
+                    'Select A|val': ['Az|az_cen', 'El|el_cen','Dk|dk_cen',
+                        'x','y','Time|time','Tmean|tfpu_mean','Tstd|tfpu_std','phi_err','GOF|agof','# Rots|nrots'],
+                    'Plot|plt': ['A/B Vs.|phi_vs','A Vs. B|phia_vs_phib_scaled'],
                 },
                 function(params) {
-                    return 'figs/plot_param1_'+params.a+'_param2_'+params.b+'.png';
+                    return 'figs/type9_'+params.plt+'_'+params.val+'.png';
                 });
             pager.setparams({
-                'a': 'no',
-                'b': '1',
+                'val': 'az_cen',
+                'plt': 'phi_vs',
             });
         </script>
     </figure>
