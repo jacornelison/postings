@@ -66,6 +66,7 @@
 
     <p>The pager below shows scatter-histograms of the Pol A detectors vs their Pol B counterparts per-year. I also show the difference between the parameter estimates between the two years. Again, only detectors common between the two datasets were used.</p>
 
+    <!--
     <figure>
         <img alt="Name pager" id="scatterhistpager" src="#" width="100%"/>
         <figcaption>
@@ -86,6 +87,29 @@
             });
         </script>
     </figure>
+-->
+
+    <figure>
+        <img alt="Name pager" id="scatterhistpager2" src="#" width="100%"/>
+        <figcaption>
+            Example pager
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#scatterhistpager2",
+                {
+                    'Param |p': ['Xpol|xpol', 'Angle|phi'],
+                    'Select|s': ['0','90','diff'],
+                },
+                function(params) {
+                    return 'figs/'+params.p+'_scatterhist_pol_'+params.s+'.png';
+                });
+            pager.setparams({
+                'p': 'phi',
+                's': '0',
+            });
+        </script>
+    </figure>
+
 
 </section>
 
