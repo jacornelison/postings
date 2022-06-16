@@ -103,8 +103,10 @@ for dkind = 1:ndk
     end
 end
 
-Q = (cosd(2*phia)-cosd(2*phib))/2;
-U = (sind(2*phia)-sind(2*phib))/2;
+pa = round(phia,2);
+pb = round(phib,2);
+Q = (cosd(2*pa)-cosd(2*pb))/2;
+U = (sind(2*pa)-sind(2*pb))/2;
 phipair = 1/2*atan2(U,Q)*180/pi;
 epspair = 1-sqrt(U.^2+Q.^2);
 

@@ -11,6 +11,7 @@ fd.phi_err = fd.aerr(:,1);
 fd0{1} = fd;
 
 load('z:/dev/rps/rps_beam_fits_mirror_persch_cut.mat')
+%load('z:/dev/rps/rps_beam_fits_cut.mat')
 fd0{2} = fd;
 fd = fd0;
 
@@ -18,7 +19,6 @@ load('z:/dev/rps/fpu_data_obs.mat')
 
 figdir = 'C:\Users\James\Documents\GitHub\postings\2022mmdd_rps_data_compare\figs';
 
-%% Average over measurements and do plot tiles
 
 xpols = NaN(2,2640);
 for yearind = 1:2
@@ -414,9 +414,7 @@ end
 
 %% scatterhist of phi-diffs
 
-fig = figure(15);
-fig.Position(3:4) = [900,600];
-clf; hold on;
+
 
 offs = {-2.3, 0};
 scaling = {2, 0.04};
@@ -425,6 +423,9 @@ valnames = {'phi','xpol'};
 valtitles = {'\phi','xpol'};
 pols = {'diff','diff'};
 for pltind = 1:2
+    fig = figure(16+pltind);
+fig.Position(3:4) = [900,600];
+clf; hold on;
     h = scatterhist(vals{pltind}(1,:),vals{pltind}(2,:),'kernel','on');
     %scatter(phis_mce(1,polind{pltind}),phis_mce(2,polind{pltind}),14,p.mce(polind{pltind}),'filled')
     hold(h(1),'on')
@@ -437,7 +438,7 @@ for pltind = 1:2
     ylabel({sprintf('%s_{2022} [Degrees]',valtitles{pltind}),sprintf('Pol %s detectors',pols{pltind})})
     
     fname = sprintf('%s_scatterhist_pol_%s.png',valnames{pltind},pols{pltind});
-    saveas(fig,fullfile(figdir,fname))
+    %saveas(fig,fullfile(figdir,fname))
 end
 
 
