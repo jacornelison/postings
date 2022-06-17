@@ -31,7 +31,7 @@
     <h1>2022 Moon Analysis III: Moon Phase Correction</h1>
 
     <time datetime="2022-04-28" class="published updated">
-        2022 May 05
+        2022 Jun 17
     </time>
     —
     J. Cornelison
@@ -40,11 +40,6 @@
 <hr>
 <p>In my previous posting <a href="JAC2022B"></a>, I walked through the procedure of modelling the phases of the moon and estimating an offset in Azimuth and Elevation resulting from convolving our beams with a non-uniform brightness temperature profiles of the moon. In this posting, I apply a moon phase correction to the beam centroids estimated from beam maps of the moon. I then fit for mirror parameters with and without this phase correction per-DK and examine how those corrections improve the results by looking at the best-fit residuals.
 </p>
-
-<!--<p>-->
-<!--    I find a very slight difference in the residuals after applying the phase correction corresponding to a shift in the overall orientation of the focal plan. The mean Roll all per-DK fits shifts by $\sim-0.002^\circ \left(-0.071^\circ\rightarrow-0.073^\circ\right)$ and improves the standard deviation by a factor of 1.5 ($\sigma_{ROLL}=0.03^\circ\rightarrow0.02^\circ$).-->
-
-<!--</p>-->
 
 <hr>
 
@@ -84,10 +79,21 @@
     </p>
 
     <p>
-        In the pager below I plot quivers of best-fit beam center residuals (where the observed data is CMB-derived beam centroids without a mirror). The pager arranges the DK angles in chronological order where "0_1" to "135_1" was taken before the December 4th solar eclipse, "23_2" to "68_4" were taken a few days after the eclipse (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken after the completion of the RPS observation period. We see only a <i>slight</i> difference in the residuals after the correction is made -- a minute rotation of the focal plane.
+        In the pager below I plot quivers of best-fit beam center residuals as projected onto the mirror. Figure 1.2 shows how I define the on-mirror coordiante system: I trace a ray from the aperture center in the direction of a detector's pointing WRT the boresight. $X_m/Y_m$ denote the location at which the ray intersects the plane of the mirror where $+X_m$ and $+Y_m$ are in the direction decreasing azimuth and increasing elevation respectively when looking toward the mirror. The origin is defined by the ray traced from the boresight.
     </p>
 
     <figure>
+        <img src="figs/mirror_projection.png" width="50%"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+<p>
+    The pager arranges the DK angles in chronological order where "0_1" to "135_1" was taken before the December 4th solar eclipse, "23_2" to "68_4" were taken a few days after the eclipse (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken after the completion of the RPS observation period. We see only a <i>slight</i> difference in the residuals after the correction is made -- a rotation of the focal plane of ~0.02&deg; in amplitude on average. I note however that for the second string of observations (23_2 to 68_4) have the opposite sign of the other two with the average overall difference in rotation between the corrected and uncorrected residuals being ~2 arcseconds.
+</p>
+
+    <figure>
+
         <img alt="Maps pager" id="quivdkpager" src="#" width="65%"/>
         <figcaption>
 
@@ -138,116 +144,62 @@
     </figure>
 
     <p>
-        This is more easily seen in the pager below where I plot the residuals in $r/\theta$ coordinates. The x-axis is the derotated X or Y axis serving as a proxy for the Tilt- and Roll-axis respectively. The y-axis is the residual between the CMB-observed &theta; and our best-fit &theta; converted from x/y. The plot is color-coded by time since the start of the dataset's first schedule.
+        Beside the rotation, I also note that the residuals have both long- and short-timescale features. This is most easily seen when comparing residuals at the same deck angles. For instance, the features in "23_1" and "174_1" are much larger than 23_2/23_3 and 174_2/174_3 that were taken one week later. Further, we can see smaller but still coherent shifts between 23_2 and 23_3 (also 174_2 and 174_3) which were taken within hours of each other which implies these are physical shifts on relatively short timescales.
     </p>
 
     <p>
-
+        In context to using these mirror parameters for other analyses, I'm thinking the best approach is to use the average parameters here to determine the source location and then, while locking the source location in place, re-fitting for the mirror parameters on a schedule-to-schedule basis.
     </p>
 
-    <figure>
-        <img alt="Maps pager" id="thetarespager" src="#" width="65%"/>
+    <h3>Results</h3>
+    <p>
+        While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the mean of the normalized errors returned by <tt>matmin.m</tt> during the mirror fitting procedure. There's two significant contributors to the systematic error: the DK-dependent scatter and the scatter on the mean over the three 24-hour observing periods. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of DK-to-DK scatter per-24-hour period and the largest difference between the means of those 24-hour periods.
+    </p>
+
+
+
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th></th>
+                <th colspan="3">Uncorrected</th>
+                <th colspan="3">Corrected</th>
+            </tr>
+
+            <tr>
+                <th>Parameter</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th>stat (&deg;)</th>
+                <th>sys (&deg;)</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th>stat (&deg;)</th>
+                <th>sys (&deg;)</th>
+            </tr>
+            <tr>
+                <td>Tilt</td>
+                <td class="cstart">44.89</td>
+                <td>&lt;0.001</td>
+                <td>0.022</td>
+                <td class="cstart">44.88</td>
+                <td>&lt;0.001</td>
+                <td>0.022</td>
+            </tr>
+            <tr>
+                <td>Roll</td>
+                <td class="cstart">-0.071</td>
+                <td>&lt;0.001</td>
+                <td>0.033</td>
+                <td class="cstart">-0.073</td>
+                <td>&lt;0.001</td>
+                <td>0.020</td>
+            </tr>
+
+        </table>
         <figcaption>
 
         </figcaption>
-        <script type="text/javascript">
-            pager.link("#thetarespager",
-                {
-                    'DK|d4': [
-                        '0_1',
-                        '90_1',
-                        '23_1',
-                        '174_1',
-                        '68_1',
-                        '-81_1',
-                        '68_2',
-                        '45_1',
-                        '135_1',
-                        '23_2',
-                        '23_3',
-                        '174_2',
-                        '174_3',
-                        '-81_2',
-                        '-81_3',
-                        '68_3',
-                        '68_4',
-                        '0_2',
-                        '90_2',
-                        '45_2',
-                        '135_2',
-                        '-23',
-                        '-68',
-                        '112',
-                        '157',],
-                    'Correction|corr': ['off|nocorr','on|withcorr'],
-                    'Axis|ax': ['X|_x', 'Y|_y'],
-                },
-                function(params) {
-                    //return 'figs/thetares_vs_r_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
-                    return 'figs/thetares_vs_r_dk'+params.d4+'_fitperdk_'+params.corr+'_rtheta'+params.ax+'.png';
-                });
-            pager.setparams({
-                'd4': '0_1',
-                'corr': 'withcorr',
-                'ax': '_x',
-
-            });
-        </script>
     </figure>
 
-
-<!--    <h3>Results</h3>-->
-<!--    <p>-->
-<!--        While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the mean of the normalized errors returned by <tt>matmin.m</tt> during the mirror fitting procedure. There's two significant contributors to the systematic error: the DK-dependent scatter and the scatter on the mean over the three 24-hour observing periods. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of DK-to-DK scatter per-24-hour period and the largest difference between the means of those 24-hour periods.-->
-<!--    </p>-->
-
-
-
-<!--    <figure class="table">-->
-<!--        <table class="center results">-->
-<!--            <tr>-->
-<!--                <th></th>-->
-<!--                <th colspan="3">Uncorrected</th>-->
-<!--                <th colspan="3">Corrected</th>-->
-<!--            </tr>-->
-
-<!--            <tr>-->
-<!--                <th>Parameter</th>-->
-<!--                <th class="cstart">Mean (&deg;)</th>-->
-<!--                <th>stat (&deg;)</th>-->
-<!--                <th>sys (&deg;)</th>-->
-<!--                <th class="cstart">Mean (&deg;)</th>-->
-<!--                <th>stat (&deg;)</th>-->
-<!--                <th>sys (&deg;)</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>Tilt</td>-->
-<!--                <td class="cstart">44.89</td>-->
-<!--                <td>&lt;0.001</td>-->
-<!--                <td>0.022</td>-->
-<!--                <td class="cstart">44.88</td>-->
-<!--                <td>&lt;0.001</td>-->
-<!--                <td>0.022</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>Roll</td>-->
-<!--                <td class="cstart">-0.071</td>-->
-<!--                <td>&lt;0.001</td>-->
-<!--                <td>0.033</td>-->
-<!--                <td class="cstart">-0.073</td>-->
-<!--                <td>&lt;0.001</td>-->
-<!--                <td>0.020</td>-->
-<!--            </tr>-->
-
-<!--        </table>-->
-<!--        <figcaption>-->
-
-<!--        </figcaption>-->
-<!--    </figure>-->
-
-<!--    <p>-->
-
-<!--    </p>-->
 
 
 </section>
@@ -289,18 +241,18 @@
 
         // Shorthand tags
         var codes = [
-            "ma_posting_plots_20220505.m",
-            "moon_illumination.m",
-            "wpd2mat.m"
+            "ma_posting_plots_2022may27.m",
+            "roll_vs_obs_plot.m",
+            "get_mirror_coords.m"
 
         ];
 
         // Posting titles
         var desc = [
-            "Creates the plots for this posting",
-            "Creates binned Temperature maps of the moon for a given moon-sun position on the sky.",
-            "Converts the csv output of WebPlotDigitizer into a useful .mat file."
-        ];
+            "Creates most of the plots for this posting",
+            "Creates Figure 1 for this posting",
+            "Calculates the location of a detectors pointing as projected onto a mirror using mount and mirror information as inputs"
+            ];
 
         // Make a list of references
         var post = document.getElementById("code");
@@ -319,26 +271,25 @@
 
         // Shorthand tags
         var data = [
-            "timestream_moonsch_4_scan_1.mat",
-            "horizons_moonsch_4_scan_1_geo.txt",
-            "timestream_moonsch_54_scan_10.mat",
-            "horizons_moonsch_54_scan_10.txt",
-            "moon_temp_data.mat",
-            "illum_test_moon.txt",
-            "illum_test_sun.txt",
-            "wpd_data_gary_et_al.csv"
+            "fpu_data_obs.mat",
+            "moon_beam_fits_cut.mat",
+            "moon_beam_fits_phase_corrected.mat",
+            "moon_beam_fits_phase_corrected_cut.mat",
+            "moonsch.mat",
+            "perdk_mirror_parms.mat",
+            "perdk_mirror_parms_phase_corrected.mat",
         ];
 
         // Posting titles
         var desc = [
-            "Timestream for a single scan of the moon.",
-            "Horizons data in 0.5-second intervals over a particular scan.",
-            "Timestream for a single scan of the moon.",
-            "Horizons data in 0.5-second intervals over a particular scan.",
-            "Reconstructed brightness temperature data from Gary et al. 1965.",
-            "Horizons ephemeris data of the moon for computing local phase.",
-            "Horizons ephemeris data of the sun for computing local phase.",
-            "Extracted data from Figure 38 of Gary et al. 1965."
+            "FPU data for 2022",
+            "Best-fit beam center data with channel cuts",
+            "Best-fit beam center data with phase correction",
+            "Best-fit beam center data with phase correction and with channel cuts",
+            "Moon Observation metadata",
+            "Mirror parameters fit per-dk -- no phase correction",
+            "Mirror parameters fit per-dk -- with phase correction",
+
         ];
 
         // Make a list of references
