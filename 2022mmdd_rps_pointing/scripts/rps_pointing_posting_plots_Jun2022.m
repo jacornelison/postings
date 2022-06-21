@@ -478,8 +478,8 @@ fignames = {'theta'};
 for parmind = 1
     clf; hold on;
     
-    
-    scatter(dks,fp_ort_per_dk,40,'filled')%,'Marker','^')
+    scatter(dksch,fp_ort_per_sch,20,'filled')%,'Marker','^')
+    scatter(dks,fp_ort_per_dk,40,'filled','Marker','^')
     
     grid on
     ylabel(sprintf('%s [Degrees]',figtitles{parmind}))
