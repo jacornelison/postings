@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Posting Title — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>RPS 2022 II: RPS Pointing parameters</h1>
+
+    <time datetime="2020-xx-xx" class="published updated">
+        yyyy Mmm dd
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+    Abstract
+</p>
+
+<hr>
+
+<section><h2></h2>
+
+    <h3>Subsection 1</h3>
+    <p>
+    I fit the detector beams over all the beam maps in a rasterset with one amplitude parameter per raster (usually 13) and with just  one parameter each for beam center, beam width, and correlation coefficient fit over all the beams in the rasterset. With RPS-derived beam centers, I fit for a source position using the mirror parameters given in <a href="JAC2022c"></a> per-DK.
+    </p>
+
+    <figure>
+
+        <img alt="Name pager" id="sourcepager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#sourcepager",
+                {
+                    'Param|parm': ['Az|az','El|el'],
+
+                },
+                function(params) {
+                    return 'figs/source_fit_'+params.parm+'.png';
+                });
+            pager.setparams({
+                'parm':'az',
+            });
+        </script>
+    </figure>
+
+    <p>As we expected from <a href="JAC2022c"></a>, we see fluctuations in the apparent source position over time. We expect this is actually due to the mirror deforming and not the source as we'd expect to see corresponding shifts in the tilt meter of $O(0.5^\circ)$, which we don't. Instead, what I've chosen to do is assume that the actual source position is the mean across all observations and then refit for the mirror orientation on per-DK and per-schedule bases. This step is important because it ensures we're properly accounting for the addition rotation of the focal plane induced by the mirror roll parameter.</p>
+
+    <p></p>
+
+    <figure>
+        <img alt="Name pager" id="mirrorpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#mirrorpager",
+                {
+                    'Param|parm2': ['Tilt|tilt','Roll|roll'],
+
+                },
+                function(params) {
+                    return 'figs/mirror_fit_'+params.parm2+'.png';
+                });
+            pager.setparams({
+                'parm2':'roll',
+            });
+        </script>
+    </figure>
+
+    <p>The pager below shows quivers of beam-center residuals. </p>
+
+    <figure>
+        <img alt="Name pager" id="quiverpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#quiverpager",
+                {
+                    '|parm3': ['Source|source','Mirror|mirror'],
+                    'Fit|fit' : ['perdk','persch'],
+                    'DK|dk' : ['61', '23','174','68_1','-81','90','45','135','68_2'],
+
+                },
+                function(params) {
+                    return 'figs/quiver_'+params.parm3+'_'+params.fit+'_dk_'+params.dk+'.png';
+                });
+            pager.setparams({
+                'parm3':'source',
+                'fit': 'perdk',
+                'dk' : '61'
+            });
+        </script>
+    </figure>
+
+    <p>
+        Finally, we have the effective orientation angle of the focal plane WRT to gravity which I calculate simply as the mean difference between the best-fit RPS-derived beam center $r/\theta$ and CMB-derived $r/\theta$.
+    </p>
+
+<figure>
+    <img src="figs/theta_fit.png">
+    <figcaption>
+
+    </figcaption>
+</figure>
+
+</section>
+
+<!--<section>-->
+<!--    <h2>Source Parameters 2017</h2>-->
+
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
+
+<!--<section>-->
+<!--    <h2>Mirror Parameters 2018</h2>-->
+
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
+
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+    <h3>Notes</h3>
+    <div class="footnote">
+        <p>
+        <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
+        This is a footnote. Click the number to return to main text.
+    </p>
+    </div>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+    <h3>Data</h3>
+    <p id="data"></p>
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "rps_fit_mirror_from_moon.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Derives mirror parameters from observations of the moon.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "moonsch.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Metadata of Moon observations",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "CAB2012",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which is lies if you can.
+        var hrefs = [
+            "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Pointing Model for Keck Beam Maps",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
