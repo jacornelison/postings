@@ -40,31 +40,30 @@
 
 <section><h2></h2>
 
-    <p>The following pager shows histograms of the per-detector RPS-derived polarization angles and cross-polarization efficiency for the 2018 and 2022 measurement seasons. The pol angle and xpol for a given detector were averaged over all available measurements from that year weighted by the fit uncertainty returned by <tt>matmin.m</tt>. Only detectors available in both years were used in the histograms in either year. I also show the difference between the parameter estimates between the two years.</p>
+    <p>The following pager shows scatter histograms of the per-detector RPS-derived polarization angles and cross-polarization efficiency for the 2018 and 2022 measurement seasons. The pol angle and xpol for a given detector were averaged over all available measurements from that year weighted by the fit uncertainty returned by <tt>matmin.m</tt>. Only detectors available in both years were used in the histograms in either year. I also show the difference between the parameter estimates between the two years.</p>
 
-    <figure>
-        <img alt="Name pager" id="histpager" src="#" width="100%"/>
-        <figcaption>
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="histpager" src="#" width="100%"/>-->
+<!--        <figcaption>-->
 
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#histpager",
-                {
-                    'Param |p': ['Xpol|xpol', 'Angle|phi'],
-                    'Pol |pol': ['A|a','B|b'],
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#histpager",-->
+<!--                {-->
+<!--                    'Param |p': ['Xpol|xpol', 'Angle|phi'],-->
+<!--                    'Pol |pol': ['A|a','B|b'],-->
 
-                },
-                function(params) {
-                    return 'figs/'+params.p+'_hist_'+params.pol+'.png';
-                });
-            pager.setparams({
-                'p': 'phi',
-                'pol': 'a',
-            });
-        </script>
-    </figure>
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/'+params.p+'_hist_'+params.pol+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'p': 'phi',-->
+<!--                'pol': 'a',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
-    <p>The pager below shows scatter-histograms of the Pol A detectors vs their Pol B counterparts per-year. I also show the difference between the parameter estimates between the two years. Again, only detectors common between the two datasets were used.</p>
 
     <!--
     <figure>
@@ -98,7 +97,7 @@
             pager.link("#scatterhistpager2",
                 {
                     'Param |p': ['Xpol|xpol', 'Angle|phi'],
-                    'Select|s': ['0','90','diff'],
+                    'Select|s': ['0','90','pair'],
                 },
                 function(params) {
                     return 'figs/'+params.p+'_scatterhist_pol_'+params.s+'.png';

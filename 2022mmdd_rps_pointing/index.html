@@ -121,6 +121,33 @@
         </script>
     </figure>
 
+
+    <figure>
+        <img alt="Name pager" id="quiver2pager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#quiver2pager",
+                {
+                    //'|parm3': ['Source|source','Mirror|mirror'],
+                    //'Fit|fit' : ['perdk','persch'],
+                    'DK|dk' : ['61', '23','174','68_1','-81','90','45','135','68_2'],
+                    'applied|fit2': ['Off|noang','On|withang']
+
+                },
+                function(params) {
+                    return 'figs/quiver_'+params.fit2+'_dk_'+params.dk+'.png';
+                });
+            pager.setparams({
+                //'parm3':'source',
+                'fit2': 'noang',
+                'dk' : '61'
+            });
+        </script>
+    </figure>
+
+
     <p>
         Finally, we have the effective orientation angle of the focal plane WRT to gravity which I calculate simply as the mean difference between the best-fit RPS-derived beam center $r/\theta$ and CMB-derived $r/\theta$.
     </p>

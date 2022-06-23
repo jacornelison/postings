@@ -10,10 +10,14 @@ fd.phi = fd.phi_d;
 fd.phi_err = fd.aerr(:,1);
 fd0{1} = fd;
 
-load('z:/dev/rps/rps_beam_fits_mirror_persch_cut.mat')
-%load('z:/dev/rps/rps_beam_fits_cut.mat')
+%load('z:/dev/rps/rps_beam_fits_mirror_persch_cut.mat')
+load('z:/dev/rps/rps_beam_fits_cut.mat')
 fd0{2} = fd;
+
+%load('z:/dev/rps/rps_beam_fits_type11_cut.mat')
+%fd0{2} = structcat(2,[fd0{2} fd]);
 fd = fd0;
+clear fd0
 
 load('z:/dev/rps/fpu_data_obs.mat')
 
@@ -161,8 +165,9 @@ if 0
 end
 
 %%
+AR = [600, 600]; 
 fig = figure(5);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 lims = 0.03;
@@ -180,7 +185,7 @@ fname = 'xpol_scatterhist_2018.png';
 saveas(fig,fullfile(figdir,fname))
 
 fig = figure(6);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 lims = 0.03;
@@ -199,7 +204,7 @@ saveas(fig,fullfile(figdir,fname))
 
 
 fig = figure(7);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 h = scatterhist(xpols(1,p_ind.rgl100a)-xpols(2,p_ind.rgl100a),xpols(1,p_ind.rgl100b)-xpols(2,p_ind.rgl100b),'kernel','on');
@@ -269,7 +274,7 @@ end
 
 %%
 fig = figure(9);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 lims = 1.5;
@@ -287,7 +292,7 @@ fname = 'phi_scatterhist_2018.png';
 saveas(fig,fullfile(figdir,fname))
 
 fig = figure(10);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 lims = 1.5;
@@ -306,7 +311,7 @@ saveas(fig,fullfile(figdir,fname))
 
 
 fig = figure(11);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 h = scatterhist(phis(1,p_ind.rgl100a)-phis(2,p_ind.rgl100a),phis(1,p_ind.rgl100b)-phis(2,p_ind.rgl100b),'kernel','on');
@@ -328,7 +333,7 @@ phis_mce(:,ind) = phis_mce(:,ind)-90;
 ind = p.mce==0 & ismember((1:2640)',p_ind.b);
 phis_mce(:,ind) = atand(tand(phis_mce(:,ind)-90));
 fig = figure(12);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 offs = {-2.3 87.5};
@@ -356,7 +361,7 @@ end
 % separated by 0/90 instead of designated pol A/B
 
 fig = figure(14);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = [600,600];
 clf; hold on;
 
 offs = {-2.3 87.5};
@@ -386,7 +391,7 @@ end
 %% scatterhist of just 2018 vs 2022 xpol
 
 fig = figure(13);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 offs = {0 0 0 0};
@@ -421,10 +426,10 @@ scaling = {2, 0.04};
 vals = {phi_diffs,xpol_diffs};
 valnames = {'phi','xpol'};
 valtitles = {'\phi','xpol'};
-pols = {'diff','diff'};
+pols = {'pair','pair'};
 for pltind = 1:2
     fig = figure(16+pltind);
-fig.Position(3:4) = [900,600];
+fig.Position(3:4) = AR;
 clf; hold on;
     h = scatterhist(vals{pltind}(1,:),vals{pltind}(2,:),'kernel','on');
     %scatter(phis_mce(1,polind{pltind}),phis_mce(2,polind{pltind}),14,p.mce(polind{pltind}),'filled')
@@ -433,12 +438,12 @@ clf; hold on;
     xlim([-1 1]*scaling{pltind}+offs{pltind})
     ylim([-1 1]*scaling{pltind}+offs{pltind})
     grid on
-    title(sprintf('RPS2018 Vs RPS2022 %s-diff',valtitles{pltind}))
+    title(sprintf('RPS2018 Vs RPS2022 %s-pair',valtitles{pltind}))
     xlabel({sprintf('%s_{2018} [Degrees]',valtitles{pltind}),sprintf('Pol %s detectors',pols{pltind})})
     ylabel({sprintf('%s_{2022} [Degrees]',valtitles{pltind}),sprintf('Pol %s detectors',pols{pltind})})
     
     fname = sprintf('%s_scatterhist_pol_%s.png',valnames{pltind},pols{pltind});
-    %saveas(fig,fullfile(figdir,fname))
+    saveas(fig,fullfile(figdir,fname))
 end
 
 

@@ -2,16 +2,64 @@ function rps_pointing_posting_plots_Jun2022()
 %%
 %clear all
 %close all
-load('z:/dev/rps/rps_beam_fits.mat')
-%load('z:/dev/rps/rps_beam_fits_mirror_persch.mat')
+
 load('z:/dev/rps/fpu_data_obs.mat')
 load('z:/dev/rps/pm.mat')
-load('z:/dev/rps/rpssch.mat')
 load('z:/dev/rps/source_fit_data.mat')
 
 addpath('z:/dev')
 addpath('z:/pipeline/beammap')
 addpath('z:/pipeline/util')
+
+% Schedule groups
+schtype = 5;
+switch schtype
+
+    case 5
+        load('z:/dev/rps/rps_beam_fits.mat')
+        %load('z:/dev/rps/rps_beam_fits_mirror_persch.mat')
+        load('z:/dev/rps/rpssch.mat')
+        load('z:/dev/rps/fpuangle_fit_data.mat')
+        load('z:/dev/rps/perdk_fpu_parms.mat')
+        scheds = {...
+            ...%[1,6],...
+            [3,4,7],...
+            [8, 9, 10],...
+            [11, 12, 13],...
+            [14, 15, 16],...
+            [17, 18, 19],...
+            [21, 22, 23],...
+            [24, 25, 26],...
+            [27, 28, 29],...
+            [30, 31, 32],...
+            };
+
+        dks = [61, 23, 174, 68, -81, 90 45 135 68];
+
+        titles = {'61', '23','174','68_1','-81','90','45','135','68_2'};
+        disp('type 5')
+    case 11
+        load('z:/dev/rps/rps_beam_fits_type11.mat')
+        load('z:/dev/rps/sch_type11.mat')
+        load('z:/dev/rps/fpuangle_fit_data_type11.mat')
+        
+        scheds = {...
+            [1],[2],[3],[4],[5],[6]...
+            };
+
+        dks = [0, 0, 90, 90, -68, -23];
+
+        titles = {'0', '0','90','90','-68','-23'};
+        
+%         [fd.x,fd.y,phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',rpsopt.mirror,rpsopt.source,[]);
+%         fd.x = reshape(fd.x,size(fd.ch));
+%         fd.y = reshape(fd.y,size(fd.ch));
+%         
+%         fd.x = rpsopt.fpu.scaling.*(fd.x.*cosd(rpsopt.fpu.angle)-fd.y.*sind(rpsopt.fpu.angle));
+%         fd.y = rpsopt.fpu.scaling.*(fd.x.*sind(rpsopt.fpu.angle)+fd.y.*cosd(rpsopt.fpu.angle));
+
+end
+
 
 prx = 2*sind(p.r/2).*cosd(p.theta)*180/pi;
 pry = 2*sind(p.r/2).*sind(p.theta)*180/pi;
@@ -22,9 +70,7 @@ figdir = 'figs/';
 %source.azimuth = -177.5381;
 %source.height = 9.2214;
 
-%[fd.x,fd.y,phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
-%fd.x = reshape(fd.x,size(fd.ch));
-%fd.y = reshape(fd.y,size(fd.ch));
+
 fd.resx = reshape(prx(fd.ch),size(fd.ch))-fd.x;
 fd.resy = reshape(pry(fd.ch),size(fd.ch))-fd.y;
 [resth, resr] = cart2pol(fd.resx,fd.resy);
@@ -37,25 +83,6 @@ fd.derot = fd.phi;
 ind = inrange(atand(tand(p.chi(fd.ch)+p.chi_thetaref(fd.ch))),-45,45);
 fd.phi_derot(ind) = atand(tand(fd.phi(ind)));
 fd.phi_derot(~ind) = atand(tand(fd.phi(~ind)-90))+90;
-
-% Schedule groups
-scheds = {...
-    ...%[1,6],...
-    [3,4,7],...
-    [8, 9, 10],...
-    [11, 12, 13],...
-    [14, 15, 16],...
-    [17, 18, 19],...
-    [21, 22, 23],...
-    [24, 25, 26],...
-    [27, 28, 29],...
-    [30, 31, 32],...
-    };
-
-dks = [61, 23, 174, 68, -81, 90 45 135 68];
-
-titles = {'61', '23','174','68_1','-81','90','45','135','68_2'};
-
 
 fd.t = NaN(size(fd.ch));
 for fdind = 1:length(fd.ch)
@@ -76,17 +103,35 @@ end
 % Cuts!
 
 % Obvious outlier cuts
-cutind = ...
-    inrange(fd.resx,-0.25,0.25) & ...
-    inrange(fd.resy,-0.25,0.25) & ...
-    inrange(fd.xerr,0,0.02) & ...
-    inrange(fd.yerr,0,0.02) & ...
-    inrange(fd.phi_err,0,1) & ...
-    inrange(fd.agof,0,2e6) & ...
-    (inrange(fd.phi_derot,-20,20) | ...
-    inrange(fd.phi_derot,70,110)) &...
-    ~ismember(fd.schnum,[1,2,5,6,20]) & ...
-    true(size(fd.ch));
+switch schtype
+    case 5
+        cutind = ...
+            inrange(fd.resx,-0.25,0.25) & ...
+            inrange(fd.resy,-0.25,0.25) & ...
+            inrange(fd.xerr,0,0.02) & ...
+            inrange(fd.yerr,0,0.02) & ...
+            inrange(fd.phi_err,0,1) & ...
+            inrange(fd.agof,0,2e6) & ...
+            (inrange(fd.phi_derot,-20,20) | ...
+            inrange(fd.phi_derot,70,110)) &...
+            ~ismember(fd.schnum,[1,2,5,6,20]) & ...
+            true(size(fd.ch));
+
+    case 11
+        % Obvious outlier cuts
+        cutind = ...
+            inrange(fd.resx,-0.25,0.25) & ...
+            inrange(fd.resy,-0.25,0.25) & ...
+            inrange(fd.xerr,0,0.02) & ...
+            inrange(fd.yerr,0,0.02) & ...
+            inrange(fd.phi_err,0,1) & ...
+            inrange(fd.agof,0,2e6) & ...
+            (inrange(fd.phi_derot,-20,20) | ...
+            inrange(fd.phi_derot,70,110)) &...
+            true(size(fd.ch));
+
+end
+
 
 fd = structcut(fd,cutind);
 
@@ -206,14 +251,14 @@ for valind = 1:length(flds)
 end
 
 for chind = 1:length(p.gcp)
-for schedind = 1:length(unqsch)
-    ind = find(fd.schnum==unqsch(schedind) & fd.ch==chind);
-    if ~isempty(ind)
-    for valind = 1:length(flds)
+    for schedind = 1:length(unqsch)
+        ind = find(fd.schnum==unqsch(schedind) & fd.ch==chind);
+        if ~isempty(ind)
+            for valind = 1:length(flds)
                 fd_per_sch.(flds{valind})(chind,schedind) = nanmin(fd.(flds{valind})(ind));
+            end
+        end
     end
-    end
-end
 end
 
 % Get pair-diff pols
@@ -293,7 +338,7 @@ for parmind = 1:2
 
 
     load('z:/dev/rps/perdk_source_parms.mat')
-    
+
     scatter(times,sourceparms(:,parmind),30,dks,'filled','Marker','^')
     datetick('x','mmm-dd','keepticks')
     grid on
@@ -353,7 +398,7 @@ for perind = 1:2
         for schedind = 1:length(scheds)
             if valind==2
                 load('z:/dev/rps/perdk_mirror_parms.mat')
-                
+
                 source = rpsopt.source;
                 mirror = rpsopt.mirror;
                 ind = ismember(fd.schnum,scheds{schedind});
@@ -406,7 +451,7 @@ for perind = 1:2
                 end
 
             end
-            
+
             prx0 = reshape(prx(fd0.ch),size(fd0.ch));
             pry0 = reshape(pry(fd0.ch),size(fd0.ch));
 
@@ -454,12 +499,12 @@ dk_sch = NaN(size(unqsch));
 
 [fp_ort_per_sch, phiq_per_sch] = deal(NaN(length(unqsch),1));
 for schedind = 1:length(unqsch)
-        [th, r] = cart2pol(fd_per_sch.x(:,schedind),fd_per_sch.y(:,schedind));
-        th = rad2deg(th);
-        dth = wrapTo180(p.theta-th);
-        fp_ort_per_sch(schedind) = nanmedian(dth);
-        phiq_per_sch(schedind) = nanmedian(fd_per_sch.phidiff(:,schedind));
-        
+    [th, r] = cart2pol(fd_per_sch.x(:,schedind),fd_per_sch.y(:,schedind));
+    th = rad2deg(th);
+    dth = wrapTo180(p.theta-th);
+    fp_ort_per_sch(schedind) = nanmedian(dth);
+    phiq_per_sch(schedind) = nanmedian(fd_per_sch.phidiff(:,schedind));
+
     for schind = 1:length(scheds)
         if ismember(unqsch(schedind),scheds{schind})
             dk_sch(schedind) = dks(schind);
@@ -477,10 +522,10 @@ figtitles = {'Mean DTheta'};
 fignames = {'theta'};
 for parmind = 1
     clf; hold on;
-    
+
     scatter(dksch,fp_ort_per_sch,20,'filled')%,'Marker','^')
     scatter(dks,fp_ort_per_dk,40,'filled','Marker','^')
-    
+
     grid on
     ylabel(sprintf('%s [Degrees]',figtitles{parmind}))
     xlabel('DK [Degrees]')
@@ -491,5 +536,67 @@ for parmind = 1
 
 end
 
+%% Quivers where we fit tilt, roll, and src-az 
+% with- and without orientation angle fits.
+fig = figure(1);
+fig.Position(3:4) = [750 675];
+clf;
+
+scaling = 15;
+lims = [-1 1]*15;
+fitnames = {'noang','withang'};
+%load('z:/dev/rps/rps_beam_fits_cut.mat')
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt= 44.8870;
+mirror.roll = -0.0730;
+
+source = struct();
+source.distance = 195.5000;
+source.azimuth = -177.5247;
+source.elevation = 2.6998;
+source.height = 9.2189;
+cm = colormap('lines');
+for fitind = 1:2
+    for schedind = 1:length(scheds)
+            
+            ind = ismember(fd.schnum,scheds{schedind});
+            fd0 = structcut(fd,ind);
+            
+            [fd0.x,fd0.y,~] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
+            
+            prx0 = reshape(prx(fd0.ch),size(fd0.ch));
+            pry0 = reshape(pry(fd0.ch),size(fd0.ch));
+            
+            fd0.x = reshape(fd0.x,size(fd0.ch));
+            fd0.y = reshape(fd0.y,size(fd0.ch));
+            if fitind == 2
+                
+                fd0.x = fpuparms(schedind,2).*(fd0.x.*cosd(fpuparms(schedind,1))-fd0.y.*sind(fpuparms(schedind,1)));
+                fd0.y = fpuparms(schedind,2).*(fd0.x.*sind(fpuparms(schedind,1))+fd0.y.*cosd(fpuparms(schedind,1)));
+
+            end
+
+            fd0.resx = reshape(prx(fd0.ch),size(fd0.ch))-fd0.x;
+            fd0.resy = reshape(pry(fd0.ch),size(fd0.ch))-fd0.y;
+            [resth, resr] = cart2pol(fd0.resx,fd0.resy);
+            [fd0.resx_rot, fd0.resy_rot] = pol2cart(resth-fd0.dk_cen*pi/180,resr);
+            clf; hold on;
+            s = scheds{schedind};
+            for si = 1:length(s)
+                ind = fd0.schnum==s(si);
+                quiver(prx0(ind),pry0(ind),fd0.resx_rot(ind)*scaling,fd0.resy_rot(ind)*scaling,0,'color',cm(si,:))
+            end
+            grid on
+            xlim(lims)
+            ylim(lims)
+            xlabel('x [Degrees]')
+            ylabel('y [Degrees]')
+            title(sprintf('Best Fit residuals, x%i',scaling))
+
+            figname = fullfile(figdir,sprintf('quiver_%s_dk_%s.png',fitnames{fitind},titles{schedind}));
+            saveas(fig,figname)
 
 
+    end
+end
