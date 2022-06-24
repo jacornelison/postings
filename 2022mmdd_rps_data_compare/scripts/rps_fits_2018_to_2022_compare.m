@@ -324,7 +324,7 @@ polind = {[intersect(find(p.mce~=0),p_ind.a); intersect(find(p.mce==0),p_ind.b)]
     [intersect(find(p.mce~=0),p_ind.b); intersect(find(p.mce==0),p_ind.a)]...
     };
 pols = {'0','90'};
-for pltind = 1:2
+for pltind = 2%1:2
     h = scatterhist(phis(1,polind{pltind}),phis(2,polind{pltind}),'kernel','on');
     %scatter(phis_mce(1,polind{pltind}),phis_mce(2,polind{pltind}),14,p.mce(polind{pltind}),'filled')
     hold(h(1),'on')
@@ -355,7 +355,7 @@ polind = {p_ind.a p_ind.b,...
     [intersect(find(p.mce~=0),p_ind.b); intersect(find(p.mce==0),p_ind.a)]...
     };
 pols = {'A','B','0','90'};
-for pltind = 1:4
+for pltind = 3%1:4
     h = scatterhist(xpols(1,polind{pltind}),xpols(2,polind{pltind}),'kernel','on');
     %scatter(phis_mce(1,polind{pltind}),phis_mce(2,polind{pltind}),14,p.mce(polind{pltind}),'filled')
     hold(h(1),'on')
