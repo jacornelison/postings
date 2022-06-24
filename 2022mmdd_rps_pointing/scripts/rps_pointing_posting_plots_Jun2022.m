@@ -11,6 +11,8 @@ addpath('z:/dev')
 addpath('z:/pipeline/beammap')
 addpath('z:/pipeline/util')
 
+
+
 % Schedule groups
 schtype = 5;
 switch schtype
@@ -42,7 +44,7 @@ switch schtype
         load('z:/dev/rps/rps_beam_fits_type11.mat')
         load('z:/dev/rps/sch_type11.mat')
         load('z:/dev/rps/fpuangle_fit_data_type11.mat')
-        
+
         scheds = {...
             [1],[2],[3],[4],[5],[6]...
             };
@@ -50,13 +52,15 @@ switch schtype
         dks = [0, 0, 90, 90, -68, -23];
 
         titles = {'0', '0','90','90','-68','-23'};
-        
-%         [fd.x,fd.y,phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',rpsopt.mirror,rpsopt.source,[]);
-%         fd.x = reshape(fd.x,size(fd.ch));
-%         fd.y = reshape(fd.y,size(fd.ch));
-%         
-%         fd.x = rpsopt.fpu.scaling.*(fd.x.*cosd(rpsopt.fpu.angle)-fd.y.*sind(rpsopt.fpu.angle));
-%         fd.y = rpsopt.fpu.scaling.*(fd.x.*sind(rpsopt.fpu.angle)+fd.y.*cosd(rpsopt.fpu.angle));
+
+
+        %         [fd.x,fd.y,phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',rpsopt.mirror,rpsopt.source,[]);
+        %         fd.x = reshape(fd.x,size(fd.ch));
+        %         fd.y = reshape(fd.y,size(fd.ch));
+        %
+        %         fd.x = rpsopt.fpu.scaling.*(fd.x.*cosd(rpsopt.fpu.angle)-fd.y.*sind(rpsopt.fpu.angle));
+        %         fd.y = rpsopt.fpu.scaling.*(fd.x.*sind(rpsopt.fpu.angle)+fd.y.*cosd(rpsopt.fpu.angle));
+
 
 end
 
@@ -536,13 +540,13 @@ for parmind = 1
 
 end
 
-%% Quivers where we fit tilt, roll, and src-az 
+%% Quivers where we fit tilt, roll, and src-az
 % with- and without orientation angle fits.
 fig = figure(1);
 fig.Position(3:4) = [750 675];
 clf;
 
-scaling = 15;
+scaling = 10;
 lims = [-1 1]*15;
 fitnames = {'noang','withang'};
 %load('z:/dev/rps/rps_beam_fits_cut.mat')
@@ -557,46 +561,176 @@ source.azimuth = -177.5247;
 source.elevation = 2.6998;
 source.height = 9.2189;
 cm = colormap('lines');
-for fitind = 1:2
+for fitind = 1%:2
     for schedind = 1:length(scheds)
-            
-            ind = ismember(fd.schnum,scheds{schedind});
-            fd0 = structcut(fd,ind);
-            
-            [fd0.x,fd0.y,~] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
-            
-            prx0 = reshape(prx(fd0.ch),size(fd0.ch));
-            pry0 = reshape(pry(fd0.ch),size(fd0.ch));
-            
-            fd0.x = reshape(fd0.x,size(fd0.ch));
-            fd0.y = reshape(fd0.y,size(fd0.ch));
-            if fitind == 2
-                
-                fd0.x = fpuparms(schedind,2).*(fd0.x.*cosd(fpuparms(schedind,1))-fd0.y.*sind(fpuparms(schedind,1)));
-                fd0.y = fpuparms(schedind,2).*(fd0.x.*sind(fpuparms(schedind,1))+fd0.y.*cosd(fpuparms(schedind,1)));
 
-            end
+        ind = ismember(fd.schnum,scheds{schedind});
+        fd0 = structcut(fd,ind);
 
-            fd0.resx = reshape(prx(fd0.ch),size(fd0.ch))-fd0.x;
-            fd0.resy = reshape(pry(fd0.ch),size(fd0.ch))-fd0.y;
-            [resth, resr] = cart2pol(fd0.resx,fd0.resy);
-            [fd0.resx_rot, fd0.resy_rot] = pol2cart(resth-fd0.dk_cen*pi/180,resr);
-            clf; hold on;
+        [fd0.x,fd0.y,~] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
+
+        prx0 = reshape(prx(fd0.ch),size(fd0.ch));
+        pry0 = reshape(pry(fd0.ch),size(fd0.ch));
+
+        fd0.x = reshape(fd0.x,size(fd0.ch));
+        fd0.y = reshape(fd0.y,size(fd0.ch));
+        if fitind == 2
+
+            fd0.x = fpuparms(schedind,2).*(fd0.x.*cosd(fpuparms(schedind,1))-fd0.y.*sind(fpuparms(schedind,1)));
+            fd0.y = fpuparms(schedind,2).*(fd0.x.*sind(fpuparms(schedind,1))+fd0.y.*cosd(fpuparms(schedind,1)));
+
+        end
+
+        fd0.resx = reshape(prx(fd0.ch),size(fd0.ch))-fd0.x;
+        fd0.resy = reshape(pry(fd0.ch),size(fd0.ch))-fd0.y;
+        [resth, resr] = cart2pol(fd0.resx,fd0.resy);
+        [fd0.resx_rot, fd0.resy_rot] = pol2cart(resth-fd0.dk_cen*pi/180,resr);
+        clf; hold on;
+        quiver(prx0,pry0,fd0.resx_rot*scaling,fd0.resy_rot*scaling,0)
+        %quiver(prx0,pry0,fd0.resx*scaling,fd0.resy*scaling,0)
+        if 0
             s = scheds{schedind};
             for si = 1:length(s)
                 ind = fd0.schnum==s(si);
                 quiver(prx0(ind),pry0(ind),fd0.resx_rot(ind)*scaling,fd0.resy_rot(ind)*scaling,0,'color',cm(si,:))
             end
-            grid on
-            xlim(lims)
-            ylim(lims)
-            xlabel('x [Degrees]')
-            ylabel('y [Degrees]')
-            title(sprintf('Best Fit residuals, x%i',scaling))
+        end
 
-            figname = fullfile(figdir,sprintf('quiver_%s_dk_%s.png',fitnames{fitind},titles{schedind}));
-            saveas(fig,figname)
+        grid on
+        xlim(lims)
+        ylim(lims)
+        xlabel('x [Degrees]')
+        ylabel('y [Degrees]')
+        title(sprintf('Best Fit residuals, x%i',scaling))
+
+        figname = fullfile(figdir,sprintf('quiver_%s_dk_%s.png',fitnames{fitind},titles{schedind}));
+        saveas(fig,figname)
 
 
     end
 end
+
+%%
+
+load('z:/dev/rps/rps_beam_fits_cut.mat')
+fd1 = fd;
+load('z:/dev/rps/rps_beam_fits_type11_cut.mat')
+fd.schnum = fd.schnum+32;
+fd = structcat(2,[fd1,fd]);
+% Schedule groups
+scheds = {...
+    ...%[1,6],...
+    [3,4,7],...
+    ...[5],...
+    [8, 9, 10],...
+    [11, 12, 13],...
+    [14, 15, 16],...
+    [17, 18, 19],...
+    [21, 22, 23],...
+    [24, 25, 26],...
+    [27, 28, 29],...
+    [30, 31, 32],...
+    33,...
+    34,...
+    35,...
+    36,...
+    37,...
+    38,...
+    };
+
+dks = [61, 23, 174, 68, -81, 90 45 135 68 0 0 90 90 -68 -23];
+
+titles = {'61', '23','174','68','-81','90_1','45','135','68_2', '0_1', '0_2','90_2','90_3','-68','-23'};
+
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt= 44.8870;
+mirror.roll = -0.0730;
+
+source = struct();
+source.distance = 195.5000;
+source.azimuth = -177.5247;
+source.elevation = 2.6998;
+source.height = 9.2189;
+
+ort.angle = 0.0146;%0.0099;
+ort.scaling = 0.9966;
+
+fig = figure(1);
+fig.Position(3:4) = [750 675];
+clf;
+lims = [-1 1]*15;
+scaling = 10;
+
+
+for fitind = 1:2
+    clf;
+    [fd.x,fd.y,~] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',rpsopt.mirror,rpsopt.source,[]);
+    fd.x = reshape(fd.x,size(fd.ch));%*0.996;
+    fd.y = reshape(fd.y,size(fd.ch));%*0.996;
+
+    if fitind ==2
+        x = ort.scaling*(fd.x.*cosd(ort.angle)-fd.y.*sind(ort.angle));
+        y = ort.scaling*(fd.x.*sind(ort.angle)+fd.y.*cosd(ort.angle));
+        fd.x = x;
+        fd.y = y;
+    end
+    
+    fd.resx = reshape(prx(fd.ch),size(fd.ch))-fd.x;
+    fd.resy = reshape(pry(fd.ch),size(fd.ch))-fd.y;
+    [resth, resr] = cart2pol(fd.resx,fd.resy);
+    [fd.resx_rot, fd.resy_rot] = pol2cart(resth-fd.dk_cen*pi/180,resr);
+
+    % find a channel that corresponds to a particular group of schedules
+    % If there's more than one hit, take the mean.
+    fd_per_dk = struct();
+    flds = fieldnames(fd);
+
+    for valind = 1:length(flds)
+        fd_per_dk.(flds{valind}) = NaN(length(p.gcp),length(scheds));
+    end
+
+    for chind = 1:length(p.gcp)
+        for schind = 1:length(scheds)
+            ind = ismember(fd.schnum,scheds{schind}) & fd.ch==chind;
+            if ~isempty(find(ind))
+                for valind = 1:length(flds)
+                    fd_per_dk.(flds{valind})(chind,schind) = nanmin(fd.(flds{valind})(ind));
+                end
+            end
+        end
+    end
+
+    if 1
+        xm = wmean(fd_per_dk.resx_rot,fd_per_dk.xerr,2);
+        ym = wmean(fd_per_dk.resy_rot,fd_per_dk.yerr,2);
+    else
+        x = wmean(fd_per_dk.x,fd_per_dk.xerr,2);
+        y = wmean(fd_per_dk.y,fd_per_dk.yerr,2);
+        xm = reshape(prx,size(x))-x;
+        ym = reshape(pry,size(y))-y;
+        ind = xm<0.2 & ym<0.2;
+        xm = xm(ind);
+        ym = ym(ind);
+    end
+    
+
+    quiver(prx, pry,xm*scaling,ym*scaling,0)
+
+    %
+    fprintf('X M: %0.3f S: %0.3f\n',nanmean(xm),nanstd(xm))
+    fprintf('Y M: %0.3f S: %0.3f\n',nanmean(ym),nanstd(ym))
+    grid on
+    xlim(lims)
+    ylim(lims)
+    xlabel('x [Degrees]')
+    ylabel('y [Degrees]')
+    title(sprintf('Best Fit residuals x%i, averaged over all DKs',scaling))
+
+    figname = fullfile(figdir,sprintf('quiver_%s_mean.png',fitnames{fitind}));
+    saveas(fig,figname)
+
+end
+
+
+

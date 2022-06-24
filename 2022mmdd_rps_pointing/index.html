@@ -46,82 +46,8 @@
 <section><h2></h2>
 
     <h3>Subsection 1</h3>
-    <p>
-    I fit the detector beams over all the beam maps in a rasterset with one amplitude parameter per raster (usually 13) and with just  one parameter each for beam center, beam width, and correlation coefficient fit over all the beams in the rasterset. With RPS-derived beam centers, I fit for a source position using the mirror parameters given in <a href="JAC2022c"></a> per-DK.
-    </p>
 
-    <figure>
-
-        <img alt="Name pager" id="sourcepager" src="#" />
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#sourcepager",
-                {
-                    'Param|parm': ['Az|az','El|el'],
-
-                },
-                function(params) {
-                    return 'figs/source_fit_'+params.parm+'.png';
-                });
-            pager.setparams({
-                'parm':'az',
-            });
-        </script>
-    </figure>
-
-    <p>As we expected from <a href="JAC2022c"></a>, we see fluctuations in the apparent source position over time. We expect this is actually due to the mirror deforming and not the source as we'd expect to see corresponding shifts in the tilt meter of $O(0.5^\circ)$, which we don't. Instead, what I've chosen to do is assume that the actual source position is the mean across all observations and then refit for the mirror orientation on per-DK and per-schedule bases. This step is important because it ensures we're properly accounting for the addition rotation of the focal plane induced by the mirror roll parameter.</p>
-
-    <p></p>
-
-    <figure>
-        <img alt="Name pager" id="mirrorpager" src="#" />
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#mirrorpager",
-                {
-                    'Param|parm2': ['Tilt|tilt','Roll|roll'],
-
-                },
-                function(params) {
-                    return 'figs/mirror_fit_'+params.parm2+'.png';
-                });
-            pager.setparams({
-                'parm2':'roll',
-            });
-        </script>
-    </figure>
-
-    <p>The pager below shows quivers of beam-center residuals. </p>
-
-    <figure>
-        <img alt="Name pager" id="quiverpager" src="#" />
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#quiverpager",
-                {
-                    '|parm3': ['Source|source','Mirror|mirror'],
-                    'Fit|fit' : ['perdk','persch'],
-                    'DK|dk' : ['61', '23','174','68_1','-81','90','45','135','68_2'],
-
-                },
-                function(params) {
-                    return 'figs/quiver_'+params.parm3+'_'+params.fit+'_dk_'+params.dk+'.png';
-                });
-            pager.setparams({
-                'parm3':'source',
-                'fit': 'perdk',
-                'dk' : '61'
-            });
-        </script>
-    </figure>
-
-
+<p>I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c"></a> and fit for a source location over all DK angles. I then fit for a single source location over all DK angles (Az=-177.52 / El=2.70) and plot the residual for each DK angle in the pager below. The DKs of "0_1" through "-23" are type-11 schedules which scan across the entire focal plane in a single raster.</p>
     <figure>
         <img alt="Name pager" id="quiver2pager" src="#" />
         <figcaption>
@@ -132,52 +58,54 @@
                 {
                     //'|parm3': ['Source|source','Mirror|mirror'],
                     //'Fit|fit' : ['perdk','persch'],
-                    'DK|dk' : ['61', '23','174','68_1','-81','90','45','135','68_2'],
-                    'applied|fit2': ['Off|noang','On|withang']
+                    'DK|dk' : ['61', '23','174','68','-81','90_1','45','135','68_2', '0_1', '0_2','90_2','90_3','-68','-23'],
+                    //'applied|fit2': ['Off|noang','On|withang']
 
                 },
                 function(params) {
-                    return 'figs/quiver_'+params.fit2+'_dk_'+params.dk+'.png';
+                    //return 'figs/quiver_'+params.fit2+'_dk_'+params.dk+'.png';
+                    return 'figs/quiver_noang_dk_'+params.dk+'.png';
+                });
+            pager.setparams({
+                //'parm3':'source',
+                //'fit2': 'noang',
+                'dk' : '61'
+            });
+        </script>
+    </figure>
+<p>
+    I then average all of the beam centers over all DKs and plot the residuals in the pager below. I also fit for a global rotation and scaling factor across these residuals and get an angle of 0.015&deg; and scaling factor of 0.997. The pager also shows the residuals with this scaling and rotation applied.
+</p>
+<p>
+    These residuals and global rotation angle are quite small. Is it sufficient to say that, while we do see coherent features in the residuals across the focal plane which are indicative of time- and pointing-dependent systematics, we have acquired enough samples per detector over time and at enough boresight rotations such that these effects have averaged down to insignificant levels?
+</p>
+
+    <figure>
+        <img alt="Name pager" id="quiver3pager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#quiver3pager",
+                {
+                    //'|parm3': ['Source|source','Mirror|mirror'],
+                    //'Fit|fit' : ['perdk','persch'],
+                    'Rot./Scaling|fit2': ['Off|noang','On|withang']
+
+                },
+                function(params) {
+                    return 'figs/quiver_'+params.fit2+'_mean.png';
                 });
             pager.setparams({
                 //'parm3':'source',
                 'fit2': 'noang',
-                'dk' : '61'
+
             });
         </script>
     </figure>
 
 
-    <p>
-        Finally, we have the effective orientation angle of the focal plane WRT to gravity which I calculate simply as the mean difference between the best-fit RPS-derived beam center $r/\theta$ and CMB-derived $r/\theta$.
-    </p>
-
-<figure>
-    <img src="figs/theta_fit.png">
-    <figcaption>
-
-    </figcaption>
-</figure>
-
 </section>
-
-<!--<section>-->
-<!--    <h2>Source Parameters 2017</h2>-->
-
-<!--    <h3>Results</h3>-->
-
-<!--    <h3>Data</h3>-->
-
-<!--</section>-->
-
-<!--<section>-->
-<!--    <h2>Mirror Parameters 2018</h2>-->
-
-<!--    <h3>Results</h3>-->
-
-<!--    <h3>Data</h3>-->
-
-<!--</section>-->
 
 
 <hr>
@@ -367,4 +295,81 @@
 
     </script>
 </section>
+
+<!--    <p>-->
+<!--    I fit the detector beams over all the beam maps in a rasterset with one amplitude parameter per raster (usually 13) and with just  one parameter each for beam center, beam width, and correlation coefficient fit over all the beams in the rasterset. With RPS-derived beam centers, I fit for a source position using the mirror parameters given in <a href="JAC2022c"></a> per-DK.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+
+<!--        <img alt="Name pager" id="sourcepager" src="#" />-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#sourcepager",-->
+<!--                {-->
+<!--                    'Param|parm': ['Az|az','El|el'],-->
+
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/source_fit_'+params.parm+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'parm':'az',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+
+<!--    <p>As we expected from <a href="JAC2022c"></a>, we see fluctuations in the apparent source position over time. We expect this is actually due to the mirror deforming and not the source as we'd expect to see corresponding shifts in the tilt meter of $O(0.5^\circ)$, which we don't. Instead, what I've chosen to do is assume that the actual source position is the mean across all observations and then refit for the mirror orientation on per-DK and per-schedule bases. This step is important because it ensures we're properly accounting for the addition rotation of the focal plane induced by the mirror roll parameter.</p>-->
+
+<!--    <p></p>-->
+
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="mirrorpager" src="#" />-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#mirrorpager",-->
+<!--                {-->
+<!--                    'Param|parm2': ['Tilt|tilt','Roll|roll'],-->
+
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/mirror_fit_'+params.parm2+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'parm2':'roll',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+
+<!--    <p>The pager below shows quivers of beam-center residuals. </p>-->
+
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="quiverpager" src="#" />-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#quiverpager",-->
+<!--                {-->
+<!--                    '|parm3': ['Source|source','Mirror|mirror'],-->
+<!--                    'Fit|fit' : ['perdk','persch'],-->
+<!--                    'DK|dk' : ['61', '23','174','68_1','-81','90','45','135','68_2'],-->
+
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/quiver_'+params.parm3+'_'+params.fit+'_dk_'+params.dk+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'parm3':'source',-->
+<!--                'fit': 'perdk',-->
+<!--                'dk' : '61'-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+
+
 </body>

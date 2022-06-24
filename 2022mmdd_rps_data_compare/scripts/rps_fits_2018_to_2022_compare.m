@@ -96,53 +96,7 @@ end
 ind = p.mce(p_ind.a)==0;
 phi_diffs(:,ind) = atand(tand(phi_diffs(:,ind)-90));
 
-%%
-fig = figure(1);
-fig.Position(3:4) = [1500 500];
 
-
-lims = 0.03;
-res = 50;
-pols = {'a','b'};
-Nlims = 250;
-
-for polind = 1:2
-    clf;
-    subplot(1,3,1)
-    edges = (-1:2/res:1)*lims;
-    N = histc(xpols(1,p_ind.(pols{polind})),edges);
-    bar(edges,N,'histc')
-    grid on
-    xlabel('Xpol Efficiency')
-    title('All RPS2018 Xpol Efficiency')
-    xlim([-1 1]*lims)
-    ylim([0 Nlims])
-    
-    subplot(1,3,2)
-    edges = (-1:2/res:1)*lims;
-    N = histc(xpols(2,p_ind.(pols{polind})),edges);
-    bar(edges,N,'histc')
-    grid on
-    xlabel('Xpol Efficiency')
-    title('All RPS2022 Xpol Efficiency')
-    xlim([-1 1]*lims)
-    ylim([0 Nlims])
-    
-    subplot(1,3,3)
-    edges = (-1:2/res:1)*lims;
-    N = histc(diff(xpols(:,p_ind.(pols{polind})),1),edges);
-    bar(edges,N,'histc')
-    grid on
-    xlabel('Xpol Efficiency')
-    title({'All RPS2018 Minus RPS2022',...
-        sprintf('Mean: %1.3f STD: %1.3f',nanmean(diff(xpols(:,p_ind.(pols{polind})),1)),...
-        nanstd(diff(xpols(:,p_ind.(pols{polind})),1)))})
-    xlim([-1 1]*lims)
-    ylim([0 Nlims])
-    
-    fname = sprintf('xpol_hist_%s.png',pols{polind});
-    saveas(fig,fullfile(figdir,fname))
-end
 %%
 
 if 0

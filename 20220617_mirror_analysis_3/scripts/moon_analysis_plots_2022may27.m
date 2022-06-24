@@ -1,4 +1,4 @@
-function moon_analysis_plots_apr2022()
+function moon_analysis_plots_2022may27()
 % For making moon analysis posting plots.
 % This was run in Matlab 2019a and is only sparsely commented.
 % Contact James Cornelison if you need help.
@@ -26,7 +26,7 @@ addpath(genpath('z:dev/'))
 mirror = struct();
 mirror.height = 1.3;
 mirror.tilt = 44.887;
-mirror.roll = -0.063;
+mirror.roll = -0.073;
 
 source = struct();
 source.azimuth = reshape(fd.az_cen_src,[],1);
@@ -299,6 +299,26 @@ for fitind = 2%1:2
         end
     end
 end
+
+
+%% Quiver of mean over all dks using mean tilt/roll
+
+[resx, resy] = deal(NaN(2640,1));
+for chind = 1:2640
+    ind = find(fd.ch==chind);
+    if ~isempty(ind)
+    resx(chind) = wmean(fd.resx_rot(ind),1./fd.gof(ind),2);
+    resy(chind) = wmean(fd.resy_rot(ind),1./fd.gof(ind),2);
+    end
+end
+
+winscale = 1.5;
+scaling = 15;
+fig = figure(1);
+fig.Position(3:4) = [500*winscale 450*winscale];
+clf;
+
+quiver(prx,pry,resx*scaling,resy*scaling,0)
 
 
 %% Find the difference in focal plane orientation between uncorrected and corrected:
