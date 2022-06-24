@@ -143,7 +143,7 @@ fig.Position(3:4) = AR;
 clf; hold on;
 
 lims = 0.03;
-offs = -0;
+offs = 0;
 
 h = scatterhist(xpols(2,p_ind.rgl100a),xpols(2,p_ind.rgl100b),'kernel','on');
 xlim([-1 1]*lims)
@@ -315,7 +315,7 @@ end
 % separated by 0/90 instead of designated pol A/B
 
 fig = figure(14);
-fig.Position(3:4) = [600,600];
+fig.Position(3:4) = AR;
 clf; hold on;
 
 offs = {-2.3 87.5};
