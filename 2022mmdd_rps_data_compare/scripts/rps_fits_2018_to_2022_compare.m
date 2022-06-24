@@ -14,8 +14,8 @@ fd0{1} = fd;
 load('z:/dev/rps/rps_beam_fits_cut.mat')
 fd0{2} = fd;
 
-%load('z:/dev/rps/rps_beam_fits_type11_cut.mat')
-%fd0{2} = structcat(2,[fd0{2} fd]);
+load('z:/dev/rps/rps_beam_fits_type11_cut.mat')
+fd0{2} = structcat(2,[fd0{2} fd]);
 fd = fd0;
 clear fd0
 
