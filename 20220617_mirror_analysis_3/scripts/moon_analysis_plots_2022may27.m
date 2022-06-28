@@ -541,6 +541,118 @@ end
 
 disp(txt)
 
+%% See how each mirror/source param affects residuals
+
+fig = figure(1);
+fig.Position(3:4) = [750 675];
+clf;
+
+scaling = 10;
+lims = [-1 1]*15;
+
+res = 1.5;
+az = (-12:res:12)+180;
+el = (-12:res:12)+90;
+[AZ, EL] = meshgrid(az,el);
+AZ = reshape(AZ,[],1);
+EL = reshape(EL,[],1);
+DK = zeros(size(EL));
+model0 = model;
+flds = fieldnames(model);
+for fldind = 1:length(flds)
+    model0.(flds{fldind}) = 0;
+end
+
+paramnames = {'tilt','roll','az','el'};
+paramlims = {[44.95 45.05],[-0.1 0.1],[-0.1 0.1],[-0.1 0.1]};
+paramvars = {'mirror.tilt','mirror.roll','source.azimuth','source.elevation'};
+spacing = 10;
+
+% Things dealing with projection
+xlims = {[-1 1]*15 [-1 1]*0.5};
+ylims = {[-1 1]*15 [-0.5 0.8]};
+projlabels = {' [Degrees]','_m [Meters]'};
+projnames = {'','_mirror'};
+
+% Mount stuff
+mount = struct();
+mount.aperture_offr = 0;
+mount.aperture_offz = 0;
+mount.dk_offy = 0;
+mount.dk_offx = 0;
+mount.el_tilt = 0;
+mount.el_offx = 0;
+mount.el_offz = 0;
+mount.az_tilt_ha = 0;
+mount.az_tilt_lat = 0;
+mount.az_offz = 0;
+mount.az_tilt_org = 0; % 1.22l;
+mount.el_tilt_org = 0;
+mount.aperture_offz = 0.9970;
+mount.az_offz = 1.8355;
+
+cm = colormap('lines');
+for projind = 2%1:2
+    for paramind = 1:4
+        mirror = struct();
+        mirror.height = 1.4592;
+        mirror.tilt = 45;
+        mirror.roll = 0;
+        source = struct();
+        source.distance = 195.5;
+        source.azimuth = 0;
+        source.elevation = 0;
+        source.height = source.distance.*tand(source.elevation);
+
+        [x0,y0,~] = beam_map_pointing_model(AZ,EL,DK,model0,'bicep3',mirror,source,[]);
+
+        val = linspace(paramlims{paramind}(1),paramlims{paramind}(2),spacing);
+        for valind = 1:spacing
+
+            eval(sprintf('%s = val(valind);',paramvars{paramind}))
+
+            source.height = source.distance.*tand(source.elevation);
+            [x,y,~] = beam_map_pointing_model(AZ,EL,DK,model0,'bicep3',mirror,source,[]);
+            
+            switch projind
+                case 1
+                    resx = x0-x;
+                    resy = y0-y;
+                    x1 = x0;
+                    x1 = x0;
+                case 2
+
+                    xtrack = [1, -1]*10;
+                    ytrack = [1, -1]*10;
+                    [x_track_mirr, y_track_mirr] = get_mirror_coords(mean(DK)*[1,1],xtrack,ytrack,[0,0],mount,mirror);
+                    [x_mirr, y_mirr] = get_mirror_coords(DK,x0,y0,zeros(size(DK)),mount,mirror);
+                    [x_fit_mirr, y_fit_mirr] = get_mirror_coords(DK,x,y,zeros(size(DK)),mount,mirror);
+                    resx = x_mirr-x_fit_mirr;
+                    resy = y_mirr-y_fit_mirr;
+                    x1 = x_mirr;
+                    y1 = y_mirr;
+                    mk = {'^','+'};
+                    clf; hold on;
+                    for j = 1:length(xtrack)
+                        plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
+                    end
+            end
+
+            quiver(x1,y1,resx*scaling,resy*scaling,0,'Color',cm(1,:))
+            grid on
+            xlim(xlims{projind})
+            ylim(ylims{projind})
+            xlabel(sprintf('X%s',projlabels{projind}))
+            ylabel(sprintf('Y%s',projlabels{projind}))
+            title({sprintf('Best Fit residuals, x%i',scaling),...
+                sprintf('%s = %0.2f;',paramvars{paramind},val(valind)),...
+                })
+
+            figname = fullfile(figdir,sprintf('testquiver_%s_%i%s.png',paramnames{paramind},valind,projnames{projind}));
+            saveas(fig,figname)
+        end
+    end
+end
 
 
 

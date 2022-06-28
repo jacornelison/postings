@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Posting Title — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+	<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Posting title</h1>
+
+    <time datetime="2019-01-01" class="published updated">
+        201Y Mmm Dd
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>Introduction summary paragraph.</p>
+
+<hr>
+
+<section><h2>First</h2>
+    <figure>
+        <img alt="Test" src="#" />
+        <figcaption>
+            The caption.
+        </figcaption>
+    </figure>
+</section>
+
+<!--
+<section><h2>Maps Pager</h2>
+    <figure>
+        <img alt="Maps pager" id="mapspager" src="#" />
+        <figcaption>
+            Standard maps pager which compares the standard pipeline
+            simulations against reobservations done with the proposed Keck 2014
+            reobserving matrix.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#mapspager",
+                {
+                    'Estimator|est': ['normal','kendrick'],
+                    'Type1|t1': ['T','Q','U','E','B','TE','TB','EB'],
+                    'Type2|t2': ['map','1/varmap|noi','apmap','spec(lin)|speclin'],
+                    'RX': ['rx0', 'rx1', 'rx2', 'rx3', 'rx4'],
+                    'Color scale|cs': ['fixed|1', 'free|0']
+                },
+                function(params) {
+                    type1 = params['t1'];
+                    type2 = params['t2'];
+
+                    // Default to not caring what the estimator is
+                    estimator = '';
+                    // Then if Type 1 contains B, select the correct variant
+                    if (type1.indexOf('B')>-1 && params['est']!='normal')
+                    {
+                        estimator = '_' + params['est'];
+                    }
+
+                    // Force the Type 2 to apmap if E or B is selected and
+                    // Type 2 is either "map" or "1/varmap"
+                    if ( (type1=='E' || type1=='B')
+                        && (type2 == 'map' || type2 == 'noi') )
+                    {
+                        pager.setparams({'t2': 'apmap'});
+                        return document.querySelector('#mapspager').src;
+                    }
+                    // Likewise force to speclin if a cross-spectrum is
+                    // selected
+                    else if (type1.length == 2 && type2 != 'speclin')
+                    {
+                        pager.setparams({'t2': 'speclin'});
+                        return document.querySelector('#mapspager').src;
+                    }
+
+                    return 'figs/real_d_filtp3_weight3_gs_dp1100_jack0_'
+                        + type1 + estimator + '_' + type2
+                        + (params['cs']=='1' ? '_fcs' : '') + '.png';
+                });
+            pager.setparams({
+                    'est': 'kendrick',
+                    't1':  'T',
+                    't2':  'map',
+                    'RX':  'rx0',
+                    'cs':  '1'
+                });
+            pager.gridalign('#mapspager', 4);
+        </script>
+    </figure>
+</section>
+-->
+
+<hr>
+
+<h3>Linked previous postings</h3>
+
+<dl class="postinglist">
+    <a class="posting" href="#">
+        <dt>[20140101_title]</dt>
+        <dd>Posting title (JAC)</dd>
+    </a>
+</dl>
+
+</body>

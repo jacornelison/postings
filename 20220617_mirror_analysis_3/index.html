@@ -48,8 +48,15 @@
 <section><h2>Moon Phase Correction</h2>
 
     <p>
-        In this moon analysis, I fit 2D Gaussians to beam maps in Az/EL before converting to instrument-fixed coordinates.
-        On a scan-by-scan basis, I estimate a correction factor for both Azimuth and Elevation and apply them to the best-fit beam centroids using the modelling procedure outlined in <a href="JAC2022B"></a> &sect;2. After converting all the beam centroids from Az/El to instrument-fixed coordinates, I fit for mirror parameters using beam centroids at a single DK angle across the three consecutive schedules that comprise an entire coverage of the focal plane at that DK angle. In the pager below, I show the best-fit Tilt and Roll parameters per-DK with and without this phase correction. The pager is also color-coded based on DK angle.
+        Moon data is grouped into "observations" which typically consist of three consecutive 1-hour GCP schedules taken at a single DK-angle and generally maps the beams for entire focal plane.
+        Each 1-hour schedule is made up of nineteen 9&deg;Az-by-2&deg;El scans with the first scan starting at -14&deg;El offset from the Moon's center and incrementing by +1.5&deg;El with each consecutive scan<a href="JAC2022a"></a>.
+
+        In each observation, I acquire beam centroids by fitting 2D Gaussians to beam maps in raw mount coordinates <a href="KWY2007"></a> before converting to instrument-fixed coordinates.
+    </p>
+    <p>
+        On a scan-by-scan basis, I estimate a Moon phase correction factor for both Azimuth and Elevation and apply them to the best-fit beam centroids using the modelling procedure outlined in <a href="JAC2022b"></a> &sect;2. I then fit for mirror parameters per-observation using the method described in <a href="JAC2022a"></a> &sect;2.
+
+    <p> In the pager below, I show the best-fit Tilt and Roll parameters vs observation time with and without this phase correction. The pager is also color-coded based on the DK angle at which each observation was taken. I also show the Az/El offsets predicted by the moon-phase model in Fig 1.2.
     </p>
 
     <figure>
@@ -74,12 +81,22 @@
         </script>
     </figure>
 
-    <p>
-        As we can see from the pager above, the grouping of both the Tilt and Roll move closer together. This is more apparent in the Roll parameter.
-    </p>
+    <figure>
+        <img src="figs/azeloffs_vs_time.png"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
 
     <p>
-        In the pager below I plot quivers of best-fit beam center residuals as projected onto the mirror. Figure 1.2 shows how I define the on-mirror coordiante system: I trace a ray from the aperture center in the direction of a detector's pointing WRT the boresight. $X_m/Y_m$ denote the location at which the ray intersects the plane of the mirror where $+X_m$ and $+Y_m$ are in the direction decreasing azimuth and increasing elevation respectively when looking toward the mirror. The origin is defined by the ray traced from the boresight.
+        The mirror parameters after phase correction shift as expected: the mirror angles have an extra factor of 2 from reflection, so any shift in the Moon's Az/El should roughly correspond to half that shift in mirror roll/tilt respectively. However, we can see in the pager that this isn't the full story. We can still see statistically significant offsets in average roll for a given observing period (i.e. the three distinct ~24-hour periods at which moon observations were conducted).
+    </p>
+
+<!--    Why do we want to look at residuals?-->
+
+    <p>
+        In the pagers below I plot quivers of the residuals between CMB-derived and Moon-derived beam centroids in boresight-centered coordinates (x/y) and also in a new mirror-fixed coordinate system X<sub>m</sub>/Y<sub>m</sub>. Figure 1.2 shows how I define the mirror-fixed coordinate system: I trace a ray from the aperture center in the direction of a detector's pointing WRT the boresight. $X_m/Y_m$ denote the location at which the ray intersects the plane of the mirror where $+X_m$ and $+Y_m$ are in the direction decreasing azimuth and increasing elevation respectively when looking into the mirror. The origin is defined by the ray traced from the boresight.
     </p>
 
     <figure>
@@ -88,8 +105,54 @@
 
         </figcaption>
     </figure>
-<p>
-    The pager arranges the DK angles in chronological order where "0_1" to "135_1" was taken before the December 4th solar eclipse, "23_2" to "68_4" were taken a few days after the eclipse (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken after the completion of the RPS observation period. We see only a <i>slight</i> difference in the residuals after the correction is made -- a rotation of the focal plane of ~0.02&deg; in amplitude on average. I note however that for the second string of observations (23_2 to 68_4) have the opposite sign of the other two with the average overall difference in rotation between the corrected and uncorrected residuals being ~2 arcseconds.
+
+
+    <figure>
+        <img alt="Name pager" id="testquiverpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+            var vallist = new Array(10);
+            for (var ii=1; ii<=10; ++ii) {
+                vallist[ii] = ii;
+            }
+
+            var valopt = new Pager.DataList(vallist);
+            valopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 1) { val = "0"+val; }
+                return val;
+            }
+            valopt.fromString = function(val) {
+                return parseInt(val);
+            }
+
+            pager.link("#testquiverpager",
+                {
+                    'Param|parm': ['Tilt|tilt','Roll|roll','Src Azimuth|az','Src Elevation|el'],
+                    'Value|v' : valopt,
+                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                },
+                function(params) {
+                    return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';
+                });
+            pager.setparams({
+                'parm' : 'tilt',
+                'v': '5',
+                'coord' : '',
+
+            });
+        </script>
+    </figure>
+
+    <p>
+        Most of these are pretty straightforward; A mis-estimation of the Moon Az/El or mirror tilt to any significant degree will cause an apparent translation in the residuals.
+    </p>
+
+    <p>
+    The pager arranges the observations (denoted by the DK at which they were taken) in chronological order where "0_1" to "135_1" were taken before the December 4th solar eclipse, "23_2" to "68_4" were taken on 10 Dec (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken on 25/26 Jan after the completion of the RPS observation period. We see only a <i>slight</i> difference in the residuals after the correction is made -- a rotation of the focal plane of ~0.02&deg; in amplitude on average. I note however that for the second string of observations (23_2 to 68_4) have the opposite sign of the other two with the average overall difference in rotation between the corrected and uncorrected residuals being ~2 arcseconds.
 </p>
 
     <figure>
@@ -101,7 +164,7 @@
         <script type="text/javascript">
             pager.link("#quivdkpager",
                 {
-                    'DK|d4': [
+                    'Obs DK|d4': [
                         '0_1',
                         '90_1',
                         '23_1',
@@ -369,8 +432,8 @@
             "Xu2019",
             "JHK2019",
             "2022_moon_obs",
-            "JAC2022A",
-            "JAC2022B",
+            "JAC2022a",
+            "JAC2022b",
         ];
 
         // Links

@@ -47,6 +47,46 @@
 
     <h3>Subsection 1</h3>
 
+
+    <figure>
+        <img alt="Name pager" id="testquiverpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+            var vallist = new Array(10);
+            for (var ii=1; ii<=10; ++ii) {
+                vallist[ii] = ii;
+            }
+
+            var valopt = new Pager.DataList(vallist);
+            valopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 1) { val = "0"+val; }
+                return val;
+            }
+            valopt.fromString = function(val) {
+                return parseInt(val);
+            }
+
+            pager.link("#testquiverpager",
+                {
+                    'Param|parm': ['Tilt|tilt','Roll|roll','Src Azimuth|az','Src Elevation|el'],
+                    'Value|v' : valopt,
+                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                },
+                function(params) {
+                    return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';
+                });
+            pager.setparams({
+                'parm' : 'tilt',
+                'v': '5',
+
+            });
+        </script>
+    </figure>
+
 <p>I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c"></a> and fit for a source location over all DK angles. I then fit for a single source location over all DK angles (Az=-177.52 / El=2.70) and plot the residual for each DK angle in the pager below. The DKs of "0_1" through "-23" are type-11 schedules which scan across the entire focal plane in a single raster.</p>
     <figure>
         <img alt="Name pager" id="quiver2pager" src="#" />
@@ -54,55 +94,54 @@
 
         </figcaption>
         <script type="text/javascript">
+            function fcn(params){
+                    return 'figs/quiver_'+params.fit+'_dk_'+params.dk+params.coord+'.png';
+            }
+
             pager.link("#quiver2pager",
                 {
-                    //'|parm3': ['Source|source','Mirror|mirror'],
-                    //'Fit|fit' : ['perdk','persch'],
-                    'DK|dk' : ['61', '23','174','68','-81','90_1','45','135','68_2', '0_1', '0_2','90_2','90_3','-68','-23'],
-                    //'applied|fit2': ['Off|noang','On|withang']
-
-                },
-                function(params) {
-                    //return 'figs/quiver_'+params.fit2+'_dk_'+params.dk+'.png';
-                    return 'figs/quiver_noang_dk_'+params.dk+'.png';
-                });
+                    'Fit|fit' : ['None|none','Angle|angfit','scalefit','transfit','all'],
+                    'DK|dk' : ['-81','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
+                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                 },
+            fcn);
             pager.setparams({
-                //'parm3':'source',
-                //'fit2': 'noang',
-                'dk' : '61'
+                'fit': 'none',
+                'dk' : '61',
+                'coord': '',
             });
         </script>
-    </figure>
-<p>
+        </figure>
+    <p>
     I then average all of the beam centers over all DKs and plot the residuals in the pager below. I also fit for a global rotation and scaling factor across these residuals and get an angle of 0.015&deg; and scaling factor of 0.997. The pager also shows the residuals with this scaling and rotation applied.
 </p>
 <p>
     These residuals and global rotation angle are quite small. Is it sufficient to say that, while we do see coherent features in the residuals across the focal plane which are indicative of time- and pointing-dependent systematics, we have acquired enough samples per detector over time and at enough boresight rotations such that these effects have averaged down to insignificant levels?
 </p>
 
-    <figure>
-        <img alt="Name pager" id="quiver3pager" src="#" />
-        <figcaption>
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="quiver3pager" src="#" />-->
+<!--        <figcaption>-->
 
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#quiver3pager",
-                {
-                    //'|parm3': ['Source|source','Mirror|mirror'],
-                    //'Fit|fit' : ['perdk','persch'],
-                    'Rot./Scaling|fit2': ['Off|noang','On|withang']
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#quiver3pager",-->
+<!--                {-->
+<!--                    //'|parm3': ['Source|source','Mirror|mirror'],-->
+<!--                    //'Fit|fit' : ['perdk','persch'],-->
+<!--                    'Rot./Scaling|fit2': ['Off|noang','On|withang']-->
 
-                },
-                function(params) {
-                    return 'figs/quiver_'+params.fit2+'_mean.png';
-                });
-            pager.setparams({
-                //'parm3':'source',
-                'fit2': 'noang',
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/quiver_'+params.fit2+'_mean.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                //'parm3':'source',-->
+<!--                'fit2': 'noang',-->
 
-            });
-        </script>
-    </figure>
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
 
 </section>
