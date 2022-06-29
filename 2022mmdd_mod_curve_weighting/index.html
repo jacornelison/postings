@@ -2,55 +2,10 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Posting Title — J. Cornelison</title>
+    <title>Mod Curve Weights — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
-    <script>
-        MathJax = {
-            loader: {},
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                packages: { '[+]': ['bold-chars'] },
-                macros: {
-                    recip: ['\\frac{1}{#1}', 1],
-                    h: ['\\frac{#1}{2}', 1],
-                    eps: '\\varepsilon',
-                    R: '\\mathbb{R}',
-                    a: ['\left\vert #1 \right\vert}', 1],
-                    p: ['\\left( #1 \\right)', 1],
-                    iff: '\\Longleftrightarrow',
-                    b: ['\\textcolor{bluee}{#1}', 1],
-                    r: ['\\textcolor{redd}{#1}', 1],
-                    pu: ['\\textcolor{purplee}{#1}', 1],
-                    go: ['\\textcolor{goldd}{#1}', 1],
-                    pi: ['\\textcolor{pinkk}{#1}', 1],
-                    lb: ['\\textcolor{lightbluee}{#1}', 1],
-                    g: ['\\textcolor{greenn}{#1}', 1],
-                    frac: ['\\genfrac{} {} {2} {0} {#1}{#2}', 2],
-                    beq: '\\mathrel{\\vcenter{\\rlap{\\Rule{2ex}{3px}{0px}}\\raise9px{\\Rule{2ex}{3px}{0px}}}}',
-                    bm: '\\mathrel{\\vcenter{\\Rule{1.5ex}{2px}{0px}}}',
-                    bp: '\\boldsymbol{+}'
-                }
-            },
-            startup: {
-                ready() {
-                    const { MacroMap } = MathJax._.input.tex.SymbolMap;
-                    const { Configuration } = MathJax._.input.tex.Configuration;
-                    const BaseMethods = MathJax._.input.tex.base.BaseMethods.default;
 
-                    new MacroMap('bold-chars', {
-                        '=': ['Macro', String.raw`\mathrel{\vcenter{\rlap{\Rule{2ex}{3px}{0px}}\raise9px{\Rule{2ex}{3px}{0px}}}}`],
-                        '-': ['Macro', String.raw`\mathrel{\vcenter{\Rule{20px}{2px}{0px}}}`],
-                        '+': ['Macro', String.raw`\mathrel{\vcenter{\rlap{\kern7px\Rule{2px}{9px}{7px}}\Rule{16px}{2px}{0px}}}`]
-                    }, BaseMethods);
-
-                    Configuration.create('bold-chars', { handler: { character: ['bold-chars'] } });
-
-                    MathJax.startup.defaultReady();
-                }
-            }
-        };
-    </script>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             TeX: { equationNumbers: { autoNumber: "AMS" } }
@@ -63,7 +18,7 @@
         });
     </script>
     <script type="text/javascript"
-            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
     </script>
 
 </head>
@@ -74,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Analysis: Rederiving Mirror Parameters </h1>
+    <h1>RPS Analysis: Modulation Curve Weights</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         yyyy Mmm dd
@@ -94,8 +49,6 @@
 
     <h3>Subsection 1</h3>
     <p>
-    Words
-
 <p>
     Our model for the modulation curve amplitude, $A$, as a function of RPS rotation angle, $\theta$, is:
 </p>
@@ -142,9 +95,73 @@
         This weighting does the same as above, but avoids establishing an arbitrary threshold.</li>
     </ul>
 
-      <p>
+    <h3>Simulations</h3>
 
+      <p>
+        I created simsets of 100 modulation curves at DK-angles of 0&deg; to 180&deg; in 10&deg; increments. Modulation curves are created using Eq. 1 with $\theta = [-180:30:180]$ to match RPS observations. For my fiducial input parameters, I used the following:
+          \begin{equation}
+          P = [\phi\; \epsilon\; G\; N_1\; N_2] = [0\;0.03 \;0.5 \;0 \;0]
+          \end{equation}
+
+          I chose an $\epsilon=0.03$ mostly to ensure we've got a sufficiently high SNR measurement of it, but otherwise this choice was pretty arbitrary. Because amplitude-scaling noise is the dominating reason, I include a 5% Gaussian noise that scales with amplitude in these sims to match roughly what we see in the data:
+
+          \begin{equation}
+          A_d = A(\theta|P)+A(\theta|P)\times\,N(\mu=0,\sigma=0.05)
+          \end{equation}
+
+          I should also note that each weighting option at each DK angle uses the same 100 noise realizations. I fit this modulation curves to the same model in Eq.1 using Matlab's <tt>lsqnonlin</tt> to minimize our chi-square in Eq. 2.
+          <p>
+          The pager below shows histograms of the best-fit parameters for $\phi$ and $\epsilon$ at various DK angles.
+         </p>
+
+    <figure>
+        <img alt="Name pager" id="histpager" src="#" width="100%"/>
+        <figcaption>
+            Example pager
+        </figcaption>
+        <script type="text/javascript">
+
+            var vallist = new Array(10);
+            for (var ii=0; ii<=9; ++ii) {
+                vallist[ii] = ii*10;
+
+            }
+
+            var valopt = new Pager.DataList(vallist);
+            valopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 1) { val = "0"+val; }
+                return val;
+            }
+            valopt.fromString = function(val) {
+                return parseInt(val);
+            }
+
+
+            pager.link("#histpager",
+                {
+                    'Parameter|param': ['Angle|phi','Eps|eps'],
+                    'DK|dk': valopt,
+
+                },
+                function(params) {
+                    return 'figs/hist_'+params.param+'_dk_'+params.dk+'.png';
+                });
+            pager.setparams({
+                'param': 'eps',
+                'dk': '0'
+            });
+        </script>
+    </figure>
+
+    <p>
+        We can see that for $\epsilon$, the scatter is consistently better for the Threshold and 1/Amp weighting schemes. Interestingly, the scatter for $\phi$ is also fairly sensitive to the amplitude scaling noise which is something I was surprised by -- as I was expecting that the constraining power from the shape of the sine wave would dominate over the amplitude-scaling noise. Also, it's not really clear why $\phi$ is so poorly constrained at multiples of 30&deg;, though I suspect is might have something to do with my implementation.
     </p>
+    <p>
+        Figure 1.2 shows the bias and standard deviation for each parameter as a function of DK angle. The bias is calculated as the best-fit parameter minus the fiducial parameter given in Eq. 6.
+    </p>
+
+
     <figure>
         <img alt="Name pager" id="namepager" src="#" width="65%"/>
         <figcaption>
@@ -154,18 +171,18 @@
             pager.link("#namepager",
                 {
                     'Plot|plt': ['Bias|bias', 'STD|std'],
-                    'Parameter|param': ['Angle|phi','Eps|eps','Amp|amp','N1|n1','N2|n2'],
+                    'Parameter|param2': ['Angle|phi','Eps|eps','Amp|amp','N1|n1','N2|n2'],
                 },
                 function(params) {
-                    return 'figs/scatter_'+params.plt+'_'+params.param+'_vs_dk.png';
+                    return 'figs/scatter_'+params.plt+'_'+params.param2+'_vs_dk.png';
                 });
             pager.setparams({
                 'plt': 'std',
-                'param': 'eps',
+                'param2': 'eps',
             });
         </script>
     </figure>
-
+    <p>For $\epsilon$, the 1/Amp weighting is consistently smaller, but for $\phi$ </p>
 
 
 </section>
