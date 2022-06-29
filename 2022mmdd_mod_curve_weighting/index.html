@@ -5,11 +5,58 @@
     <title>Posting Title — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
+    <script>
+        MathJax = {
+            loader: {},
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                packages: { '[+]': ['bold-chars'] },
+                macros: {
+                    recip: ['\\frac{1}{#1}', 1],
+                    h: ['\\frac{#1}{2}', 1],
+                    eps: '\\varepsilon',
+                    R: '\\mathbb{R}',
+                    a: ['\left\vert #1 \right\vert}', 1],
+                    p: ['\\left( #1 \\right)', 1],
+                    iff: '\\Longleftrightarrow',
+                    b: ['\\textcolor{bluee}{#1}', 1],
+                    r: ['\\textcolor{redd}{#1}', 1],
+                    pu: ['\\textcolor{purplee}{#1}', 1],
+                    go: ['\\textcolor{goldd}{#1}', 1],
+                    pi: ['\\textcolor{pinkk}{#1}', 1],
+                    lb: ['\\textcolor{lightbluee}{#1}', 1],
+                    g: ['\\textcolor{greenn}{#1}', 1],
+                    frac: ['\\genfrac{} {} {2} {0} {#1}{#2}', 2],
+                    beq: '\\mathrel{\\vcenter{\\rlap{\\Rule{2ex}{3px}{0px}}\\raise9px{\\Rule{2ex}{3px}{0px}}}}',
+                    bm: '\\mathrel{\\vcenter{\\Rule{1.5ex}{2px}{0px}}}',
+                    bp: '\\boldsymbol{+}'
+                }
+            },
+            startup: {
+                ready() {
+                    const { MacroMap } = MathJax._.input.tex.SymbolMap;
+                    const { Configuration } = MathJax._.input.tex.Configuration;
+                    const BaseMethods = MathJax._.input.tex.base.BaseMethods.default;
+
+                    new MacroMap('bold-chars', {
+                        '=': ['Macro', String.raw`\mathrel{\vcenter{\rlap{\Rule{2ex}{3px}{0px}}\raise9px{\Rule{2ex}{3px}{0px}}}}`],
+                        '-': ['Macro', String.raw`\mathrel{\vcenter{\Rule{20px}{2px}{0px}}}`],
+                        '+': ['Macro', String.raw`\mathrel{\vcenter{\rlap{\kern7px\Rule{2px}{9px}{7px}}\Rule{16px}{2px}{0px}}}`]
+                    }, BaseMethods);
+
+                    Configuration.create('bold-chars', { handler: { character: ['bold-chars'] } });
+
+                    MathJax.startup.defaultReady();
+                }
+            }
+        };
+    </script>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             TeX: { equationNumbers: { autoNumber: "AMS" } }
         });
     </script>
+
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
               tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
@@ -48,52 +95,55 @@
     <h3>Subsection 1</h3>
     <p>
     Words
-    </p>
-    <figure class="table">
-        <table class="results">
-            <tr>
-                <th>Schedule</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>DK</th>
-            </tr>
-            <tr>
-                <td>8_ffflat_moonraster_28_dk000_001.sch</td>
-                <td>170121 22:29:58</td>
-                <td>170121 23:25:36</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>8_ffflat_moonraster_28_dk045_001.sch</td>
-                <td>170121 23:26:36</td>
-                <td>170122 00:20:45</td>
-                <td>45</td>
-            </tr>
-            <tr>
-                <td>8_ffflat_moonraster_28_dk090_001.sch</td>
-                <td>170122 00:36:46</td>
-                <td>170122 01:31:05</td>
-                <td>90</td>
-            </tr>
 
-        </table>
-    <figcaption>
-        Example results table
-    </figcaption>
-    </figure>
 <p>
-    Example equation:
+    Our model for the modulation curve amplitude, $A$, as a function of RPS rotation angle, $\theta$, is:
 </p>
 
     \begin{equation}
-    x_0 = 2 \sin(r_0/2) \cos(\theta_0)\\
-    y_0 = 2 \sin(r_0/2) \sin(\theta_0)
+    A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(N_1\cos(\theta)+N_2\sin(\theta)+1\right)
     \end{equation}
 
+    where:
+    <ul>
+        <li>$G$ is the gain of a detector</li>
+        <li>$\phi$ is the polarization angle WRT to the RPS wire grid (The wire grid pol response is align to zenith)</li>
+        <li>$\epsilon$ is the cross-polar {response,(in)efficiency, leakage}</li>
+        <li>$N1,\;N2$ are nuisance parameters which account for miscollimation of the RPS axis of rotation.</li>
+    </ul>
 
-<p>An example footnote<sup><a href="#ftn1">1</a></sup> and reference citation <a href="CAB2012"></a>.</p>
+    Together with our data, $A_d$, the chi-square we minimize is:
+    \begin{equation}
+    \chi^2 = \sum\left(w(\theta)\left[A_d(\theta)-A(\theta)\right]\right)^2
+    \end{equation}
+
+    <p>where $w$ is a weighting we could apply to the residuals.</p>
+
+    <p>I chose three different weighting options:</p>
+    <ul>
+        <li>Uniform:
+        \begin{equation}
+        w(\theta) = 1
+        \end{equation}
+        This is what we currently use in our RPS analysis.</li>
+        <li>Threshold:
+        \begin{equation}
+        w(\theta) =
+        \begin{cases}
+        1 & \; A_d(\theta) < A_{thresh}\\
+        0 & \; A_d(\theta) \ge A_{thresh}\\
+        \end{cases}
+        \end{equation}
+        This puts all of the weight on the lower amplitudes where the constraining power on $\epsilon$ should be highest.</li>
+        <li>1/Amp:
+        \begin{equation}
+        w(\theta) = {A_d(\theta)}^{-1}-\text{min}\left({A_d(\theta)}^{-1}\right)
+        \end{equation}
+        This weighting does the same as above, but avoids establishing an arbitrary threshold.</li>
+    </ul>
+
       <p>
- Example pager:
+
     </p>
     <figure>
         <img alt="Name pager" id="namepager" src="#" width="65%"/>
@@ -103,15 +153,15 @@
         <script type="text/javascript">
             pager.link("#namepager",
                 {
-                    'Select A|a': ['Yesname|yesparam', 'No|no'],
-                    'Select B|b': ['One|1','Two|2'],
+                    'Plot|plt': ['Bias|bias', 'STD|std'],
+                    'Parameter|param': ['Angle|phi','Eps|eps','Amp|amp','N1|n1','N2|n2'],
                 },
                 function(params) {
-                    return 'figs/plot_param1_'+params.a+'_param2_'+params.b+'.png';
+                    return 'figs/scatter_'+params.plt+'_'+params.param+'_vs_dk.png';
                 });
             pager.setparams({
-                'a': 'no',
-                'b': '1',
+                'plt': 'std',
+                'param': 'eps',
             });
         </script>
     </figure>

@@ -10,14 +10,15 @@
             TeX: { equationNumbers: { autoNumber: "AMS" } }
         });
     </script>
-
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
               tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
         });
     </script>
     <script type="text/javascript"
-            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+    //src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
     </script>
 
 </head>
@@ -96,7 +97,44 @@
 <!--    Why do we want to look at residuals?-->
 
     <p>
-        In the pagers below I plot quivers of the residuals between CMB-derived and Moon-derived beam centroids in boresight-centered coordinates (x/y) and also in a new mirror-fixed coordinate system X<sub>m</sub>/Y<sub>m</sub>. Figure 1.2 shows how I define the mirror-fixed coordinate system: I trace a ray from the aperture center in the direction of a detector's pointing WRT the boresight. $X_m/Y_m$ denote the location at which the ray intersects the plane of the mirror where $+X_m$ and $+Y_m$ are in the direction decreasing azimuth and increasing elevation respectively when looking into the mirror. The origin is defined by the ray traced from the boresight.
+        In the pagers below I plot quivers of the residuals between CMB-derived and Moon-derived beam centroids in boresight-centered coordinates (x/y) and also in a new mirror-fixed coordinate system X<sub>m</sub>/Y<sub>m</sub> which I calculate as follows:
+        <ul>
+        <li>I use <tt>kbmp_mount</tt> and <tt>kbmp_mirror</tt> functions to calculate the aperture center $A$, boresight pointing/orientation vectors $[\hat{B}_3,\,\hat{B}_3,\,\hat{B}_3]$, the mirror position $M$, and the mirror normal $\hat{N}$ <a href="CAB2012"></a> and <a href="CAB2014"></a>.
+        <li>I calculate two vectors in the plane of the mirror along the tilt and roll axes -- $\hat{M}_x$ and $\hat{M}_y$ respectively.
+        <li>For a given instrument-fixed coordinates, I calculate the pointing vector $\hat{D}_3$ using the rotation matrix in <a href="CAB2014"></a> &sect; 1.1.
+
+        <li>I find the point $P$ at which a ray traced from the $A$ in the direction of $\hat{D}_3$ intersects with the mirror</li>
+        \begin{equation}
+        P = A+h\hat{D}_3
+        \end{equation}
+
+        where
+
+        \begin{equation}
+        \begin{split}
+        h &= \frac{\hat{N}\cdot (M-A)}{\hat{N}\cdot\hat{D}_3}\\
+        \end{split}
+        \end{equation}
+
+        <li>Finally, I calculate the vector $\vec{V}$ from the mirror center to the intersection point
+
+            $$\vec{V} = P-M$$
+
+            and calculate the projection of that vector on to $\hat{M}_x$ and $\hat{M}_y$:
+
+
+
+        \begin{equation}
+        \begin{split}
+        X_m &= \hat{M}_x\cdot \vec{V} \\
+        Y_m &= \hat{M}_y\cdot \vec{V} \\
+        \end{split}
+        \end{equation}
+
+        $X_m/Y_m$ denote the location at which the ray intersects the plane of the mirror where $+X_m$ and $+Y_m$ are in the direction decreasing azimuth and increasing elevation respectively when looking into the mirror. Figure 1.2 shows a diagram of how the mirror-fixed coordinate system is defined.
+    </ul>
+
+
     </p>
 
     <figure>
@@ -106,6 +144,10 @@
         </figcaption>
     </figure>
 
+
+    <p>
+        In this next figure I show how individual errors on a given mirror or source parameter affect the residuals.
+    </p>
 
     <figure>
         <img alt="Name pager" id="testquiverpager" src="#" />
@@ -157,7 +199,7 @@
 
     <figure>
 
-        <img alt="Maps pager" id="quivdkpager" src="#" width="65%"/>
+        <img alt="Maps pager" id="quivdkpager" src="#" width="100%"/>
         <figcaption>
 
         </figcaption>
@@ -190,16 +232,20 @@
                         '-68',
                         '112',
                         '157',],
-                    'Correction|corr': ['off|nocorr','on|withcorr'],
+                    'Correction|corr2': ['off|','on|_phase_corrected'],
+                    'Fit|fit' : ['Overall|overall','Per Obs|perdk'],
+                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
 
                 },
                 function(params) {
                     //return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
-                    return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+'_rtheta.png';
+                    return 'figs/quiver_dk'+params.d4+'_fit_'+params.fit+params.corr2+params.coord+'.png';
                 });
             pager.setparams({
                 'd4': '0_1',
-                'corr': 'withcorr',
+                'corr2': '',
+                'fit': 'overall',
+                'coord': '',
 
 
             });
@@ -426,7 +472,9 @@
             "RWA2011a",
             "RWA2011b",
             "JAB2012",
+            "CAB2012",
             "JPK2012",
+            "CAB2014",
             "RWO2016",
             "JAC2018",
             "Xu2019",
@@ -456,7 +504,9 @@
             "bkcmb/analysis_logbook/analysis/20111004_bm_pointing/",
             "bkcmb/analysis_logbook/analysis/20111005_thermal_beammap/",
             "bkcmb/analysis_logbook/analysis/20120122_moon26/",
+            "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
             "bkcmb/analysis_logbook/analysis/20121116_moon_maps/",
+            "keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
             "bicep3/analysis_logbook/20160120_moon_planets/",
             "bkcmb/analysis_logbook/analysis/20190409_moon_analysis_2017/",
             "https://arxiv.org/pdf/1911.04499.pdf",
@@ -486,7 +536,9 @@
             "Beammap pointing model and Moon vs. MAPO comparison",
             "Chopped thermal source beammaps plus Moon/MAPO comparison",
             "Moon raster for rotating pol source",
+            "Pointing model for Keck beam maps",
             "Moon Raster Beam Maps",
+            "Spherical coordinates for beam maps",
             "2016 Moon + planet obs opportunities",
             "Analysis of Jan 2017 BICEP3 DK=0 Moon observations for RPS",
             "Two-year Cosmology Large Angular Scale Surveyor (CLASS) Observations: 40 GHz Telescope Pointing, Beam Profile, Window Function, and Polarization Performance",

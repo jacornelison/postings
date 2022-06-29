@@ -42,6 +42,22 @@ resth = resth - fd.dk_cen*pi/180;
 fd.resr = resr;
 
 
+mount = struct();
+mount.aperture_offr = 0;
+mount.aperture_offz = 0;
+mount.dk_offy = 0;
+mount.dk_offx = 0;
+mount.el_tilt = 0;
+mount.el_offx = 0;
+mount.el_offz = 0;
+mount.az_tilt_ha = 0;
+mount.az_tilt_lat = 0;
+mount.az_offz = 0;
+mount.az_tilt_org = 0; % 1.22l;
+mount.el_tilt_org = 0;
+mount.aperture_offz = 0.9970;
+mount.az_offz = 1.8355;
+
 % Corresponding schedules
 scheds = {...
     [2 3 4],...
@@ -131,7 +147,7 @@ for schind = 1:length(moonsch)
         ind = fd.schind==schind ;%& fd.scanind == scanind;
         medx = nanmedian(fd.resx(ind));
         medy = nanmedian(fd.resy(ind));
-        
+
         cutind(ind) = inrange(fd.resx(ind),medx-threshold,medx+threshold) &...
             inrange(fd.resy(ind),medy-threshold,medy+threshold);
     end
@@ -142,7 +158,7 @@ fd = structcut(fd,cutind);
 thresh = 0.1;
 cutind = false(size(fd.ch));
 for schind = 1:length(moonsch)
-    
+
     for scanind = 1:19
         ind = fd.schind==schind & fd.scanind == scanind;
         if ~isempty(find(ind))
@@ -173,11 +189,11 @@ for schind = 1:length(moonsch)
         if ~isempty(ind)
             q1 = quantile(fd.resx_rot(ind),[thresh, 1-thresh]);
             q2 = quantile(fd.resy_rot(ind),[thresh, 1-thresh]);
-            
+
             ind2 = inrange(fd.resx_rot(ind),q1(1),q1(2)) &...
                 inrange(fd.resy_rot(ind),q2(1),q2(2));
             cutind(ind(~ind2)) = false;
-            
+
         end
     end
 end
@@ -190,116 +206,140 @@ fd = structcut(fd,cutind);
 %% Quiver plots per "DK"
 
 winscale = 1.5;
-scaling = 15;
+scaling = 10;
 fig = figure(1);
 fig.Position(3:4) = [500*winscale 450*winscale];
 clf;
+cm = colormap('turbo');
+clridx = floor(linspace(1,size(cm,1),3*19));
 
-fittype = {'','_rtheta'};
+% Things dealing with projection
+xlims = {[-1 1]*15 [-1 1]*0.5};
+ylims = {[-1 1]*15 [-0.5 0.8]};
+projlabels = {' [Degrees]','_m [Meters]'};
+projnames = {'','_mirror'};
 
-corrname = {'nocorr','withcorr'};
+% Things dealing with fits
+fittype = {'overall','perdk'};%,'persch'};
+
+% Things dealing with corrections
+corrname = {'','_phase_corrected'};
 corrtitle = {'No Correction','Phase Corrected'};
+corrparams = {[44.886 -0.0713], [44.882 -0.0751]};
 
-for fitind = 2%1:2
-    for corrind = 1:2
-        if corrind == 1
-            load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',fittype{fitind}))
-            load('z:/dev/moon_analysis/moon_beam_fits_cut.mat')
-            
-            
-        else
-            load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected%s.mat',fittype{fitind}))
-            load('z:/dev/moon_analysis/moon_beam_fits_phase_corrected_cut.mat')
-            
-        end
-        
-        [fd.resx_rot_perdk,...
-            fd.resy_rot_perdk,...
-            fd.resr_perdk] = deal(NaN(size(fd.ch)));
-        for schind = 1:length(scheds)
-            ind = ismember(fd.schind,scheds{schind});
-            
-            fdsch = structcut(fd,ind);
-            mirror = struct();
-            mirror.height = 1.3;
-            mirror.tilt = mirrorparms(schind,1);
-            mirror.roll = mirrorparms(schind,2);
-            
-            source = struct();
-            source.azimuth = reshape(fdsch.az_cen_src,[],1);
-            source.distance = 3.8e8*cosd(reshape(fdsch.el_cen_src,[],1));
-            source.height = 3.8e8*sind(reshape(fdsch.el_cen_src,[],1));
-            
-            mount = struct();
-            mount.aperture_offr = 0;
-            mount.aperture_offz = 0;
-            mount.dk_offy = 0;
-            mount.dk_offx = 0;
-            mount.el_tilt = 0;
-            mount.el_offx = 0;
-            mount.el_offz = 0;
-            mount.az_tilt_ha = 0;
-            mount.az_tilt_lat = 0;
-            mount.az_offz = 0;
-            mount.az_tilt_org = 0; % 1.22l;
-            mount.el_tilt_org = 0;
-            mount.aperture_offz = 0.9970;
-            mount.az_offz = 1.8355;
-            
-            
-            
-            [x, y, phi] = beam_map_pointing_model(fdsch.az_cen,fdsch.el_cen,fdsch.dk_cen,model,'bicep3',mirror,source,[]);
-            
-            prxsch = prx(fdsch.ch);
-            prysch = pry(fdsch.ch);
-            resx = reshape(prxsch-x,size(fdsch.ch));
-            resy = reshape(prysch-y,size(fdsch.ch));
-            [resth, resr] = cart2pol(resx,resy);
-            resth = resth - fdsch.dk_cen*pi/180;
-            [resx_rot, resy_rot] = pol2cart(resth,resr);
-            
-            fd.resx_rot_perdk(ind) = resx_rot;
-            fd.resy_rot_perdk(ind) = resy_rot;
-            fd.resr_perdk(ind) = resr;
-            
-            %[prxsch, prysch] = pol2cart((p.theta(fdsch.ch)-fdsch.dk_cen')*pi/180,p.r(fdsch.ch));
-            xtrack = [1, -1]*10;
-            ytrack = [1, -1]*10;
-            [x_track_mirr, y_track_mirr] = get_mirror_coords(fdsch.dk_cen,xtrack,ytrack,zeros(size(fdsch.ch)),mount,mirror);
-            
-            [x_mirr, y_mirr] = get_mirror_coords(fdsch.dk_cen,prxsch',prysch',zeros(size(fdsch.ch)),mount,mirror);
-            [x_fit_mirr, y_fit_mirr] = get_mirror_coords(fdsch.dk_cen,x',y',zeros(size(fdsch.ch)),mount,mirror);
-            resx_mirr = x_mirr-x_fit_mirr;
-            resy_mirr = y_mirr-y_fit_mirr;
-            
-            clf;
-            %quiver(prxsch',prysch',resx_rot*scaling,resy_rot*scaling,0)
-            %quiver(prxsch',prysch',resx*scaling,resy*scaling,0)
-            quiver(x_mirr,y_mirr, resx_mirr*scaling,resy_mirr*scaling,0)
-            hold on;
-            
-            mk = {'^','+'};
-            for j = 1:length(xtrack)
-                plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
+
+clc
+for projind = 1%1:2
+    for fitind = 1%1:2
+        for corrind = 1%1:2
+
+            load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',corrname{corrind}))
+            load(sprintf('z:/dev/moon_analysis/moon_beam_fits%s_cut.mat',corrname{corrind}))
+
+            for schedind = 1:length(scheds)
+                ind = ismember(fd.schind,scheds{schedind});
+
+                fd0 = structcut(fd,ind);
+
+                % Only keep channels that has its pair
+                if 0
+                ind = true(size(fd0.ch));
+                for chind = 1:length(fd0.ch)
+                    cia = find(p_ind.a==fd0.ch(chind));
+                    cib = find(p_ind.b==fd0.ch(chind));
+                    if ~isempty(cia)
+                        idx = find(fd0.ch==p_ind.b(cia) & fd0.schind==fd0.schind(chind) & fd0.scanind==fd0.scanind(chind));
+
+                    elseif ~isempty(cib)
+                        idx = find(fd0.ch==p_ind.a(cib) & fd0.schind==fd0.schind(chind) & fd0.scanind==fd0.scanind(chind));
+                    end
+
+                    if isempty(idx)
+                        ind(chind) = false;
+                    end
+                end
+                fd0 = structcut(fd0,ind);
+                end
+
+                mirror = struct();
+                mirror.height = 1.3;
+                switch fitind
+                    case 1
+                        mirror.tilt = corrparams{corrind}(1);
+                        mirror.roll = corrparams{corrind}(2);
+
+                    case 2
+                        mirror.tilt = mirrorparms(schedind,1);
+                        mirror.roll = mirrorparms(schedind,2);
+                end
+
+                source = struct();
+                source.azimuth = reshape(fd0.az_cen_src,[],1);
+                source.distance = 3.8e8*cosd(reshape(fd0.el_cen_src,[],1));
+                source.height = 3.8e8*sind(reshape(fd0.el_cen_src,[],1));
+
+
+
+                [x, y, phi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
+
+                prxsch = prx(fd0.ch);
+                prysch = pry(fd0.ch);
+
+                clf; hold on;
+                switch projind
+                    case 1
+                        x0 = prxsch;
+                        y0 = prysch;
+                        resx = prxsch-x;
+                        resy = prysch-y;
+                    case 2
+                        xtrack = [1, -1]*10;
+                        ytrack = [1, -1]*10;
+                        [x_track_mirr, y_track_mirr] = get_mirror_coords(fd0.dk_cen,xtrack,ytrack,zeros(size(fd0.ch)),mount,mirror);
+                        
+                        mk = {'^','+'};
+                        for j = 1:length(xtrack)
+                            plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
+                        end
+
+                        [x_mirr, y_mirr] = get_mirror_coords(fd0.dk_cen,prxsch',prysch',zeros(size(fd0.ch)),mount,mirror);
+                        [x_fit_mirr, y_fit_mirr] = get_mirror_coords(fd0.dk_cen,x',y',zeros(size(fd0.ch)),mount,mirror);
+                        x0 = x_mirr;
+                        y0 = y_mirr;
+                        resx = x_mirr-x_fit_mirr;
+                        resy = y_mirr-y_fit_mirr;
+                end
+
+
+%                 clf;
+%                 quiver(x0,y0,resx*scaling,resy*scaling,0)
+%                 hold on;
+
+            if 1
+                s = scheds{schedind};
+                for si = 1:length(s)
+                    for rowind = 1:19
+                        ind = fd0.schind==s(si) & fd0.scanind == rowind;
+                        quiver(x0(ind),y0(ind),resx(ind)*scaling,resy(ind)*scaling,0,'color',cm(clridx((si-1)*19+rowind),:));
+                    end
+                end
             end
-            %plot(x_mirr,y_mirr,'.')
-            %hold on; plot(x_fit_mirr,y_fit_mirr,'.')
+        
+
             grid on;
-            %xlim([-1 1]*15)
-            %ylim([-1 1]*15)
-            xlim([-1 1]*0.4)
-            ylim([-1 1]*0.6+0.1)
-            xlabel('X_m [Meters]')
-            ylabel('Y_m [Meters]')
-            title({sprintf('Beam Center Residuals, x%i, %s', scaling,corrtitle{corrind}),...
-                sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirrorparms(schind,1),mirrorparms(schind,2),mjd2datestr(moonsch{scheds{schind}(1)}.t1))...
-                })
-            figname = fullfile(figdir,sprintf('quiver_dk%s_fitperdk_%s%s.png',titles{schind},corrname{corrind},fittype{fitind}));
-            saveas(fig,figname)
+            xlim(xlims{projind})
+            ylim(ylims{projind})
+            xlabel(sprintf('X%s',projlabels{projind}))
+            ylabel(sprintf('Y%s',projlabels{projind}))
+                title({sprintf('Beam Center Residuals, x%i, %s', scaling,corrtitle{corrind}),...
+                    sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirror.tilt,mirror.roll,mjd2datestr(moonsch{scheds{schedind}(1)}.t1))...
+                    })
+                figname = fullfile(figdir,sprintf('quiver_dk%s_fit_%s%s%s.png',titles{schedind},fittype{fitind},corrname{corrind},projnames{projind}));
+                saveas(fig,figname)
+            end
         end
     end
 end
-
 
 %% Quiver of mean over all dks using mean tilt/roll
 
@@ -307,8 +347,8 @@ end
 for chind = 1:2640
     ind = find(fd.ch==chind);
     if ~isempty(ind)
-    resx(chind) = wmean(fd.resx_rot(ind),1./fd.gof(ind),2);
-    resy(chind) = wmean(fd.resy_rot(ind),1./fd.gof(ind),2);
+        resx(chind) = wmean(fd.resx_rot(ind),1./fd.gof(ind),2);
+        resy(chind) = wmean(fd.resy_rot(ind),1./fd.gof(ind),2);
     end
 end
 
@@ -339,52 +379,52 @@ axistitle = {'X','Y'};
 theta_means = NaN(2,length(scheds));
 for fitind = 2%1:2
     for schind = 1:length(scheds)
-        
+
         [theta_ch, times_ch] = deal(NaN(2,2640));
-        
+
         for valind = 1:2
             if valind==1
                 load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',fittype{fitind}))
                 load('z:/dev/moon_analysis/moon_beam_fits_cut.mat')
-                
-                
+
+
             else
                 load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected%s.mat',fittype{fitind}))
                 load('z:/dev/moon_analysis/moon_beam_fits_phase_corrected_cut.mat')
-                
+
             end
-            
+
             ind = ismember(fd.schind,scheds{schind});
-            
-            fdsch = structcut(fd,ind);
+
+            fd0 = structcut(fd,ind);
             mirror = struct();
             mirror.height = 1.3;
             mirror.tilt = mirrorparms(schind,1);
             mirror.roll = mirrorparms(schind,2);
-            
+
             source = struct();
-            source.azimuth = reshape(fdsch.az_cen_src,[],1);
-            source.distance = 3.8e8*cosd(reshape(fdsch.el_cen_src,[],1));
-            source.height = 3.8e8*sind(reshape(fdsch.el_cen_src,[],1));
-            [x, y, chi] = beam_map_pointing_model(fdsch.az_cen,fdsch.el_cen,fdsch.dk_cen,model,'bicep3',mirror,source,[]);
-            %[r, th, chi] = beam_map_pointing_model(fdsch.az_cen,fdsch.el_cen,fdsch.dk_cen,model,'bicep3',mirror,source,[],'rtheta');
+            source.azimuth = reshape(fd0.az_cen_src,[],1);
+            source.distance = 3.8e8*cosd(reshape(fd0.el_cen_src,[],1));
+            source.height = 3.8e8*sind(reshape(fd0.el_cen_src,[],1));
+            [x, y, chi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
+            %[r, th, chi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[],'rtheta');
             [th, r] = cart2pol(x,y);
             th = rad2deg(th);
-            
-            th_diff = wrapTo180(p.theta(fdsch.ch)-th);
-            ind = p.r(fdsch.ch)>6 & abs(th_diff)<0.4;
+
+            th_diff = wrapTo180(p.theta(fd0.ch)-th);
+            ind = p.r(fd0.ch)>6 & abs(th_diff)<0.4;
             theta_means(valind,schind) = nanmedian(th_diff(ind));
-            
-            
+
+
             if 0
-                prsch = p.r(fdsch.ch)';
-                pthsch = p.theta(fdsch.ch)'-fdsch.dk_cen;
+                prsch = p.r(fd0.ch)';
+                pthsch = p.theta(fd0.ch)'-fd0.dk_cen;
                 [xsch ysch] = pol2cart(pthsch*pi/180,prsch);
                 xval = {xsch, ysch};
                 for axind = 1:2
-                    
-                    %scatter(p.r(fdsch.ch),th_diff,14,(fdsch.t_cen-nanmin(fdsch.t_cen))*24,'filled')
-                    scatter(xval{axind},th_diff,14,(fdsch.t_cen-nanmin(fdsch.t_cen))*24,'filled')
+
+                    %scatter(p.r(fd0.ch),th_diff,14,(fd0.t_cen-nanmin(fd0.t_cen))*24,'filled')
+                    scatter(xval{axind},th_diff,14,(fd0.t_cen-nanmin(fd0.t_cen))*24,'filled')
                     grid on
                     c = colorbar();
                     %caxis([0,3])
@@ -400,11 +440,11 @@ for fitind = 2%1:2
                     colormap parula
                     figname = fullfile(figdir,sprintf('thetares_vs_r_dk%s_fitperdk_%s%s%s.png',titles{schind},corrname{valind},fittype{fitind},axisname{axind}));
                     saveas(fig,figname)
-                    
+
                 end
             end
         end
-        
+
     end
 end
 
@@ -422,54 +462,54 @@ corrtitle = {'No Correction','Phase Corrected'};
 
 theta_means = NaN(2,length(scheds));
 for fitind = 2%1:2
-    
-    for valind = 1:2
+
+    for valind = 1%1:2
         if valind==1
             load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',fittype{fitind}))
             load('z:/dev/moon_analysis/moon_beam_fits_cut.mat')
-            
-            
+
+
         else
             load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected%s.mat',fittype{fitind}))
             load('z:/dev/moon_analysis/moon_beam_fits_phase_corrected_cut.mat')
-            
+
         end
-        
+
         for schind = 1:length(scheds)
-            
-            
+
+
             [theta_ch, times_ch] = deal(NaN(2,2640));
-            
+
             ind = ismember(fd.schind,scheds{schind});
-            
-            fdsch = structcut(fd,ind);
+            fd0 = structcut(fd,ind);
+
             mirror = struct();
             mirror.height = 1.3;
             mirror.tilt = mirrorparms(schind,1);
             mirror.roll = mirrorparms(schind,2);
-            
+
             source = struct();
-            source.azimuth = reshape(fdsch.az_cen_src,[],1);
-            source.distance = 3.8e8*cosd(reshape(fdsch.el_cen_src,[],1));
-            source.height = 3.8e8*sind(reshape(fdsch.el_cen_src,[],1));
-            [x, y, chi] = beam_map_pointing_model(fdsch.az_cen,fdsch.el_cen,fdsch.dk_cen,model,'bicep3',mirror,source,[]);
-            %[r, th, chi] = beam_map_pointing_model(fdsch.az_cen,fdsch.el_cen,fdsch.dk_cen,model,'bicep3',mirror,source,[],'rtheta');
+            source.azimuth = reshape(fd0.az_cen_src,[],1);
+            source.distance = 3.8e8*cosd(reshape(fd0.el_cen_src,[],1));
+            source.height = 3.8e8*sind(reshape(fd0.el_cen_src,[],1));
+            [x, y, chi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
+            %[r, th, chi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[],'rtheta');
             [th, r] = cart2pol(x,y);
             th = rad2deg(th);
             for chind = 1:size(theta_ch,2)
-                ci = find(fdsch.ch==chind);
+                ci = find(fd0.ch==chind);
                 if ~isempty(ci)
                     theta_ch(valind,chind) = nanmean(wrapTo180(th(ci)));
-                    times_ch(valind,chind) = nanmean(fdsch.t_cen(ci));
+                    times_ch(valind,chind) = nanmean(fd0.t_cen(ci));
                 end
             end
-            
+
             th_diff = wrapTo180(p.theta'-theta_ch(valind,:));
             ind = p.r'>6 & abs(th_diff)<0.4;
             theta_means(valind,schind) = nanmedian(th_diff(ind));
-            
-            
-            
+
+
+
         end
         if 1
             scatter(times,theta_means(valind,:),14,dks,'filled')
@@ -506,21 +546,21 @@ txt{1,1} =  ['|         Uncorrected       |'...
 txthdr2 = '  mean   |  stat  |   sys  |';
 txtrslt = ' %02.4f | %02.4f | %02.4f |';
 for caseind = 1:length(casesch)
-    
+
     txt{2,1} = [txt{2,1} txthdr2];
-    
+
     switch caseind
         case 1
             load('z:/dev/moon_analysis/perdk_mirror_parms.mat')
         case {2,3}
             load('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected.mat')
     end
-    
-    
+
+
     m = nanmean(mirrorparms(casesch{caseind},:),1);
     st = nanmean(mirrorerrs(casesch{caseind},:),1);
-    
-    
+
+
     tsch = timesch{caseind};
     for parmind = 1:2
         [sy,sy1, sy2] = deal([]);
@@ -531,12 +571,12 @@ for caseind = 1:length(casesch)
         sy(parmind) = sqrt(sum(sy1.^2)+((max(sy2)-min(sy2))/2).^2);
         txt{2+parmind,1} = [txt{2+parmind,1} sprintf(txtrslt,m(parmind),st(parmind),sy(parmind))];
     end
-    
+
     mn(caseind,:) = m;
     sstat(caseind,:) = st;
     ssys(caseind,:) = sy;
-    
-    
+
+
 end
 
 disp(txt)
@@ -613,7 +653,7 @@ for projind = 2%1:2
 
             source.height = source.distance.*tand(source.elevation);
             [x,y,~] = beam_map_pointing_model(AZ,EL,DK,model0,'bicep3',mirror,source,[]);
-            
+
             switch projind
                 case 1
                     resx = x0-x;
