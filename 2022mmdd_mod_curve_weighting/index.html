@@ -31,8 +31,8 @@
 <header>
     <h1>RPS Analysis: Modulation Curve Weights</h1>
 
-    <time datetime="2020-xx-xx" class="published updated">
-        yyyy Mmm dd
+    <time datetime="2022-07-01" class="published updated">
+        2022 Jul 01
     </time> —
     J. Cornelison
 </header>
@@ -40,15 +40,14 @@
 <hr>
 
 <p>
-    Abstract
+    This posting investigates how different approaches to our weighting of modulation curves during fits could improve constraints on polarization parameters. I create a simset of 100 realizations of modulation curves with amplitude scaling noise at a series of DK angles. I fit for polarization angle, $\epsilon$, amplitude, and two collimation nuisance parameters to those simulated data using three weighting schemes: Uniform, Threshold, and 1/Amplitude. I find that the bias is consistent with zero in all relevant cases and the standard deviation on best-fit parameters is consistently reduced using the non-uniform weighting schemes.
 </p>
 
 <hr>
 
-<section><h2>Section 1</h2>
+<section><h2></h2>
 
-    <h3>Subsection 1</h3>
-    <p>
+    <h3>The Model</h3>
 <p>
     Our model for the modulation curve amplitude, $A$, as a function of RPS rotation angle, $\theta$, is:
 </p>
@@ -100,10 +99,10 @@
       <p>
         I created simsets of 100 modulation curves at DK-angles of 0&deg; to 180&deg; in 10&deg; increments. Modulation curves are created using Eq. 1 with $\theta = [-180:30:180]$ to match RPS observations. For my fiducial input parameters, I used the following:
           \begin{equation}
-          P = [\phi\; \epsilon\; G\; N_1\; N_2] = [0\;0.03 \;0.5 \;0 \;0]
+          P = [\phi\; \epsilon\; G\; N_1\; N_2] = [0\;0.007 \;0.5 \;0 \;0]
           \end{equation}
 
-          I chose an $\epsilon=0.03$ mostly to ensure we've got a sufficiently high SNR measurement of it, but otherwise this choice was pretty arbitrary. Because amplitude-scaling noise is the dominating reason, I include a 5% Gaussian noise that scales with amplitude in these sims to match roughly what we see in the data:
+          I chose an $\epsilon=0.007$ as this is roughly around what we've previously measured <a href="BK-XV"></a>. Because amplitude-scaling noise is the dominating reason, I include a 3% Gaussian noise that scales with amplitude in these sims to match roughly what we've seen previously in the data <a href="JAC2018"></a>:
 
           \begin{equation}
           A_d = A(\theta|P)+A(\theta|P)\times\,N(\mu=0,\sigma=0.05)
@@ -155,7 +154,7 @@
     </figure>
 
     <p>
-        We can see that for $\epsilon$, the scatter is consistently better for the Threshold and 1/Amp weighting schemes. Interestingly, the scatter for $\phi$ is also fairly sensitive to the amplitude scaling noise which is something I was surprised by -- as I was expecting that the constraining power from the shape of the sine wave would dominate over the amplitude-scaling noise. Also, it's not really clear why $\phi$ is so poorly constrained at multiples of 30&deg;, though I suspect is might have something to do with my implementation.
+        We can see that for $\epsilon$, the scatter is consistently lower for the Threshold and 1/Amp weighting schemes. Interestingly, the scatter for $\phi$ is also lower for the non-uniform weights as well which implies that it's fairly sensitive to the amplitude scaling noise which is something I was surprised by.
     </p>
     <p>
         Figure 1.2 shows the bias and standard deviation for each parameter as a function of DK angle. The bias is calculated as the best-fit parameter minus the fiducial parameter given in Eq. 6.
@@ -163,11 +162,12 @@
 
 
     <figure>
-        <img alt="Name pager" id="namepager" src="#" width="65%"/>
+        <img alt="Name pager" id="namepager" src="#" width="75%"/>
         <figcaption>
             Example pager
         </figcaption>
         <script type="text/javascript">
+
             pager.link("#namepager",
                 {
                     'Plot|plt': ['Bias|bias', 'STD|std'],
@@ -182,69 +182,72 @@
             });
         </script>
     </figure>
-    <p>For $\epsilon$, the 1/Amp weighting is consistently smaller, but for $\phi$ the threshold weighting seems to be the best. I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter.</p>
+    <p>For $\epsilon$, the 1/Amp weighting is consistently smallest, but for $\phi$ the threshold weighting seems to be the best. My plan now is to test these weighting schemes on real RPS data.
 
-    <figure>
-        <img alt="Name pager" id="isaacpager" src="#" width="65%"/>
-        <figcaption>
-            Example pager
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#isaacpager",
-                {
-                    'Weight|wgt': ['Uniform|', 'Threshold|_threshold','1/Amp|_one_on_amp'],
-                },
-                function(params) {
-                    return 'figs/isaac_cal_024'+params.wgt+'.png';
-                });
-            pager.setparams({
-                'wgt': '',
+<!--        -->
+<!--        I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter.</p>-->
 
-            });
-        </script>
-    </figure>
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="isaacpager" src="#" width="85%"/>-->
+<!--        <figcaption>-->
+<!--            Example pager-->
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+
+<!--            var vallist2 = new Array(28);-->
+<!--            for (var ii=0; ii<=27; ++ii) {-->
+<!--                vallist2[ii] = ii+8;-->
+
+<!--            }-->
+
+<!--            var valopt2 = new Pager.DataList(vallist2);-->
+<!--            valopt2.toString = function() {-->
+<!--                var val = this.list[this.idx].toString();-->
+<!--                while (val.length < 3) { val = "0"+val; }-->
+<!--                return val;-->
+<!--            }-->
+<!--            valopt2.fromString = function(val) {-->
+<!--                return parseInt(val);-->
+<!--            }-->
+
+<!--            pager.link("#isaacpager",-->
+<!--                {-->
+<!--                    'Measurement|meas': valopt2,-->
+<!--                    'Weight|wgt': ['Uniform|_uniform', 'Threshold|_threshold','1/Amp|_one_on_r'],-->
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/isaac_cal_'+params.meas+params.wgt+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'wgt': '_uniform',-->
+<!--                'meas':'22'-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+<!--    -->
 </section>
-
-<!--<section>-->
-<!--    <h2>Source Parameters 2017</h2>-->
-
-<!--    <h3>Results</h3>-->
-
-<!--    <h3>Data</h3>-->
-
-<!--</section>-->
-
-<!--<section>-->
-<!--    <h2>Mirror Parameters 2018</h2>-->
-
-<!--    <h3>Results</h3>-->
-
-<!--    <h3>Data</h3>-->
-
-<!--</section>-->
-
 
 <hr>
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
-    <h3>Notes</h3>
-    <div class="footnote">
-        <p>
-        <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
-        This is a footnote. Click the number to return to main text.
-    </p>
-    </div>
-    <h3>Code</h3>
-    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
-    <p id="code"></p>
+<!--    <h3>Notes</h3>-->
+<!--    <div class="footnote">-->
+<!--        <p>-->
+<!--        <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>-->
+<!--        This is a footnote. Click the number to return to main text.-->
+<!--    </p>-->
+<!--    </div>-->
+<!--    <h3>Code</h3>-->
+<!--    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>-->
+<!--    <p id="code"></p>-->
 
-    <h3>Data</h3>
-    <p id="data"></p>
+<!--    <h3>Data</h3>-->
+<!--    <p id="data"></p>-->
+<!--    -->
     <h3>References</h3>
 
     <p id="references"></p>
-
 
     <p id="testp"></p>
 
@@ -337,19 +340,22 @@
 
         // Shorthand tags
         var tags = [
-            "CAB2012",
+            "JAC2018",
+            "BK-XV"
         ];
 
         // Links
         // Truncate the link down to the www directory in which is lies if you can.
         var hrefs = [
-            "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+            "bkcmb/analysis_logbook/analysis/20180717_rps_sims/",
+            "https://arxiv.org/pdf/2110.00482.pdf",
         ];
 
 
         // Posting titles
         var desc = [
-            "Pointing Model for Keck Beam Maps",
+            "Simulating RPS Data",
+            "The BICEP3 CMB Polarimeter and the First Three Year Data Set",
         ];
         // Debug
         var posty = document.getElementById("testp");
