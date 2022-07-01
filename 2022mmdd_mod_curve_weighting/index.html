@@ -170,8 +170,8 @@
 
             pager.link("#namepager",
                 {
-                    'Plot|plt': ['Bias|bias', 'STD|std'],
                     'Parameter|param2': ['Angle|phi','Eps|eps','Amp|amp','N1|n1','N2|n2'],
+                    'Plot|plt': ['Bias|bias', 'STD|std'],
                 },
                 function(params) {
                     return 'figs/scatter_'+params.plt+'_'+params.param2+'_vs_dk.png';
