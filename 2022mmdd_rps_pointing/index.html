@@ -27,7 +27,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS 2022 II: RPS Pointing parameters</h1>
+    <h1>RPS Beam Center Residuals</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         yyyy Mmm dd
@@ -48,44 +48,44 @@
     <h3>Subsection 1</h3>
 
 
-    <figure>
-        <img alt="Name pager" id="testquiverpager" src="#" />
-        <figcaption>
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="testquiverpager" src="#" />-->
+<!--        <figcaption>-->
 
-        </figcaption>
-        <script type="text/javascript">
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
 
-            var vallist = new Array(10);
-            for (var ii=1; ii<=10; ++ii) {
-                vallist[ii] = ii;
-            }
+<!--            var vallist = new Array(10);-->
+<!--            for (var ii=1; ii<=10; ++ii) {-->
+<!--                vallist[ii] = ii;-->
+<!--            }-->
 
-            var valopt = new Pager.DataList(vallist);
-            valopt.toString = function() {
-                var val = this.list[this.idx].toString();
-                while (val.length < 1) { val = "0"+val; }
-                return val;
-            }
-            valopt.fromString = function(val) {
-                return parseInt(val);
-            }
+<!--            var valopt = new Pager.DataList(vallist);-->
+<!--            valopt.toString = function() {-->
+<!--                var val = this.list[this.idx].toString();-->
+<!--                while (val.length < 1) { val = "0"+val; }-->
+<!--                return val;-->
+<!--            }-->
+<!--            valopt.fromString = function(val) {-->
+<!--                return parseInt(val);-->
+<!--            }-->
 
-            pager.link("#testquiverpager",
-                {
-                    'Param|parm': ['Tilt|tilt','Roll|roll','Src Azimuth|az','Src Elevation|el'],
-                    'Value|v' : valopt,
-                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
-                },
-                function(params) {
-                    return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';
-                });
-            pager.setparams({
-                'parm' : 'tilt',
-                'v': '5',
+<!--            pager.link("#testquiverpager",-->
+<!--                {-->
+<!--                    'Param|parm': ['Tilt|tilt','Roll|roll','Src Azimuth|az','Src Elevation|el'],-->
+<!--                    'Value|v' : valopt,-->
+<!--                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],-->
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'parm' : 'tilt',-->
+<!--                'v': '5',-->
 
-            });
-        </script>
-    </figure>
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
 <p>I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c"></a> and fit for a source location over all DK angles. I then fit for a single source location over all DK angles (Az=-177.52 / El=2.70) and plot the residual for each DK angle in the pager below. The DKs of "0_1" through "-23" are type-11 schedules which scan across the entire focal plane in a single raster.</p>
     <figure>

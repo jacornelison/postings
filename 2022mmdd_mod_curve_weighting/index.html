@@ -99,7 +99,7 @@
       <p>
         I created simsets of 100 modulation curves at DK-angles of 0&deg; to 180&deg; in 10&deg; increments. Modulation curves are created using Eq. 1 with $\theta = [-180:30:180]$ to match RPS observations. For my fiducial input parameters, I used the following:
           \begin{equation}
-          P = [\phi\; \epsilon\; G\; N_1\; N_2] = [0\;0.007 \;0.5 \;0 \;0]
+          P = [\phi\; \epsilon\; G\; N_1\; N_2] = [0^\circ\;0.007 \;0.5 \;0 \;0]
           \end{equation}
 
           I chose an $\epsilon=0.007$ as this is roughly around what we've previously measured <a href="BK-XV"></a>. Because amplitude-scaling noise is the dominating reason, I include a 3% Gaussian noise that scales with amplitude in these sims to match roughly what we've seen previously in the data <a href="JAC2018"></a>:
@@ -109,6 +109,7 @@
           \end{equation}
 
           I should also note that each weighting option at each DK angle uses the same 100 noise realizations. I fit this modulation curves to the same model in Eq.1 using Matlab's <tt>lsqnonlin</tt> to minimize our chi-square in Eq. 2.
+      </p>
           <p>
           The pager below shows histograms of the best-fit parameters for $\phi$ and $\epsilon$ at various DK angles.
          </p>
@@ -184,8 +185,8 @@
     </figure>
     <p>For $\epsilon$, the 1/Amp weighting is consistently smallest, but for $\phi$ the threshold weighting seems to be the best. My plan now is to test these weighting schemes on real RPS data.
 
-<!--        -->
-<!--        I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter.</p>-->
+
+<!--        I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter on phi, the I find that the mean of the scatter changes drastically.</p>-->
 
 <!--    <figure>-->
 <!--        <img alt="Name pager" id="isaacpager" src="#" width="85%"/>-->
@@ -212,7 +213,8 @@
 
 <!--            pager.link("#isaacpager",-->
 <!--                {-->
-<!--                    'Measurement|meas': valopt2,-->
+<!--                    'Measurement|meas': ['No Homing, No fine sw.|009','With homing, No fine sw.|011','Added Fine Homing sw|022',-->
+<!--                    'Post RPS obs|023'],//valopt2,-->
 <!--                    'Weight|wgt': ['Uniform|_uniform', 'Threshold|_threshold','1/Amp|_one_on_r'],-->
 <!--                },-->
 <!--                function(params) {-->
@@ -220,11 +222,11 @@
 <!--                });-->
 <!--            pager.setparams({-->
 <!--                'wgt': '_uniform',-->
-<!--                'meas':'22'-->
+<!--                'meas':'009'-->
 <!--            });-->
 <!--        </script>-->
 <!--    </figure>-->
-<!--    -->
+
 </section>
 
 <hr>
