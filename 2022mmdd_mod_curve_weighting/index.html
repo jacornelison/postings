@@ -105,7 +105,7 @@
           I chose an $\epsilon=0.007$ as this is roughly around what we've previously measured <a href="BK-XV"></a>. Because amplitude-scaling noise is the dominating reason, I include a 3% Gaussian noise that scales with amplitude in these sims to match roughly what we've seen previously in the data <a href="JAC2018"></a>:
 
           \begin{equation}
-          A_d = A(\theta|P)+A(\theta|P)\times\,N(\mu=0,\sigma=0.05)
+          A_d = A(\theta|P)+A(\theta|P)\times\,N(\mu=0,\sigma=0.03)
           \end{equation}
 
           I should also note that each weighting option at each DK angle uses the same 100 noise realizations. I fit this modulation curves to the same model in Eq.1 using Matlab's <tt>lsqnonlin</tt> to minimize our chi-square in Eq. 2.
