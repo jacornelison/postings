@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Posting Title — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>SPIE Plots</h1>
+
+    <time datetime="2022-06-01" class="published updated">
+        2022 Jul 07
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+
+<section><h2>Comparing subsets of 2022 RPS data</h2>
+
+    <p>
+        The pager below shows scatter plots and difference histograms of polarization angles estimated from the 2022 RPS campaign which includes both Type 5 and Type 11 schedules. These angles were estimated using one value for each of the mirror and source parameters. The mirror orientation was derived from the Moon observations. The source location was derived using the Moon-derived mirror parameters and fitting over all type-5 observations only. We have redundant observations at DK=68 with type 5 schedules, DK=0 with type 11 schedules, and an observation at DK=90 for both types 5 and 11 which are included in the pager. The last selection 'All-DK split' is where I split the all of observations into to subsets roughly evenly distributed across DK angles and schedules types: 'AVG1' averages over DKs(type) of -81(T5), -23(T11), 0(T11), 45(T5), 68(T5), 90(T5), 174(T5) ; and 'AVG2' averages -68(T11), 0(T11), 23(T5), 61(T5), 68(T5), 90(T11), 135(T11).
+    </p>
+
+
+    <figure>
+        <img alt="Name pager" id="scatterhistpager" src="#" width="100%"/>
+        <figcaption>
+            Example pager
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#scatterhistpager",
+                {
+                    //'Param |p': ['Xpol|xpol', 'Angle|phi'],
+                    'Plot|s': ['DK0|3','DK68|4','DK90|2','All-DK split|1'],
+                },
+                function(params) {
+                    return 'figs/'+params.p+'_compare_2022_'+params.s+'.png';
+                });
+            pager.setparams({
+                'p': 'phi',
+                's': '3',
+            });
+        </script>
+    </figure>
+
+
+</section>
+
+<!--<section>-->
+<!--    <h2>Source Parameters 2017</h2>-->
+
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
+
+<!--<section>-->
+<!--    <h2>Mirror Parameters 2018</h2>-->
+
+<!--    <h3>Results</h3>-->
+
+<!--    <h3>Data</h3>-->
+
+<!--</section>-->
+
+
+<hr>
+<!--
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+    <h3>Notes</h3>
+    <div class="footnote">
+        <p>
+        <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
+        This is a footnote. Click the number to return to main text.
+    </p>
+    </div>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+    <h3>Data</h3>
+    <p id="data"></p>
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "rps_fit_mirror_from_moon.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Derives mirror parameters from observations of the moon.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "moonsch.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Metadata of Moon observations",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "CAB2012",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which is lies if you can.
+        var hrefs = [
+            "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Pointing Model for Keck Beam Maps",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+-->
+
+</body>
