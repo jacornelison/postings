@@ -22,12 +22,12 @@ clear fd0
 load('z:/dev/rps/fpu_data_obs.mat')
 
 figdir = 'C:\Users\James\Documents\GitHub\postings\2022mmdd_rps_data_compare\figs';
-
+AR = [600, 600]; 
 
 xpols = NaN(2,2640);
 for yearind = 1:2
     fd0 = fd{yearind};
-    for chind = 1:length(fd0.ch)
+    for chind = 1:2640
         ci = find(fd0.ch==chind);
         
         if ~isempty(ci)
@@ -42,13 +42,10 @@ end
 % Use only common data:
 indxpol = isnan(diff(xpols,1));
 
-
-
-
 phis = NaN(2,2640);
 for yearind = 1:2
     fd0 = fd{yearind};
-    for chind = 1:length(fd0.ch)
+    for chind = 1:2640
         ci = find(fd0.ch==chind);
         
         if ~isempty(ci)
@@ -89,7 +86,8 @@ for yearind = 1:2
         
             phi_diffs(yearind,chind) = atan2(U,Q)./2*180/pi;
             xpol_diffs(yearind,chind) = 1-sqrt(Q.^2+U.^2);
-        
+            
+            [phi_diffs(yearind,chind) xpol_diffs(yearind,chind)] = calc_pair_diff_pol(phis(yearind,ia),phis(yearind,ib),xpols(yearind,ia),xpols(yearind,ib));
         end
     end
 end
@@ -373,8 +371,6 @@ end
 
 %% scatterhist of phi-diffs
 
-
-
 offs = {-2.3, 0};
 scaling = {2, 0.04};
 vals = {phi_diffs,xpol_diffs};
@@ -397,7 +393,7 @@ clf; hold on;
     ylabel({sprintf('%s_{2022} [Degrees]',valtitles{pltind}),sprintf('Pol %s detectors',pols{pltind})})
     
     fname = sprintf('%s_scatterhist_pol_%s.png',valnames{pltind},pols{pltind});
-    saveas(fig,fullfile(figdir,fname))
+    %saveas(fig,fullfile(figdir,fname))
 end
 
 

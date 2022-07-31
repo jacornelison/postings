@@ -18,7 +18,7 @@ vals = {phipair,phia,phib-90,epspair};
 labels = {'\phi_{pair} [Deg]','\phi_{a} [Deg]','\phi_{b}-90 [Deg]','\epsilon_{pair}'};
 scales = [1e-10,4e-2,4e-2,4e-7];
 
-for valind = 3%1:length(vals)
+for valind = 1:length(vals)
 
 for dkind = 1:length(dk)
     figure(1); clf;

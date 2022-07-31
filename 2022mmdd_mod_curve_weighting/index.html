@@ -193,46 +193,46 @@
     <p>For $\epsilon$, the 1/Amp weighting is consistently smallest, but for $\phi$ the threshold weighting seems to be the best. My plan now is to test these weighting schemes on real RPS data.
 
 
-<!--        I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter on phi, the I find that the mean of the scatter changes drastically.</p>-->
+        I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter on phi, the I find that the mean of the scatter changes drastically.</p>
 
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="isaacpager" src="#" width="85%"/>-->
-<!--        <figcaption>-->
-<!--            Example pager-->
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
+    <figure>
+        <img alt="Name pager" id="isaacpager" src="#" width="85%"/>
+        <figcaption>
+            Example pager
+        </figcaption>
+        <script type="text/javascript">
 
-<!--            var vallist2 = new Array(28);-->
-<!--            for (var ii=0; ii<=27; ++ii) {-->
-<!--                vallist2[ii] = ii+8;-->
+            var vallist2 = new Array(28);
+            for (var ii=0; ii<=27; ++ii) {
+                vallist2[ii] = ii+8;
 
-<!--            }-->
+            }
 
-<!--            var valopt2 = new Pager.DataList(vallist2);-->
-<!--            valopt2.toString = function() {-->
-<!--                var val = this.list[this.idx].toString();-->
-<!--                while (val.length < 3) { val = "0"+val; }-->
-<!--                return val;-->
-<!--            }-->
-<!--            valopt2.fromString = function(val) {-->
-<!--                return parseInt(val);-->
-<!--            }-->
+            var valopt2 = new Pager.DataList(vallist2);
+            valopt2.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 3) { val = "0"+val; }
+                return val;
+            }
+            valopt2.fromString = function(val) {
+                return parseInt(val);
+            }
 
-<!--            pager.link("#isaacpager",-->
-<!--                {-->
-<!--                    'Measurement|meas': ['No Homing, No fine sw.|009','With homing, No fine sw.|011','Added Fine Homing sw|022',-->
-<!--                    'Post RPS obs|023'],//valopt2,-->
-<!--                    'Weight|wgt': ['Uniform|_uniform', 'Threshold|_threshold','1/Amp|_one_on_r'],-->
-<!--                },-->
-<!--                function(params) {-->
-<!--                    return 'figs/isaac_cal_'+params.meas+params.wgt+'.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                'wgt': '_uniform',-->
-<!--                'meas':'009'-->
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
+            pager.link("#isaacpager",
+                {
+                    //'Measurement|meas': ['No Homing, No fine sw.|009','With homing, No fine sw.|011','Added Fine Homing sw|022','Post RPS obs|023'],
+                    'Measurement|meas':  valopt2,
+                    'Weight|wgt': ['Uniform|_uniform', 'Threshold|_threshold','1/Amp|_one_on_r'],
+                },
+                function(params) {
+                    return 'figs/isaac_cal_'+params.meas+params.wgt+'.png';
+                });
+            pager.setparams({
+                'wgt': '_uniform',
+                'meas':'009'
+            });
+        </script>
+    </figure>
 
 </section>
 
