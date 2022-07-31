@@ -26,7 +26,7 @@ addpath(genpath('z:dev/'))
 mirror = struct();
 mirror.height = 1.3;
 mirror.tilt = 44.887;
-mirror.roll = -0.073;
+mirror.roll = -0.0759;
 
 source = struct();
 source.azimuth = reshape(fd.az_cen_src,[],1);
@@ -134,10 +134,17 @@ cutind = true(size(fd.ch));
 threshold = 3;
 cutind = cutind & (abs(fd.resx) <= threshold & abs(fd.resy)<=threshold);
 
-
 % Known shitty schedules cut
 %cutind = cutind & fd.schind ~= 55;
 fd = structcut(fd,cutind);
+
+cutind = false(size(fd.ch));
+% Get rid of stuff no in the scheds list
+for schind = 1:length(scheds)
+    cutind = cutind | ismember(fd.schind,scheds{schind});
+end
+fd = structcut(fd,cutind);
+
 
 threshold = 0.5;
 cutind = false(size(fd.ch));
@@ -199,6 +206,19 @@ for schind = 1:length(moonsch)
 end
 
 fd = structcut(fd,cutind);
+
+[xs, ys] = deal(nan(length(scheds),2640));
+for schind = 1:length(scheds)
+for chind = 1:2640
+    ind = find(fd.ch==chind & ismember(fd.schind,scheds{schind}));
+    if ~isempty(ind)
+        %resx(chind) = wmean(fd.resx_rot(ind),1./fd.gof(ind),2);
+        %resy(chind) = wmean(fd.resy_rot(ind),1./fd.gof(ind),2);
+        xs(schind,chind) = mean(fd.resx_rot(ind));
+        ys(schind,chind) = mean(fd.resy_rot(ind));
+    end
+end
+end
 
 %%%%%%%%%%%
 % REAL Posting plots
@@ -343,22 +363,69 @@ end
 
 %% Quiver of mean over all dks using mean tilt/roll
 
-[resx, resy] = deal(NaN(2640,1));
+% Best fit params for the pointing model.
+mirror = struct();
+mirror.height = 1.3;
+mirror.tilt = 44.887;
+mirror.roll = -0.0759;
+
+source = struct();
+source.azimuth = reshape(fd.az_cen_src,[],1);
+source.distance = 3.8e8*cosd(reshape(fd.el_cen_src,[],1));
+source.height = 3.8e8*sind(reshape(fd.el_cen_src,[],1));
+
+[x, y, phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
+fd.resx = reshape(prx(fd.ch)-x,size(fd.ch));
+fd.resy = reshape(pry(fd.ch)-y,size(fd.ch));
+[resth, resr] = cart2pol(fd.resx,fd.resy);
+resth = resth - fd.dk_cen*pi/180;
+[fd.resx_rot, fd.resy_rot] = pol2cart(resth,resr);
+fd.resr = resr;
+
+[xs, ys, xrots, yrots] = deal(nan(length(scheds),2640));
+for schind = 1:length(scheds)
 for chind = 1:2640
-    ind = find(fd.ch==chind);
+    ind = find(fd.ch==chind & ismember(fd.schind,scheds{schind}));
     if ~isempty(ind)
-        resx(chind) = wmean(fd.resx_rot(ind),1./fd.gof(ind),2);
-        resy(chind) = wmean(fd.resy_rot(ind),1./fd.gof(ind),2);
+        xs(schind,chind) = mean(fd.resx(ind));
+        ys(schind,chind) = mean(fd.resy(ind));
+        xrots(schind,chind) = mean(fd.resx_rot(ind));
+        yrots(schind,chind) = mean(fd.resy_rot(ind));
+
     end
 end
+end
 
-winscale = 1.5;
-scaling = 15;
+%
+winscale = 1;
+scaling = 10;
 fig = figure(1);
 fig.Position(3:4) = [500*winscale 450*winscale];
 clf;
+ind = 1:length(scheds);
+quiver(prx,pry,nanmean(xs(ind,:),1)'*scaling,nanmean(ys(ind,:),1)'*scaling,0)
 
-quiver(prx,pry,resx*scaling,resy*scaling,0)
+
+fig = figure(2);
+fig.Position(3:4) = [500*winscale 450*winscale];
+clf;
+scatterhist(nanmean(xs,1),nanmean(ys,1),'kernel','on')
+
+
+fig = figure(3);
+fig.Position(3:4) = [500*winscale 450*winscale];
+clf;
+quiver(prx,pry,nanmean(xrots(ind,:),1)'*scaling,nanmean(yrots(ind,:),1)'*scaling,0)
+
+
+fig = figure(4);
+fig.Position(3:4) = [500*winscale 450*winscale];
+clf;
+scatterhist(nanmean(xrots,1),nanmean(yrots,1),'kernel','on')
+
+
+
+
 
 
 %% Find the difference in focal plane orientation between uncorrected and corrected:
