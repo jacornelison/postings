@@ -95,7 +95,7 @@
     </p>
 
 <!--    Why do we want to look at residuals?-->
-
+<!--
     <p>
         In the pagers below I plot quivers of the residuals between CMB-derived and Moon-derived beam centroids in boresight-centered coordinates (x/y) and also in a new mirror-fixed coordinate system X<sub>m</sub>/Y<sub>m</sub> which I calculate as follows:
         <ul>
@@ -144,7 +144,7 @@
         </figcaption>
     </figure>
 
-
+-->
     <p>
         In this next figure I show how individual errors on a given mirror or source parameter affect the residuals.
     </p>
@@ -175,15 +175,16 @@
                 {
                     'Param|parm': ['Tilt|tilt','Roll|roll','Src Azimuth|az','Src Elevation|el'],
                     'Value|v' : valopt,
-                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                    //'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
                 },
                 function(params) {
-                    return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';
+                    //return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';
+                    return 'figs/testquiver_'+params.parm+'_'+params.v+'.png';
                 });
             pager.setparams({
                 'parm' : 'tilt',
                 'v': '5',
-                'coord' : '',
+                //'coord' : '',
 
             });
         </script>
@@ -194,7 +195,7 @@
     </p>
 
     <p>
-    The pager arranges the observations (denoted by the DK at which they were taken) in chronological order where "0_1" to "135_1" were taken before the December 4th solar eclipse, "23_2" to "68_4" were taken on 10 Dec (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken on 25/26 Jan after the completion of the RPS observation period. We see only a <i>slight</i> difference in the residuals after the correction is made -- a rotation of the focal plane of ~0.02&deg; in amplitude on average. I note however that for the second string of observations (23_2 to 68_4) have the opposite sign of the other two with the average overall difference in rotation between the corrected and uncorrected residuals being ~2 arcseconds.
+    The pager below arranges the observations (denoted by the DK at which they were taken) in chronological order where "0_1" to "135_1" were taken before the December 4th solar eclipse, "23_2" to "68_4" were taken on 10 Dec (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken on 25/26 Jan after the completion of the RPS observation period. The "Fit" option shows residuals for a single overall mirror fit and the residuals if I fit the mirror parameters individually. The "Coord" option shows the residuals in instrument-fixed coordinates and a "mirror-fixed" coordinate where I've derotated the DK angle from the residuals to help identify any systematics common to a point on the mirror.
 </p>
 
     <figure>
@@ -257,6 +258,35 @@
     </p>
 
     <p>
+        If I average over all DK angles, the residuals average down for the most part. I fit a rotation and scaling to further minimize the residuals and we see a small amount of scaling start to emerge along with a small overall rotation of the focal plane. While the scaling further reduces the residuals by quite a bit, derotation doesn't appear to have a similarly large effect. The plan is to look into the pointing residuals from the RPS data and see if there's a similar scaling and rotation in the focal plane.
+    </p>
+
+    <figure>
+
+        <img alt="Maps pager" id="quivmeanpager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#quivmeanpager",
+                {
+                    'Fit|fit2' : ['none','angle|ang','scaling|scale','both'],
+
+                },
+                function(params) {
+                    //return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
+                    return 'figs/quiver_mean_fit_'+params.fit2+'_phase_corrected.png';
+                });
+            pager.setparams({
+                'fit2': 'none',
+
+
+            });
+        </script>
+    </figure>
+
+
+    <p>
         In context to using these mirror parameters for other analyses, I'm thinking the best approach is to use the average parameters here to determine the source location and then, while locking the source location in place, re-fitting for the mirror parameters on a schedule-to-schedule basis.
     </p>
 
@@ -298,7 +328,7 @@
                 <td class="cstart">-0.071</td>
                 <td>&lt;0.001</td>
                 <td>0.033</td>
-                <td class="cstart">-0.073</td>
+                <td class="cstart">-0.075</td>
                 <td>&lt;0.001</td>
                 <td>0.020</td>
             </tr>

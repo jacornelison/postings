@@ -24,7 +24,7 @@ addpath(genpath('z:dev/'))
 
 % Best fit params for the pointing model.
 mirror = struct();
-mirror.height = 1.3;
+mirror.height = 1.4592;
 mirror.tilt = 44.887;
 mirror.roll = -0.0759;
 
@@ -139,7 +139,7 @@ cutind = cutind & (abs(fd.resx) <= threshold & abs(fd.resy)<=threshold);
 fd = structcut(fd,cutind);
 
 cutind = false(size(fd.ch));
-% Get rid of stuff no in the scheds list
+% Get rid of stuff not in the scheds list
 for schind = 1:length(scheds)
     cutind = cutind | ismember(fd.schind,scheds{schind});
 end
@@ -234,10 +234,10 @@ cm = colormap('turbo');
 clridx = floor(linspace(1,size(cm,1),3*19));
 
 % Things dealing with projection
-xlims = {[-1 1]*15 [-1 1]*0.5};
-ylims = {[-1 1]*15 [-0.5 0.8]};
-projlabels = {' [Degrees]','_m [Meters]'};
-projnames = {'','_mirror'};
+xlims = {[-1 1]*15 [-1 1]*15 [-1 1]*0.5};
+ylims = {[-1 1]*15 [-1 1]*15 [-0.5 0.8]};
+projlabels = {' [Degrees]','_m [Degrees]','_m [Meters]'};
+projnames = {'','_mirror','_mirror'};
 
 % Things dealing with fits
 fittype = {'overall','perdk'};%,'persch'};
@@ -249,9 +249,9 @@ corrparams = {[44.886 -0.0713], [44.882 -0.0751]};
 
 
 clc
-for projind = 1%1:2
-    for fitind = 1%1:2
-        for corrind = 1%1:2
+for projind = 2%1:2
+    for fitind = 1:2
+        for corrind = 1:2
 
             load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',corrname{corrind}))
             load(sprintf('z:/dev/moon_analysis/moon_beam_fits%s_cut.mat',corrname{corrind}))
@@ -263,26 +263,26 @@ for projind = 1%1:2
 
                 % Only keep channels that has its pair
                 if 0
-                ind = true(size(fd0.ch));
-                for chind = 1:length(fd0.ch)
-                    cia = find(p_ind.a==fd0.ch(chind));
-                    cib = find(p_ind.b==fd0.ch(chind));
-                    if ~isempty(cia)
-                        idx = find(fd0.ch==p_ind.b(cia) & fd0.schind==fd0.schind(chind) & fd0.scanind==fd0.scanind(chind));
+                    ind = true(size(fd0.ch));
+                    for chind = 1:length(fd0.ch)
+                        cia = find(p_ind.a==fd0.ch(chind));
+                        cib = find(p_ind.b==fd0.ch(chind));
+                        if ~isempty(cia)
+                            idx = find(fd0.ch==p_ind.b(cia) & fd0.schind==fd0.schind(chind) & fd0.scanind==fd0.scanind(chind));
 
-                    elseif ~isempty(cib)
-                        idx = find(fd0.ch==p_ind.a(cib) & fd0.schind==fd0.schind(chind) & fd0.scanind==fd0.scanind(chind));
-                    end
+                        elseif ~isempty(cib)
+                            idx = find(fd0.ch==p_ind.a(cib) & fd0.schind==fd0.schind(chind) & fd0.scanind==fd0.scanind(chind));
+                        end
 
-                    if isempty(idx)
-                        ind(chind) = false;
+                        if isempty(idx)
+                            ind(chind) = false;
+                        end
                     end
-                end
-                fd0 = structcut(fd0,ind);
+                    fd0 = structcut(fd0,ind);
                 end
 
                 mirror = struct();
-                mirror.height = 1.3;
+                mirror.height = 1.4592;
                 switch fitind
                     case 1
                         mirror.tilt = corrparams{corrind}(1);
@@ -312,11 +312,11 @@ for projind = 1%1:2
                         y0 = prysch;
                         resx = prxsch-x;
                         resy = prysch-y;
-                    case 2
+                    case 999
                         xtrack = [1, -1]*10;
                         ytrack = [1, -1]*10;
                         [x_track_mirr, y_track_mirr] = get_mirror_coords(fd0.dk_cen,xtrack,ytrack,zeros(size(fd0.ch)),mount,mirror);
-                        
+
                         mk = {'^','+'};
                         for j = 1:length(xtrack)
                             plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
@@ -328,6 +328,14 @@ for projind = 1%1:2
                         y0 = y_mirr;
                         resx = x_mirr-x_fit_mirr;
                         resy = y_mirr-y_fit_mirr;
+                    case 2
+                        x0 = prxsch;
+                        y0 = prysch;
+                        resx = prxsch-x;
+                        resy = prysch-y;
+                        [resth, resr] = cart2pol(resx,resy);
+                        resth = resth - fd0.dk_cen'*pi/180;
+                        [resx, resy] = pol2cart(resth,resr);
                 end
 
 
@@ -364,10 +372,11 @@ end
 %% Quiver of mean over all dks using mean tilt/roll
 
 % Best fit params for the pointing model.
+clc
 mirror = struct();
-mirror.height = 1.3;
+mirror.height = 1.4592;
 mirror.tilt = 44.887;
-mirror.roll = -0.0759;
+mirror.roll = -0.075;
 
 source = struct();
 source.azimuth = reshape(fd.az_cen_src,[],1);
@@ -382,11 +391,18 @@ resth = resth - fd.dk_cen*pi/180;
 [fd.resx_rot, fd.resy_rot] = pol2cart(resth,resr);
 fd.resr = resr;
 
-[xs, ys, xrots, yrots] = deal(nan(length(scheds),2640));
+moonopt = moon_fit_fpu_angle_and_scaling(fd,mirror,model,p,'');
+moonopt.fpu.angle
+
+%%
+
+[xps, yps, xs, ys, xrots, yrots] = deal(nan(length(scheds),2640));
 for schind = 1:length(scheds)
 for chind = 1:2640
     ind = find(fd.ch==chind & ismember(fd.schind,scheds{schind}));
     if ~isempty(ind)
+        xps(schind,chind) = mean(x(ind));
+        yps(schind,chind) = mean(y(ind));
         xs(schind,chind) = mean(fd.resx(ind));
         ys(schind,chind) = mean(fd.resy(ind));
         xrots(schind,chind) = mean(fd.resx_rot(ind));
@@ -396,35 +412,109 @@ for chind = 1:2640
 end
 end
 
-%
+%%
+fdsch = struct();
+% fdsch.ch = repmat(1:2640,size(xps,1),1);
+% fdsch.ch = fdsch.ch(~isnan(xps));
+% fdsch.x = xps(~isnan(xps));
+% fdsch.y = yps(~isnan(yps));
+fdsch.ch = 1:2640';
+x0 = nanmean(xps,1)';
+y0 = nanmean(yps,1)';
+fdsch.ch = fdsch.ch(~isnan(x0)&~isnan(y0));
+fdsch.x = x0(~isnan(x0)&~isnan(y0));
+fdsch.y = y0(~isnan(y0)&~isnan(y0));
+
+fpu = fit_fpu_angle_and_scaling_from_xy(fdsch,p)
+
+
+model = fpu_ort_and_scaling_model([0.0416 0.9977 0.0030 -0.0017],fdsch);
+model = reshape(model,[],2);
+x0 = prx(fdsch.ch);
+y0 = pry(fdsch.ch);
+
+
+fig = figure(1);
+%quiver(x0,y0,(x0-fdsch.x)*scaling,(y0-fdsch.y)*scaling,0)
+quiver(x0,y0,(x0-model(:,1))*scaling,(y0-model(:,2))*scaling,0)
+%plot(fdsch.ch,fdsch.x,'.')
+
+%% Bootstrap!
+fdsch.ch = 1:2640';
+x0 = nanmean(xps,1)';
+y0 = nanmean(yps,1)';
+fdsch.ch = fdsch.ch(~isnan(x0)&~isnan(y0));
+fdsch.x = x0(~isnan(x0)&~isnan(y0));
+fdsch.y = y0(~isnan(y0)&~isnan(y0));
+
+
+iter = 2000;
+parms = NaN(4,iter);
+for iterind = 1:iter
+    bootind = randi([1,length(fdsch.ch)],1,length(fdsch.ch));
+    fdsch0.ch = fdsch.ch(bootind);
+    fdsch0.x = fdsch.x(bootind);
+    fdsch0.y = fdsch.y(bootind);
+
+    fpu = fit_fpu_angle_and_scaling_from_xy(fdsch0,p,'',[1 1 0 0]);
+    parms(:,iterind) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+end
+
+
+%% Means with rotations applied
+
+casename = {'none','ang','scale','both'};
+parms = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+for caseind = 1:4
+    switch caseind
+        case 1
+            params = [0,1,0,0];
+            x = xps;
+            y = yps;
+            caselabel = sprintf('FPU Rot: %0.2f^o, Scaling: %0.3f',params(1),params(2));
+        case 2
+            params = parms.*[1,0,0,0];
+            params(2) = 1;
+            x = params(2).*(xps.*cosd(params(1))-yps.*sind(params(1)));
+            y = params(2).*(xps.*sind(params(1))+yps.*cosd(params(1)));
+            caselabel = sprintf('FPU Rot: %0.2f^o, Scaling: %0.3f',params(1),params(2));
+        case 3
+            params = parms.*[0,1,0,0];
+            x = params(2).*(xps.*cosd(params(1))-yps.*sind(params(1)));
+            y = params(2).*(xps.*sind(params(1))+yps.*cosd(params(1)));
+            caselabel = sprintf('FPU Rot: %0.2f^o, Scaling: %0.3f',params(1),params(2));
+        case 4
+            params = parms;
+            x = params(2).*(xps.*cosd(params(1))-yps.*sind(params(1)));
+            y = params(2).*(xps.*sind(params(1))+yps.*cosd(params(1)));
+            caselabel = sprintf('FPU Rot: %0.2f^o, Scaling: %0.3f',params(1),params(2));
+    end
+
+projind = 1;
+corrind = 2;
 winscale = 1;
 scaling = 10;
 fig = figure(1);
 fig.Position(3:4) = [500*winscale 450*winscale];
 clf;
 ind = 1:length(scheds);
-quiver(prx,pry,nanmean(xs(ind,:),1)'*scaling,nanmean(ys(ind,:),1)'*scaling,0)
+quiver(prx,pry,(prx-nanmean(x(ind,:),1)')*scaling,(pry-nanmean(y(ind,:),1)')*scaling,0)
+grid on;
+xlim(xlims{projind})
+ylim(ylims{projind})
+xlabel(sprintf('X%s',projlabels{projind}))
+ylabel(sprintf('Y%s',projlabels{projind}))
+    title({sprintf('Beam Center Residuals, x%i, %s', scaling,corrtitle{corrind}),...
+        sprintf('All-DK average, Tilt: %1.2f  Roll: %1.3f',mirror.tilt,mirror.roll),...
+        caselabel...
+        })
+    figname = fullfile(figdir,sprintf('quiver_mean_fit_%s%s%s.png',casename{caseind},corrname{corrind},projnames{projind}));
+    saveas(fig,figname)
+
+end
 
 
-fig = figure(2);
-fig.Position(3:4) = [500*winscale 450*winscale];
-clf;
-scatterhist(nanmean(xs,1),nanmean(ys,1),'kernel','on')
-
-
-fig = figure(3);
-fig.Position(3:4) = [500*winscale 450*winscale];
-clf;
-quiver(prx,pry,nanmean(xrots(ind,:),1)'*scaling,nanmean(yrots(ind,:),1)'*scaling,0)
-
-
-fig = figure(4);
-fig.Position(3:4) = [500*winscale 450*winscale];
-clf;
-scatterhist(nanmean(xrots,1),nanmean(yrots,1),'kernel','on')
-
-
-
+%%
 
 
 
@@ -465,7 +555,7 @@ for fitind = 2%1:2
 
             fd0 = structcut(fd,ind);
             mirror = struct();
-            mirror.height = 1.3;
+            mirror.height = 1.4592;
             mirror.tilt = mirrorparms(schind,1);
             mirror.roll = mirrorparms(schind,2);
 
@@ -551,7 +641,7 @@ for fitind = 2%1:2
             fd0 = structcut(fd,ind);
 
             mirror = struct();
-            mirror.height = 1.3;
+            mirror.height = 1.4592;
             mirror.tilt = mirrorparms(schind,1);
             mirror.roll = mirrorparms(schind,2);
 
@@ -664,6 +754,7 @@ el = (-12:res:12)+90;
 AZ = reshape(AZ,[],1);
 EL = reshape(EL,[],1);
 DK = zeros(size(EL));
+
 model0 = model;
 flds = fieldnames(model);
 for fldind = 1:length(flds)
@@ -676,10 +767,10 @@ paramvars = {'mirror.tilt','mirror.roll','source.azimuth','source.elevation'};
 spacing = 10;
 
 % Things dealing with projection
-xlims = {[-1 1]*15 [-1 1]*0.5};
-ylims = {[-1 1]*15 [-0.5 0.8]};
-projlabels = {' [Degrees]','_m [Meters]'};
-projnames = {'','_mirror'};
+xlims = {[-1 1]*15 [-1 1]*15 [-1 1]*0.5};
+ylims = {[-1 1]*15 [-1 1]*15 [-0.5 0.8]};
+projlabels = {' [Degrees]','_m [Degrees]','_m [Meters]'};
+projnames = {'','_mirror','_mirror'};
 
 % Mount stuff
 mount = struct();
@@ -727,7 +818,7 @@ for projind = 2%1:2
                     resy = y0-y;
                     x1 = x0;
                     x1 = x0;
-                case 2
+                case 999
 
                     xtrack = [1, -1]*10;
                     ytrack = [1, -1]*10;
@@ -743,6 +834,16 @@ for projind = 2%1:2
                     for j = 1:length(xtrack)
                         plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
                     end
+
+                case 2
+                        resx = x0-x;
+                        resy = y0-y;
+                        [resth, resr] = cart2pol(resx,resy);
+                        resth = resth - DK*pi/180;
+                        [resx, resy] = pol2cart(resth,resr);
+                        x1 = x0;
+                        y1 = y0;
+
             end
 
             quiver(x1,y1,resx*scaling,resy*scaling,0,'Color',cm(1,:))
