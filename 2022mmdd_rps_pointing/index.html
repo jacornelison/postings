@@ -119,29 +119,29 @@
     These residuals and global rotation angle are quite small. Is it sufficient to say that, while we do see coherent features in the residuals across the focal plane which are indicative of time- and pointing-dependent systematics, we have acquired enough samples per detector over time and at enough boresight rotations such that these effects have averaged down to insignificant levels?
 </p>
 
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="quiver3pager" src="#" />-->
-<!--        <figcaption>-->
+    <figure>
 
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-<!--            pager.link("#quiver3pager",-->
-<!--                {-->
-<!--                    //'|parm3': ['Source|source','Mirror|mirror'],-->
-<!--                    //'Fit|fit' : ['perdk','persch'],-->
-<!--                    'Rot./Scaling|fit2': ['Off|noang','On|withang']-->
+        <img alt="Maps pager" id="quivmeanpager" src="#" width="100%"/>
+        <figcaption>
 
-<!--                },-->
-<!--                function(params) {-->
-<!--                    return 'figs/quiver_'+params.fit2+'_mean.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                //'parm3':'source',-->
-<!--                'fit2': 'noang',-->
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#quivmeanpager",
+                {
+                    'Fit|fit2' : ['none','angle|ang','scaling|scale','both'],
 
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
+                },
+                function(params) {
+                    //return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
+                    return 'figs/quiver_mean_fit_'+params.fit2+'.png';
+                });
+            pager.setparams({
+                'fit2': 'none',
+
+
+            });
+        </script>
+    </figure>
 
 
 </section>

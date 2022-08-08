@@ -13,7 +13,7 @@ addpath('z:/pipeline/util')
 
 
 % Schedule groups
-schtype = 20;
+schtype = 5;
 switch schtype
 
     case 5
@@ -103,15 +103,17 @@ switch schtype
 
 end
 
-
+len = length(scheds);
 prx = 2*sind(p.r/2).*cosd(p.theta)*180/pi;
 pry = 2*sind(p.r/2).*sind(p.theta)*180/pi;
 
 figdir = 'figs/';
-%mirror = rpsopt.mirror;
-%source = rpsopt.source;
-%source.azimuth = -177.5381;
-%source.height = 9.2214;
+
+% Moon-derived mirror params -- Use only these and nothing else!
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt= 44.8870;
+mirror.roll = -0.0750;
 
 
 fd.resx = reshape(prx(fd.ch),size(fd.ch))-fd.x;
@@ -440,7 +442,7 @@ for parmind = 1:2
     c = colorbar();
     c.Title.String = 'DK [Deg]';
     legend({'Fit per sch','Fit per DK'},'Location','southwest')
-    saveas(fig,fullfile(figdir,sprintf('source_fit_%s.png',fignames{parmind})))
+    %saveas(fig,fullfile(figdir,sprintf('source_fit_%s.png',fignames{parmind})))
 end
 
 
@@ -571,7 +573,7 @@ for perind = 1:2
 end
 
 
-%%
+%% quiver of means
 
 load('z:/dev/rps/rps_beam_fits_cut.mat')
 fd1 = fd;
@@ -606,7 +608,7 @@ titles = {'61', '23','174','68','-81','90_1','45','135','68_2', '0_1', '0_2','90
 mirror = struct();
 mirror.height = 1.4592;
 mirror.tilt= 44.8870;
-mirror.roll = -0.0730;
+mirror.roll = -0.0750;
 
 source = struct();
 source.distance = 195.5000;
