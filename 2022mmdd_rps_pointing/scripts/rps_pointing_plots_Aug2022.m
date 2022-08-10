@@ -217,7 +217,7 @@ clf; hold on;
 scatter(-fdval,fpuparms(:,1),14,'filled');%times-floor(times),'filled')
 grid on
 %xlim([-100 200])
-%ylim([-0.12 -0.04])
+ylim([-0.12 0.4])
 %C = colorbar();
 %C.Label.String = ''
 xlabel('DK {Deg]')
@@ -266,7 +266,7 @@ for schedind = 1:length(unqsch)
             mirrparms(end+1,:) = [mirror.tilt,mirror.roll];
             nchans(end+1) = length(find(ind));
             times(end+1) = nanmean(fd.t(ind));
-            fdval(end+1) = nanmean(fd.dk_cen(ind));
+            fdval(end+1) = -nanmean(fd.dk_cen(ind));
             %times(end+1) = sch{unqsch(schedind)}.scans(sch{unqsch(schedind)}.index(rowind,1)).t1;
             %fdval(end+1) = sch{unqsch(schedind)}.el_ofs(rowind,1);
 
@@ -278,10 +278,18 @@ end
 fig = figure(1);
 fig.Position(3:4) = [900 300];
 clf; hold on;
-scatter(times-0*floor(times),mirrparms(:,2),14,fdval,'filled')
+%scatter((times-1*floor(times)),mirrparms(:,2),14,fdval,'filled')
+scatter(mirrparms(:,1),mirrparms(:,2),18,(times-1*floor(times))*24,'filled')
+%scatter3((times-0*floor(times))*24,mirrparms(:,1),mirrparms(:,2),14,fdval,'filled')
 grid on
 %xlim([-100 200])
 %ylim([-0.12 -0.04])
+%xlabel('Time-of-day [hrs]')
+xlabel('tilt')
+ylabel('roll')
+colormap('parula')
+c = colorbar();
+c.Label.String = 'TOD';
 
 %% Look at the diff between CMB-derived phi and our phi
 
