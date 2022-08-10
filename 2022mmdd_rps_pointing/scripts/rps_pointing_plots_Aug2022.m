@@ -244,11 +244,13 @@ end
 fig = figure(1);
 fig.Position(3:4) = [900 300];
 clf; hold on;
-scatter(times-floor(times),mirrparms(:,2),14,times,'filled')
+scatter((times-floor(times))*24,mirrparms(:,2),14,'filled')
 grid on
 %xlim([-100 200])
 ylim([-0.12 -0.04])
-
+xlabel('Time-of-day [hrs]')
+ylabel('Mirror Roll [Deg]')
+title({'Per-Obs Roll Vs. Time-of-day','Type 5 Observations'})
 
 %% Fix source loc and fit for mirror.
 % How does it look vs time compared to

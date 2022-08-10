@@ -304,7 +304,7 @@
     In context to using these mirror parameters for other analyses, I'm thinking the best approach is to use the average parameters here to determine the source location and then, while locking the source location in place, re-fitting for the mirror parameters on a schedule-to-schedule basis.
     </p>
     <p>
-        While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the mean of the normalized errors returned by <tt>matmin.m</tt> during the mirror fitting procedure. There's two significant contributors to the systematic error: the DK-dependent scatter and the scatter on the mean over the three 24-hour observing periods. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of DK-to-DK scatter per-24-hour period and the largest difference between the means of those 24-hour periods.
+        While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the standard deviation of the difference in mirror parameters between observations at the same DK angles that were taken within an hour of each other. There's two significant contributors to the systematic error: the DK-dependent scatter and the scatter on the mean over the three 24-hour observing periods. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of DK-to-DK scatter per-24-hour period and the largest difference between the means of those 24-hour periods.
     </p>
 
 
@@ -369,7 +369,7 @@
         <img src="figs/diff_hists.png"/>
 
         <figcaption>
-
+            Difference histograms of detector pointing in $r$ between observations taken at the same DK angle. Titles in green represent observations taken withing an hour of each other.
         </figcaption>
     </figure>
 
