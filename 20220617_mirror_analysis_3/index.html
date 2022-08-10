@@ -215,6 +215,7 @@
                         '68_1',
                         '-81_1',
                         '68_2',
+                        '68_3',
                         '45_1',
                         '135_1',
                         '23_2',
@@ -223,8 +224,8 @@
                         '174_3',
                         '-81_2',
                         '-81_3',
-                        '68_3',
                         '68_4',
+                        '68_5',
                         '0_2',
                         '90_2',
                         '45_2',
@@ -257,8 +258,19 @@
         Beside the rotation, I also note that the residuals have both long- and short-timescale features. This is most easily seen when comparing residuals at the same deck angles. For instance, the features in "23_1" and "174_1" are much larger than 23_2/23_3 and 174_2/174_3 that were taken one week later. Further, we can see smaller but still coherent shifts between 23_2 and 23_3 (also 174_2 and 174_3) which were taken within hours of each other which implies these are physical shifts on relatively short timescales.
     </p>
 
+
+    <figure>
+        <img src="figs/roll_vs_tod.png"/>
+
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+
     <p>
-        If I average over all DK angles, the residuals average down for the most part. I fit a rotation and scaling to further minimize the residuals and we see a small amount of scaling start to emerge along with a small overall rotation of the focal plane. While the scaling further reduces the residuals by quite a bit, derotation doesn't appear to have a similarly large effect. The plan is to look into the pointing residuals from the RPS data and see if there's a similar scaling and rotation in the focal plane.
+        If I average over all DK angles, the residuals average down for the most part. I fit a rotation and scaling to further minimize the residuals and we see a small amount of scaling start to emerge along with a small overall rotation of the focal plane. The plan is to look into the pointing residuals from the RPS data and see if there's a similar scaling and rotation in the focal plane.
     </p>
 
     <figure>
@@ -271,7 +283,6 @@
             pager.link("#quivmeanpager",
                 {
                     'Fit|fit2' : ['none','angle|ang','scaling|scale','both'],
-
                 },
                 function(params) {
                     //return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
@@ -286,11 +297,12 @@
     </figure>
 
 
-    <p>
-        In context to using these mirror parameters for other analyses, I'm thinking the best approach is to use the average parameters here to determine the source location and then, while locking the source location in place, re-fitting for the mirror parameters on a schedule-to-schedule basis.
-    </p>
+
 
     <h3>Results</h3>
+    <p>
+    In context to using these mirror parameters for other analyses, I'm thinking the best approach is to use the average parameters here to determine the source location and then, while locking the source location in place, re-fitting for the mirror parameters on a schedule-to-schedule basis.
+    </p>
     <p>
         While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the mean of the normalized errors returned by <tt>matmin.m</tt> during the mirror fitting procedure. There's two significant contributors to the systematic error: the DK-dependent scatter and the scatter on the mean over the three 24-hour observing periods. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of DK-to-DK scatter per-24-hour period and the largest difference between the means of those 24-hour periods.
     </p>
@@ -317,20 +329,20 @@
             <tr>
                 <td>Tilt</td>
                 <td class="cstart">44.89</td>
-                <td>&lt;0.001</td>
+                <td>0.004</td>
                 <td>0.022</td>
                 <td class="cstart">44.88</td>
-                <td>&lt;0.001</td>
+                <td>0.001</td>
                 <td>0.022</td>
             </tr>
             <tr>
                 <td>Roll</td>
-                <td class="cstart">-0.071</td>
-                <td>&lt;0.001</td>
-                <td>0.033</td>
-                <td class="cstart">-0.075</td>
-                <td>&lt;0.001</td>
-                <td>0.020</td>
+                <td class="cstart">-0.067</td>
+                <td>0.002</td>
+                <td>0.038</td>
+                <td class="cstart">-0.070</td>
+                <td>0.002</td>
+                <td>0.025</td>
             </tr>
 
         </table>
@@ -351,6 +363,18 @@
 
 <section class="appendix">
     <h2 class="appendix">Appendix</h2>
+    <h3>Beam Center Residuals</h3>
+
+    <figure>
+        <img src="figs/diff_hists.png"/>
+
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+
 
     <h3>Notes</h3>
     <div class="footnote">

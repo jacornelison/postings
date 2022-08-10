@@ -718,13 +718,13 @@ load('z:dev/rps/perdk_fpu_parms_type05.mat')
 mirror = struct();
 mirror.height = 1.4592;
 mirror.tilt= 44.8870;
-mirror.roll = -0.0730;
+mirror.roll = -0.0697;
 
 source = struct();
 source.distance = 195.5000;
-source.azimuth = -177.5247;
-source.elevation = 2.6998;
-source.height = 9.2189;
+source.azimuth = -177.5287;
+source.elevation = 2.6990;
+source.height = 9.2161;
 
 mount = struct();
 mount.aperture_offr = 0;

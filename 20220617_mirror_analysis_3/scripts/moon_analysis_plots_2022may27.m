@@ -1,6 +1,6 @@
 function moon_analysis_plots_2022may27()
 % For making moon analysis posting plots.
-% This was run in Matlab 2019a and is only sparsely commented.
+% This was run in Matlab 2022a and is only sparsely commented.
 % Contact James Cornelison if you need help.
 
 datadir = 'data/';
@@ -26,7 +26,7 @@ addpath(genpath('z:dev/'))
 mirror = struct();
 mirror.height = 1.4592;
 mirror.tilt = 44.887;
-mirror.roll = -0.0759;
+mirror.roll = -0.0697;
 
 source = struct();
 source.azimuth = reshape(fd.az_cen_src,[],1);
@@ -34,6 +34,7 @@ source.distance = 3.8e8*cosd(reshape(fd.el_cen_src,[],1));
 source.height = 3.8e8*sind(reshape(fd.el_cen_src,[],1));
 
 [x, y, phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
+fd.x = x'; fd.y = y';
 fd.resx = reshape(prx(fd.ch)-x,size(fd.ch));
 fd.resy = reshape(pry(fd.ch)-y,size(fd.ch));
 [resth, resr] = cart2pol(fd.resx,fd.resy);
@@ -66,7 +67,8 @@ scheds = {...
     [11 12 13],...
     [14 15 18],...
     [16 17 19],...
-    [20 21],...
+    [20],...
+    [21],...
     [22 23 24],...
     [26 27 28],...
     [30 32 34],...
@@ -94,6 +96,7 @@ titles = {...
     '68_1',...
     '-81_1',...
     '68_2',...
+    '68_3',...
     '45_1',...
     '135_1',...
     '23_2',...
@@ -102,8 +105,8 @@ titles = {...
     '174_3',...
     '-81_2',...
     '-81_3',...
-    '68_3',...
     '68_4',...
+    '68_5',...
     '0_2',...
     '90_2',...
     '45_2',...
@@ -114,7 +117,32 @@ titles = {...
     '157',...
     };
 
-dks = [0,90,23,174,68,-81,68,45,135,23,23,174,174,-81,-81,68,68,0,90,45,135,-23,-68,112,157];
+dks = [0,...
+    90,...
+    23,...
+    174,...
+    68,...
+    -81,...
+    68,...
+    68,...
+    45,...
+    135,...
+    23,...
+    23,...
+    174,...
+    174,...
+    -81,...
+    -81,...
+    68,...
+    68,...
+    0,...
+    90,...
+    45,...
+    135,...
+    -23,...
+    -68,...
+    112,...
+    157];
 
 times = [];
 for schind = 1:length(scheds)
@@ -131,7 +159,7 @@ cutind = true(size(fd.ch));
 %cutind = cutind & inrange(fd.resaz,nanmedian(fd.resaz)-1,nanmedian(fd.resaz)+1);
 
 % Center General Cut
-threshold = 3;
+threshold = 0.25;
 cutind = cutind & (abs(fd.resx) <= threshold & abs(fd.resy)<=threshold);
 
 % Known shitty schedules cut
@@ -145,7 +173,7 @@ for schind = 1:length(scheds)
 end
 fd = structcut(fd,cutind);
 
-
+% median cut
 threshold = 0.5;
 cutind = false(size(fd.ch));
 for schind = 1:length(moonsch)
@@ -173,7 +201,6 @@ for schind = 1:length(moonsch)
         end
     end
 end
-
 fd = structcut(fd,cutind);
 
 % Finally, statistical cuts.
@@ -186,6 +213,7 @@ for fldind = 1:length(flds)
     q = quantile(fd.(flds{fldind}),[0.003, 0.997]);
     cutind = cutind & inrange(fd.(flds{fldind}),q(1),q(2));
 end
+
 
 fd = structcut(fd,cutind);
 thresh = 0.1;
@@ -204,18 +232,20 @@ for schind = 1:length(moonsch)
         end
     end
 end
+%fd = structcut(fd,cutind);
 
-fd = structcut(fd,cutind);
-
-[xs, ys] = deal(nan(length(scheds),2640));
+[xps, yps, xs, ys, xrots, yrots] = deal(nan(length(scheds),2640));
 for schind = 1:length(scheds)
 for chind = 1:2640
     ind = find(fd.ch==chind & ismember(fd.schind,scheds{schind}));
     if ~isempty(ind)
-        %resx(chind) = wmean(fd.resx_rot(ind),1./fd.gof(ind),2);
-        %resy(chind) = wmean(fd.resy_rot(ind),1./fd.gof(ind),2);
-        xs(schind,chind) = mean(fd.resx_rot(ind));
-        ys(schind,chind) = mean(fd.resy_rot(ind));
+        xps(schind,chind) = mean(fd.x(ind));
+        yps(schind,chind) = mean(fd.y(ind));
+        xs(schind,chind) = mean(fd.resx(ind));
+        ys(schind,chind) = mean(fd.resy(ind));
+        xrots(schind,chind) = mean(fd.resx_rot(ind));
+        yrots(schind,chind) = mean(fd.resy_rot(ind));
+
     end
 end
 end
@@ -249,20 +279,31 @@ corrparams = {[44.886 -0.0713], [44.882 -0.0751]};
 
 
 clc
-for projind = 2%1:2
+for projind = 1:2
     for fitind = 1:2
         for corrind = 1:2
 
-            load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',corrname{corrind}))
+            %load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',corrname{corrind}))
             load(sprintf('z:/dev/moon_analysis/moon_beam_fits%s_cut.mat',corrname{corrind}))
-
+            [mirrorparms, mirrorerrs, nchans] = deal([]);
+            for schedind = 1:length(scheds)
+                ind = ismember(fd.schind,scheds{schedind});
+            
+                if ~isempty(find(ind))
+                    fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
+                    mirrorparms(schedind,:) = fd0.fitparam;
+                    mirrorerrs(schedind,:) = fd0.fiterr;
+                    nchans(schedind) = length(find(ind));
+            
+                end
+            end
             for schedind = 1:length(scheds)
                 ind = ismember(fd.schind,scheds{schedind});
 
                 fd0 = structcut(fd,ind);
 
                 % Only keep channels that has its pair
-                if 0
+                if 1
                     ind = true(size(fd0.ch));
                     for chind = 1:length(fd0.ch)
                         cia = find(p_ind.a==fd0.ch(chind));
@@ -285,8 +326,8 @@ for projind = 2%1:2
                 mirror.height = 1.4592;
                 switch fitind
                     case 1
-                        mirror.tilt = corrparams{corrind}(1);
-                        mirror.roll = corrparams{corrind}(2);
+                        mirror.tilt = wmean(mirrorparms(:,1),nchans.^2');
+                        mirror.roll = wmean(mirrorparms(:,2),nchans.^2');
 
                     case 2
                         mirror.tilt = mirrorparms(schedind,1);
@@ -396,21 +437,9 @@ moonopt.fpu.angle
 
 %%
 
-[xps, yps, xs, ys, xrots, yrots] = deal(nan(length(scheds),2640));
-for schind = 1:length(scheds)
-for chind = 1:2640
-    ind = find(fd.ch==chind & ismember(fd.schind,scheds{schind}));
-    if ~isempty(ind)
-        xps(schind,chind) = mean(x(ind));
-        yps(schind,chind) = mean(y(ind));
-        xs(schind,chind) = mean(fd.resx(ind));
-        ys(schind,chind) = mean(fd.resy(ind));
-        xrots(schind,chind) = mean(fd.resx_rot(ind));
-        yrots(schind,chind) = mean(fd.resy_rot(ind));
+clc
+scaling = 10;
 
-    end
-end
-end
 
 %%
 fdsch = struct();
@@ -425,9 +454,10 @@ fdsch.ch = fdsch.ch(~isnan(x0)&~isnan(y0));
 fdsch.x = x0(~isnan(x0)&~isnan(y0));
 fdsch.y = y0(~isnan(y0)&~isnan(y0));
 
-fpu = fit_fpu_angle_and_scaling_from_xy(fdsch,p)
+%fpu = fit_fpu_angle_and_scaling_from_xy(fdsch,p)
+fpu = fit_fpu_angle_and_scaling_from_xy(fd,p)
 
-
+%%
 model = fpu_ort_and_scaling_model([0.0416 0.9977 0.0030 -0.0017],fdsch);
 model = reshape(model,[],2);
 x0 = prx(fdsch.ch);
@@ -463,6 +493,20 @@ end
 
 %% Means with rotations applied
 
+
+[fpuparms, nchans] = deal([]);
+for schedind = 1:length(scheds)
+    ind = ismember(fd.schind,scheds{schedind});
+
+    if ~isempty(find(ind))
+        fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
+        fpuparms(schedind,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+        nchans(schedind) = length(find(ind));
+
+    end
+end
+
+
 casename = {'none','ang','scale','both'};
 parms = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
 for caseind = 1:4
@@ -493,10 +537,27 @@ for caseind = 1:4
 projind = 1;
 corrind = 2;
 winscale = 1;
+winscale = 1.5;
 scaling = 10;
 fig = figure(1);
 fig.Position(3:4) = [500*winscale 450*winscale];
 clf;
+cm = colormap('turbo');
+clridx = floor(linspace(1,size(cm,1),3*19));
+
+% Things dealing with projection
+xlims = {[-1 1]*15 [-1 1]*15 [-1 1]*0.5};
+ylims = {[-1 1]*15 [-1 1]*15 [-0.5 0.8]};
+projlabels = {' [Degrees]','_m [Degrees]','_m [Meters]'};
+projnames = {'','_mirror','_mirror'};
+
+% Things dealing with fits
+fittype = {'overall','perdk'};%,'persch'};
+
+% Things dealing with corrections
+corrname = {'','_phase_corrected'};
+corrtitle = {'No Correction','Phase Corrected'};
+corrparams = {[44.886 -0.0713], [44.882 -0.0751]};
 ind = 1:length(scheds);
 quiver(prx,pry,(prx-nanmean(x(ind,:),1)')*scaling,(pry-nanmean(y(ind,:),1)')*scaling,0)
 grid on;
@@ -514,184 +575,11 @@ ylabel(sprintf('Y%s',projlabels{projind}))
 end
 
 
-%%
-
-
-
-%% Find the difference in focal plane orientation between uncorrected and corrected:
-
-
-winscale = 1.5;
-scaling = 15;
-fig = figure(1);
-fig.Position(3:4) = [500*winscale 450*winscale];
-clf;
-
-fittype = {'','_rtheta'};
-corrname = {'nocorr','withcorr'};
-corrtitle = {'No Correction','Phase Corrected'};
-axisname = {'_x','_y'};
-axistitle = {'X','Y'};
-
-theta_means = NaN(2,length(scheds));
-for fitind = 2%1:2
-    for schind = 1:length(scheds)
-
-        [theta_ch, times_ch] = deal(NaN(2,2640));
-
-        for valind = 1:2
-            if valind==1
-                load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',fittype{fitind}))
-                load('z:/dev/moon_analysis/moon_beam_fits_cut.mat')
-
-
-            else
-                load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected%s.mat',fittype{fitind}))
-                load('z:/dev/moon_analysis/moon_beam_fits_phase_corrected_cut.mat')
-
-            end
-
-            ind = ismember(fd.schind,scheds{schind});
-
-            fd0 = structcut(fd,ind);
-            mirror = struct();
-            mirror.height = 1.4592;
-            mirror.tilt = mirrorparms(schind,1);
-            mirror.roll = mirrorparms(schind,2);
-
-            source = struct();
-            source.azimuth = reshape(fd0.az_cen_src,[],1);
-            source.distance = 3.8e8*cosd(reshape(fd0.el_cen_src,[],1));
-            source.height = 3.8e8*sind(reshape(fd0.el_cen_src,[],1));
-            [x, y, chi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
-            %[r, th, chi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[],'rtheta');
-            [th, r] = cart2pol(x,y);
-            th = rad2deg(th);
-
-            th_diff = wrapTo180(p.theta(fd0.ch)-th);
-            ind = p.r(fd0.ch)>6 & abs(th_diff)<0.4;
-            theta_means(valind,schind) = nanmedian(th_diff(ind));
-
-
-            if 0
-                prsch = p.r(fd0.ch)';
-                pthsch = p.theta(fd0.ch)'-fd0.dk_cen;
-                [xsch ysch] = pol2cart(pthsch*pi/180,prsch);
-                xval = {xsch, ysch};
-                for axind = 1:2
-
-                    %scatter(p.r(fd0.ch),th_diff,14,(fd0.t_cen-nanmin(fd0.t_cen))*24,'filled')
-                    scatter(xval{axind},th_diff,14,(fd0.t_cen-nanmin(fd0.t_cen))*24,'filled')
-                    grid on
-                    c = colorbar();
-                    %caxis([0,3])
-                    %caxis([-10,10])
-                    c.Title.String = 'Time [Hours]';
-                    ylim([-1 1]*1)
-                    xlim([-1 1]*15)
-                    xlabel(sprintf('%s Derotated CMB-Observed [Degrees]',axistitle{axind}))
-                    ylabel('\theta_{CMB} - \theta_{fit} [Degrees]')
-                    title({sprintf('Beam Center Residuals, Derotated, %s', corrtitle{valind}),...
-                        sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirrorparms(schind,1),mirrorparms(schind,2),mjd2datestr(moonsch{scheds{schind}(1)}.t1))...
-                        })
-                    colormap parula
-                    figname = fullfile(figdir,sprintf('thetares_vs_r_dk%s_fitperdk_%s%s%s.png',titles{schind},corrname{valind},fittype{fitind},axisname{axind}));
-                    saveas(fig,figname)
-
-                end
-            end
-        end
-
-    end
-end
-
-%% FP ort vs time.
-
-winscale = 1;
-scaling = 15;
-fig = figure(3);
-fig.Position(3:4) = [1000*winscale 280*winscale];
-clf;
-
-fittype = {'','_rtheta'};
-corrname = {'nocorr','withcorr'};
-corrtitle = {'No Correction','Phase Corrected'};
-
-theta_means = NaN(2,length(scheds));
-for fitind = 2%1:2
-
-    for valind = 1%1:2
-        if valind==1
-            load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms%s.mat',fittype{fitind}))
-            load('z:/dev/moon_analysis/moon_beam_fits_cut.mat')
-
-
-        else
-            load(sprintf('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected%s.mat',fittype{fitind}))
-            load('z:/dev/moon_analysis/moon_beam_fits_phase_corrected_cut.mat')
-
-        end
-
-        for schind = 1:length(scheds)
-
-
-            [theta_ch, times_ch] = deal(NaN(2,2640));
-
-            ind = ismember(fd.schind,scheds{schind});
-            fd0 = structcut(fd,ind);
-
-            mirror = struct();
-            mirror.height = 1.4592;
-            mirror.tilt = mirrorparms(schind,1);
-            mirror.roll = mirrorparms(schind,2);
-
-            source = struct();
-            source.azimuth = reshape(fd0.az_cen_src,[],1);
-            source.distance = 3.8e8*cosd(reshape(fd0.el_cen_src,[],1));
-            source.height = 3.8e8*sind(reshape(fd0.el_cen_src,[],1));
-            [x, y, chi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
-            %[r, th, chi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[],'rtheta');
-            [th, r] = cart2pol(x,y);
-            th = rad2deg(th);
-            for chind = 1:size(theta_ch,2)
-                ci = find(fd0.ch==chind);
-                if ~isempty(ci)
-                    theta_ch(valind,chind) = nanmean(wrapTo180(th(ci)));
-                    times_ch(valind,chind) = nanmean(fd0.t_cen(ci));
-                end
-            end
-
-            th_diff = wrapTo180(p.theta'-theta_ch(valind,:));
-            ind = p.r'>6 & abs(th_diff)<0.4;
-            theta_means(valind,schind) = nanmedian(th_diff(ind));
-
-
-
-        end
-        if 1
-            scatter(times,theta_means(valind,:),14,dks,'filled')
-            grid on
-            c = colorbar();
-            c.Title.String = 'DK [Deg]';
-            ylim([-1 1]*0.2)
-            xlabel('Time')
-            ylabel('Mean \theta_{CMB}-\theta_{fit} [Degrees]')
-            title({sprintf('Mean FP Orientation Angle , %s', corrtitle{valind}),...
-                })
-            datetick('x','mmm-dd','KeepTicks')
-            figname = fullfile(figdir,sprintf('meantheta_vs_time_perdk_%s%s.png',corrname{valind},fittype{fitind}));
-            %saveas(fig,figname)
-        end
-    end
-end
-
-
-
 
 %% calculate the stat and sys uncertainties
 
 
-
+clc;
 casesch = {[1:6, 8:length(scheds)], [1:6, 8:length(scheds)], [10:length(scheds)]};
 timesch = {{[1:6, 8:9], 10:17, 18:25},{[1:6, 8:9], 10:17, 18:25},{10:17, 18:25}};
 [mn, sstat, ssys] = deal(NaN(length(casesch),2));
@@ -708,22 +596,48 @@ for caseind = 1:length(casesch)
 
     switch caseind
         case 1
-            load('z:/dev/moon_analysis/perdk_mirror_parms.mat')
+            %load('z:/dev/moon_analysis/perdk_mirror_parms.mat')
+            load('z:/dev/moon_analysis/moon_beam_fits_cut.mat')
+
+
+
         case {2,3}
-            load('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected.mat')
+            %load('z:/dev/moon_analysis/perdk_mirror_parms_phase_corrected.mat')
+            load('z:/dev/moon_analysis/moon_beam_fits_phase_corrected_cut.mat')
     end
 
+    [mirrparms, nchans] = deal([]);
+    for schedind = 1:length(scheds)
+        ind = ismember(fd.schind,scheds{schedind});
 
-    m = nanmean(mirrorparms(casesch{caseind},:),1);
-    st = nanmean(mirrorerrs(casesch{caseind},:),1);
+        if ~isempty(find(ind))
+            fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
+            mirrparms(schedind,:) = fd0.fitparam;
+            mirrerrs(schedind,:) = fd0.fiterr;
+            nchans(schedind) = length(find(ind));
 
+        end
+    end
+
+    D = [];
+    for rowind = 1:(len-1)
+        for colind = (rowind+1)
+            if dks(rowind)==dks(colind)
+                D(end+1,:) = mirrorparms(rowind,:)-mirrorparms(colind,:);
+            end
+        end
+    end
+    m = nanmean(mirrparms(casesch{caseind},:),1);
+    st = nanmean(mirrerrs(casesch{caseind},:),1);
+    [m, wv, neff] = wmean(mirrparms(casesch{caseind},:),nchans(casesch{caseind})',1);
+    st = std(abs(D),[],1);
 
     tsch = timesch{caseind};
     for parmind = 1:2
         [sy,sy1, sy2] = deal([]);
         for timeind = 1:length(tsch)
-            sy1(end+1) = nanstd(mirrorparms(tsch{timeind},parmind));
-            sy2(end+1) = nanmean(mirrorparms(tsch{timeind},parmind));
+            sy1(end+1) = nanstd(mirrparms(tsch{timeind},parmind));
+            sy2(end+1) = nanmean(mirrparms(tsch{timeind},parmind));
         end
         sy(parmind) = sqrt(sum(sy1.^2)+((max(sy2)-min(sy2))/2).^2);
         txt{2+parmind,1} = [txt{2+parmind,1} sprintf(txtrslt,m(parmind),st(parmind),sy(parmind))];
@@ -861,6 +775,198 @@ for projind = 2%1:2
         end
     end
 end
+
+%% Mirror params overall
+fd0 = moon_fit_mirror(fd,'p',p,'p_ind',p_ind,'savedir','','pm',model);
+fd0.fitparam
+
+%% fit for mirror per dk.
+% How does it look vs time compared to 
+clc 
+[mirrparms, nchans] = deal([]);
+for schedind = 1:length(scheds)
+    ind = ismember(fd.schind,scheds{schedind});
+
+    if ~isempty(find(ind))
+        fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
+        mirrparms(schedind,:) = fd0.fitparam;
+        nchans(schedind) = length(find(ind));
+
+    end
+end
+
+
+%
+fig = figure(1);
+fig.Position(3:4) = [900 300];
+clf; hold on;
+%plot(dks,mirrparms(:,2),'.')
+scatter((times-floor(times))*24,mirrparms(:,2),14,times-times(1),'filled')
+%plot(times-floor(times),mirrparms(:,2),'.')
+grid on
+%xlim([-100 200])
+ylim([-0.12 -0.04])
+xlabel('Time-of-day [hrs]')
+ylabel('Mirror Roll [Deg]')
+title('Estimated Roll Vs. Time-of-day')
+C = colorbar();
+C.Label.String = 'Time [Days]';
+figname = fullfile(figdir,'roll_vs_tod.png');
+saveas(fig,figname)
+
+
+
+%% Look at fpu fits vs DK.
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt = 44.883;
+mirror.roll = -0.0701;
+
+source = struct();
+source.azimuth = reshape(fd.az_cen_src,[],1);
+source.distance = 3.8e8*cosd(reshape(fd.el_cen_src,[],1));
+source.height = 3.8e8*sind(reshape(fd.el_cen_src,[],1));
+
+[x, y, phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
+fd.x = x'; fd.y = y';
+fd.resx = reshape(prx(fd.ch)-x,size(fd.ch));
+fd.resy = reshape(pry(fd.ch)-y,size(fd.ch));
+[resth, resr] = cart2pol(fd.resx,fd.resy);
+resth = resth - fd.dk_cen*pi/180;
+[fd.resx_rot, fd.resy_rot] = pol2cart(resth,resr);
+fd.resr = resr;
+
+
+[fpuparms, nchans] = deal([]);
+for schedind = 1:length(scheds)
+    ind = ismember(fd.schind,scheds{schedind});
+
+    if ~isempty(find(ind))
+        fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
+        fpuparms(schedind,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+        nchans(schedind) = length(find(ind));
+
+    end
+end
+
+%
+fig = figure(1);
+fig.Position(3:4) = [900 300];
+clf; hold on;
+scatter((times-floor(times))*24,fpuparms(:,1),14,times-times(1),'filled')
+%scatter(times,fpuparms(:,1),14,dks,'filled')
+grid on
+%xlim([-100 200])
+xlabel('Time-of-day [hrs]')
+ylabel('FPU Rotation Angle [Deg]')
+ylim([-0.12 0.4])
+title('Estimated FPU orientation Vs. Time-of-day')
+C = colorbar();
+C.Label.String = 'Time [Days]';
+figname = fullfile(figdir,'fpu_ang_vs_tod.png');
+saveas(fig,figname)
+
+
+%% Look at fpu fits vs TOD.
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt = 44.883;
+mirror.roll = -0.0701;
+
+source = struct();
+source.azimuth = reshape(fd.az_cen_src,[],1);
+source.distance = 3.8e8*cosd(reshape(fd.el_cen_src,[],1));
+source.height = 3.8e8*sind(reshape(fd.el_cen_src,[],1));
+
+[x, y, phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
+fd.x = x'; fd.y = y';
+fd.resx = reshape(prx(fd.ch)-x,size(fd.ch));
+fd.resy = reshape(pry(fd.ch)-y,size(fd.ch));
+[resth, resr] = cart2pol(fd.resx,fd.resy);
+resth = resth - fd.dk_cen*pi/180;
+[fd.resx_rot, fd.resy_rot] = pol2cart(resth,resr);
+fd.resr = resr;
+
+
+[fpuparms, nchans] = deal([]);
+for schedind = 1:length(scheds)
+    ind = ismember(fd.schind,scheds{schedind});
+
+    if ~isempty(find(ind))
+        fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
+        fpuparms(schedind,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+        nchans(schedind) = length(find(ind));
+
+    end
+end
+
+%
+fig = figure(1);
+fig.Position(3:4) = [900 300];
+clf; hold on;
+scatter(dks,fpuparms(:,1),14,times,'filled')
+%scatter(times,fpuparms(:,1),14,dks,'filled')
+grid on
+xlim([-100 200])
+xlabel('DK [Deg]')
+ylabel('FPU Rotation Angle [Deg]')
+ylim([-0.12 0.4])
+title('Estimated FPU orientation Vs. DK')
+C = colorbar();
+C.Label.String = 'Time [MJD]';
+figname = fullfile(figdir,'fpu_ang_vs_dk.png');
+saveas(fig,figname)
+
+
+%% Corner plots
+
+
+fig = figure(50);
+clf;
+edges = (-1:0.05:1)*0.5;
+t = tiledlayout(5,5);
+len = length(scheds);
+[M, S, L, F, n] = deal([]);
+for rowind = 1:(len)
+    for colind = (rowind+1):(len)
+        if dks(rowind)==dks(colind)
+        V1 = sqrt(xs(rowind,:).^2+ys(rowind,:).^2);
+        V2 = sqrt(xs(colind,:).^2+ys(colind,:).^2);
+        Vdiff = V1-V2;
+        Vdiff = Vdiff(~isnan(Vdiff)&Vdiff~=0);
+        N = histc(Vdiff,edges);
+        M(end+1) = nanmean(Vdiff);
+        S(end+1) = nanstd(Vdiff);
+        L(end+1) = length(find(~isnan(Vdiff)));
+
+        n(end+1) = nexttile;
+        bar(edges,N,'histc')
+        grid on;
+        ttl = title({sprintf('DK%s - DK%s',titles{rowind},titles{colind}), ...
+            sprintf('M:%0.3f S%0.3f N:%03i',M(end),S(end),L(end))});
+        if abs(rowind-colind)==1
+            ttl.Color = [0 0.75 0];
+        end
+        
+        pbaspect([1 1 1])
+        if length(S)>18
+            xlabel('\Deltar [Deg]')
+        end
+        end
+    end
+end
+t.TileSpacing = 'tight';
+t.Padding = 'tight';
+figname = fullfile(figdir,'diff_hists.png');
+saveas(fig,figname)
+
+
+
+%% Stat uncertainty 
+% Get the stat uncert on the mirror params by finding the std of estimates
+% at similar DKs that are next to each other.
+
+
 
 
 

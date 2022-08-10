@@ -101,8 +101,8 @@
             pager.link("#quiver2pager",
                 {
                     'Fit|fit' : ['None|none','Angle|angfit','scalefit','transfit','all'],
-                    'DK|dk' : ['-81','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
-                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                    'DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
+                    'Coord|coord' : ['Inst Fixed|'],//,'Mirror Fixed|_mirror'],
                  },
             fcn);
             pager.setparams({
@@ -112,7 +112,16 @@
             });
         </script>
         </figure>
+
+    <figure>
+        <img src="figs/fpu_rot_vs_dk.png" />
+        <figcaption>
+            
+        </figcaption>
+    </figure>
+
     <p>
+
     I then average all of the beam centers over all DKs and plot the residuals in the pager below. I also fit for a global rotation and scaling factor across these residuals and get an angle of 0.015&deg; and scaling factor of 0.997. The pager also shows the residuals with this scaling and rotation applied.
 </p>
 <p>
