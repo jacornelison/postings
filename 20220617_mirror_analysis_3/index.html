@@ -93,7 +93,33 @@
     <p>
         The mirror parameters after phase correction shift as expected: the mirror angles have an extra factor of 2 from reflection, so any shift in the Moon's Az/El should roughly correspond to half that shift in mirror roll/tilt respectively. However, we can see in the pager that this isn't the full story. We can still see statistically significant offsets in average roll for a given observing period (i.e. the three distinct ~24-hour periods at which moon observations were conducted).
     </p>
+    <p>
+        I plot below the mirror roll parameter estimated as a function of time-of-day and fine that there's no obvious dependence here.
+    </p>
 
+    <figure>
+        <img src="figs/roll_vs_tod.png"/>
+
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>If I plot Roll Vs. DK, we see a weak negative trend in DK.</p>
+
+    <figure>
+        <img src="figs/roll_vs_dk.png"/>
+
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+
+
+</section>
+<section>
 <!--    Why do we want to look at residuals?-->
 <!--
     <p>
@@ -145,6 +171,7 @@
     </figure>
 
 -->
+    <h2>Beam Center Residuals</h2>
     <p>
         In this next figure I show how individual errors on a given mirror or source parameter affect the residuals.
     </p>
@@ -259,14 +286,24 @@
     </p>
 
 
+    <h3>FPU Orientation</h3>
+<p>With respect to the RPS, we care mostly about the apparent orientation of the focal plane as that sets the point to which we reference the polarization angle.</p>
+
     <figure>
-        <img src="figs/roll_vs_tod.png"/>
+        <img src="figs/fpu_ang_vs_tod.png"/>
 
         <figcaption>
 
         </figcaption>
     </figure>
 
+    <figure>
+        <img src="figs/fpu_ang_vs_dk.png"/>
+
+        <figcaption>
+
+        </figcaption>
+    </figure>
 
 
     <p>

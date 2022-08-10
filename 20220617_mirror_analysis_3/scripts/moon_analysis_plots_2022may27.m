@@ -780,7 +780,7 @@ end
 fd0 = moon_fit_mirror(fd,'p',p,'p_ind',p_ind,'savedir','','pm',model);
 fd0.fitparam
 
-%% fit for mirror per dk.
+%% fit for mirror per tod.
 % How does it look vs time compared to 
 clc 
 [mirrparms, nchans] = deal([]);
@@ -812,6 +812,40 @@ title('Estimated Roll Vs. Time-of-day')
 C = colorbar();
 C.Label.String = 'Time [Days]';
 figname = fullfile(figdir,'roll_vs_tod.png');
+saveas(fig,figname)
+
+%% fit for mirror per dk.
+% How does it look vs time compared to 
+clc 
+[mirrparms, nchans] = deal([]);
+for schedind = 1:length(scheds)
+    ind = ismember(fd.schind,scheds{schedind});
+
+    if ~isempty(find(ind))
+        fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
+        mirrparms(schedind,:) = fd0.fitparam;
+        nchans(schedind) = length(find(ind));
+
+    end
+end
+
+
+%
+fig = figure(1);
+fig.Position(3:4) = [900 300];
+clf; hold on;
+%plot(dks,mirrparms(:,2),'.')
+scatter(dks,mirrparms(:,2),14,times-times(1),'filled')
+%plot(times-floor(times),mirrparms(:,2),'.')
+grid on
+%xlim([-100 200])
+ylim([-0.12 -0.04])
+xlabel('DK [Deg]')
+ylabel('Mirror Roll [Deg]')
+title('Estimated Roll Vs. DK')
+C = colorbar();
+C.Label.String = 'Time [Days]';
+figname = fullfile(figdir,'roll_vs_dk.png');
 saveas(fig,figname)
 
 
@@ -904,7 +938,7 @@ end
 fig = figure(1);
 fig.Position(3:4) = [900 300];
 clf; hold on;
-scatter(dks,fpuparms(:,1),14,times,'filled')
+scatter(dks,fpuparms(:,1),14,times-times(1),'filled')
 %scatter(times,fpuparms(:,1),14,dks,'filled')
 grid on
 xlim([-100 200])
@@ -913,7 +947,8 @@ ylabel('FPU Rotation Angle [Deg]')
 ylim([-0.12 0.4])
 title('Estimated FPU orientation Vs. DK')
 C = colorbar();
-C.Label.String = 'Time [MJD]';
+C.Label.String = 'Time [Days]';
+colormap('jet')
 figname = fullfile(figdir,'fpu_ang_vs_dk.png');
 saveas(fig,figname)
 

@@ -16,7 +16,8 @@
         });
     </script>
     <script type="text/javascript"
-            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+    <!--            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">-->
     </script>
 
 </head>
@@ -27,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Beam Center Residuals</h1>
+    <h1>RPS Pointing Analysis</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         yyyy Mmm dd
@@ -48,46 +49,27 @@
     <h3>Subsection 1</h3>
 
 
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="testquiverpager" src="#" />-->
-<!--        <figcaption>-->
+<p>I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c">JAC2022c</a> (Tilt=44.88&deg; / Roll=-0.070&deg;) and fit for a source location over all DK angles (Az=-177.52 / El=2.70) using a method similar to how we fit for mirror parameters described in &sect; 2 of <a href="JAC2022a"></a> except we take the mirror parameters in the pointing model as known and instead let the source azimuth and elevation be free parameters:</p>
+    <p>With <tt>beam_map_pointing_model.m</tt> as our
+        model we computer the instrument-fixed coordinates in x/y:</p>
 
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
+    \begin{equation}
+    [x,\,y,\,\phi] = \text{beam_map_pointing_model}(Az_{src},\,El_{src} | A_{0},\,E_{0},\,K_{0},\,Mount,\,Mirror)
+    \end{equation}
 
-<!--            var vallist = new Array(10);-->
-<!--            for (var ii=1; ii<=10; ++ii) {-->
-<!--                vallist[ii] = ii;-->
-<!--            }-->
+    where $A_0$, $E_0$, and $D_0$ are the as-fit beam centers in raw mount coordinates; $Mount$ comprises the relevant
+    mount information derived from both optical starpointing and Solidworks drawings; $Mirror$ comprises the tilt, roll and height of the mirror.
 
-<!--            var valopt = new Pager.DataList(vallist);-->
-<!--            valopt.toString = function() {-->
-<!--                var val = this.list[this.idx].toString();-->
-<!--                while (val.length < 1) { val = "0"+val; }-->
-<!--                return val;-->
-<!--            }-->
-<!--            valopt.fromString = function(val) {-->
-<!--                return parseInt(val);-->
-<!--            }-->
+    <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
 
-<!--            pager.link("#testquiverpager",-->
-<!--                {-->
-<!--                    'Param|parm': ['Tilt|tilt','Roll|roll','Src Azimuth|az','Src Elevation|el'],-->
-<!--                    'Value|v' : valopt,-->
-<!--                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],-->
-<!--                },-->
-<!--                function(params) {-->
-<!--                    return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                'parm' : 'tilt',-->
-<!--                'v': '5',-->
+    \begin{equation}
+    \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}
+    \end{equation}
 
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
+    <p></p>
 
-<p>I use the mirror parameters derived from the Moon Analysis described in <a href="http://bicep.rc.fas.harvard.edu/jcornelison/postings/20220617_mirror_analysis_3/">JAC2022c</a> and fit for a source location over all DK angles. I then fit for a single source location over all DK angles (Az=-177.52 / El=2.70) and plot the residual for each DK angle in the pager below. The DKs of "0_1" through "-23" are type-11 schedules which scan across the entire focal plane in a single raster.</p>
+
+    <p>The DKs of "0_1" through "-23" are type-11 schedules which scan across the entire focal plane in a single raster.</p>
     <figure>
         <img alt="Name pager" id="quiver2pager" src="#" />
         <figcaption>
@@ -190,6 +172,7 @@
         // Posting titles
         var desc = [
             "Derives mirror parameters from observations of the moon.",
+
         ];
 
         // Make a list of references
@@ -270,19 +253,28 @@
         // Shorthand tags
         var tags = [
             "CAB2012",
+            "JAC2022a",
+            "JAC2022b",
+            "JAC2022c",
         ];
 
         // Links
         // Truncate the link down to the www directory in which is lies if you can.
         var hrefs = [
             "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-
+            "bicep3/analysis_logbook/20220428_mirror_analysis/",
+            "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
+            "jcornelison/postings/20220617_mirror_analysis_3/",
         ];
 
 
         // Posting titles
         var desc = [
             "Pointing Model for Keck Beam Maps",
+            "Deriving Mirror Properties from the Moon",
+            "2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
+            "2022 Moon Analysis III: Pointing Systematics",
+
         ];
         // Debug
         var posty = document.getElementById("testp");
