@@ -3,6 +3,7 @@ function moon_analysis_plots_2022may27()
 % This was run in Matlab 2022a and is only sparsely commented.
 % Contact James Cornelison if you need help.
 
+clear all
 datadir = 'data/';
 %Load the stuff.
 load(fullfile(datadir,'moon_beam_fits_phase_corrected.mat'))
@@ -469,28 +470,32 @@ fig = figure(1);
 quiver(x0,y0,(x0-model(:,1))*scaling,(y0-model(:,2))*scaling,0)
 %plot(fdsch.ch,fdsch.x,'.')
 
-%% Bootstrap!
-fdsch.ch = 1:2640';
-x0 = nanmean(xps,1)';
-y0 = nanmean(yps,1)';
-fdsch.ch = fdsch.ch(~isnan(x0)&~isnan(y0));
-fdsch.x = x0(~isnan(x0)&~isnan(y0));
-fdsch.y = y0(~isnan(y0)&~isnan(y0));
+%% Estimate fpu uncertainty by resampling with replacement
 
 
-iter = 2000;
-parms = NaN(4,iter);
-for iterind = 1:iter
-    bootind = randi([1,length(fdsch.ch)],1,length(fdsch.ch));
-    fdsch0.ch = fdsch.ch(bootind);
-    fdsch0.x = fdsch.x(bootind);
-    fdsch0.y = fdsch.y(bootind);
+[fpuparms, nchans] = deal([]);
+for schedind = 1:length(scheds)
+    ind = ismember(fd.schind,scheds{schedind});
 
-    fpu = fit_fpu_angle_and_scaling_from_xy(fdsch0,p,'',[1 1 0 0]);
-    parms(:,iterind) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+    if ~isempty(find(ind))
+        fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
+        fpuparms(schedind,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+        nchans(schedind) = length(find(ind));
+
+    end
 end
 
-
+parms_wm = [];
+len = length(scheds);
+iter = len*10;
+for iterind = 1:iter
+    ind = randi([1, len],size(scheds));
+    parms_wm(end+1,:) = wmean(fpuparms(ind,:),repmat(nchans(ind)'.^2,1,4),1);
+end
+clc
+for valind = 1:4
+    fprintf('Mean: %0.3f, STD: %0.3f\n',mean(parms_wm(:,valind)),std(parms_wm(:,valind)))
+end
 %% Means with rotations applied
 
 
@@ -623,7 +628,7 @@ for caseind = 1:length(casesch)
     for rowind = 1:(len-1)
         for colind = (rowind+1)
             if dks(rowind)==dks(colind)
-                D(end+1,:) = mirrorparms(rowind,:)-mirrorparms(colind,:);
+                D(end+1,:) = mirrparms(rowind,:)-mirrparms(colind,:);
             end
         end
     end
@@ -780,81 +785,75 @@ end
 fd0 = moon_fit_mirror(fd,'p',p,'p_ind',p_ind,'savedir','','pm',model);
 fd0.fitparam
 
-%% fit for mirror per tod.
-% How does it look vs time compared to 
-clc 
-[mirrparms, nchans] = deal([]);
-for schedind = 1:length(scheds)
-    ind = ismember(fd.schind,scheds{schedind});
+%% fit for mirror per time/tod/dk.
+% How does it look vs time compared to
 
-    if ~isempty(find(ind))
-        fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
-        mirrparms(schedind,:) = fd0.fitparam;
-        nchans(schedind) = length(find(ind));
+% Pager term 3 - phase correction
+corrnames = {'','_phase_corrected'};
 
+% Other stuff
+clrs = [ones(1,10) ones(1,8)*2 ones(1,8)*3];
+
+for corrind = 1:2
+    load(sprintf('z:/dev/moon_analysis/moon_beam_fits%s_cut.mat',corrnames{corrind}))
+
+
+    clc
+    [mirrparms, nchans] = deal([]);
+    for schedind = 1:length(scheds)
+        ind = ismember(fd.schind,scheds{schedind});
+
+        if ~isempty(find(ind))
+            fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
+            mirrparms(schedind,:) = fd0.fitparam;
+            nchans(schedind) = length(find(ind));
+
+        end
     end
+
+    % X-axis
+    vals = {times-times(1), (times-floor(times))*24, dks};
+    valnames = {'t','tod','dk'};
+    vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]'};
+    vallims = {[-1 60], [0 24] [-100 200]};
+
+    % Y-axis
+    parms = {mirrparms(:,1), mirrparms(:,2)};
+    parmnames = {'tilt','roll'};
+    parmlabels = {'Tilt [Deg]','Roll [Deg]'};
+    parmlims = {[44.85 44.91], [-0.12 -0.02]};
+
+    
+
+
+
+    for valind = 1:length(vals)
+        for parmind = 1:length(parms)
+            fig = figure(1);
+            fig.Position(3:4) = [900 300];
+            clf; hold on;
+
+            scatter(vals{valind},parms{parmind},14,clrs,'filled')
+            colormap('lines')
+            grid on
+            xlabel(vallabels{valind})
+            ylabel(parmlabels{parmind})
+            %xlim(vallims{valind})
+            ylim(parmlims{parmind})
+
+            figname = fullfile(figdir,sprintf('%s_vs_%s%s.png',parmnames{parmind},valnames{valind},corrnames{corrind}));
+            saveas(fig,figname)
+        end
+    end
+
 end
 
 
-%
-fig = figure(1);
-fig.Position(3:4) = [900 300];
-clf; hold on;
-%plot(dks,mirrparms(:,2),'.')
-scatter((times-floor(times))*24,mirrparms(:,2),14,times-times(1),'filled')
-%plot(times-floor(times),mirrparms(:,2),'.')
-grid on
-%xlim([-100 200])
-ylim([-0.12 -0.04])
-xlabel('Time-of-day [hrs]')
-ylabel('Mirror Roll [Deg]')
-title('Estimated Roll Vs. Time-of-day')
-C = colorbar();
-C.Label.String = 'Time [Days]';
-figname = fullfile(figdir,'roll_vs_tod.png');
-saveas(fig,figname)
-
-%% fit for mirror per dk.
-% How does it look vs time compared to 
-clc 
-[mirrparms, nchans] = deal([]);
-for schedind = 1:length(scheds)
-    ind = ismember(fd.schind,scheds{schedind});
-
-    if ~isempty(find(ind))
-        fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
-        mirrparms(schedind,:) = fd0.fitparam;
-        nchans(schedind) = length(find(ind));
-
-    end
-end
-
-
-%
-fig = figure(1);
-fig.Position(3:4) = [900 300];
-clf; hold on;
-%plot(dks,mirrparms(:,2),'.')
-scatter(dks,mirrparms(:,2),14,times-times(1),'filled')
-%plot(times-floor(times),mirrparms(:,2),'.')
-grid on
-%xlim([-100 200])
-ylim([-0.12 -0.04])
-xlabel('DK [Deg]')
-ylabel('Mirror Roll [Deg]')
-title('Estimated Roll Vs. DK')
-C = colorbar();
-C.Label.String = 'Time [Days]';
-figname = fullfile(figdir,'roll_vs_dk.png');
-saveas(fig,figname)
-
-
-
-%% Look at fpu fits vs DK.
+%% Look at fpu fits vs tod/dk.
 mirror = struct();
 mirror.height = 1.4592;
-mirror.tilt = 44.883;
-mirror.roll = -0.0701;
+mirror.tilt = 44.88;
+mirror.roll = -0.070;
 
 source = struct();
 source.azimuth = reshape(fd.az_cen_src,[],1);
@@ -884,73 +883,42 @@ for schedind = 1:length(scheds)
 end
 
 %
-fig = figure(1);
-fig.Position(3:4) = [900 300];
-clf; hold on;
-scatter((times-floor(times))*24,fpuparms(:,1),14,times-times(1),'filled')
-%scatter(times,fpuparms(:,1),14,dks,'filled')
-grid on
-%xlim([-100 200])
-xlabel('Time-of-day [hrs]')
-ylabel('FPU Rotation Angle [Deg]')
-ylim([-0.12 0.4])
-title('Estimated FPU orientation Vs. Time-of-day')
-C = colorbar();
-C.Label.String = 'Time [Days]';
-figname = fullfile(figdir,'fpu_ang_vs_tod.png');
-saveas(fig,figname)
 
+% X-axis
+vals = {times-times(1), (times-floor(times))*24, dks};
+valnames = {'t','tod','dk'};
+vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]'};
+vallims = {[-1 60], [0 24] [-100 200]};
 
-%% Look at fpu fits vs TOD.
-mirror = struct();
-mirror.height = 1.4592;
-mirror.tilt = 44.883;
-mirror.roll = -0.0701;
+% Y-axis
+parms = {fpuparms(:,1), fpuparms(:,2)};
+parmnames = {'fpu_ang','fpu_scale'};
+parmlabels = {'FPU Angle [Deg]','FPU Scaling [Deg]'};
+parmlims = {[-0.1 0.4], [0.992 1.002]};
 
-source = struct();
-source.azimuth = reshape(fd.az_cen_src,[],1);
-source.distance = 3.8e8*cosd(reshape(fd.el_cen_src,[],1));
-source.height = 3.8e8*sind(reshape(fd.el_cen_src,[],1));
+% Other stuff
+clrs = [ones(1,10) ones(1,8)*2 ones(1,8)*3];
 
-[x, y, phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
-fd.x = x'; fd.y = y';
-fd.resx = reshape(prx(fd.ch)-x,size(fd.ch));
-fd.resy = reshape(pry(fd.ch)-y,size(fd.ch));
-[resth, resr] = cart2pol(fd.resx,fd.resy);
-resth = resth - fd.dk_cen*pi/180;
-[fd.resx_rot, fd.resy_rot] = pol2cart(resth,resr);
-fd.resr = resr;
-
-
-[fpuparms, nchans] = deal([]);
-for schedind = 1:length(scheds)
-    ind = ismember(fd.schind,scheds{schedind});
-
-    if ~isempty(find(ind))
-        fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
-        fpuparms(schedind,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
-        nchans(schedind) = length(find(ind));
-
+for valind = 1:length(vals)
+    for parmind = 1:length(parms)
+        fig = figure(1);
+        fig.Position(3:4) = [900 300];
+        clf; hold on;
+        
+        scatter(vals{valind},parms{parmind},14,clrs,'filled')
+        colormap('lines')
+        grid on
+        xlabel(vallabels{valind})
+        ylabel(parmlabels{parmind})
+        xlim(vallims{valind})
+        %ylim(parmlims{parmind})
+        
+        figname = fullfile(figdir,sprintf('%s_vs_%s.png',parmnames{parmind},valnames{valind}));
+        saveas(fig,figname)
     end
 end
 
-%
-fig = figure(1);
-fig.Position(3:4) = [900 300];
-clf; hold on;
-scatter(dks,fpuparms(:,1),14,times-times(1),'filled')
-%scatter(times,fpuparms(:,1),14,dks,'filled')
-grid on
-xlim([-100 200])
-xlabel('DK [Deg]')
-ylabel('FPU Rotation Angle [Deg]')
-ylim([-0.12 0.4])
-title('Estimated FPU orientation Vs. DK')
-C = colorbar();
-C.Label.String = 'Time [Days]';
-colormap('jet')
-figname = fullfile(figdir,'fpu_ang_vs_dk.png');
-saveas(fig,figname)
+
 
 
 %% Corner plots

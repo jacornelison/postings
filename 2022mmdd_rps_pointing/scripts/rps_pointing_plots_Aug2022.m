@@ -193,6 +193,28 @@ end
 
 %% Look at fits vs DK.
 
+% Moon-derived mirror params -- Use only these and nothing else!
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt= 44.88;
+mirror.roll = -0.070;
+rpsopt.mirror = mirror;
+
+rpsopt.source.distance = 195.5;
+% Fit for the source params given our mirror info:
+source = rps_fit_source(fd,rpsopt,p,'');
+rpsopt.source = source;
+
+
+% With new mirror and source parameters, update the pointing.
+[fd.x,fd.y,phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
+fd.x = reshape(fd.x,size(fd.ch));
+fd.y = reshape(fd.y,size(fd.ch));
+fd.resx = reshape(prx(fd.ch),size(fd.ch))-fd.x;
+fd.resy = reshape(pry(fd.ch),size(fd.ch))-fd.y;
+[resth, resr] = cart2pol(fd.resx,fd.resy);
+[fd.resx_rot, fd.resy_rot] = pol2cart(resth-fd.dk_cen*pi/180,resr);
+
 clc
 [fpuparms, nchans, fdval, times] = deal([]);
 unqsch = unique(fd.schnum);
@@ -204,7 +226,7 @@ for schedind = 1:length(scheds)
         fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
         fpuparms(end+1,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
         nchans(end+1) = length(find(ind));
-        fdval(end+1) = nanmean(fd.dk_cen(ind));
+        fdval(end+1) = -nanmean(fd.dk_cen(ind));
         times(end+1) = nanmean(fd.t(ind));
 
     end
@@ -213,18 +235,47 @@ end
 fig = figure(1);
 fig.Position(3:4) = [900 300];
 clf; hold on;
-%scatter(times-floor(times),fpuparms(:,1),14,fdval,'filled')
-scatter(-fdval,fpuparms(:,1),14,'filled');%times-floor(times),'filled')
+scatter((times-0*floor(times))*1,fpuparms(:,1),14,fdval,'filled')
+%scatter(-fdval,fpuparms(:,1),14,'filled');%times-floor(times),'filled')
 grid on
 %xlim([-100 200])
 ylim([-0.12 0.4])
 %C = colorbar();
 %C.Label.String = ''
-xlabel('DK {Deg]')
+xlabel('DK [Deg]')
 ylabel('FPU Rotation Angle [Deg]')
 title('Per-Obs estimated Focal Plane angle Vs. DK')
-saveas(fig,'figs\fpu_rot_vs_dk.png')
+%saveas(fig,'figs\fpu_rot_vs_dk.png')
 
+
+%% Estimate fpu uncertainty by resampling with replacement
+clc
+
+for schedind = 1:length(scheds)
+    ind = ismember(fd.schnum,scheds{schedind});
+    if ~isempty(find(ind))
+        fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
+        fpuparms(end+1,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+        nchans(end+1) = length(find(ind));
+        fdval(end+1) = -nanmean(fd.dk_cen(ind));
+        times(end+1) = nanmean(fd.t(ind));
+
+    end
+end
+
+parms_wm = [];
+len = length(scheds);
+iter = len*10;
+for iterind = 1:iter
+    ind = randi([1, len],size(scheds));
+    parms_wm(end+1,:) = wmean(fpuparms(ind,:),repmat(nchans(ind)'.^2,1,4),1);
+end
+clc
+for valind = 1:4
+    
+fprintf('Mean: %0.3f, STD: %0.3f\n',mean(parms_wm(:,valind)),std(parms_wm(:,valind)))
+
+end
 %% Fix source loc and fit for mirror.
 % How does it look vs time compared to
 clc

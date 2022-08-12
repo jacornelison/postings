@@ -57,27 +57,31 @@
     <p>
         On a scan-by-scan basis, I estimate a Moon phase correction factor for both Azimuth and Elevation and apply them to the best-fit beam centroids using the modelling procedure outlined in <a href="JAC2022b"></a> &sect;2. I then fit for mirror parameters per-observation using the method described in <a href="JAC2022a"></a> &sect;2.
 
-    <p> In the pager below, I show the best-fit Tilt and Roll parameters vs observation time with and without this phase correction. The pager is also color-coded based on the DK angle at which each observation was taken. I also show the Az/El offsets predicted by the moon-phase model in Fig 1.2.
+    <p> In the pager below, I show the best-fit Tilt and Roll parameters vs observation time with and without this phase correction. I also show the Az/El offsets predicted by the moon-phase model in Fig 1.2 for comparison. The other X-axis parameters in the pager probe for systematics in either DK angle or diurnal fluctuations for the "time-of-day" selection. I color-code the data based on the distinct 24-hour periods in which the data was collected.
     </p>
 
     <figure>
-        <img alt="Maps pager" id="fitpager" src="#" width="100%"/>
+        <img alt="Maps pager" id="versuspager" src="#" width="100%"/>
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
-            pager.link("#fitpager",
+            pager.link("#versuspager",
                 {
-                    'Param|param': ['Tilt|tilt', 'Roll|roll'],
-                    'Correction|corr': ['off|nocorr','on|withcorr'],
+                    'Param|param2' : ['Tilt|tilt','Roll|roll'],
+                    'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk'],
+                    'Correction|corr2': ['off|','on|_phase_corrected'],
+
+
                 },
                 function(params) {
-                    return 'figs/'+params.param+'_vs_time_perdk_'+params.corr+'.png';
+                    //return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
+                    return 'figs/'+params.param2+'_vs_'+params.x+params.corr2+'.png';
                 });
             pager.setparams({
-                'param': 'roll',
-                'corr': 'withcorr',
-
+                'param2': 'tilt',
+                'x': 't',
+                'corr2': '',
             });
         </script>
     </figure>
@@ -91,93 +95,21 @@
 
 
     <p>
-        The mirror parameters after phase correction shift as expected: the mirror angles have an extra factor of 2 from reflection, so any shift in the Moon's Az/El should roughly correspond to half that shift in mirror roll/tilt respectively. However, we can see in the pager that this isn't the full story. We can still see statistically significant offsets in average roll for a given observing period (i.e. the three distinct ~24-hour periods at which moon observations were conducted).
+        The mirror parameters after phase correction shift as expected: the mirror angles have an extra factor of 2 from reflection, so any shift in the Moon's Az/El should roughly correspond to half that shift in mirror roll/tilt respectively. However, we can see in the pager that this isn't the full story. We can still see statistically significant offsets in average roll for a given observing period. However, we don't see any dependence on DK angle or any evidence of diurnal heating.
     </p>
-    <p>
-        I plot below the mirror roll parameter estimated as a function of time-of-day and fine that there's no obvious dependence here.
-    </p>
-
-    <figure>
-        <img src="figs/roll_vs_tod.png"/>
-
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-    <p>If I plot Roll Vs. DK, we see a weak negative trend in DK.</p>
-
-    <figure>
-        <img src="figs/roll_vs_dk.png"/>
-
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-
-
 
 </section>
 <section>
-<!--    Why do we want to look at residuals?-->
-<!--
-    <p>
-        In the pagers below I plot quivers of the residuals between CMB-derived and Moon-derived beam centroids in boresight-centered coordinates (x/y) and also in a new mirror-fixed coordinate system X<sub>m</sub>/Y<sub>m</sub> which I calculate as follows:
-        <ul>
-        <li>I use <tt>kbmp_mount</tt> and <tt>kbmp_mirror</tt> functions to calculate the aperture center $A$, boresight pointing/orientation vectors $[\hat{B}_3,\,\hat{B}_3,\,\hat{B}_3]$, the mirror position $M$, and the mirror normal $\hat{N}$ <a href="CAB2012"></a> and <a href="CAB2014"></a>.
-        <li>I calculate two vectors in the plane of the mirror along the tilt and roll axes -- $\hat{M}_x$ and $\hat{M}_y$ respectively.
-        <li>For a given instrument-fixed coordinates, I calculate the pointing vector $\hat{D}_3$ using the rotation matrix in <a href="CAB2014"></a> &sect; 1.1.
 
-        <li>I find the point $P$ at which a ray traced from the $A$ in the direction of $\hat{D}_3$ intersects with the mirror</li>
-        \begin{equation}
-        P = A+h\hat{D}_3
-        \end{equation}
-
-        where
-
-        \begin{equation}
-        \begin{split}
-        h &= \frac{\hat{N}\cdot (M-A)}{\hat{N}\cdot\hat{D}_3}\\
-        \end{split}
-        \end{equation}
-
-        <li>Finally, I calculate the vector $\vec{V}$ from the mirror center to the intersection point
-
-            $$\vec{V} = P-M$$
-
-            and calculate the projection of that vector on to $\hat{M}_x$ and $\hat{M}_y$:
-
-
-
-        \begin{equation}
-        \begin{split}
-        X_m &= \hat{M}_x\cdot \vec{V} \\
-        Y_m &= \hat{M}_y\cdot \vec{V} \\
-        \end{split}
-        \end{equation}
-
-        $X_m/Y_m$ denote the location at which the ray intersects the plane of the mirror where $+X_m$ and $+Y_m$ are in the direction decreasing azimuth and increasing elevation respectively when looking into the mirror. Figure 1.2 shows a diagram of how the mirror-fixed coordinate system is defined.
-    </ul>
-
-
-    </p>
-
-    <figure>
-        <img src="figs/mirror_projection.png" width="50%"/>
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
--->
     <h2>Beam Center Residuals</h2>
+
+    <h3>Example Residuals</h3>
     <p>
-        In this next figure I show how individual errors on a given mirror or source parameter affect the residuals.
+        This next section takes a closer look at the beam center residuals to probe for systematics. For a quick reference, in this next figure I show how individual errors on a given mirror or source parameter affect the residuals.
     </p>
 
     <figure>
-        <img alt="Name pager" id="testquiverpager" src="#" />
+        <img alt="Name pager" id="testquiverpager" src="#" width="75%"/>
         <figcaption>
 
         </figcaption>
@@ -218,16 +150,22 @@
     </figure>
 
     <p>
-        Most of these are pretty straightforward; A mis-estimation of the Moon Az/El or mirror tilt to any significant degree will cause an apparent translation in the residuals.
+        Most of these are pretty straightforward; A mis-estimation of the Moon Az/El or mirror tilt to any significant degree will cause an apparent translation in the residuals. The mirror roll, however, will also induce an off-axis roll in the residuals which can change the apparent orientation of the focal plane. In the context of polarization calibration, this last point is particularly important to us so we pay extra attention to the roll parameter.
     </p>
+    <h3>Real Residuals</h3>
+    <p>The pager below shows the residuals between the CMB-derived beam centroids and the moon-derived beam centroids at the location as they appear on the focal plane.</p>
+<p>Pager Buttons:</p>
+        <ul>
+        <li><b>Obs DK</b> - observations (denoted by the DK at which they were taken) in chronological order where "0_1" to "135_1" were taken before the December 4th solar eclipse, "23_2" to "68_4" were taken on 10 Dec (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken on 25/26 Jan after the completion of the RPS observation period.</li>
+        <li><b>Correction</b> - Moon phase correction on or off.</li>
+        <li><b>Fit</b> - Mirror parameters applied per-observation or a single overall mirror acquired from the mean parameters across all observations weighted by the number of channels in a given observation.</li>
+        <li><b>Coord</b> - shows the residuals in instrument-fixed coordinates and a "mirror-fixed" coordinate where I've derotated the DK angle from the residuals to help identify any systematics common to a point on the mirror</li>
+    </ul>
 
-    <p>
-    The pager below arranges the observations (denoted by the DK at which they were taken) in chronological order where "0_1" to "135_1" were taken before the December 4th solar eclipse, "23_2" to "68_4" were taken on 10 Dec (when the moon was low enough in elevation to observe again), and "0_2" to "157" were taken on 25/26 Jan after the completion of the RPS observation period. The "Fit" option shows residuals for a single overall mirror fit and the residuals if I fit the mirror parameters individually. The "Coord" option shows the residuals in instrument-fixed coordinates and a "mirror-fixed" coordinate where I've derotated the DK angle from the residuals to help identify any systematics common to a point on the mirror.
-</p>
 
     <figure>
 
-        <img alt="Maps pager" id="quivdkpager" src="#" width="100%"/>
+        <img alt="Maps pager" id="quivdkpager" src="#" width="75%"/>
         <figcaption>
 
         </figcaption>
@@ -281,34 +219,35 @@
         </script>
     </figure>
 
+
     <p>
-        Beside the rotation, I also note that the residuals have both long- and short-timescale features. This is most easily seen when comparing residuals at the same deck angles. For instance, the features in "23_1" and "174_1" are much larger than 23_2/23_3 and 174_2/174_3 that were taken one week later. Further, we can see smaller but still coherent shifts between 23_2 and 23_3 (also 174_2 and 174_3) which were taken within hours of each other which implies these are physical shifts on relatively short timescales.
+        The first thing to note is that the statistical uncertainty on the beam center fits is very good $\sigma\leq0.005^\circ$. I only plot detectors whose pair was also captured. As such almost every arrow actually represents two independent measurements of the pointing in that location. Additionally, there are several observations that were taken at the same DK angle within a couple hours of each other and are also in good agreement. this is more easily seen in the difference histograms in Figure A.1 in the Appendix.
+        What this means though it is that we're capturing coherent systematics somewhere in the pointing with very high signal to noise.
+        There's some other underlying fluctuations, but the dominant structure we see across the focal plane appears to be an underscaling of the focal plane which changes in severity over time.
     </p>
 
 
-    <h3>FPU Orientation</h3>
-<p>With respect to the RPS, we care mostly about the apparent orientation of the focal plane as that sets the point to which we reference the polarization angle.</p>
 
-    <figure>
-        <img src="figs/fpu_ang_vs_tod.png"/>
-
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-    <figure>
-        <img src="figs/fpu_ang_vs_dk.png"/>
-
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
+    <h3>FPU Scaling and Orientation</h3>
 
     <p>
-        If I average over all DK angles, the residuals average down for the most part. I fit a rotation and scaling to further minimize the residuals and we see a small amount of scaling start to emerge along with a small overall rotation of the focal plane. The plan is to look into the pointing residuals from the RPS data and see if there's a similar scaling and rotation in the focal plane.
+        If I average over all observations, the scaling becomes more evident. I estimate a scaling of the focal plane by that further minimizes the residuals between CMB-derived beam centroids and the Moon-derived beam centroids assuming a mirror tilt and roll fixed at $44.88^\circ$ and $-0.07^\circ$ respectively. Additionally, I fit an angle because, in the context of polarization calibration, we care mostly about the apparent orientation of the focal plane as that sets the point to which we reference the polarization angles.
     </p>
+
+    \begin{equation}
+        \begin{split}
+    x &= A\left(x_{0}\cos\zeta-y_{0}\sin\zeta\right)\\
+    y &= A\left(x_{0}\sin\zeta+y_{0}\cos\zeta\right)\\
+    \end{split}
+    \end{equation}
+
+    <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
+
+    \begin{equation}
+    \chi^2=\sum \frac{(x_{CMB,i}-x_{i})^2+(y_{CMB,i}-y_{i})^2}{\sigma_i^2}
+    \end{equation}
+
+    <p>I find an overall scaling of $0.998\pm0.001$ and FPU rotation angle of $0.06\pm0.01^\circ$ and plot the beam-center residuals with the angle and scaling applied in the pager below.</p>
 
     <figure>
 
@@ -335,11 +274,46 @@
 
 
 
-
-    <h3>Results</h3>
     <p>
-    In context to using these mirror parameters for other analyses, I'm thinking the best approach is to use the average parameters here to determine the source location and then, while locking the source location in place, re-fitting for the mirror parameters on a schedule-to-schedule basis.
-    </p>
+        I also perform the fits per-observation an plot them as a function of time-of-day and DK angle below. Other than distinct offsets at the different observing periods, there are obvious dependencies on DK or time.</p>
+
+
+    <figure>
+
+        <img alt="Maps pager" id="fpupager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#fpupager",
+                {
+                    'Param|param3' : ['angle|ang','scaling|scale'],
+                    'X-Axis|x' : ['t','tod','dk'],
+
+                },
+                function(params) {
+                    //return 'figs/quiver_dk'+params.d4+'_fitperdk_'+params.corr+params.f+'.png';
+                    return 'figs/fpu_'+params.param3+'_vs_'+params.x+'.png';
+                });
+            pager.setparams({
+                'param3': 'ang',
+                'x': 't',
+            });
+        </script>
+    </figure>
+
+<p>
+
+</p>
+
+
+
+    <h3>Results and Discussion</h3>
+    <p>I find both long- and short-term fluctuating structure across the focal plane that appears to average down to an overall scaling and a slight rotation of the focal plane.</p>
+
+<!--    <p>-->
+<!--    In context to using these mirror parameters in the pointing model for RPS data, I'm thinking that the best approach is to use the average parameters here to determine the source location and then, while locking the source location in place, re-fitting for the mirror parameters on a schedule-to-schedule basis.-->
+<!--    </p>-->
     <p>
         While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the standard deviation of the difference in mirror parameters between observations at the same DK angles that were taken within an hour of each other. There's two significant contributors to the systematic error: the DK-dependent scatter and the scatter on the mean over the three 24-hour observing periods. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of DK-to-DK scatter per-24-hour period and the largest difference between the means of those 24-hour periods.
     </p>
