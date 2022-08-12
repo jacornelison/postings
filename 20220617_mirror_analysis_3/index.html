@@ -39,7 +39,7 @@
 </header>
 
 <hr>
-<p>In my previous posting <a href="JAC2022B"></a>, I walked through the procedure of modelling the phases of the moon and estimating an offset in Azimuth and Elevation resulting from convolving our beams with a non-uniform brightness temperature profiles of the moon. In this posting, I apply a moon phase correction to the beam centroids estimated from beam maps of the moon. I then fit for mirror parameters with and without this phase correction per-DK and examine how those corrections improve the results by looking at the best-fit residuals.
+<p>In my previous posting <a href="JAC2022B"></a>, I walked through the procedure of modelling the phases of the moon and estimating an offset in Azimuth and Elevation resulting from convolving our beams with a non-uniform brightness temperature profiles of the moon. In this posting, I apply a moon phase correction to the beam centroids estimated from beam maps of the moon. I then fit for mirror parameters with and without this phase correction per-DK and examine how those corrections improve the results by looking at the best-fit residuals. I report overall best-fit mirror parameters of $Tilt=44.88^\circ\pm0.022^\circ$ and $Roll=-0.07^\circ\pm0.025^\circ$ with an apparent scaling and rotation of the focal plane of $0.998\pm0.001$ and $0.06^\circ\pm0.01^\circ$ respectively. These results will be applied to the pointing model for the RPS data which was taken in the 2021/2022 Austral Summer.
 </p>
 
 <hr>
@@ -231,7 +231,7 @@
     <h3>FPU Scaling and Orientation</h3>
 
     <p>
-        If I average over all observations, the scaling becomes more evident. I estimate a scaling of the focal plane by that further minimizes the residuals between CMB-derived beam centroids and the Moon-derived beam centroids assuming a mirror tilt and roll fixed at $44.88^\circ$ and $-0.07^\circ$ respectively. Additionally, I fit an angle because, in the context of polarization calibration, we care mostly about the apparent orientation of the focal plane as that sets the point to which we reference the polarization angles.
+        If I average over all observations, the scaling becomes more evident. I estimate a scaling of the focal plane by applying a scaling to the Moon-derived centroids that further minimizes the residuals between CMB-derived beam centroids and the Moon-derived beam centroids assuming a mirror tilt and roll fixed at $44.88^\circ$ and $-0.07^\circ$ respectively. Additionally, I fit an angle because, in the context of polarization calibration, we care mostly about the apparent orientation of the focal plane as that sets the point to which we reference the polarization angles.
     </p>
 
     \begin{equation}
@@ -309,16 +309,14 @@
 
 
     <h3>Results and Discussion</h3>
-    <p>I find both long- and short-term fluctuating structure across the focal plane that appears to average down to an overall scaling and a slight rotation of the focal plane.</p>
+
 
 <!--    <p>-->
 <!--    In context to using these mirror parameters in the pointing model for RPS data, I'm thinking that the best approach is to use the average parameters here to determine the source location and then, while locking the source location in place, re-fitting for the mirror parameters on a schedule-to-schedule basis.-->
 <!--    </p>-->
     <p>
-        While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the standard deviation of the difference in mirror parameters between observations at the same DK angles that were taken within an hour of each other. There's two significant contributors to the systematic error: the DK-dependent scatter and the scatter on the mean over the three 24-hour observing periods. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of DK-to-DK scatter per-24-hour period and the largest difference between the means of those 24-hour periods.
+        While there are still a few questions to address in this particular analysis, I've made a table below reporting on the mirror parameters that I'll use in the RPS analysis along with quoted uncertainty which I'll use in an error propagation analysis. I calculate the statistical error as the standard deviation of the difference in mirror parameters between observations at the same DK angles that were taken within an hour of each other. There's two significant contributors to the systematic error: the scatter across the data within the three 24-hour observing periods and the scatter across the entire dataset. I calculate the systematic uncertainty by adding in quadrature the standard deviations of the of Obs-to-Obs scatter per-24-hour period and the largest difference between the means of those 24-hour periods.
     </p>
-
-
 
     <figure class="table">
         <table class="center results">
@@ -343,7 +341,7 @@
                 <td>0.004</td>
                 <td>0.022</td>
                 <td class="cstart">44.88</td>
-                <td>0.001</td>
+                <td>0.004</td>
                 <td>0.022</td>
             </tr>
             <tr>
@@ -362,7 +360,8 @@
         </figcaption>
     </figure>
 
-
+    <p>I find both long- and short-timescale fluctuating structure across the focal plane that appears to average down to an overall scaling of $0.998\pm0.001$ and a rotation of the focal plane of $0.06\pm0.01^\circ$. The next step is to look at the RPS-derived centroids and see if it has similar features as seen in the Moon data and simply subtract off the additional focal plane rotation from the polarization angle estimates. If not, we may have to include the difference in FPU angles as an additional systematic uncertainty.
+    </p>
 
 </section>
 <!---------------->
