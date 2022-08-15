@@ -482,8 +482,11 @@ colormap('jet')
 
 %% Look at mirror stuff vs. stuff
 
-load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
+%load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
+load('z:/dev/rps/rps_beam_fits_rerun_all_cut.mat')
+load('z:/dev/rps/rps_tilt_data_2022.mat')
 
+fd.tilt = polyval([0.2372 -0.0472],interp1(lj_data.time,lj_data.AIN0,fd.t));
 fd.az_cen_sun = interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t);
 fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t);
 fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
@@ -514,9 +517,11 @@ fd.resx = reshape(prx(fd.ch),size(fd.ch))-fd.x;
 fd.resy = reshape(pry(fd.ch),size(fd.ch))-fd.y;
 [resth, resr] = cart2pol(fd.resx,fd.resy);
 [fd.resx_rot, fd.resy_rot] = pol2cart(resth-fd.dk_cen*pi/180,resr);
+[fd.xm, fd.ym] = pol2cart((reshape(p.theta(fd.ch),size(fd.ch))-fd.dk_cen)*pi/180,reshape(p.r(fd.ch),size(fd.ch)));
 
-%
-[mirrparms, fpuparms, fpuparmsobs, nchans, sun_els, sun_azs, times, dksch] = deal([]);
+%%
+clc
+[mirrparms, fpuparms, fpuparmsobs, nchans, sun_els, sun_azs, times, dksch,xs,ys,xms,yms,rs,thetas,tilts,thms] = deal([]);
 % for schedind = 1:length(scheds)
 %     ind = ismember(fd.schnum,scheds{schedind});
 for schedind = 1:length(unqsch)
@@ -542,6 +547,16 @@ for schedind = 1:length(unqsch)
             sun_azs(end+1) = wrapTo180(nanmean(fd.az_cen_sun(ind)-source.azimuth));
             times(end+1) = nanmean(fd.t(ind));
             dksch(end+1) = -nanmean(fd.dk_cen(ind));
+            xs(end+1) = nanmean(fd.x(ind));
+            ys(end+1) = nanmean(fd.y(ind));
+            xms(end+1) = nanmean(fd.xm(ind));
+            yms(end+1) = nanmean(fd.ym(ind));
+            rs(end+1) = nanmean(sqrt(fd.x(ind).^2+fd.y(ind).^2));
+            thetas(end+1) = nanmean(atan2(fd.y(ind),fd.x(ind))*180/pi);
+            thms(end+1) = nanmean(atan2(fd.y(ind),fd.x(ind))*180/pi-fd.dk_cen(ind));
+            tilts(end+1) = nanmean(fd.tilt(ind));
+
+            
         end
     end
 end
@@ -549,9 +564,9 @@ end
 %%
 
 % X-axis
-vals = {times-times(1), (times-floor(times))*24, dksch, sun_els, sun_azs, mirrparms(:,1),mirrparms(:,2)};
-valnames = {'t','tod','dk','sun_els','sun_azs','tilt','roll'};
-vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Sun Elevation [Deg]','Sun Azimuth [Deg]','Mirror Tilt [Deg]','Mirror Roll [Deg]'};
+vals = {times-times(1), (times-floor(times))*24, dksch, sun_els, sun_azs, mirrparms(:,1),mirrparms(:,2),xs,ys,xms,yms,rs,wrapTo180(thetas),tilts,wrapTo180(thms)};
+valnames = {'t','tod','dk','sun_els','sun_azs','tilt','roll','x','y','xm','ym','r','theta','tiltmeter','thm'};
+vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Sun Elevation [Deg]','Sun Azimuth [Deg]','Mirror Tilt [Deg]','Mirror Roll [Deg]','x [deg]' ,'y [deg]','x_m [deg]' ,'y_m [deg]','r [deg]','theta [deg]','tilt [deg]','theta_m [Deg]'};
 vallims = {[-1 60], [0 24] [-100 200] [4 26] [-185 185] [-100 100],[44.85 44.91], [-0.12 -0.04]};
 
 % Y-axis
@@ -571,7 +586,7 @@ else
     parms = {mirrparms(:,1), mirrparms(:,2), fpuparms(:,1), fpuparms(:,2), fpuparmsobs(:,1), fpuparmsobs(:,2)};
     parmnames = {'tilt','roll','fpu_ang','fpu_scale','fpu_ang_obs','fpu_scale_obs'};
     parmlabels = {'Tilt [Deg]','Roll [Deg]','FPU Angle [Deg]','FPU Scaling [Deg]','FPU Angle Obs [Deg]','FPU Scaling Obs [Deg]'};
-    parmlims = {[44.76 44.92], [-0.12 0],[-0.8 0.4], [0.98 1.01],[-0.8 0.4], [0.98 1.01]};
+    parmlims = {[44.76 44.92], [-0.12 0],[-0.75 0.4], [0.99 1.005],[-0.75 0.4], [0.99 1.005]};
 end
 % Pager click 3
 %fitparms = {parms, {fpuparmsobs(:,1), fpuparmsobs(:,2)}};
@@ -594,7 +609,7 @@ for valind = 1:length(vals)
         
         if 1
             scatter(vals{valind},parms{parmind},14,floor(times),'filled')
-            colormap('lines')
+            colormap('jet')
         else
             scatter(vals{valind},parms{parmind},14,1:length(scheds),'filled')
             colormap('jet')
