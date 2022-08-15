@@ -68,6 +68,37 @@
 
     <p></p>
 
+    <figure>
+        <img alt="Maps pager" id="versuspager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#versuspager",
+                {
+                    'Param|param' : ['Tilt|tilt','Roll|roll','fpu_ang','fpu_scale','fpu_ang_obs','fpu_scale_obs'],
+                    'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun El|sun_els','Sun Az|sun_azs','tilt','roll'],
+                },
+
+                function(params) {
+                    return 'figs/'+params.param+'_vs_'+params.x+'.png';
+                });
+            pager.setparams({
+                'param': 'tilt',
+                'x': 't',
+
+            });
+        </script>
+    </figure>
+    <p>I also include in Figure 1.2 the expected level of Azimuth and Elevation correction over these observing times so we can compare to the pager above with phase correction <a href="javascript:void(0)" onclick="pager.setparams({'param2': 'roll','x': 't','corr2': ''})">off</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param2': 'roll','x': 't','corr2': '_phase_corrected'})">on</a>.</p>
+    <figure>
+        <img src="figs/azeloffs_vs_time.png"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
 
     <p></p>
     <figure>

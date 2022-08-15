@@ -98,6 +98,28 @@ for schind = 1:len
     %ind = abs(phi_pair(schind,:)-nanmean(phi_pair(schind,:)))<1;
 end
 
+%% Grab the moon-sun angles
+% MJD, , ,raapp,decapp
+fname = fullfile('z:/dev/sun_check_2022Aug12.txt');
+f = fopen(fname);
+hd_sun = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',60);
+hd_sun{1} = hd_sun{1}-2400000.5;
+fclose(f);
+%fd.az_cen_sun = interp1(hd_sun{1},hd_sun{4},fd.t_cen);
+fd.az_cen_sun = interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t);
+fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t);
+
+%
+clc
+% MJD, , ,raapp,decapp
+fname = fullfile('z:/dev/moon_check_2022Aug12.txt');
+f = fopen(fname);
+hd_moon = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',61);
+hd_moon{1} = hd_moon{1}-2400000.5;
+fclose(f);
+%fd.az_cen_moon = interp1(hd_moon{1},hd_moon{4},fd.t_cen);
+fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
+fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
 
 
 %%
@@ -458,13 +480,136 @@ datetick('x','dd-mmm','keeplimits')
 grid on
 colormap('jet')
 
+%% Look at mirror stuff vs. stuff
+
+load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
+
+fd.az_cen_sun = interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t);
+fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t);
+fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
+fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
+
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt= 44.88;
+mirror.roll = -0.06;
+rpsopt.mirror = mirror;
+
+rpsopt.source.distance = 195.5;
+% Fit for the source params given our mirror info:
+%source = rps_fit_source(fd,rpsopt,p,'');
+%rpsopt.source = source;
+
+% Fit source with only data where sun is far away from source
+ind = ~inrange(wrapTo180(fd.az_cen_sun),-100,100);
+source = rps_fit_source(structcut(fd,ind),rpsopt,p,'');
+rpsopt.source = source;
+
+%
+% With new mirror and source parameters, update the pointing.
+[fd.x,fd.y,phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
+fd.x = reshape(fd.x,size(fd.ch));
+fd.y = reshape(fd.y,size(fd.ch));
+fd.resx = reshape(prx(fd.ch),size(fd.ch))-fd.x;
+fd.resy = reshape(pry(fd.ch),size(fd.ch))-fd.y;
+[resth, resr] = cart2pol(fd.resx,fd.resy);
+[fd.resx_rot, fd.resy_rot] = pol2cart(resth-fd.dk_cen*pi/180,resr);
+
+%
+[mirrparms, fpuparms, fpuparmsobs, nchans, sun_els, sun_azs, times, dksch] = deal([]);
+% for schedind = 1:length(scheds)
+%     ind = ismember(fd.schnum,scheds{schedind});
+for schedind = 1:length(unqsch)
+    ind0 = fd.schnum==unqsch(schedind);
+    ind = ind0;
+    for rowind = 1:19
+        ind = ind0 & fd.rowind==rowind;
+        fd0 = structcut(fd,ind);
+        if ~isempty(find(ind))
+            mirror = rps_fit_mirror(fd0,rpsopt,p,'');
+            mirrparms(end+1,:) = [mirror.tilt,mirror.roll];
+
+            [fd0.x,fd0.y,phi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
+            fd0.x = reshape(fd0.x,size(fd0.ch));
+            fd0.y = reshape(fd0.y,size(fd0.ch));
+
+            fpu = fit_fpu_angle_and_scaling_from_xy(fd0,p);
+            fpuparmsobs(end+1,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+            fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
+            fpuparms(end+1,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+            nchans(end+1) = length(find(ind));
+            sun_els(end+1) = nanmean(fd.el_cen_sun(ind));
+            sun_azs(end+1) = wrapTo180(nanmean(fd.az_cen_sun(ind)-source.azimuth));
+            times(end+1) = nanmean(fd.t(ind));
+            dksch(end+1) = -nanmean(fd.dk_cen(ind));
+        end
+    end
+end
+
+%%
+
+% X-axis
+vals = {times-times(1), (times-floor(times))*24, dksch, sun_els, sun_azs, mirrparms(:,1),mirrparms(:,2)};
+valnames = {'t','tod','dk','sun_els','sun_azs','tilt','roll'};
+vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Sun Elevation [Deg]','Sun Azimuth [Deg]','Mirror Tilt [Deg]','Mirror Roll [Deg]'};
+vallims = {[-1 60], [0 24] [-100 200] [4 26] [-185 185] [-100 100],[44.85 44.91], [-0.12 -0.04]};
+
+% Y-axis
+if 0
+    parms = {fpuparms(:,1), fpuparms(:,2)};
+    parmnames = {'fpu_ang','fpu_scale'};
+    parmlabels = {'FPU Angle [Deg]','FPU Scaling [Deg]'};
+    parmlims = {[-0.1 0.4], [0.992 1.002]};
+
+elseif 0
+    parms = {mirrparms(:,1), mirrparms(:,2)};
+    parmnames = {'tilt','roll'};
+    parmlabels = {'Tilt [Deg]','Roll [Deg]'};
+    parmlims = {[44.85 44.91], [-0.12 -0.02]};
+
+else
+    parms = {mirrparms(:,1), mirrparms(:,2), fpuparms(:,1), fpuparms(:,2), fpuparmsobs(:,1), fpuparmsobs(:,2)};
+    parmnames = {'tilt','roll','fpu_ang','fpu_scale','fpu_ang_obs','fpu_scale_obs'};
+    parmlabels = {'Tilt [Deg]','Roll [Deg]','FPU Angle [Deg]','FPU Scaling [Deg]','FPU Angle Obs [Deg]','FPU Scaling Obs [Deg]'};
+    parmlims = {[44.76 44.92], [-0.12 0],[-0.8 0.4], [0.98 1.01],[-0.8 0.4], [0.98 1.01]};
+end
+% Pager click 3
+%fitparms = {parms, {fpuparmsobs(:,1), fpuparmsobs(:,2)}};
+fitnames = {'','_perobs'};
 
 
-%xlim([-100 200])
-%ylim([-0.12 -0.04])
+% Other stuff
+clrs = [ones(1,11) ones(1,8)*2 ones(1,8)*3];
 
 
 
+for fitind = 1%1:length(fitnames)
+    %parms = fitparms{fitind};
+
+for valind = 1:length(vals)
+    for parmind = 1:length(parms)
+        fig = figure(1);
+        fig.Position(3:4) = [900 300];
+        clf; hold on;
+        
+        if 1
+            scatter(vals{valind},parms{parmind},14,floor(times),'filled')
+            colormap('lines')
+        else
+            scatter(vals{valind},parms{parmind},14,1:length(scheds),'filled')
+            colormap('jet')
+        end
+        grid on
+        xlabel(vallabels{valind})
+        ylabel(parmlabels{parmind})
+        %xlim(vallims{valind})
+        ylim(parmlims{parmind})
+
+        figname = fullfile(figdir,sprintf('%s_vs_%s%s.png',parmnames{parmind},valnames{valind},fitnames{fitind}));
+        saveas(fig,figname)
+    end
+end
+end
 
 
 
