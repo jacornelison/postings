@@ -6,8 +6,8 @@ function moon_analysis_plots_2022may27()
 clear all
 datadir = 'data/';
 %Load the stuff.
-%load(fullfile(datadir,'moon_beam_fits_phase_corrected.mat'))
-load(('z:/dev/moon_analysis/moon_beam_fits.mat'))
+load(fullfile(datadir,'moon_beam_fits_phase_corrected.mat'))
+%load(('z:/dev/moon_analysis/moon_beam_fits.mat'))
 load(fullfile(datadir,'moonsch.mat'))
 load(fullfile(datadir,'fpu_data_obs.mat'))
 load(fullfile(datadir,'pm.mat'))
@@ -788,7 +788,7 @@ fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t_cen);
 
 %% fit for mirror per time/tod/dk.
 % How does it look vs time compared to
-
+clc
 % Pager term 3 - phase correction
 corrnames = {'','_phase_corrected'};
 
@@ -908,21 +908,19 @@ vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Moon Elevation [Deg]
 vallims = {[-1 60], [0 24] [-100 200] [4 26] [-185 185] [-100 100],[44.85 44.91], [-0.12 -0.04]};
 
 % Y-axis
-parms = {fpuparms(:,1), fpuparms(:,2)};
-parmnames = {'fpu_ang','fpu_scale'};
-parmlabels = {'FPU Angle [Deg]','FPU Scaling [Deg]'};
-parmlims = {[-0.1 0.4], [0.992 1.002]};
+parms = {fpuparms(:,1), fpuparms(:,2),fpuparms(:,3), fpuparms(:,4)};
+parmnames = {'fpu_ang','fpu_scale','fpu_xtrans','fpu_ytrans'};
+parmlabels = {'FPU Angle [Deg]','FPU Scaling [Deg]','FPU X-translation [Deg]','FPU Y-translation [Deg]'};
+parmlims = {[-0.1 0.4], [0.992 1.002], [-1 1]*0.08,[-1 1]*0.08};
 colormap('jet')
 
 % Pager click 3
-fitparms = {parms, {fpuparmsobs(:,1), fpuparmsobs(:,2)}};
+fitparms = {parms, {fpuparmsobs(:,1), fpuparmsobs(:,2),fpuparmsobs(:,3), fpuparmsobs(:,4)}};
 fitnames = {'','_perobs'};
 
 
 % Other stuff
 clrs = [ones(1,11) ones(1,8)*2 ones(1,8)*3];
-
-
 
 for fitind = 1:length(fitnames)
     parms = fitparms{fitind};
@@ -1030,6 +1028,83 @@ figname = fullfile(figdir,'diff_hists.png');
 saveas(fig,figname)
 
 
+%% fit for mirror per time/tod/dk per scan
+% How does it look vs time compared to
+
+% Pager term 3 - phase correction
+corrnames = {'','_phase_corrected'};
+
+% Other stuff
+clrs = [ones(1,11) ones(1,8)*2 ones(1,8)*3];
+
+for corrind = 1:2
+    load(sprintf('z:/dev/moon_analysis/moon_beam_fits%s_cut.mat',corrnames{corrind}))
+    fd.az_cen_sun = interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t_cen);
+    fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t_cen);
+    fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t_cen);
+    fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t_cen);
+
+    clc
+    [mirrparms, nchans, moon_els, times, dksch, moon_azs, diff_az,thms] = deal([]);
+    unqsch = unique(fd.schind);
+    for schedind = 1:length(unqsch)
+        ind0 = fd.schind==unqsch(schedind);
+        ind = ind0;
+        for rowind = 1:19
+            ind = ind0 & fd.scanind==rowind;
+            fd0 = structcut(fd,ind);
+
+            if ~isempty(find(ind))
+                fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
+                mirrparms(end+1,:) = fd0.fitparam;
+                nchans(end+1) = length(find(ind));
+                moon_els(end+1) = nanmean(fd.el_cen_src(ind));
+                moon_azs(end+1) = wrapTo180(nanmean(fd.az_cen_src(ind)));
+                diff_az(end+1) = nanmean(wrapTo180(fd.az_cen_moon(ind)-fd.az_cen_sun(ind)));
+                thms(end+1) = nanmean(atan2(fd.y(ind),fd.x(ind))*180/pi-fd.dk_cen(ind));
+                times(end+1) = nanmean(fd.t_cen(ind));
+                dksch(end+1) = -nanmean(fd.dk_cen(ind));
+            end
+        end
+    end
+    % X-axis
+    vals = {times-times(1), (times-floor(times))*24, dksch, moon_els, moon_azs, diff_az,wrapTo180(thms)};
+    valnames = {'t','tod','dk','moon_els','moon_azs','moon_sun_ang','thm'};
+    vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Moon Elevation [Deg]','Moon Azimuth [Deg]','Moon-Sun Angle  [Deg]','theta_m [Deg]'};
+    vallims = {[-1 60], [0 24] [-100 200] [4 26] [-185 185] [-100 100],[-190 190]};
+
+    % Y-axis
+    parms = {mirrparms(:,1), mirrparms(:,2)};
+    parmnames = {'tilt','roll'};
+    parmlabels = {'Tilt [Deg]','Roll [Deg]'};
+    parmlims = {[44.85 44.91], [-0.12 -0.02]};
+
+
+    for valind = 1:length(vals)
+        for parmind = 1:length(parms)
+            fig = figure(1);
+            fig.Position(3:4) = [900 300];
+            clf; hold on;
+            
+            if 0
+            scatter(vals{valind},parms{parmind},14,clrs,'filled')
+            colormap('lines')
+            else
+            scatter(vals{valind},parms{parmind},14,floor(times),'filled')
+            colormap('turbo')
+            end
+            grid on
+            xlabel(vallabels{valind})
+            ylabel(parmlabels{parmind})
+            xlim(vallims{valind})
+            %ylim(parmlims{parmind})
+
+            figname = fullfile(figdir,sprintf('%s_vs_%s%s.png',parmnames{parmind},valnames{valind},corrnames{corrind}));
+            saveas(fig,figname)
+        end
+    end
+
+end
 
 
 

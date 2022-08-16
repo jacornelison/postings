@@ -42,6 +42,17 @@ fd.resy = reshape(pry(fd.ch),size(fd.ch))-fd.y;
 [resth, resr] = cart2pol(fd.resx,fd.resy);
 [fd.resx_rot, fd.resy_rot] = pol2cart(resth-fd.dk_cen*pi/180,resr);
 
+% Make a median subtraction array.
+fd.phi_medsub = fd.phi;
+for chind = 1:2640
+    ind = fd.ch==chind;
+    if ~isempty(find(ind))
+        fd.phi_medsub(ind) = fd.phi_medsub(ind)-nanmedian(fd.phi(ind));
+    end
+end
+
+
+%%
 % Order the a/b phis based on schedule
 [phis, xpols, phis_err, xs, ys] = deal(NaN(len,2640));
 for schind = 1:len
@@ -521,7 +532,8 @@ fd.resy = reshape(pry(fd.ch),size(fd.ch))-fd.y;
 
 %%
 clc
-[mirrparms, fpuparms, fpuparmsobs, nchans, sun_els, sun_azs, times, dksch,xs,ys,xms,yms,rs,thetas,tilts,thms] = deal([]);
+unqsch = unique(fd.schnum);
+[mirrparms, fpuparms, fpuparmsobs, nchans, sun_els, sun_azs, times, dksch,xs,ys,xms,yms,rs,thetas,tilts,thms, phias, phibs] = deal([]);
 % for schedind = 1:length(scheds)
 %     ind = ismember(fd.schnum,scheds{schedind});
 for schedind = 1:length(unqsch)
@@ -555,18 +567,20 @@ for schedind = 1:length(unqsch)
             thetas(end+1) = nanmean(atan2(fd.y(ind),fd.x(ind))*180/pi);
             thms(end+1) = nanmean(atan2(fd.y(ind),fd.x(ind))*180/pi-fd.dk_cen(ind));
             tilts(end+1) = nanmean(fd.tilt(ind));
-
+            phias(end+1) = nanmean(fd.phi_medsub(ind & (ismember(fd.ch,p_ind.a) & (p.mce(fd.ch)~=0)') | (ismember(fd.ch,p_ind.b) & (p.mce(fd.ch)==0)')));
+            phibs(end+1) = nanmean(fd.phi_medsub(ind & (ismember(fd.ch,p_ind.b) & (p.mce(fd.ch)~=0)') | (ismember(fd.ch,p_ind.a) & (p.mce(fd.ch)==0)')));
             
         end
     end
 end
 
 %%
-
+clc
 % X-axis
-vals = {times-times(1), (times-floor(times))*24, dksch, sun_els, sun_azs, mirrparms(:,1),mirrparms(:,2),xs,ys,xms,yms,rs,wrapTo180(thetas),tilts,wrapTo180(thms)};
-valnames = {'t','tod','dk','sun_els','sun_azs','tilt','roll','x','y','xm','ym','r','theta','tiltmeter','thm'};
-vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Sun Elevation [Deg]','Sun Azimuth [Deg]','Mirror Tilt [Deg]','Mirror Roll [Deg]','x [deg]' ,'y [deg]','x_m [deg]' ,'y_m [deg]','r [deg]','theta [deg]','tilt [deg]','theta_m [Deg]'};
+vals = {times-times(1), (times-floor(times))*24, dksch, sun_els, sun_azs, mirrparms(:,1),mirrparms(:,2),xs,ys,xms,yms,rs,wrapTo180(thetas),tilts,wrapTo180(thms),phias, phibs};
+valnames = {'t','tod','dk','sun_els','sun_azs','tilt','roll','x','y','xm','ym','r','theta','tiltmeter','thm','phia','phib'};
+vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Sun Elevation [Deg]','Sun Azimuth [Deg]','Mirror Tilt [Deg]','Mirror Roll [Deg]','x [deg]' ,'y [deg]','x_m [deg]' ,'y_m [deg]',...
+    'r [deg]','theta [deg]','tilt [deg]','theta_m [Deg]','\phi_A med-sub [Deg]','\phi_B med-sub [Deg]'};
 vallims = {[-1 60], [0 24] [-100 200] [4 26] [-185 185] [-100 100],[44.85 44.91], [-0.12 -0.04]};
 
 % Y-axis
