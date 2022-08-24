@@ -46,7 +46,7 @@
 <!--16 Aug 2022-->
 <section>
     <h2>RPS Observations</h2>
-
+Talk about the different RPS observations. Also include a bit about the tilt meter.
 </section>
 
 <section><h2></h2>
@@ -63,7 +63,7 @@
     [x,\,y,\,\phi] = \text{beam_map_pointing_model}(Az_{src},\,El_{src} | A_{0},\,E_{0},\,K_{0},\,Mount,\,Mirror)
     \end{equation}
 
-    where $A_0$, $E_0$, and $D_0$ are the as-fit beam centers in raw mount coordinates; $Mount$ comprises the relevant
+    where $A_0$, $E_0$, and $D_0$ are the as-fit beam centers in raw mount coordinates<sup><a name="sup1" href="#ftn1">[1]</a></sup>; $Mount$ comprises the relevant
     mount information derived from both optical starpointing and Solidworks drawings; $Mirror$ comprises the tilt, roll and height of the mirror.
 
     <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
@@ -72,28 +72,33 @@
     \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}
     \end{equation}
 
-
+    <p>From <a href="JAC2022c">JAC2022c</a>, we have evidence that the mirror is physically moving about from measurement-to-measurement, so in the following figures -- after fitting an overall source position -- I keep the source fixed and fit for the mirror parameters per-observation (and per-rasterset as I'll discuss later).</p>
     <p>
-        The pager below shows
+        <font color="red">Show a pager of the quivers with Overall/per-obs mirror fits and also angle/scaling offsets applied.</font>
     </p>
+    <figure>
+        <figcaption>
+            Quiver plots pager
+        </figcaption>
+    </figure>
+    <p>Figure 2.2 shows a pager of the mirror tilt and roll along with an overall FPU angle and scaling fits as a function of multiple different variables to probe of possible sources of systemtatics. The data are color-coded by the chronological order in which the observations were taken.</p>
 
-    <p>From <a href="JAC2022c">JAC2022c</a>, we have evidence that the mirror is physically moving about from measurement-to-measurement, so after fitting an overall source position I keep it fixed and fit for the mirror parameters per-observation (and per-scan where applicable).</p>
 
     <ul>
         <li>
-            <b>Y-Axis</b> - Dependent variable. FPU Angle/Scale overall uses a fixed parameter for the mirror location whereas FPU Angle/Scale per obs uses the per-obs (or per-scan) fits for the mirror when calculating x/y coordinates to derive the angle/scaling.
+            <b>Y-Axis</b> - Dependent variable. FPU Angle/Scale overall uses a fixed parameter for the mirror location whereas FPU Angle/Scale per obs uses the per-obs (or per-rastersets) fits for the mirror when calculating x/y coordinates to derive the angle/scaling.
         </li>
         <li>
-            <b>X-Axis</b> - Independent variable.
+            <b>X-Axis</b> - Independent variable. $x_m$, $y_m$ and $\theta_m$ are the beam centeroids with the DK-angle derotated to get us into a quasi-mirror-fixed coordinate system. The tiltmeter values are the tilt readout at the start of the obs or rasterset and so only make sense for the per-rasterset click.
         </li>
         <li>
-            <b>Target</b> - Switch between Moon and RPS Type 5 data. $x_m$, $y_m$ and $\theta_m$ are the beam centeroids with the DK-angle derotated to get us into a quasi-mirror-fixed coordinate system.
+            <b>Target</b> - Switch between Moon and RPS Main (Type 5) data.
         </li>
         <li>
-            <b>Resolution</b> - A data point represents either an entire observation or a single scan (or rasterset) within that observation.
+            <b>Resolution</b> - A data point represents either an entire observation or a single rasterset (or just raster for the Moon data) within that observation. I included this option because while the Moon observations only take 3 hours, the RPS observations take ~39 hours to complete and thus any diurnal effects would be washed out. RPS rastersets take ~40 minutes to complete which are much close in time resolution to the Moon data.
         </li>
         <li>
-            <b>Early Moon Data Cut</b> - Use mirror parameters from with <a href="JAC2022c">JAC2022c</a> Table 2.2 with the first bit of data cut.
+            <b>Moon Data Cut</b> - Use mirror parameters from <a href="JAC2022c">JAC2022c</a> Table 2.2 for computing the source location in the RPS analysis: without the <i>Early</i> data (Nov30-Dec6) or <i>Late</i> data (Dec9-Jan26) -- the late data cut uses Tilt=44.88 Roll=-0.09.
         </li>
 
     </ul>
@@ -109,7 +114,7 @@
                     'Y-Axis|param' : ['Tilt|tilt','Roll|roll','FPU Angle Overall|fpu_ang','FPU Scale Overall|fpu_scale','FPU Angle per obs|fpu_ang_obs','FPU Scale per obs|fpu_scale_obs'],
                     'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs','Mirror Tilt|tilt','Mirror Roll|roll','$x$|x','$y$|y','$r$|r','$\\theta$|theta','$x_m$|xm','$y_m$|ym','$\\theta_m$|thm','tiltmeter'],
                     'Target|tgt': ['Moon|moon','RPS|rps'],
-                    'Resolution|res': ['perobs','perscan'],
+                    'Resolution|res': ['per-obs|perobs','per-rasterset|perscan'],
                     'Moon Data Cut|cut': ['Off|_nocut', 'Early|_earlycut','Late|_latecut'],
                 },
 
@@ -122,7 +127,6 @@
                 'tgt': 'moon',
                 'res': 'perobs',
                 'cut': '_nocut',
-
             });
         </script>
     </figure>
@@ -130,16 +134,24 @@
     <p>Important clicks:</p>
     <ol>
         <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps'})">Angle Overall</a> vs <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'rps'})">Angle Per-Obs</a>.
-            See a similar behavior to the Moon data: Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
-        </li>
-        <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps'})">Angle Overall</a> vs <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'rps'})">Angle Per-Obs</a>
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'moon','res':'perobs'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'rps','res':'perscan'})">RPS</a> Scaling vs. Sun-Target Azimuth: We saw some indication in the Moon data that the scaling of the mirror was affected by the location of the Sun with respect to the mirror pointing. We don't see this effect in the RPS data so if this effect is real, the time constant must be longer than diurnal timescales.
 
         </li>
         <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps'})">Angle Overall</a> vs <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'rps'})">Angle Per-Obs</a>
-
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps'})">Angle Overall vs. Roll</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'rps'})">Angle Per-Obs vs. Roll</a>:
+            See a similar behavior to the Moon data -- Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
+        </li>
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'thm','tgt': 'moon','res':'perscan'})">Moon Roll vs. $\theta_m$</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'thm','tgt': 'rps','res':'perscan'})">RPS Roll vs. $\theta_m$</a>: We see structure in the Mirror Roll as a function of a mirror-fixed theta which appears relatively consistent between the Moon and RPS data (this is most easily seen when <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_earlycut'})">Early</a> or <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_latecut'})">Late</a> cut is turned on).
+        </li>
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'thm','tgt': 'moon','res':'perscan'})">Moon Tilt vs. $\theta_m$</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'thm','tgt': 'rps','res':'perscan'})">RPS Tilt vs. $\theta_m$</a>: We see structure in the Mirror Tilt in mirror-fixed theta, but the features aren't as consistent between the Moon and RPS data as the Roll was.
+        </li>
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'tiltmeter','tgt': 'rps','res':'perscan'})">RPS Roll vs. Tiltmeter</a>: There's no obvious dependence in Mirror Roll on the tiltmeter which provides more evidence that the RPS isn't moving in Azimuth to any significant degree.
+        </li>
+        <li>
+            RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts:
         </li>
     </ol>
 
@@ -186,11 +198,11 @@
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
-    <h3>Notes</h3>
+    <h3>Footnotes</h3>
     <div class="footnote">
+        <p>These are footnotes. Click the number to return to main text.</p>
         <p>
-        <sup>[<a name="ftn1" href="#sup1">1</a>]</sup>
-        This is a footnote. Click the number to return to main text.
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup> Note that the beam centroids for RPS data are calculated over the beams of all 13 rasters in a rasterset to both mitigate pointing effects from the Roger Effect (cite) and to allow good beam centroid fits for rasters during which the RPS angle is orthogonal to a given detector and the SNR on the beam amplitude is low.
     </p>
     </div>
     <h3>Code</h3>
