@@ -142,6 +142,10 @@ Talk about the different RPS observations. Also include a bit about the tilt met
             See a similar behavior to the Moon data -- Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
         </li>
         <li>
+            RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts: The mean focal plane angle has a DC offset depending on which data is cut despite refitting the source location. Cutting the "Late" data, the mean angle is $-0.02\pm0.03^\circ$, No cut: $0.01\pm0.03^\circ$, Early cut: $0.02\pm0.03^\circ$. I'm not terribly sure how to interpret this, but my naive notion is that not cutting any Moon data minimizes any bias in the FPU orientation angle.
+        </li>
+
+        <li>
             <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'thm','tgt': 'moon','res':'perscan'})">Moon Roll vs. $\theta_m$</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'thm','tgt': 'rps','res':'perscan'})">RPS Roll vs. $\theta_m$</a>: We see structure in the Mirror Roll as a function of a mirror-fixed theta which appears relatively consistent between the Moon and RPS data (this is most easily seen when <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_earlycut'})">Early</a> or <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_latecut'})">Late</a> cut is turned on).
         </li>
         <li>
@@ -150,9 +154,7 @@ Talk about the different RPS observations. Also include a bit about the tilt met
         <li>
             <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'tiltmeter','tgt': 'rps','res':'perscan'})">RPS Roll vs. Tiltmeter</a>: There's no obvious dependence in Mirror Roll on the tiltmeter which provides more evidence that the RPS isn't moving in Azimuth to any significant degree.
         </li>
-        <li>
-            RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts:
-        </li>
+
     </ol>
 
 
