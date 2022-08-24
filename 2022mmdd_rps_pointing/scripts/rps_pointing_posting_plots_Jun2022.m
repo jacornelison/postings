@@ -112,8 +112,8 @@ figdir = 'figs/';
 % Moon-derived mirror params -- Use only these and nothing else!
 mirror = struct();
 mirror.height = 1.4592;
-mirror.tilt= 44.8870;
-mirror.roll = -0.0750;
+mirror.tilt = 44.887;
+mirror.roll = -0.0697;
 
 
 fd.resx = reshape(prx(fd.ch),size(fd.ch))-fd.x;
@@ -383,7 +383,29 @@ for schind = 1:size(fd_per_sch.schnum,2)
 end
 
 
+% MJD, , ,raapp,decapp
+fname = fullfile('z:/dev/sun_check_2022Aug12.txt');
+f = fopen(fname);
+hd_sun = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',60);
+hd_sun{1} = hd_sun{1}-2400000.5;
+fclose(f);
+%fd.az_cen_sun = interp1(hd_sun{1},hd_sun{4},fd.t_cen);
+fd.az_cen_sun = interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t);
+fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t);
 
+%
+clc
+% MJD, , ,raapp,decapp
+fname = fullfile('z:/dev/moon_check_2022Aug12.txt');
+f = fopen(fname);
+hd_moon = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',61);
+hd_moon{1} = hd_moon{1}-2400000.5;
+fclose(f);
+%fd.az_cen_moon = interp1(hd_moon{1},hd_moon{4},fd.t_cen);
+fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
+fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
+
+save(sprintf('z:/dev/rps/rps_beam_fits_type%01i_rerun_cut.mat',schtype),'fd','scheds');
 
 %% Angle vs time
 

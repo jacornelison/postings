@@ -415,12 +415,12 @@ for targind = 1:2
     switch targind
         case 1
             load('z:/dev/rps/moon_beam_fits_phase_corrected_cut.mat')
-            unqsch = unique(fd.schind);
+            unqsch = unique(fd.schnum);
             for schedind = 1:length(unqsch)
-                ind0 = fd.schind==unqsch(schedind);
+                ind0 = fd.schnum==unqsch(schedind);
                 ind = ind0;
                 for scanind = 1:19
-                    ind = ind0 & fd.scanind==scanind;
+                    ind = ind0 & fd.rowind==scanind;
 
                     if ~isempty(find(ind))
                         fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
@@ -491,155 +491,160 @@ datetick('x','dd-mmm','keeplimits')
 grid on
 colormap('jet')
 
-%% Look at mirror stuff vs. stuff
 
-%load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
-load('z:/dev/rps/rps_beam_fits_rerun_all_cut.mat')
-load('z:/dev/rps/rps_tilt_data_2022.mat')
+%% Quiver plots per obs
 
-fd.tilt = polyval([0.2372 -0.0472],interp1(lj_data.time,lj_data.AIN0,fd.t));
-fd.az_cen_sun = interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t);
-fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t);
-fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
-fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
+winscale = 1.5;
+scaling = 10;
+fig = figure(1);
+fig.Position(3:4) = [500*winscale 450*winscale];
+clf;
+cm = colormap('turbo');
+clridx = floor(linspace(1,size(cm,1),3*19));
 
-mirror = struct();
-mirror.height = 1.4592;
-mirror.tilt= 44.88;
-mirror.roll = -0.06;
-rpsopt.mirror = mirror;
+% Things dealing with projection
+xlims = {[-1 1]*15 [-1 1]*15 [-1 1]*0.5};
+ylims = {[-1 1]*15 [-1 1]*15 [-0.5 0.8]};
+projlabels = {' [Degrees]','_m [Degrees]','_m [Meters]'};
+projnames = {'','_mirror','_mirror'};
 
-rpsopt.source.distance = 195.5;
-% Fit for the source params given our mirror info:
-%source = rps_fit_source(fd,rpsopt,p,'');
-%rpsopt.source = source;
+% Things dealing with fits
+fittype = {'overall','perdk'};%,'persch'};
 
-% Fit source with only data where sun is far away from source
-ind = ~inrange(wrapTo180(fd.az_cen_sun),-100,100);
-source = rps_fit_source(structcut(fd,ind),rpsopt,p,'');
-rpsopt.source = source;
 
-%
-% With new mirror and source parameters, update the pointing.
-[fd.x,fd.y,phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
-fd.x = reshape(fd.x,size(fd.ch));
-fd.y = reshape(fd.y,size(fd.ch));
-fd.resx = reshape(prx(fd.ch),size(fd.ch))-fd.x;
-fd.resy = reshape(pry(fd.ch),size(fd.ch))-fd.y;
-[resth, resr] = cart2pol(fd.resx,fd.resy);
-[fd.resx_rot, fd.resy_rot] = pol2cart(resth-fd.dk_cen*pi/180,resr);
-[fd.xm, fd.ym] = pol2cart((reshape(p.theta(fd.ch),size(fd.ch))-fd.dk_cen)*pi/180,reshape(p.r(fd.ch),size(fd.ch)));
-
-%%
 clc
-unqsch = unique(fd.schnum);
-[mirrparms, fpuparms, fpuparmsobs, nchans, sun_els, sun_azs, times, dksch,xs,ys,xms,yms,rs,thetas,tilts,thms, phias, phibs] = deal([]);
-% for schedind = 1:length(scheds)
-%     ind = ismember(fd.schnum,scheds{schedind});
-for schedind = 1:length(unqsch)
-    ind0 = fd.schnum==unqsch(schedind);
-    ind = ind0;
-    for rowind = 1:19
-        ind = ind0 & fd.rowind==rowind;
-        fd0 = structcut(fd,ind);
-        if ~isempty(find(ind))
-            mirror = rps_fit_mirror(fd0,rpsopt,p,'');
-            mirrparms(end+1,:) = [mirror.tilt,mirror.roll];
-
-            [fd0.x,fd0.y,phi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
-            fd0.x = reshape(fd0.x,size(fd0.ch));
-            fd0.y = reshape(fd0.y,size(fd0.ch));
-
-            fpu = fit_fpu_angle_and_scaling_from_xy(fd0,p);
-            fpuparmsobs(end+1,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
-            fpu = fit_fpu_angle_and_scaling_from_xy(structcut(fd,ind),p);
-            fpuparms(end+1,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
-            nchans(end+1) = length(find(ind));
-            sun_els(end+1) = nanmean(fd.el_cen_sun(ind));
-            sun_azs(end+1) = wrapTo180(nanmean(fd.az_cen_sun(ind)-source.azimuth));
-            times(end+1) = nanmean(fd.t(ind));
-            dksch(end+1) = -nanmean(fd.dk_cen(ind));
-            xs(end+1) = nanmean(fd.x(ind));
-            ys(end+1) = nanmean(fd.y(ind));
-            xms(end+1) = nanmean(fd.xm(ind));
-            yms(end+1) = nanmean(fd.ym(ind));
-            rs(end+1) = nanmean(sqrt(fd.x(ind).^2+fd.y(ind).^2));
-            thetas(end+1) = nanmean(atan2(fd.y(ind),fd.x(ind))*180/pi);
-            thms(end+1) = nanmean(atan2(fd.y(ind),fd.x(ind))*180/pi-fd.dk_cen(ind));
-            tilts(end+1) = nanmean(fd.tilt(ind));
-            phias(end+1) = nanmean(fd.phi_medsub(ind & (ismember(fd.ch,p_ind.a) & (p.mce(fd.ch)~=0)') | (ismember(fd.ch,p_ind.b) & (p.mce(fd.ch)==0)')));
-            phibs(end+1) = nanmean(fd.phi_medsub(ind & (ismember(fd.ch,p_ind.b) & (p.mce(fd.ch)~=0)') | (ismember(fd.ch,p_ind.a) & (p.mce(fd.ch)==0)')));
-            
-        end
-    end
-end
-
-%%
-clc
-% X-axis
-vals = {times-times(1), (times-floor(times))*24, dksch, sun_els, sun_azs, mirrparms(:,1),mirrparms(:,2),xs,ys,xms,yms,rs,wrapTo180(thetas),tilts,wrapTo180(thms),phias, phibs};
-valnames = {'t','tod','dk','sun_els','sun_azs','tilt','roll','x','y','xm','ym','r','theta','tiltmeter','thm','phia','phib'};
-vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Sun Elevation [Deg]','Sun Azimuth [Deg]','Mirror Tilt [Deg]','Mirror Roll [Deg]','x [deg]' ,'y [deg]','x_m [deg]' ,'y_m [deg]',...
-    'r [deg]','theta [deg]','tilt [deg]','theta_m [Deg]','\phi_A med-sub [Deg]','\phi_B med-sub [Deg]'};
-vallims = {[-1 60], [0 24] [-100 200] [4 26] [-185 185] [-100 100],[44.85 44.91], [-0.12 -0.04]};
-
-% Y-axis
-if 0
-    parms = {fpuparms(:,1), fpuparms(:,2)};
-    parmnames = {'fpu_ang','fpu_scale'};
-    parmlabels = {'FPU Angle [Deg]','FPU Scaling [Deg]'};
-    parmlims = {[-0.1 0.4], [0.992 1.002]};
-
-elseif 0
-    parms = {mirrparms(:,1), mirrparms(:,2)};
-    parmnames = {'tilt','roll'};
-    parmlabels = {'Tilt [Deg]','Roll [Deg]'};
-    parmlims = {[44.85 44.91], [-0.12 -0.02]};
-
-else
-    parms = {mirrparms(:,1), mirrparms(:,2), fpuparms(:,1), fpuparms(:,2), fpuparmsobs(:,1), fpuparmsobs(:,2)};
-    parmnames = {'tilt','roll','fpu_ang','fpu_scale','fpu_ang_obs','fpu_scale_obs'};
-    parmlabels = {'Tilt [Deg]','Roll [Deg]','FPU Angle [Deg]','FPU Scaling [Deg]','FPU Angle Obs [Deg]','FPU Scaling Obs [Deg]'};
-    parmlims = {[44.76 44.92], [-0.12 0],[-0.75 0.4], [0.99 1.005],[-0.75 0.4], [0.99 1.005]};
-end
-% Pager click 3
-%fitparms = {parms, {fpuparmsobs(:,1), fpuparmsobs(:,2)}};
-fitnames = {'','_perobs'};
-
-
-% Other stuff
-clrs = [ones(1,11) ones(1,8)*2 ones(1,8)*3];
-
-
-
-for fitind = 1%1:length(fitnames)
-    %parms = fitparms{fitind};
-
-for valind = 1:length(vals)
-    for parmind = 1:length(parms)
-        fig = figure(1);
-        fig.Position(3:4) = [900 300];
-        clf; hold on;
+for projind = 1:2
+    for fitind = 1:2
         
-        if 1
-            scatter(vals{valind},parms{parmind},14,floor(times),'filled')
-            colormap('jet')
-        else
-            scatter(vals{valind},parms{parmind},14,1:length(scheds),'filled')
-            colormap('jet')
-        end
-        grid on
-        xlabel(vallabels{valind})
-        ylabel(parmlabels{parmind})
-        %xlim(vallims{valind})
-        ylim(parmlims{parmind})
+            load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
+            
+            [mirrorparms, mirrorerrs, nchans] = deal([]);
+            for schedind = 1:length(scheds)
+                ind = ismember(fd.schnum,scheds{schedind});
 
-        figname = fullfile(figdir,sprintf('%s_vs_%s%s.png',parmnames{parmind},valnames{valind},fitnames{fitind}));
-        saveas(fig,figname)
+                if ~isempty(find(ind))
+                    fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
+                    mirrorparms(schedind,:) = fd0.fitparam;
+                    mirrorerrs(schedind,:) = fd0.fiterr;
+                    nchans(schedind) = length(find(ind));
+
+                end
+            end
+            for schedind = 1:length(scheds)
+                ind = ismember(fd.schnum,scheds{schedind});
+
+                fd0 = structcut(fd,ind);
+
+                % Only keep channels that has its pair
+                if 1
+                    ind = true(size(fd0.ch));
+                    for chind = 1:length(fd0.ch)
+                        cia = find(p_ind.a==fd0.ch(chind));
+                        cib = find(p_ind.b==fd0.ch(chind));
+                        if ~isempty(cia)
+                            idx = find(fd0.ch==p_ind.b(cia) & fd0.schnum==fd0.schnum(chind) & fd0.rowind==fd0.rowind(chind));
+
+                        elseif ~isempty(cib)
+                            idx = find(fd0.ch==p_ind.a(cib) & fd0.schnum==fd0.schnum(chind) & fd0.rowind==fd0.rowind(chind));
+                        end
+
+                        if isempty(idx)
+                            ind(chind) = false;
+                        end
+                    end
+                    fd0 = structcut(fd0,ind);
+                end
+
+                mirror = struct();
+                mirror.height = 1.4592;
+                switch fitind
+                    case 1
+                        mirror.tilt = wmean(mirrorparms(:,1),nchans.^2');
+                        mirror.roll = wmean(mirrorparms(:,2),nchans.^2');
+
+                    case 2
+                        mirror.tilt = mirrorparms(schedind,1);
+                        mirror.roll = mirrorparms(schedind,2);
+                end
+
+                source = struct();
+                source.azimuth = reshape(fd0.az_cen_src,[],1);
+                source.distance = 3.8e8*cosd(reshape(fd0.el_cen_src,[],1));
+                source.height = 3.8e8*sind(reshape(fd0.el_cen_src,[],1));
+
+
+
+                [x, y, phi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
+
+                prxsch = prx(fd0.ch);
+                prysch = pry(fd0.ch);
+
+                clf; hold on;
+                switch projind
+                    case 1
+                        x0 = prxsch;
+                        y0 = prysch;
+                        resx = prxsch-x;
+                        resy = prysch-y;
+                    case 999
+                        xtrack = [1, -1]*10;
+                        ytrack = [1, -1]*10;
+                        [x_track_mirr, y_track_mirr] = get_mirror_coords(fd0.dk_cen,xtrack,ytrack,zeros(size(fd0.ch)),mount,mirror);
+
+                        mk = {'^','+'};
+                        for j = 1:length(xtrack)
+                            plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
+                        end
+
+                        [x_mirr, y_mirr] = get_mirror_coords(fd0.dk_cen,prxsch',prysch',zeros(size(fd0.ch)),mount,mirror);
+                        [x_fit_mirr, y_fit_mirr] = get_mirror_coords(fd0.dk_cen,x',y',zeros(size(fd0.ch)),mount,mirror);
+                        x0 = x_mirr;
+                        y0 = y_mirr;
+                        resx = x_mirr-x_fit_mirr;
+                        resy = y_mirr-y_fit_mirr;
+                    case 2
+                        r0 = p.r(fd0.ch);
+                        th0 = (p.theta(fd0.ch) - fd0.dk_cen');
+                        x0 = 2 * sind(r0 / 2) .* cosd(th0) * 180 / pi;
+                        y0 = 2 * sind(r0 / 2) .* sind(th0) * 180 / pi;
+                        resx = prxsch-x;
+                        resy = prysch-y;
+                        [resth, resr] = cart2pol(resx,resy);
+                        resth = resth - fd0.dk_cen'*pi/180;
+                        [resx, resy] = pol2cart(resth,resr);
+
+                end
+
+
+                %                 clf;
+                %                 quiver(x0,y0,resx*scaling,resy*scaling,0)
+                %                 hold on;
+
+                if 1
+                    s = scheds{schedind};
+                    for si = 1:length(s)
+                        for rowind = 1:19
+                            ind = fd0.schnum==s(si) & fd0.rowind == rowind;
+                            quiver(x0(ind),y0(ind),resx(ind)*scaling,resy(ind)*scaling,0,'color',cm(clridx((si-1)*19+rowind),:));
+                        end
+                    end
+                end
+
+
+                grid on;
+                xlim(xlims{projind})
+                ylim(ylims{projind})
+                xlabel(sprintf('X%s',projlabels{projind}))
+                ylabel(sprintf('Y%s',projlabels{projind}))
+                title({sprintf('Beam Center Residuals, x%i, %s', scaling,corrtitle{corrind}),...
+                    sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirror.tilt,mirror.roll,mjd2datestr(moonsch{scheds{schedind}(1)}.t1))...
+                    })
+                figname = fullfile(figdir,sprintf('quiver_dk%s_fit_%s%s.png',titles{schedind},fittype{fitind},projnames{projind}));
+                saveas(fig,figname)
+            end
+        
     end
 end
-end
-
 
 
 

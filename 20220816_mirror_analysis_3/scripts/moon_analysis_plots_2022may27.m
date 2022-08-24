@@ -3,6 +3,7 @@ function moon_analysis_plots_2022may27()
 % This was run in Matlab 2022a and is only sparsely commented.
 % Contact James Cornelison if you need help.
 
+clc
 clear all
 datadir = 'data/';
 %Load the stuff.
@@ -253,6 +254,33 @@ for schind = 1:length(scheds)
         end
     end
 end
+
+% Grab the moon-sun angles
+% MJD, , ,raapp,decapp
+fname = fullfile(datadir,'/sun_check_2022Aug12.txt');
+f = fopen(fname);
+hd_sun = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',60);
+hd_sun{1} = hd_sun{1}-2400000.5;
+fclose(f);
+%fd.az_cen_sun = interp1(hd_sun{1},hd_sun{4},fd.t_cen);
+fd.az_cen_sun = interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t_cen);
+fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t_cen);
+
+%
+clc
+% MJD, , ,raapp,decapp
+fname = fullfile(datadir,'/moon_check_2022Aug12.txt');
+f = fopen(fname);
+hd_moon = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',61);
+hd_moon{1} = hd_moon{1}-2400000.5;
+fclose(f);
+%fd.az_cen_moon = interp1(hd_moon{1},hd_moon{4},fd.t_cen);
+fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t_cen);
+fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t_cen);
+
+
+% save the big dataset
+save('z:dev/rps/moon_beam_fits_phase_corrected_cut.mat','fd','scheds')
 
 %%%%%%%%%%%
 % REAL Posting plots
@@ -762,28 +790,6 @@ for projind = 1:2
     end
 end
 
-%% Grab the moon-sun angles
-% MJD, , ,raapp,decapp
-fname = fullfile(datadir,'/sun_check_2022Aug12.txt');
-f = fopen(fname);
-hd_sun = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',60);
-hd_sun{1} = hd_sun{1}-2400000.5;
-fclose(f);
-%fd.az_cen_sun = interp1(hd_sun{1},hd_sun{4},fd.t_cen);
-fd.az_cen_sun = interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t_cen);
-fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t_cen);
-
-%
-clc
-% MJD, , ,raapp,decapp
-fname = fullfile(datadir,'/moon_check_2022Aug12.txt');
-f = fopen(fname);
-hd_moon = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',61);
-hd_moon{1} = hd_moon{1}-2400000.5;
-fclose(f);
-%fd.az_cen_moon = interp1(hd_moon{1},hd_moon{4},fd.t_cen);
-fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t_cen);
-fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t_cen);
 
 
 %% fit for mirror per time/tod/dk.
@@ -854,6 +860,7 @@ end
 
 %% Look at scaling and rotation vs. stuff
 
+corrnames = {'','_phase_corrected'};
 corrind = 2;
 load(sprintf('z:/dev/moon_analysis/moon_beam_fits%s_cut.mat',corrnames{corrind}))
 
