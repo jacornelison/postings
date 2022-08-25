@@ -376,11 +376,12 @@
         <li>
             <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'thm','tgt': 'moon','res':'perscan'})">Moon Tilt vs. $\theta_m$</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'thm','tgt': 'rps','res':'perscan'})">RPS Tilt vs. $\theta_m$</a>: We see structure in the Mirror Tilt in mirror-fixed theta, but the features aren't as consistent between the Moon and RPS data as the Roll was.
         </li>
-        <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'tiltmeter','tgt': 'rps','res':'perscan'})">RPS Roll vs. Tiltmeter</a>: There's no obvious dependence in Mirror Roll on the tiltmeter which provides more evidence that the RPS isn't moving in Azimuth to any significant degree.
-        </li>
+
         <li>
             RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts: The mean focal plane angle has a DC offset depending on which data is cut despite refitting the source location. Cutting the "Late" data, the mean angle is -0.02&deg;, No cut: 0.01&deg;, Early cut: 0.02&deg; all with a STD of 0.035&deg; and an error-on-the-mean of 0.01&deg;.
+        </li>
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'tiltmeter','tgt': 'rps','res':'perscan'})">RPS Roll vs. Tiltmeter</a>: There's no obvious dependence in Mirror Roll on the tiltmeter which provides more evidence that the RPS isn't moving in Azimuth to any significant degree.
         </li>
     </ol>
 
@@ -489,8 +490,13 @@ Important links:
     <p>
         Regarding the uncertainty of the FPU angle, I calculate upper limit on the statistical uncertainty by comparing the per-rasterset FPU angles between the two Type-11 observations at DK=0&deg; which were taken within a few hours of each other.
         The statistical uncertainty is given as the 1-&sigma; standard deviation of the difference between the two datasets divided by $\sqrt{2}$ which comes out to 0.03&deg;.
-        From point 5 in both sections, 
+        From point 5 in both sections, the relationship between the mirror and source allows us to tighten our constraints to more than just an error propagation of the mirror uncertainty from the Moon data. So our systematic uncertainty comes down to our ability to determine if our FPU angle is significantly biased which is driven by the scatter on the FPU angle itself (0.035&deg;).
     </p>
+
+    $$
+    \sigma_{\phi_s} = \pm0.030\text{(stat)}\pm0.035\text{(sys)}
+    $$
+
 
 </section>
 
