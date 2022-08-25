@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Posting Title — J. Cornelison</title>
+    <title>2022 RPS Analysis I — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -49,9 +49,104 @@
 <p>
     We acquire beam maps of a given detector by scanning over the RPS in 9&deg;Az&times;2&deg;El rasters at 1.5&deg;/s in Az and 0.1&deg; steps in El -- all with the RPS fixed at a given angle WRT gravity.
     We get modulation curves by completing multiple rasters over the same part of the focal plane with the RPS commanded to a different angle for each raster, which we call a rasterset.
-    Each rasterset includes 13 rasters with the RPS rotated from -180&deg; to 180&deg; in 30&deg; increments and takes about 40 minutes to complete.
+    Each rasterset includes 13 rasters with the RPS rotated from -180&deg; to 180&deg; in 30&deg; increments and takes about 40 minutes to complete -- compare to a full Moon schedule which takes a roughly an hour.
     A typical RPS schedule run by GCP consists of 19 rastersets where the first rasterset starts with an El offset of -12.5&deg; and steps in 1.5&deg; between each rasterset to ensure there are no gaps in coverage over the focal plane [see Fig. 1.1 of <a href="JAC2022a"></a> for an example].
     In this posting, I'll typically refer to the Moon and RPS data in terms of rasters, rastersets, or observations. Each observation typically consists of 3 schedules and generally maps beams across the entire focal plane at a single DK angle.
+</p>
+
+    <p>
+        Aside from the main suite of science-grade RPS schedules, we also completed a number of cross check schedules. These schedules are mostly identical to the our main schedules except we adjust one or two parameters depending on the particular systematics we want to probe. We categorize the schedules by their schedule number where the most recent RPS science schedule is Type-5 and proceeding schedule types denote cross-check schedules<sup><a name="sup1" href="#ftn1">[1]</a></sup>. A list of the observations we collected in Jan 2022, their schedule types and their uses is shown in Table 1.1.
+    </p>
+
+
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th colspan="1">Schedule Type</th>
+                <th colspan="1">Obs. Length (Hrs.)</th>
+                <th colspan="1">Total Time (Hrs.)</th>
+                <th colspan="1">Adjusted Parameter</th>
+                <th colspan="1">Systematics Probed</th>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>13.5</td>
+                <td>420.4</td>
+                <td>None</td>
+                <td>Standard RPS Observations</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>13.6</td>
+                <td>13.6</td>
+                <td>RPS angle -180 to 180 Minus DK angle</td>
+                <td>Importance of nulling mod curve</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>1</td>
+                <td>70.7</td>
+                <td>Target Moon, only one raster</td>
+                <td>Standard Moon Observations</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>0.1</td>
+                <td>0.5</td>
+                <td>No Mount Movement</td>
+                <td>Rotation stage operational checks</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>0.5</td>
+                <td>22.9</td>
+                <td>Quick-turnaround 1&deg;&times;1&deg; single-pair map</td>
+                <td>System stability</td>
+            </tr>
+            <tr>
+                <td>9.1</td>
+                <td>0.3</td>
+                <td>3.5</td>
+                <td>1&deg;&times;1&deg; map, 45&deg; increments</td>
+                <td>&sigma;-Angle vs. Mod Curve Samples</td>
+            </tr>
+            <tr>
+                <td>9.2</td>
+                <td>1.1</td>
+                <td>11.0</td>
+                <td>1&deg;&times;1&deg; map, 10&deg; increments</td>
+                <td>&sigma;-Angle vs. Mod Curve Samples</td>
+            </tr>
+            <tr>
+                <td>9.3</td>
+                <td>0.5</td>
+                <td>4.6</td>
+                <td>1&deg;&times;1&deg; map, No Homing between obs.</td>
+                <td>RPS homing precision</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>3.1</td>
+                <td>9.2</td>
+                <td>RPS fixed & boresight rotated instead</td>
+                <td>Pointing model validation</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>3.2</td>
+                <td>9.2</td>
+                <td>Rasters 27&deg; in Az</td>
+                <td>Short- & long-timescale mirror deformation</td>
+            </tr>
+
+        </table>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+<p>
+    My last few postings on the Moon analysis used only the Type-7 data. This posting mostly focuses on the Type-5 main RPS data, but I will also look into the Type-10 and Type-11 cross-check data.
 </p>
 
     <h3>RPS Analysis in a nutshell</h3>
@@ -66,8 +161,6 @@
 
         </figcaption>
     </figure>
-
-
 
 
     <p>The Gaussian we fit is done at the timestream level in raw mount coordinates <a href="KWY2007"></a> and is of the form:</p>
@@ -97,13 +190,13 @@
     </p>
     <p>
         The polarization angle $\psi$ in Equation \ref{eq:modcurve} is a relative measurement and is agnostic to the orientation of the focal plane.
-        We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the focal plane, by combining $\psi$ with the angle between the telescope's focal plane orientation and the RPS's orientation, called $\phi_s$, which is computed through the pointing model.
+        We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the focal plane, by combining $\psi$ with the angle between the telescope's focal plane orientation and the RPS's orientation, called $\phi_s$, which is computed through the pointing model <a href="JAC2019"></a>.
     </p>
     \begin{equation}
-    \phi_d \equiv \psi + \phi_s
+    \phi_d = \psi + \phi_s
     \end{equation}
 
-    <p>In application, $\phi_s$ is computed for at every RPS angle to account for any polarization projection effects from the mirror<sup><a name="sup1" href="#ftn1">[1]</a></sup>:</p>
+    <p>In application, $\phi_s$ is computed for at every RPS angle to account for any polarization projection effects from the mirror<sup><a name="sup2" href="#ftn2">[2]</a></sup>:</p>
 
 
     \begin{equation}\label{eq:modcurve2}
@@ -113,7 +206,7 @@
     <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
 
 <p>
-    Because this $\phi_s$ term tracks the focal plane orientation, it is sensitive to the inputs of the pointing model. As such, the rest of this posting is dedicated to characterizing possible sources of systematics and establishing a constraint on the total uncertainty of $\phi_s$.
+    Because this $\phi_s$ term tracks the focal plane orientation, it is sensitive to the inputs of the pointing model. As such, the rest of this posting is dedicated to characterizing possible sources of systematics on the focal plane orientation and establishing a constraint on the total uncertainty of $\phi_s$.
 </p>
 
 </section>
@@ -124,11 +217,12 @@
     <h3>Estimating RPS Location</h3>
 
 
-<p>I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c">JAC2022c</a> and fit for a source location over all DK angles using a method similar to how we fit for mirror parameters described in &sect;2 of <a href="JAC2022a"></a> except we take the mirror parameters in the pointing model as known and instead let the source azimuth and elevation be free parameters:</p>
+<p>I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c">JAC2022c</a> and fit for a source location to the Type-5 Main RPS data over all DK angles using a method similar to how we fit for mirror parameters described in &sect;2 of <a href="JAC2022a"></a> except we take the mirror parameters in the pointing model as known and instead let the source azimuth and elevation be free parameters:</p>
     <p>With <tt>beam_map_pointing_model.m</tt> as our
-        model we computer the instrument-fixed coordinates in x/y:</p>
+        model we computer the instrument-fixed coordinates in x/y <a href="JAC2021"></a>:</p>
 
     \begin{equation}
+    \label{bmpm}
     [x,\,y,\,\phi] = \text{beam_map_pointing_model}(Az_{src},\,El_{src} | A_{0},\,E_{0},\,K_{0},\,Mount,\,Mirror)
     \end{equation}
 
@@ -138,31 +232,61 @@
     <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
 
     \begin{equation}
+    \label{sourcechi2}
     \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}
     \end{equation}
 
+    <h3>FPU Scaling and orientation</h3>
+    <p>
+        The pointing model assumes a perfectly flat, rigid mirror. I track any deviations from these assumptions using four additional parameters that affect the focal plane globally: Angle, Scaling, X-Translation, and Y-translation. After converting from raw mount coordinates to instrument-fixed $x,\,y$, I apply these terms as follows:
+    </p>
+
+    \begin{equation}
+    \begin{split}
+    x &= B\left[\;\left(x_{0}+x_t\right)\cos\zeta-\left(y_{0}+y_t\right)\sin\zeta\;\right]\\
+    y &= B\left[\;\left(x_{0}+x_t\right)\sin\zeta+\left(y_{0}+y_t\right)\cos\zeta\;\right]\\
+    \end{split}
+    \end{equation}
+
+    <p>
+    where $\zeta$ is the rotation angle, $B$ is the scaling, and $x_t,\,y_t$ are the x/y translations.
+    I minimize the same chi-square Eq. \ref{sourcechi2} to estimate these terms.
+    </p>
 
     <h3>Beam Center Residuals</h3>
-    <p>From <a href="JAC2022c">JAC2022c</a>, we have evidence that the mirror is physically moving from measurement-to-measurement, so in the following figures -- after fitting an overall source position -- I keep the source fixed and fit for the mirror parameters per-observation (and per-rasterset as I'll discuss later).</p>
     <p>
-        <font color="red">Show a pager of the quivers with Overall/per-obs mirror fits and also angle/scaling offsets applied.</font>
+        The pager below shows the residuals between the CMB-derived and RPS-derived best-fit beam centroids. The quivers are color-coded by the chronological order of the rastersets where blue is the earliest and red is the latest.
     </p>
+
+    <ul>
+        <li>
+            <b>Obs DK</b> - Observations, denoted by the DK at which they were taken, in chronological order.
+        </li>
+        <li><b>Mirror Tilt/Roll Overall</b> - From <a href="JAC2022c">JAC2022c</a>, we have evidence that the mirror is physically moving from measurement-to-measurement, so after fitting an overall source position I keep the source fixed and fit for the mirror parameters per-observation for the <i>Per-Obs</i> option. For the <i>Overall</i> option, I leave the mirror parameters fixed at Tilt=44.88&deg;/Roll=-0.07&deg;.
+        </li>
+        <li>
+            <b>Correction</b> - These options apply the best-fit angle/scaling/translation parameters described in &sect;2.2 to the RPS-derived beam centroids before plotting.
+        </li>
+        <li>
+            <b>Coord</b> - Choose between an instrument-fixed or a quasi-mirror-fixed coordinate system which is calculated by derotating the DK angle at which the observation was done.
+        </li>
+    </ul>
 
         <p></p>
         <figure>
-            <img alt="Name pager" id="quiver2pager" src="#" />
+            <img alt="Name pager" id="quiverpager" src="#" />
             <figcaption>
 
             </figcaption>
             <script type="text/javascript">
                 function fcn(params){
-                        return 'figs/quiver_dk'+params.dk+'_fit_'+params.fit+params.coord+'_'+params.corr+'.png';
+                        return 'figs/quiver_dk'+params.dk+'_fit_'+params.fit+params.coord+'_'+params.corr+'_rps.png';
                 }
 
-                pager.link("#quiver2pager",
+                pager.link("#quiverpager",
                     {
-                        'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
-                        'Mirror Tilt/Roll Fit|fit' : ['overall','perobs'],
+                        'Obs DK|dk' : ['0','61','23','174','68_1','-81','90','45','135','68_2'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
+                        'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs'],
                             'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
                         'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
                      },
@@ -176,8 +300,15 @@
             </script>
             </figure>
 
+    <p>
+        As I mentioned in &sect;1, a single RPS rasterset takes almost the same amount of time as a whole Moon schedule. That we see such high variation in the quivers across the focal plane isn't particularly surprising because we saw a relatively large variation in the Moon data from observation-to-observation. Because the variance is so high, it is hard to say by eye that fitting the mirror parameters per-observation reduces the residuals. I think this is also true for the global FPU parameters with the exception of the scaling which appears to reduce the residuals for all but one or two observations. In the following section, however, we can see more clearly that it's possible to track the mirror fluctuations not only on the per-obs level, but even the per-rasterset level.
+    </p>
+
+
     <h3>Probing Pointing Systematics</h3>
-    <p>Figure 2.2 shows a pager of the mirror tilt and roll along with an overall FPU angle and scaling fits as a function of multiple different variables to probe of possible sources of systemtatics. The data are color-coded by the chronological order in which the observations were taken.</p>
+
+
+    <p>I check for possible correlations in the mirror and FPU parameters in the pager in Figure 2.2.. The pager plots the mirror tilt and roll along with the overall FPU angle and scaling fits as a function of multiple different variables. The data are color-coded by the chronological order in which the observations were taken.</p>
 
 
     <ul>
@@ -185,13 +316,13 @@
             <b>Y-Axis</b> - Dependent variable. FPU Angle/Scale overall uses a fixed parameter for the mirror location whereas FPU Angle/Scale per obs uses the per-obs (or per-rastersets) fits for the mirror when calculating x/y coordinates to derive the angle/scaling.
         </li>
         <li>
-            <b>X-Axis</b> - Independent variable. $x_m$, $y_m$ and $\theta_m$ are the beam centeroids with the DK-angle derotated to get us into a quasi-mirror-fixed coordinate system. The tiltmeter values are the tilt readout at the start of the obs or rasterset and so only make sense for the per-rasterset click.
+            <b>X-Axis</b> - Independent variable. $x_m$, $y_m$ and $\theta_m$ are the beam centeroids with the DK-angle derotated to get us into a quasi-mirror-fixed coordinate system -- $x_m$ is showing trends along the Mirror Roll, $y_m$ shows trends along Mirror Tilt, and $\theta_m$ probes any directional trends. The tiltmeter values are the tilt readout at the start of the obs or rasterset and so only make sense for the per-rasterset click.
         </li>
         <li>
             <b>Target</b> - Switch between Moon and RPS Main (Type 5) data.
         </li>
         <li>
-            <b>Resolution</b> - A data point represents either an entire observation or a single rasterset (or just raster for the Moon data) within that observation. I included this option because while the Moon observations only take 3 hours, the RPS observations take ~39 hours to complete and thus any diurnal effects would be washed out. RPS rastersets take ~40 minutes to complete which are much close in time resolution to the Moon data.
+            <b>Resolution</b> - A data point represents either an entire observation or a single rasterset (or just raster for the Moon data) within that observation. I included this option because while the Moon observations only take 3 hours, the RPS observations take ~39 hours to complete and thus any diurnal effects would be washed out. RPS rastersets take ~40 minutes to complete which are much more close in time resolution to the Moon data we compare to. Whereas each data point in the <i>per-obs</i> option represents the average of all of the detectors for the whole focal plane, each datapoint in the <i>per-rasterset</i> represents the average of all of the detectors in just a 9&deg;Az&times;2&deg;El area on the focal plane.
         </li>
         <li>
             <b>Moon Data Cut</b> - Use mirror parameters from <a href="JAC2022c">JAC2022c</a> Table 2.2 for computing the source location in the RPS analysis: without the <i>Early</i> data (Nov30-Dec6) or <i>Late</i> data (Dec9-Jan26) -- the late data cut uses Tilt=44.88 Roll=-0.09.
@@ -230,12 +361,12 @@
     <p>Important clicks:</p>
     <ol>
         <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'moon','res':'perobs'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'rps','res':'perscan'})">RPS</a> Scaling vs. Sun-Target Azimuth: We saw some indication in the Moon data that the scaling of the mirror was affected by the location of the Sun with respect to the mirror pointing. We don't see this effect in the RPS data so if this effect is real, the time constant must be longer than diurnal timescales.
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'moon','res':'perobs'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'rps','res':'perscan'})">RPS</a> Scaling vs. Sun-Target Azimuth: We saw some indication in the Moon data that the scaling of the mirror was affected by the location of the Sun with respect to the mirror pointing. If you squint real hard at the RPS data, you can convince yourself of a slight dip in the scaling around -25&deg;, but it's hard to say anything definitive here.
 
         </li>
         <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps'})">Angle Overall vs. Roll</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'rps'})">Angle Per-Obs vs. Roll</a>:
-            See a similar behavior to the Moon data -- Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps','res':'perscan'})">Angle Overall vs. Roll</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'rps','res':'perscan'})">Angle Per-Obs vs. Roll</a>:
+            We can draw the same conclusion that we did from the Moon data <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'moon','res':'perobs'})">Overall</a> vs. <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'moon','res':'perobs'})">Per-Obs</a> -- Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
         </li>
         <li>
             RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts: The mean focal plane angle has a DC offset depending on which data is cut despite refitting the source location. Cutting the "Late" data, the mean angle is -0.02&deg;, No cut: 0.01&deg;, Early cut: 0.02&deg; all with a STD of 0.035&deg; and an error-on-the-mean of 0.01&deg;.
@@ -254,16 +385,111 @@
     </ol>
 
 <p>
-    ... We'll have to fit the mirror on a per-rasterset bases in order to mitigate any bias on the focal plane orientation.
+    Before drawing any strong conclusions from the information here, I put the Type-11 cross-check data through the same analysis as was done in this section in order to provide an extra independent cross-check of the instrumental effects that we see.
 </p>
 
+    <h3>Comparing to Type-11 data</h3>
+    <p>
 
-<!--    <figure>-->
-<!--        <img src="figs/fpu_rot_vs_dk.png" />-->
-<!--        <figcaption>-->
+        The primary difference between Type-5 and Type-11 data is that, for each raster, we perform three 9&deg;Az&times;2&deg;El scans where the first scan is offset in Az by -13&deg;, the second by -4.5&deg;Az, and the third by 4&deg;Az.
+        This ensures that we're mapping beams at each end of the focal plane (and thus the mirror) and allows us to trace systematics from one side of the mirror to the other on a shorter timescale. For comparison, the moon data samples one end of the mirror to the other along the Roll axis in roughly 2 hours, the Type-5 RPS data does the same in roughly 26 hours, and the Type-11 RPS data does this in about 40 minutes.
+    </p>
 
-<!--        </figcaption>-->
-<!--    </figure>-->
+    <p>
+        The pager below shows the quiver plots of the Type-11 data with the same options as in Fig 2.1. Because we were short on time at this point, the Type-11 schedules only covered a small portion of the focal plane in elevation, but the data quality here is still quite good.
+    </p>
+
+    <figure>
+        <img alt="Name pager" id="quiver2pager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/quiver_dk'+params.dk2+'_fit_'+params.fit+params.coord+'_'+params.corr+'_rps11.png';
+            }
+
+            pager.link("#quiver2pager",
+                {
+                    'Obs DK|dk2' : ['0_1','0_2','90_1','90_2','-68','-23'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
+                    'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs'],
+                    'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
+                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                },
+                fcn);
+            pager.setparams({
+                'fit': 'overall',
+                'dk2' : '0_1',
+                'corr': 'none',
+                'coord': '',
+            });
+        </script>
+    </figure>
+
+    <p>
+        We show figure 2.2 again, but this time with the Type-11 data included and it reinforces many of the points that we made in the previous section.
+    </p>
+
+    <figure>
+        <img alt="Maps pager" id="versuspager2" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#versuspager2",
+                {
+                    'Y-Axis|param' : ['Tilt|tilt','Roll|roll','FPU Angle Overall|fpu_ang','FPU Scale Overall|fpu_scale','FPU Angle per obs|fpu_ang_obs','FPU Scale per obs|fpu_scale_obs'],
+                    'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs','Mirror Tilt|tilt','Mirror Roll|roll','$x$|x','$y$|y','$r$|r','$\\theta$|theta','$x_m$|xm','$y_m$|ym','$\\theta_m$|thm','tiltmeter'],
+                    'Target|tgt2': ['Moon|moon','RPS Type-5|rps' ,'RPS Type-11|rps11'],
+                    'Resolution|res': ['per-obs|perobs','per-rasterset|perscan'],
+                    'Moon Data Cut|cut': ['Off|_nocut', 'Early|_earlycut','Late|_latecut'],
+                },
+
+                function(params) {
+                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt2+'_'+params.res+params.cut+'.png';
+                });
+            pager.setparams({
+                'param': 'fpu_scale_obs',
+                'x': 'sun_azs',
+                'tgt2': 'rps11',
+                'res': 'perscan',
+                'cut': '_nocut',
+            });
+        </script>
+    </figure>
+Important links:
+    <ol>
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt2': 'moon','res':'perobs','cut':'_nocut'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt2': 'rps','res':'perscan'})">Type-5 RPS</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt2': 'rps11','res':'perscan'})">Type-11 RPS</a> Scaling vs. Sun-Target Azimuth: The scaling dependence on the mirror becomes readily apparent in the Type-11 data which is consistent with the Moon data. My guess is that the outliers are probably due to clouds obscuring the sun.
+        </li>
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps11','res':'perscan'})">Angle Overall vs. Roll</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt2': 'rps11','res':'perscan'})">Angle Per-Obs vs. Roll</a>:
+            We can draw the same conclusion that we did from the Moon data <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt2': 'moon','res':'perobs'})">Overall</a> vs. <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt2': 'moon','res':'perobs'})">Per-Obs</a> -- Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
+        </li>
+        <li>
+            Type-11 RPS Angle Vs. Time-of-Day with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_earlycut'})">Early</a> cuts: We also see a DC offset here depending on which Moon data is cut when computing the mirror parameters and determining the source location. Cutting the "Late" data, the mean angle (calculated per-observaiton) is -0.01&deg;, No cut: 0.02&deg;, Early cut: 0.03&deg; all with a notably lower STD of 0.017&deg; and an error-on-the-mean of 0.01&deg;.
+        </li>
+
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'xm','tgt2': 'moon','res':'perscan'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'xm','tgt2': 'rps','res':'perscan'})">Type-5 RPS </a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'xm','tgt2': 'rps11','res':'perscan'})">Type-11 RPS</a>  Roll vs. $x_m$: We have consistency across all three independent datasets of a dependence of Roll on the location of the mirror.
+        </li>
+        <li>
+        <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'ym','tgt2': 'moon','res':'perscan'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'ym','tgt2': 'rps','res':'perscan'})">Type-5 RPS </a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'ym','tgt2': 'rps11','res':'perscan'})">Type-11 RPS</a>  Tilt vs. $y_m$: There appear to be larger long-timescale drifts in the Tilt, but one could reasonably argue that the data are consistent here as well. This is more convincing when look at at this with <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_earlycut'})">Early</a> or <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_latecut'})">Late</a> cut turned on.
+        </li>
+    </ol>
+
+    <h3>Discussion and Conclusions</h3>
+    <p>
+        The Type-11 data served as an effective independent cross-check of the phenomena we're seeing in both the Moon and RPS data. We have confirmation of real deformation across the mirror on both short (~1hr) and long (~days) timescales and we have evidence that assuming a single mirror orientation for all observations can induce a bias in the apparent orientation of the focal plane. Both the Type-5 and Type-11 data suggest that we have sufficient constraining power on the mirror such that I can fit a mirror orientation to the RPS data on the rasterset level to avoid this FPU angle bias.
+    </p>
+    <p>
+        The Type-11 data confirms the scaling dependence on the Sun's location WRT to the mirror. Because this will affect the pointing and in turn the projection of polarization, it might be worth accounting for this as well though it's not clear much this matters. In addition, this also means that all of the Moon data will be included in calculating the overall mirror orientation when determining the source location and we can be confident that we're not impinging a bias on the FPU angle.
+    </p>
+    <p>
+        Regarding the uncertainty of the FPU angle, I calculate upper limit on the statistical uncertainty by comparing the per-rasterset FPU angles between the two Type-11 observations at DK=0&deg; which were taken within a few hours of each other.
+        The statistical uncertainty is given as the 1-&sigma; standard deviation of the difference between the two datasets divided by $\sqrt{2}$ which comes out to 0.03&deg;.
+        There's no obvious additional systematic uncertainty from this analysis,
+    </p>
 
 </section>
 
@@ -276,7 +502,10 @@
     <div class="footnote">
         <p>These are footnotes. Click the number to return to main text.</p>
         <p>
-        <sup><a name="ftn1" href="#sup1">[1]</a></sup>This is strictly speaking in the geometrical sense. I plan to discuss differential reflection of polarization due to the fact that the mirror is aluminum in another posting.
+            <a name="ftn1" href="#sup1">[1]</a></sup>Example: a standard RPS schedule (type-5) at DK=0 is <tt>8_ffflat_rps_05_dk000_XXX.sch</tt> and a stability checking Type-9 schedule at DK=45 would be <tt>8_ffflat_rps_09_dk045_XXX.sch</tt> where <tt>XXX</tt> is the iteration number.
+        </p>
+        <p>
+        <sup><a name="ftn2" href="#sup2">[2]</a></sup>This is strictly speaking in the geometrical sense. I plan to discuss differential reflection of polarization due to the fact that the mirror is aluminum in another posting.
     </p>
     </div>
     <h3>Code</h3>
@@ -386,6 +615,9 @@
             "KWY2007",
             "CAB2012",
             "RWO2013",
+            "JWB2018",
+            "JAC2019",
+            "JAC2021",
             "JAC2022a",
             "JAC2022b",
             "JAC2022c",
@@ -397,6 +629,9 @@
             "general_projects/rps/pointing_article.pdf",
             "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
             "bkcmb/analysis_logbook/analysis/20130205_polofs_model/",
+            "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
+            "bkcmb/analysis_logbook/analysis/20190516_rps_pointing_defs/",
+            "bkcmb/analysis_logbook/analysis/20210518_bmpm/",
             "bicep3/analysis_logbook/20220428_mirror_analysis/",
             "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
             "bicep3/analysis_logbook/20220816_mirror_analysis_3/",
@@ -408,9 +643,12 @@
             "BICEP Pointing Supplement",
             "Pointing Model for Keck Beam Maps",
             "Modeling Polarization-Dependent Beam Offsets",
+            "B2016, B2017, and B2018 CMB-derived beam center correlations",
+            "Pointing Model Definitions for Polarized Beam Mapping",
+            "A New Pointing Model for Beam Mapping",
             "Deriving Mirror Properties from the Moon",
             "2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
-            "2022 Moon Analysis III: Pointing Systematics",
+            "2022 Moon Analysis III: Moon Phase Correction and Mirror Systematics",
 
         ];
         // Debug

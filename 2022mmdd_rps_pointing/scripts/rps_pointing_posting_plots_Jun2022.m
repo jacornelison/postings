@@ -13,7 +13,7 @@ addpath('z:/pipeline/util')
 
 
 % Schedule groups
-schtype = 5;
+schtype = 11;
 switch schtype
 
     case 5
@@ -384,7 +384,7 @@ end
 
 
 % MJD, , ,raapp,decapp
-fname = fullfile('z:/dev/sun_check_2022Aug12.txt');
+fname = fullfile('z:/dev/sun_check_2022Aug25.txt');
 f = fopen(fname);
 hd_sun = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',60);
 hd_sun{1} = hd_sun{1}-2400000.5;

@@ -525,7 +525,7 @@ projnames = {'','_mirror','_mirror'};
 fittype = {'overall','perobs'};%,'persch'};
 
 % Things dealing with targets.
-targnames = {'moon','rps'};
+targnames = {'moon','rps','rps11'};
 
 % Things to do with angle/scaling/translation correction
 corrnames = {'none','ang','scale','xtrans','ytrans','all'};
@@ -537,11 +537,13 @@ mirror.tilt = 44.88;
 mirror.roll = -0.07;
 
 clc
-for targind = 2%1:2
+for targind = 3%1:3
                 % Load Moon or RPS data
             switch targnames{targind}
                 case 'moon'
                     load('z:dev/rps/moon_beam_fits_phase_corrected_cut.mat')
+                    load('z:dev/moon_analysis/moonsch.mat')
+                    sch = moonsch;
                     fd.schnum = fd.schind;
                     fd.rowind = fd.scanind;
                     fd.t = fd.t_cen;
@@ -555,15 +557,26 @@ for targind = 2%1:2
 
 
                 case 'rps'
-                    tic
+                    
                     load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
-
+                    load('z:/dev/rps/rpssch.mat')
                     rpsopt.mirror = mirror;
                     rpsopt.source.distance = 195.5;
                     % Fit for the source params given our mirror info:
                     source = rps_fit_source(fd,rpsopt,p,'');
                     rpsopt.source = source;
-                    toc
+                
+                case 'rps11'
+                    
+                    load('z:/dev/rps/rps_beam_fits_type11_rerun_cut.mat')
+                    load('z:/dev/rps/sch_type11.mat')
+                    titles = {'0_1','0_2','90_1','90_2','-68','-23'};
+                    rpsopt.mirror = mirror;
+                    rpsopt.source.distance = 195.5;
+                    % Fit for the source params given our mirror info:
+                    source = rps_fit_source(fd,rpsopt,p,'');
+                    rpsopt.source = source;
+                    
             end
 
     for projind = 1:2
@@ -618,7 +631,7 @@ for targind = 2%1:2
 
                         %sun_azs(end+1) = wrapTo180(nanmean(fd0.az_cen_moon-fd0.az_cen_sun));
                         %sun_els(end+1) = nanmean(fd0.el_cen_moon-fd0.el_cen_sun);
-                    case 'rps'
+                    case {'rps','rps11'}
                         mirrorperobs = rps_fit_mirror(fd0,rpsopt,p,'');
                         mirrparms(end+1,:) = [mirrorperobs.tilt,mirrorperobs.roll];
 
@@ -641,7 +654,7 @@ for targind = 2%1:2
                 fpu = fit_fpu_angle_and_scaling_from_xy(fd0,p);
                 %fpuparms(end+1,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
 
-                for corrind = 1%1:6
+                for corrind = 1:6
                     switch corrnames{corrind}
                         case 'none'
                             x = fd0.x;
@@ -732,7 +745,7 @@ for targind = 2%1:2
                     title({sprintf('Beam Center Residuals, x%i', scaling),...
                         sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirror2.tilt,mirror2.roll,mjd2datestr(sch{scheds{schedind}(1)}.t1)),...
                         corrtitle})
-                    figname = fullfile(figdir,sprintf('quiver_dk%s_fit_%s%s_%s.png',titles{schedind},fittype{fitind},projnames{projind},corrnames{corrind}));
+                    figname = fullfile(figdir,sprintf('quiver_dk%s_fit_%s%s_%s_%s.png',titles{schedind},fittype{fitind},projnames{projind},corrnames{corrind},targnames{targind}));
                     saveas(fig,figname)
                 end
             end
