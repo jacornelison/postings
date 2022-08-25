@@ -405,7 +405,7 @@ fclose(f);
 fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
 fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
 
-save(sprintf('z:/dev/rps/rps_beam_fits_type%01i_rerun_cut.mat',schtype),'fd','scheds');
+save(sprintf('z:/dev/rps/rps_beam_fits_type%01i_rerun_cut.mat',schtype),'fd','scheds','dks','titles');
 
 %% Angle vs time
 

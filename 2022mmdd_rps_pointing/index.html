@@ -28,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Analysis I: Observations and Pointing Systematics</h1>
+    <h1>2022 RPS Analysis I: Observations and Pointing Systematics</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         yyyy Mmm dd
@@ -46,16 +46,85 @@
 <!--16 Aug 2022-->
 <section>
     <h2>RPS Observations</h2>
-Talk about the different RPS observations. Also include a bit about the tilt meter.
+<p>
+    We acquire beam maps of a given detector by scanning over the RPS in 9&deg;Az&times;2&deg;El rasters at 1.5&deg;/s in Az and 0.1&deg; steps in El -- all with the RPS fixed at a given angle WRT gravity.
+    We get modulation curves by completing multiple rasters over the same part of the focal plane with the RPS commanded to a different angle for each raster, which we call a rasterset.
+    Each rasterset includes 13 rasters with the RPS rotated from -180&deg; to 180&deg; in 30&deg; increments and takes about 40 minutes to complete.
+    A typical RPS schedule run by GCP consists of 19 rastersets where the first rasterset starts with an El offset of -12.5&deg; and steps in 1.5&deg; between each rasterset to ensure there are no gaps in coverage over the focal plane [see Fig. 1.1 of <a href="JAC2022a"></a> for an example].
+    In this posting, I'll typically refer to the Moon and RPS data in terms of rasters, rastersets, or observations. Each observation typically consists of 3 schedules and generally maps beams across the entire focal plane at a single DK angle.
+</p>
+
+    <h3>RPS Analysis in a nutshell</h3>
+
+    <p>
+        The general approach to converting the RPS data to estimations on the polarization angles and cross-polar response of a given detector is to done in two parts: fit 2D Gaussians to a rasterstet to derive the amplitudes of a modulation curve and then fit a sinusoidal function to the modulation curve to derive the polarization angle and cross-polar response (see Figure 1.1 below).
+    </p>
+
+    <figure>
+        <img src="figs\spie_mod_curve.png"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+
+
+    <p>The Gaussian we fit is done at the timestream level in raw mount coordinates <a href="KWY2007"></a> and is of the form:</p>
+
+    \begin{equation}
+    B(\mathbf{x}) = A e^{(\mathbf{x}-\mathbf{\mu})^T\Sigma^{-1}(\mathbf{x}-\mathbf{\mu})}
+    \end{equation}
+    Where $A$ is the amplitude, $\mathbf{\mu} = (Az_0\,\,El_0)$ is the beam centroid, and
+
+    \begin{equation}
+    \Sigma =
+    \begin{bmatrix} \sigma_{Az}^2& \rho \sigma_{Az} \sigma_{El} \\ \rho \sigma_{Az} \sigma_{El} & \sigma_{El}^2 \end{bmatrix}
+    \end{equation}
+
+    <p>
+    where $(\sigma_{Az},\,\sigma_{El})$ is the beam width, and $\rho$ is the beam ellipticity. The significant difference between this analysis and other analyses involving beams is that we include 13 amplitude parameters to account for each beam in the modulation curve while fitting only a single $Az_0$, $El_0$, $\sigma_{Az}$, $\sigma_{El}$, and $\rho$ parameter across all the beams in a rasterset. This is to mitigate pointing effects from the Roger Effect <a href="RWO2013"></a> and to allow good beam centroid fits for rasters during which the RPS angle is orthogonal to a given detector and the SNR on the beam amplitude is low.
+    </p>
+
+    <p>Once we have our modulation curve, we could fit a sinusoidal function of the form:</p>
+
+    \begin{equation}\label{eq:modcurve}
+    A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\theta)+n_2\sin(\theta)+1\right)
+    \end{equation}
+    <p>
+        where $G$ is the detector gain, $\theta$ is the RPS angle WRT gravity, $\psi$ is the detector polarization angle with respect to the source, $\epsilon$
+        is the detector cross-polar response, and ($n_1,\,n_2$) are nuisance parameters to account for miscollimation of the source rotation axis.
+    </p>
+    <p>
+        The polarization angle $\psi$ in Equation \ref{eq:modcurve} is a relative measurement and is agnostic to the orientation of the focal plane.
+        We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the focal plane, by combining $\psi$ with the angle between the telescope's focal plane orientation and the RPS's orientation, called $\phi_s$, which is computed through the pointing model.
+    </p>
+    \begin{equation}
+    \phi_d \equiv \psi + \phi_s
+    \end{equation}
+
+    <p>In application, $\phi_s$ is computed for at every RPS angle to account for any polarization projection effects from the mirror<sup><a name="sup1" href="#ftn1">[1]</a></sup>:</p>
+
+
+    \begin{equation}\label{eq:modcurve2}
+    A(\theta) = G\left(\cos\left(2\left(\theta+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\theta+\phi_s)+n_2\sin(\theta+\phi_s)+1\right)
+    \end{equation}
+
+    <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
+
+<p>
+    Because this $\phi_s$ term tracks the focal plane orientation, it is sensitive to the inputs of the pointing model. As such, the rest of this posting is dedicated to characterizing possible sources of systematics and establishing a constraint on the total uncertainty of $\phi_s$.
+</p>
+
 </section>
 
-<section><h2></h2>
+<section><h2>Mirror/Source Systematics</h2>
 
 
-    <h3>Beam Centers</h3>
+    <h3>Estimating RPS Location</h3>
 
 
-<p>I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c">JAC2022c</a> and fit for a source location over all DK angles using a method similar to how we fit for mirror parameters described in &sect; 2 of <a href="JAC2022a"></a> except we take the mirror parameters in the pointing model as known and instead let the source azimuth and elevation be free parameters:</p>
+<p>I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c">JAC2022c</a> and fit for a source location over all DK angles using a method similar to how we fit for mirror parameters described in &sect;2 of <a href="JAC2022a"></a> except we take the mirror parameters in the pointing model as known and instead let the source azimuth and elevation be free parameters:</p>
     <p>With <tt>beam_map_pointing_model.m</tt> as our
         model we computer the instrument-fixed coordinates in x/y:</p>
 
@@ -63,7 +132,7 @@ Talk about the different RPS observations. Also include a bit about the tilt met
     [x,\,y,\,\phi] = \text{beam_map_pointing_model}(Az_{src},\,El_{src} | A_{0},\,E_{0},\,K_{0},\,Mount,\,Mirror)
     \end{equation}
 
-    where $A_0$, $E_0$, and $D_0$ are the as-fit beam centers in raw mount coordinates<sup><a name="sup1" href="#ftn1">[1]</a></sup>; $Mount$ comprises the relevant
+    where $A_0$, $E_0$, and $D_0$ are the as-fit beam centers in raw mount coordinates; $Mount$ comprises the relevant
     mount information derived from both optical starpointing and Solidworks drawings; $Mirror$ comprises the tilt, roll and height of the mirror.
 
     <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
@@ -72,15 +141,42 @@ Talk about the different RPS observations. Also include a bit about the tilt met
     \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}
     \end{equation}
 
-    <p>From <a href="JAC2022c">JAC2022c</a>, we have evidence that the mirror is physically moving about from measurement-to-measurement, so in the following figures -- after fitting an overall source position -- I keep the source fixed and fit for the mirror parameters per-observation (and per-rasterset as I'll discuss later).</p>
+
+    <h3>Beam Center Residuals</h3>
+    <p>From <a href="JAC2022c">JAC2022c</a>, we have evidence that the mirror is physically moving from measurement-to-measurement, so in the following figures -- after fitting an overall source position -- I keep the source fixed and fit for the mirror parameters per-observation (and per-rasterset as I'll discuss later).</p>
     <p>
         <font color="red">Show a pager of the quivers with Overall/per-obs mirror fits and also angle/scaling offsets applied.</font>
     </p>
-    <figure>
-        <figcaption>
-            Quiver plots pager
-        </figcaption>
-    </figure>
+
+        <p></p>
+        <figure>
+            <img alt="Name pager" id="quiver2pager" src="#" />
+            <figcaption>
+
+            </figcaption>
+            <script type="text/javascript">
+                function fcn(params){
+                        return 'figs/quiver_dk'+params.dk+'_fit_'+params.fit+params.coord+'_'+params.corr+'.png';
+                }
+
+                pager.link("#quiver2pager",
+                    {
+                        'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
+                        'Mirror Tilt/Roll Fit|fit' : ['overall','perobs'],
+                            'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
+                        'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                     },
+                fcn);
+                pager.setparams({
+                    'fit': 'overall',
+                    'dk' : '68_1',
+                    'corr': 'none',
+                    'coord': '',
+                });
+            </script>
+            </figure>
+
+    <h3>Probing Pointing Systematics</h3>
     <p>Figure 2.2 shows a pager of the mirror tilt and roll along with an overall FPU angle and scaling fits as a function of multiple different variables to probe of possible sources of systemtatics. The data are color-coded by the chronological order in which the observations were taken.</p>
 
 
@@ -142,7 +238,7 @@ Talk about the different RPS observations. Also include a bit about the tilt met
             See a similar behavior to the Moon data -- Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
         </li>
         <li>
-            RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts: The mean focal plane angle has a DC offset depending on which data is cut despite refitting the source location. Cutting the "Late" data, the mean angle is $-0.02\pm0.03^\circ$, No cut: $0.01\pm0.03^\circ$, Early cut: $0.02\pm0.03^\circ$. I'm not terribly sure how to interpret this, but my naive notion is that not cutting any Moon data minimizes any bias in the FPU orientation angle.
+            RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts: The mean focal plane angle has a DC offset depending on which data is cut despite refitting the source location. Cutting the "Late" data, the mean angle is -0.02&deg;, No cut: 0.01&deg;, Early cut: 0.02&deg; all with a STD of 0.035&deg; and an error-on-the-mean of 0.01&deg;.
         </li>
 
         <li>
@@ -157,34 +253,10 @@ Talk about the different RPS observations. Also include a bit about the tilt met
 
     </ol>
 
+<p>
+    ... We'll have to fit the mirror on a per-rasterset bases in order to mitigate any bias on the focal plane orientation.
+</p>
 
-
-
-<!--    <p></p>-->
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="quiver2pager" src="#" />-->
-<!--        <figcaption>-->
-
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-<!--            function fcn(params){-->
-<!--                    return 'figs/quiver_'+params.fit+'_dk_'+params.dk+params.coord+'.png';-->
-<!--            }-->
-
-<!--            pager.link("#quiver2pager",-->
-<!--                {-->
-<!--                    'Fit|fit' : ['None|none','Angle|angfit','scalefit','transfit','all'],-->
-<!--                    'DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],-->
-<!--                    'Coord|coord' : ['Inst Fixed|'],//,'Mirror Fixed|_mirror'],-->
-<!--                 },-->
-<!--            fcn);-->
-<!--            pager.setparams({-->
-<!--                'fit': 'none',-->
-<!--                'dk' : '61',-->
-<!--                'coord': '',-->
-<!--            });-->
-<!--        </script>-->
-<!--        </figure>-->
 
 <!--    <figure>-->
 <!--        <img src="figs/fpu_rot_vs_dk.png" />-->
@@ -204,7 +276,7 @@ Talk about the different RPS observations. Also include a bit about the tilt met
     <div class="footnote">
         <p>These are footnotes. Click the number to return to main text.</p>
         <p>
-        <sup><a name="ftn1" href="#sup1">[1]</a></sup> Note that the beam centroids for RPS data are calculated over the beams of all 13 rasters in a rasterset to both mitigate pointing effects from the Roger Effect (cite) and to allow good beam centroid fits for rasters during which the RPS angle is orthogonal to a given detector and the SNR on the beam amplitude is low.
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>This is strictly speaking in the geometrical sense. I plan to discuss differential reflection of polarization due to the fact that the mirror is aluminum in another posting.
     </p>
     </div>
     <h3>Code</h3>
@@ -295,6 +367,7 @@ Talk about the different RPS observations. Also include a bit about the tilt met
             keck  : "",                 // keck/analysis_logbook/analysis/
             spuder: "",                 // ~spuder/hieno_analysis_logboo
             bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
                    };
         // Logbook Site map:
         // personal:www/jcornelison/postings/
@@ -310,7 +383,9 @@ Talk about the different RPS observations. Also include a bit about the tilt met
 
         // Shorthand tags
         var tags = [
+            "KWY2007",
             "CAB2012",
+            "RWO2013",
             "JAC2022a",
             "JAC2022b",
             "JAC2022c",
@@ -319,16 +394,20 @@ Talk about the different RPS observations. Also include a bit about the tilt met
         // Links
         // Truncate the link down to the www directory in which is lies if you can.
         var hrefs = [
+            "general_projects/rps/pointing_article.pdf",
             "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+            "bkcmb/analysis_logbook/analysis/20130205_polofs_model/",
             "bicep3/analysis_logbook/20220428_mirror_analysis/",
             "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
-            "jcornelison/postings/20220617_mirror_analysis_3/",
+            "bicep3/analysis_logbook/20220816_mirror_analysis_3/",
         ];
 
 
         // Posting titles
         var desc = [
+            "BICEP Pointing Supplement",
             "Pointing Model for Keck Beam Maps",
+            "Modeling Polarization-Dependent Beam Offsets",
             "Deriving Mirror Properties from the Moon",
             "2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
             "2022 Moon Analysis III: Pointing Systematics",

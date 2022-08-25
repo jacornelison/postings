@@ -305,8 +305,8 @@ for iterind = 1:iter
 end
 clc
 for valind = 1:4
-    
-fprintf('Mean: %0.3f, STD: %0.3f\n',mean(parms_wm(:,valind)),std(parms_wm(:,valind)))
+
+    fprintf('Mean: %0.3f, STD: %0.3f\n',mean(parms_wm(:,valind)),std(parms_wm(:,valind)))
 
 end
 %% Fix source loc and fit for mirror.
@@ -494,6 +494,19 @@ colormap('jet')
 
 %% Quiver plots per obs
 
+clc
+clear all;
+load('z:/dev/rps/fpu_data_obs.mat')
+load('z:/dev/rps/pm.mat')
+load('z:/dev/rps/rpssch.mat')
+load('z:/dev/rps/source_fit_data.mat')
+load('z:/dev/rps/perdk_fpu_parms.mat')
+figdir = 'c:/Users/James/Documents/GitHub/postings/2022mmdd_rps_pointing/figs/';
+
+prx = 2*sind(p.r/2).*cosd(p.theta)*180/pi;
+pry = 2*sind(p.r/2).*sind(p.theta)*180/pi;
+
+
 winscale = 1.5;
 scaling = 10;
 fig = figure(1);
@@ -509,27 +522,59 @@ projlabels = {' [Degrees]','_m [Degrees]','_m [Meters]'};
 projnames = {'','_mirror','_mirror'};
 
 % Things dealing with fits
-fittype = {'overall','perdk'};%,'persch'};
+fittype = {'overall','perobs'};%,'persch'};
 
+% Things dealing with targets.
+targnames = {'moon','rps'};
+
+% Things to do with angle/scaling/translation correction
+corrnames = {'none','ang','scale','xtrans','ytrans','all'};
+
+% Other stuff
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt = 44.88;
+mirror.roll = -0.07;
 
 clc
-for projind = 1:2
-    for fitind = 1:2
-        
-            load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
-            
-            [mirrorparms, mirrorerrs, nchans] = deal([]);
-            for schedind = 1:length(scheds)
-                ind = ismember(fd.schnum,scheds{schedind});
+for targind = 2%1:2
+                % Load Moon or RPS data
+            switch targnames{targind}
+                case 'moon'
+                    load('z:dev/rps/moon_beam_fits_phase_corrected_cut.mat')
+                    fd.schnum = fd.schind;
+                    fd.rowind = fd.scanind;
+                    fd.t = fd.t_cen;
+                    [fd.phi_medsub, fd.tilt] = deal(NaN(size(fd.ch)));
 
-                if ~isempty(find(ind))
-                    fd0 = moon_fit_mirror(structcut(fd,ind),'p',p,'p_ind',p_ind,'savedir','','pm',model);
-                    mirrorparms(schedind,:) = fd0.fitparam;
-                    mirrorerrs(schedind,:) = fd0.fiterr;
-                    nchans(schedind) = length(find(ind));
+                    source = struct();
+                    source.azimuth = reshape(fd.az_cen_src,[],1);
+                    source.distance = 3.8e8*cosd(reshape(fd.el_cen_src,[],1));
+                    source.height = 3.8e8*sind(reshape(fd.el_cen_src,[],1));
+                    source.elevation = reshape(fd.el_cen_src,[],1);
 
-                end
+
+                case 'rps'
+                    tic
+                    load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
+
+                    rpsopt.mirror = mirror;
+                    rpsopt.source.distance = 195.5;
+                    % Fit for the source params given our mirror info:
+                    source = rps_fit_source(fd,rpsopt,p,'');
+                    rpsopt.source = source;
+                    toc
             end
+
+    for projind = 1:2
+        for fitind = 1:2
+
+
+            [fd.x,fd.y,phi] = beam_map_pointing_model(fd.az_cen,fd.el_cen,fd.dk_cen,model,'bicep3',mirror,source,[]);
+            fd.x = reshape(fd.x,size(fd.ch));
+            fd.y = reshape(fd.y,size(fd.ch));
+
+            [mirrparms, mirrerrs, nchans] = deal([]);
             for schedind = 1:length(scheds)
                 ind = ismember(fd.schnum,scheds{schedind});
 
@@ -555,97 +600,145 @@ for projind = 1:2
                     fd0 = structcut(fd0,ind);
                 end
 
-                mirror = struct();
-                mirror.height = 1.4592;
-                switch fitind
-                    case 1
-                        mirror.tilt = wmean(mirrorparms(:,1),nchans.^2');
-                        mirror.roll = wmean(mirrorparms(:,2),nchans.^2');
+                nchans(schedind) = length(find(ind));
+                mirrorperobs = struct();
+                mirrorperobs.height = 1.4592;
+                switch targnames{targind}
+                    case 'moon'
+                        fd0 = moon_fit_mirror(fd0,'p',p,'p_ind',p_ind,'savedir','','pm',model);
+                        mirrparms(end+1,:) = fd0.fitparam;
+                        mirrorperobs.tilt = fd0.fitparam(1);
+                        mirrorperobs.roll = fd0.fitparam(2);
 
-                    case 2
-                        mirror.tilt = mirrorparms(schedind,1);
-                        mirror.roll = mirrorparms(schedind,2);
-                end
+                        source = struct();
+                        source.azimuth = reshape(fd0.az_cen_src,[],1);
+                        source.distance = 3.8e8*cosd(reshape(fd0.el_cen_src,[],1));
+                        source.height = 3.8e8*sind(reshape(fd0.el_cen_src,[],1));
+                        source.elevation = reshape(fd0.el_cen_src,[],1);
 
-                source = struct();
-                source.azimuth = reshape(fd0.az_cen_src,[],1);
-                source.distance = 3.8e8*cosd(reshape(fd0.el_cen_src,[],1));
-                source.height = 3.8e8*sind(reshape(fd0.el_cen_src,[],1));
+                        %sun_azs(end+1) = wrapTo180(nanmean(fd0.az_cen_moon-fd0.az_cen_sun));
+                        %sun_els(end+1) = nanmean(fd0.el_cen_moon-fd0.el_cen_sun);
+                    case 'rps'
+                        mirrorperobs = rps_fit_mirror(fd0,rpsopt,p,'');
+                        mirrparms(end+1,:) = [mirrorperobs.tilt,mirrorperobs.roll];
 
-
-
-                [x, y, phi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror,source,[]);
-
-                prxsch = prx(fd0.ch);
-                prysch = pry(fd0.ch);
-
-                clf; hold on;
-                switch projind
-                    case 1
-                        x0 = prxsch;
-                        y0 = prysch;
-                        resx = prxsch-x;
-                        resy = prysch-y;
-                    case 999
-                        xtrack = [1, -1]*10;
-                        ytrack = [1, -1]*10;
-                        [x_track_mirr, y_track_mirr] = get_mirror_coords(fd0.dk_cen,xtrack,ytrack,zeros(size(fd0.ch)),mount,mirror);
-
-                        mk = {'^','+'};
-                        for j = 1:length(xtrack)
-                            plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
-                        end
-
-                        [x_mirr, y_mirr] = get_mirror_coords(fd0.dk_cen,prxsch',prysch',zeros(size(fd0.ch)),mount,mirror);
-                        [x_fit_mirr, y_fit_mirr] = get_mirror_coords(fd0.dk_cen,x',y',zeros(size(fd0.ch)),mount,mirror);
-                        x0 = x_mirr;
-                        y0 = y_mirr;
-                        resx = x_mirr-x_fit_mirr;
-                        resy = y_mirr-y_fit_mirr;
-                    case 2
-                        r0 = p.r(fd0.ch);
-                        th0 = (p.theta(fd0.ch) - fd0.dk_cen');
-                        x0 = 2 * sind(r0 / 2) .* cosd(th0) * 180 / pi;
-                        y0 = 2 * sind(r0 / 2) .* sind(th0) * 180 / pi;
-                        resx = prxsch-x;
-                        resy = prysch-y;
-                        [resth, resr] = cart2pol(resx,resy);
-                        resth = resth - fd0.dk_cen'*pi/180;
-                        [resx, resy] = pol2cart(resth,resr);
+                        %sun_azs(end+1) = wrapTo180(nanmean(source.azimuth-fd0.az_cen_sun));
+                        %sun_els(end+1) = nanmean(fd0.el_cen_sun-source.elevation);
 
                 end
 
 
-                %                 clf;
-                %                 quiver(x0,y0,resx*scaling,resy*scaling,0)
-                %                 hold on;
+                if fitind==2
+                    mirror2 = mirrorperobs;
+                else
+                    mirror2 = mirror;
+                end
 
-                if 1
-                    s = scheds{schedind};
-                    for si = 1:length(s)
-                        for rowind = 1:19
-                            ind = fd0.schnum==s(si) & fd0.rowind == rowind;
-                            quiver(x0(ind),y0(ind),resx(ind)*scaling,resy(ind)*scaling,0,'color',cm(clridx((si-1)*19+rowind),:));
+                [x, y, phi] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen,model,'bicep3',mirror2,source,[]);
+                fd0.x = reshape(x,size(fd0.ch));
+                fd0.y = reshape(y,size(fd0.ch));
+
+                fpu = fit_fpu_angle_and_scaling_from_xy(fd0,p);
+                %fpuparms(end+1,:) = [fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans];
+
+                for corrind = 1%1:6
+                    switch corrnames{corrind}
+                        case 'none'
+                            x = fd0.x;
+                            y = fd0.y;
+                            corrtitle = sprintf('Angle=%0.3f^o Scale=%0.3f Xtrans=%0.3f^o Ytrans=%0.3f^o',0,1,0,0);
+                        case 'ang'
+                            x = fd0.x.*cosd(fpu.angle)-fd0.y.*sind(fpu.angle);
+                            y = fd0.x.*sind(fpu.angle)+fd0.y.*cosd(fpu.angle);
+                            corrtitle = sprintf('Angle=%0.3f^o Scale=%0.3f Xtrans=%0.3f^o Ytrans=%0.3f^o',fpu.angle,1,0,0);
+                        case 'scale'
+                            x = fpu.scaling.*fd0.x;
+                            y = fpu.scaling.*fd0.y;
+                            corrtitle = sprintf('Angle=%0.3f^o Scale=%0.3f Xtrans=%0.3f^o Ytrans=%0.3f^o',0,fpu.scaling,0,0);
+                        case 'xtrans'
+                            x = fd0.x+fpu.xtrans;
+                            corrtitle = sprintf('Angle=%0.3f^o Scale=%0.3f Xtrans=%0.3f^o Ytrans=%0.3f^o',0,1,fpu.xtrans,0);
+                        case 'ytrans'
+                            y = fd0.y+fpu.ytrans;
+                            corrtitle = sprintf('Angle=%0.3f^o Scale=%0.3f Xtrans=%0.3f^o Ytrans=%0.3f^o',0,1,0,fpu.ytrans);
+                        case 'all'
+                            x = fd0.x+fpu.xtrans;
+                            y = fd0.y+fpu.ytrans;
+                            x = fpu.scaling.*(x.*cosd(fpu.angle)-y.*sind(fpu.angle));
+                            y = fpu.scaling.*(x.*sind(fpu.angle)+y.*cosd(fpu.angle));
+                            corrtitle = sprintf('Angle=%0.3f^o Scale=%0.3f Xtrans=%0.3f^o Ytrans=%0.3f^o',fpu.angle,fpu.scaling,fpu.xtrans,fpu.ytrans);
+                    end
+
+                    
+                    prxsch = prx(fd0.ch);
+                    prysch = pry(fd0.ch);
+                    x = reshape(x,size(prxsch));
+                    y = reshape(y,size(prysch));
+
+                    clf; hold on;
+                    switch projind
+                        case 1
+                            x0 = prxsch;
+                            y0 = prysch;
+                            resx = prxsch-x;
+                            resy = prysch-y;
+                        case 999
+                            xtrack = [1, -1]*10;
+                            ytrack = [1, -1]*10;
+                            [x_track_mirr, y_track_mirr] = get_mirror_coords(fd0.dk_cen,xtrack,ytrack,zeros(size(fd0.ch)),mount,mirror2);
+
+                            mk = {'^','+'};
+                            for j = 1:length(xtrack)
+                                plot(x_track_mirr(j),y_track_mirr(j),'k','MarkerSize',14,'Marker',mk{j})
+                            end
+
+                            [x_mirr, y_mirr] = get_mirror_coords(fd0.dk_cen,prxsch',prysch',zeros(size(fd0.ch)),mount,mirror2);
+                            [x_fit_mirr, y_fit_mirr] = get_mirror_coords(fd0.dk_cen,x',y',zeros(size(fd0.ch)),mount,mirror2);
+                            x0 = x_mirr;
+                            y0 = y_mirr;
+                            resx = x_mirr-x_fit_mirr;
+                            resy = y_mirr-y_fit_mirr;
+                        case 2
+                            r0 = p.r(fd0.ch);
+                            th0 = (p.theta(fd0.ch) - fd0.dk_cen');
+                            x0 = 2 * sind(r0 / 2) .* cosd(th0) * 180 / pi;
+                            y0 = 2 * sind(r0 / 2) .* sind(th0) * 180 / pi;
+                            resx = prxsch-x;
+                            resy = prysch-y;
+                            [resth, resr] = cart2pol(resx,resy);
+                            resth = resth - fd0.dk_cen'*pi/180;
+                            [resx, resy] = pol2cart(resth,resr);
+
+                    end
+
+
+
+                    if 1
+                        s = scheds{schedind};
+                        for si = 1:length(s)
+                            for rowind = 1:19
+                                ind = fd0.schnum==s(si) & fd0.rowind == rowind;
+                                quiver(x0(ind),y0(ind),resx(ind)*scaling,resy(ind)*scaling,0,'color',cm(clridx((si-1)*19+rowind),:));
+                            end
                         end
                     end
+
+
+                    grid on;
+                    xlim(xlims{projind})
+                    ylim(ylims{projind})
+                    xlabel(sprintf('X%s',projlabels{projind}))
+                    ylabel(sprintf('Y%s',projlabels{projind}))
+                    title({sprintf('Beam Center Residuals, x%i', scaling),...
+                        sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirror2.tilt,mirror2.roll,mjd2datestr(sch{scheds{schedind}(1)}.t1)),...
+                        corrtitle})
+                    figname = fullfile(figdir,sprintf('quiver_dk%s_fit_%s%s_%s.png',titles{schedind},fittype{fitind},projnames{projind},corrnames{corrind}));
+                    saveas(fig,figname)
                 end
-
-
-                grid on;
-                xlim(xlims{projind})
-                ylim(ylims{projind})
-                xlabel(sprintf('X%s',projlabels{projind}))
-                ylabel(sprintf('Y%s',projlabels{projind}))
-                title({sprintf('Beam Center Residuals, x%i, %s', scaling,corrtitle{corrind}),...
-                    sprintf('Tilt: %1.2f  Roll: %1.3f  Date: %s',mirror.tilt,mirror.roll,mjd2datestr(moonsch{scheds{schedind}(1)}.t1))...
-                    })
-                figname = fullfile(figdir,sprintf('quiver_dk%s_fit_%s%s.png',titles{schedind},fittype{fitind},projnames{projind}));
-                saveas(fig,figname)
             end
-        
+        end
     end
 end
-
 
 
 

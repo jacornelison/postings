@@ -280,7 +280,7 @@ fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t_cen);
 
 
 % save the big dataset
-save('z:dev/rps/moon_beam_fits_phase_corrected_cut.mat','fd','scheds')
+save('z:dev/rps/moon_beam_fits_phase_corrected_cut.mat','fd','scheds','titles','dks')
 
 %%%%%%%%%%%
 % REAL Posting plots
