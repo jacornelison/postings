@@ -368,9 +368,7 @@
             <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps','res':'perscan'})">Angle Overall vs. Roll</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'rps','res':'perscan'})">Angle Per-Obs vs. Roll</a>:
             We can draw the same conclusion that we did from the Moon data <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'moon','res':'perobs'})">Overall</a> vs. <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt': 'moon','res':'perobs'})">Per-Obs</a> -- Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
         </li>
-        <li>
-            RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts: The mean focal plane angle has a DC offset depending on which data is cut despite refitting the source location. Cutting the "Late" data, the mean angle is -0.02&deg;, No cut: 0.01&deg;, Early cut: 0.02&deg; all with a STD of 0.035&deg; and an error-on-the-mean of 0.01&deg;.
-        </li>
+
 
         <li>
             <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'thm','tgt': 'moon','res':'perscan'})">Moon Roll vs. $\theta_m$</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'thm','tgt': 'rps','res':'perscan'})">RPS Roll vs. $\theta_m$</a>: We see structure in the Mirror Roll as a function of a mirror-fixed theta which appears relatively consistent between the Moon and RPS data (this is most easily seen when <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_earlycut'})">Early</a> or <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_latecut'})">Late</a> cut is turned on).
@@ -381,7 +379,9 @@
         <li>
             <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'tiltmeter','tgt': 'rps','res':'perscan'})">RPS Roll vs. Tiltmeter</a>: There's no obvious dependence in Mirror Roll on the tiltmeter which provides more evidence that the RPS isn't moving in Azimuth to any significant degree.
         </li>
-
+        <li>
+            RPS Angle Vs. Time with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 't','tgt': 'rps','res':'perobs','cut':'_earlycut'})">Early</a> cuts: The mean focal plane angle has a DC offset depending on which data is cut despite refitting the source location. Cutting the "Late" data, the mean angle is -0.02&deg;, No cut: 0.01&deg;, Early cut: 0.02&deg; all with a STD of 0.035&deg; and an error-on-the-mean of 0.01&deg;.
+        </li>
     </ol>
 
 <p>
@@ -466,15 +466,16 @@ Important links:
             <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt': 'rps11','res':'perscan'})">Angle Overall vs. Roll</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt2': 'rps11','res':'perscan'})">Angle Per-Obs vs. Roll</a>:
             We can draw the same conclusion that we did from the Moon data <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang','x': 'roll','tgt2': 'moon','res':'perobs'})">Overall</a> vs. <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'roll','tgt2': 'moon','res':'perobs'})">Per-Obs</a> -- Using an overall fit induces an apparent rotation on the focal plane indicating the changes in Roll are real.
         </li>
-        <li>
-            Type-11 RPS Angle Vs. Time-of-Day with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_earlycut'})">Early</a> cuts: We also see a DC offset here depending on which Moon data is cut when computing the mirror parameters and determining the source location. Cutting the "Late" data, the mean angle (calculated per-observaiton) is -0.01&deg;, No cut: 0.02&deg;, Early cut: 0.03&deg; all with a notably lower STD of 0.017&deg; and an error-on-the-mean of 0.01&deg;.
-        </li>
+
 
         <li>
             <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'xm','tgt2': 'moon','res':'perscan'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'xm','tgt2': 'rps','res':'perscan'})">Type-5 RPS </a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'roll','x': 'xm','tgt2': 'rps11','res':'perscan'})">Type-11 RPS</a>  Roll vs. $x_m$: We have consistency across all three independent datasets of a dependence of Roll on the location of the mirror.
         </li>
         <li>
         <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'ym','tgt2': 'moon','res':'perscan'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'ym','tgt2': 'rps','res':'perscan'})">Type-5 RPS </a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'tilt','x': 'ym','tgt2': 'rps11','res':'perscan'})">Type-11 RPS</a>  Tilt vs. $y_m$: There appear to be larger long-timescale drifts in the Tilt, but one could reasonably argue that the data are consistent here as well. This is more convincing when look at at this with <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_earlycut'})">Early</a> or <a href="javascript:void(0)" onclick="pager.setparams({'cut':'_latecut'})">Late</a> cut turned on.
+        </li>
+        <li>
+            Type-11 RPS Angle Vs. Time-of-Day with <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_latecut'})">Late</a>, <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_nocut'})">Off</a>, and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','x': 'tod','tgt2': 'rps11','res':'perscan','cut':'_earlycut'})">Early</a> cuts: We also see a DC offset here depending on which Moon data is cut when computing the mirror parameters and determining the source location. Cutting the "Late" data, the mean angle (calculated per-observaiton) is -0.01&deg;, No cut: 0.02&deg;, Early cut: 0.03&deg; all with a notably lower STD of 0.017&deg; and an error-on-the-mean of 0.01&deg;.
         </li>
     </ol>
 
@@ -483,12 +484,12 @@ Important links:
         The Type-11 data served as an effective independent cross-check of the phenomena we're seeing in both the Moon and RPS data. We have confirmation of real deformation across the mirror on both short (~1hr) and long (~days) timescales and we have evidence that assuming a single mirror orientation for all observations can induce a bias in the apparent orientation of the focal plane. Both the Type-5 and Type-11 data suggest that we have sufficient constraining power on the mirror such that I can fit a mirror orientation to the RPS data on the rasterset level to avoid this FPU angle bias.
     </p>
     <p>
-        The Type-11 data confirms the scaling dependence on the Sun's location WRT to the mirror. Because this will affect the pointing and in turn the projection of polarization, it might be worth accounting for this as well though it's not clear much this matters. In addition, this also means that all of the Moon data will be included in calculating the overall mirror orientation when determining the source location and we can be confident that we're not impinging a bias on the FPU angle.
+        In point 1, the Type-11 data confirms the scaling dependence on the Sun's location WRT to the mirror. Because this will affect the pointing and in turn the projection of polarization, it might be worth accounting for this as well but it's not clear much this matters. In addition, this also means that all of the Moon data will be included in calculating the overall mirror orientation when determining the source location and we can be confident that we're not impinging a bias on the FPU angle.
     </p>
     <p>
         Regarding the uncertainty of the FPU angle, I calculate upper limit on the statistical uncertainty by comparing the per-rasterset FPU angles between the two Type-11 observations at DK=0&deg; which were taken within a few hours of each other.
         The statistical uncertainty is given as the 1-&sigma; standard deviation of the difference between the two datasets divided by $\sqrt{2}$ which comes out to 0.03&deg;.
-        There's no obvious additional systematic uncertainty from this analysis,
+        From point 5 in both sections, 
     </p>
 
 </section>
