@@ -537,7 +537,7 @@ mirror.tilt = 44.88;
 mirror.roll = -0.07;
 
 clc
-for targind = 3%1:3
+for targind = 1%1:3
                 % Load Moon or RPS data
             switch targnames{targind}
                 case 'moon'

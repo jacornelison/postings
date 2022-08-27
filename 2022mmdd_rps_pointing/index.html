@@ -17,7 +17,7 @@
     </script>
     <script type="text/javascript"
             src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
-    <!--            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">-->
+    //            src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
 
 </head>
@@ -206,7 +206,7 @@
 
 
     \begin{equation}\label{eq:modcurve2}
-    A(\theta) = G\left(\cos\left(2\left(\theta+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\theta+\phi_s)+n_2\sin(\theta+\phi_s)+1\right)
+    A(\theta) = G\left(\cos\left(2\left(\theta+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\theta)+n_2\sin(\theta)+1\right)
     \end{equation}
 
     <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
@@ -513,6 +513,61 @@ Important links:
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+    <h3>Moon Quivers</h3>
+    <figure>
+        <img alt="Name pager" id="quiver3pager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/quiver_dk'+params.dk3+'_fit_'+params.fit+params.coord+'_'+params.corr+'_moon.png';
+            }
+
+            pager.link("#quiver3pager",
+                {
+                    'Obs DK|dk3': [
+                        '0_1',
+                        '90_1',
+                        '23_1',
+                        '174_1',
+                        '68_1',
+                        '-81_1',
+                        '68_2',
+                        '68_3',
+                        '45_1',
+                        '135_1',
+                        '23_2',
+                        '23_3',
+                        '23_4',
+                        '174_2',
+                        '174_3',
+                        '-81_2',
+                        '-81_3',
+                        '68_4',
+                        '68_5',
+                        '0_2',
+                        '90_2',
+                        '45_2',
+                        '135_2',
+                        '-23',
+                        '-68',
+                        '112',
+                        '157',],
+                    'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs'],
+                    'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
+                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                },
+                fcn);
+            pager.setparams({
+                'fit': 'overall',
+                'dk3' : '0_1',
+                'corr': 'none',
+                'coord': '',
+            });
+        </script>
+    </figure>
+
     <h3>Footnotes</h3>
     <div class="footnote">
         <p>These are footnotes. Click the number to return to main text.</p>
@@ -520,7 +575,7 @@ Important links:
             <a name="ftn1" href="#sup1">[1]</a></sup>Example: a standard RPS schedule (type-5) at DK=0 is <tt>8_ffflat_rps_05_dk000_XXX.sch</tt> and a stability checking Type-9 schedule at DK=45 would be <tt>8_ffflat_rps_09_dk045_XXX.sch</tt> where <tt>XXX</tt> is the iteration number.
         </p>
         <p>
-        <sup><a name="ftn2" href="#sup2">[2]</a></sup>This is strictly speaking in the geometrical sense. I plan to discuss differential reflection of polarization due to the fact that the mirror is aluminum in another posting.
+        <a name="ftn2" href="#sup2">[2]</a>This is strictly speaking in the geometrical sense. I plan to discuss differential reflection of polarization due to the fact that the mirror is aluminum in another posting.
     </p>
     </div>
     <h3>Code</h3>
@@ -726,81 +781,4 @@ Important links:
 
     </script>
 </section>
-
-<!--    <p>-->
-<!--    I fit the detector beams over all the beam maps in a rasterset with one amplitude parameter per raster (usually 13) and with just  one parameter each for beam center, beam width, and correlation coefficient fit over all the beams in the rasterset. With RPS-derived beam centers, I fit for a source position using the mirror parameters given in <a href="JAC2022c"></a> per-DK.-->
-<!--    </p>-->
-
-<!--    <figure>-->
-
-<!--        <img alt="Name pager" id="sourcepager" src="#" />-->
-<!--        <figcaption>-->
-
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-<!--            pager.link("#sourcepager",-->
-<!--                {-->
-<!--                    'Param|parm': ['Az|az','El|el'],-->
-
-<!--                },-->
-<!--                function(params) {-->
-<!--                    return 'figs/source_fit_'+params.parm+'.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                'parm':'az',-->
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
-
-<!--    <p>As we expected from <a href="JAC2022c"></a>, we see fluctuations in the apparent source position over time. We expect this is actually due to the mirror deforming and not the source as we'd expect to see corresponding shifts in the tilt meter of $O(0.5^\circ)$, which we don't. Instead, what I've chosen to do is assume that the actual source position is the mean across all observations and then refit for the mirror orientation on per-DK and per-schedule bases. This step is important because it ensures we're properly accounting for the addition rotation of the focal plane induced by the mirror roll parameter.</p>-->
-
-<!--    <p></p>-->
-
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="mirrorpager" src="#" />-->
-<!--        <figcaption>-->
-
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-<!--            pager.link("#mirrorpager",-->
-<!--                {-->
-<!--                    'Param|parm2': ['Tilt|tilt','Roll|roll'],-->
-
-<!--                },-->
-<!--                function(params) {-->
-<!--                    return 'figs/mirror_fit_'+params.parm2+'.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                'parm2':'roll',-->
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
-
-<!--    <p>The pager below shows quivers of beam-center residuals. </p>-->
-
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="quiverpager" src="#" />-->
-<!--        <figcaption>-->
-
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-<!--            pager.link("#quiverpager",-->
-<!--                {-->
-<!--                    '|parm3': ['Source|source','Mirror|mirror'],-->
-<!--                    'Fit|fit' : ['perdk','persch'],-->
-<!--                    'DK|dk' : ['61', '23','174','68_1','-81','90','45','135','68_2'],-->
-
-<!--                },-->
-<!--                function(params) {-->
-<!--                    return 'figs/quiver_'+params.parm3+'_'+params.fit+'_dk_'+params.dk+'.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                'parm3':'source',-->
-<!--                'fit': 'perdk',-->
-<!--                'dk' : '61'-->
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
-
-
 </body>
