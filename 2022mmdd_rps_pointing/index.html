@@ -44,8 +44,8 @@
 
 </p>
 <p>
-    Lastly, I find that cutting any of the Moon data when calculating the mirror orientation impinges a bias on the focal plane orientation angle up to 0.02&deg;. As such, we are able to use the geometric relationship between the mirror and the source to establish a tighter constraint on the FPU orientation angle than simply propagating the error on the mirror orientation derived from the Moon data.
-    With all of these factors accounted for, the uncertainty on the focal plane orientation is given by the intrinsic scatter of the measurement and our ability to detect a bias on the focal plane angle from errors in the mirror and source parameters: &sigma;=&pm;0.03&deg;(stat)&pm;0.005&deg;(sys)
+    Lastly, I find that cutting any of the Moon data when calculating the mirror orientation impinges a bias on the focal plane orientation angle up to 0.02&deg;. As such, we are able to use the geometric relationship between the mirror and the source to establish a tighter constraints on both by minimizing the apparent focal plane orientation angle.
+    With all of these factors accounted for, the upper limit on bias in the focal plane orientation is given by the intrinsic scatter of FPU angle estimates: $\Delta\phi_s<0.025^\circ$
 </p>
 
 <hr>
@@ -487,21 +487,34 @@ Important links:
         </li>
     </ol>
 
+    <p>
+        To make these relationships easier to see, I overplot the Moon and RPS data in Figure 2.5 after having binned each dataset in 5-degree bins in either Sun-Target Azimuth or Mirror-fixed theta.
+    </p>
+
+    <figure>
+        <img src="figs/mirror_params_vs_thm_all_data.png">
+
+        <figcaption>
+            Pertinent plots from Figure 2.4 but with each dataset included and where each dataset has been binned in 5-degree increments from -180&deg; to 180&deg;.
+        </figcaption>
+    </figure>
+
     <h3>Discussion and Conclusions</h3>
     <p>
-        The Type-11 data served as an effective independent cross-check of the phenomena we're seeing in both the Moon and RPS data. We have confirmation of real deformation across the mirror on both short (~1hr) and long (~days) timescales and we have evidence that assuming a single mirror orientation for all observations can induce a bias in the apparent orientation of the focal plane. Both the Type-5 and Type-11 data suggest that we have sufficient constraining power on the mirror such that I can fit a mirror orientation to the RPS data on the rasterset level to avoid this FPU angle bias.
+        The Type-11 data served as an effective independent cross-check of the phenomena we're seeing in both the Moon and main RPS data. We have confirmation of real deformation across the mirror on both short (~1hr) and long (~days) timescales and we have evidence that assuming a single mirror orientation for all observations can induce a bias in the apparent orientation of the focal plane. Both the Type-5 and Type-11 data suggest that we have sufficient constraining power on the mirror such that I can fit a mirror orientation to the RPS data on the rasterset level to avoid this FPU angle bias.
     </p>
     <p>
-        In point 1, the Type-11 data confirms the scaling dependence on the Sun's location WRT to the mirror. Because this will affect the pointing and in turn the projection of polarization, we will need to fit for as scaling also when we estimate the mirror parameters. In addition, this also means that all of the Moon data will be included in calculating the overall mirror orientation when determining the source location and we can be confident that we're not impinging a bias on the FPU angle.
+        In point 1, the Type-11 data confirms the scaling dependence on the Sun's location WRT to the mirror. Because this will affect the pointing and in turn the projection of polarization, we will need to fit for a scaling also when we estimate the mirror parameters. My hypothesis for the physical origin of this scaling is due to thermal expansion of the mirror which results in an outward bowing and leads to a scaling of the detector pointing. My plan is to do a back-of-the-envelope calculation to see if we can reproduce the scaling to within an order-of-magnitude or so given some temperature change and some thermal expansion coefficient of the mirror.
+        As a last note here, this also means that all of the Moon data will be included in calculating the overall mirror orientation when determining the source location and we can be confident that we're not impinging a bias on the FPU angle.
     </p>
     <p>
-        Regarding the uncertainty of the FPU angle, I calculate upper limit on the statistical uncertainty by comparing the per-rasterset FPU angles between the two Type-11 observations at DK=0&deg; which were taken within a few hours of each other.
-        The statistical uncertainty is given as the 1-&sigma; standard deviation of the difference between the two datasets divided by $\sqrt{2}$ which comes out to 0.03&deg;.
-        From point 5 in both sections, the relationship between the mirror and source allows us to tighten our constraints to more than just an error propagation of the mirror uncertainty from the Moon data. So our systematic uncertainty comes down to our ability to determine if our FPU angle is significantly biased which is driven by the error on the mean FPU angle (0.005&deg;).
+        Regarding the uncertainty of the FPU angle, I calculate an upper limit on the statistical uncertainty by comparing the per-rasterset FPU angles between the two Type-5 observations at DK=68&deg;.
+        The statistical uncertainty is given as the 1-&sigma; standard deviation of the difference between the two datasets divided by $\sqrt{2}$ which comes out to 0.025&deg;.
+        From point 5 in both sections, we can see that we can constrain the mirror and source parameters more tightly by minimizing bias in the FPU orientation angle. The upper limit on bias on the focal plane angle then comes from the instrinsic statistical uncertainty of the measurement itself:
     </p>
 
     $$
-    \sigma = \pm0.030^\circ\text{(stat)}\pm0.005^\circ\text{(sys)}
+    \Delta\phi_s < \pm0.025^\circ
     $$
 
 
