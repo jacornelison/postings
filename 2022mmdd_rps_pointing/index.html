@@ -508,7 +508,7 @@ Important links:
         As a last note here, this also means that all of the Moon data will be included in calculating the overall mirror orientation when determining the source location and we can be confident that we're not impinging a bias on the FPU angle.
     </p>
     <p>
-        Regarding the uncertainty of the FPU angle, I calculate an upper limit on the statistical uncertainty by comparing the per-rasterset FPU angles between the two Type-5 observations at DK=68&deg;.
+        Regarding the uncertainty of the FPU angle, I calculate an upper limit on the statistical uncertainty by comparing the per-rasterset FPU angles between the two Type-5 observations at DK=68&deg; (See &sect; A.1).
         The statistical uncertainty is given as the 1-&sigma; standard deviation of the difference between the two datasets divided by $\sqrt{2}$ which comes out to 0.025&deg;.
         From point 5 in both sections, we can see that we can constrain the mirror and source parameters more tightly by minimizing bias in the FPU orientation angle. The upper limit on bias on the focal plane angle then comes from the instrinsic statistical uncertainty of the measurement itself:
     </p>
@@ -517,7 +517,9 @@ Important links:
     \Delta\phi_s < \pm0.025^\circ
     $$
 
-
+    <p>
+        In my next posting, I'll be looking at the actual polarization angles and cross-polar efficiencies we derive from the modulation curves I described in &sect;1.1
+    </p>
 
 </section>
 
@@ -526,6 +528,17 @@ Important links:
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+    <h3>Statistical Uncertainty of the FPU angle</h3>
+    <p>I characterize the statistical uncertainty of a measurement usually by taking two back-to-back observations at the same DK angle, subtracting the data detector-wise and then computing the standard deviation of the distribution. This method allows you to examine fluctuations in the data without worrying how the pointing model inserts into the equation. The RPS Type-5 data has only one such redundant measurement and they were taken roughly two weeks apart, so we can guarantee that other sorts of fluctuations aren't also contributing. As such, we can really only establish an upper limit on the statistical uncertainty -- the actual statistical uncertainty could possibly be lower, we just don't know. Fortunately, the distribution we see in A1.1 is still quite tight with an STD of 0.035&deg;. Because you're cutting the data in half when you subtract, I report the statistical uncertainty as the 1-&sigma; standard deviation of the difference between the two datasets divided by $\sqrt{2}$ (because the noise increases as $\sqrt{N}$) which is 0.025&deg;</p>
+
+<figure>
+    <img src="figs/diffhist_fpu_angle.png">
+    <figcaption>
+
+    </figcaption>
+</figure>
+
+
     <h3>Moon Quivers</h3>
     <figure>
         <img alt="Name pager" id="quiver3pager" src="#" />
@@ -592,7 +605,7 @@ Important links:
     </p>
     </div>
     <h3>Code</h3>
-    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p>Below is a list of code that was used for this analysis and can be found in the <tt>scripts/</tt> directory of this posting.</p>
     <p id="code"></p>
 
     <h3>Data</h3>
@@ -608,12 +621,12 @@ Important links:
 
         // Shorthand tags
         var codes = [
-            "rps_fit_mirror_from_moon.m",
+            "plot_rps_moon_fits.m",
             ];
 
         // Posting titles
         var desc = [
-            "Derives mirror parameters from observations of the moon.",
+            "Code which plots most of the figures in this posting.",
 
         ];
 
