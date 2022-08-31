@@ -13,13 +13,14 @@ addpath('z:/pipeline/util')
 
 
 % Schedule groups
-schtype = 11;
+schtype = 5;
 switch schtype
 
     case 5
         %load('z:/dev/rps/rps_beam_fits.mat')
         %load('z:/dev/rps/rps_beam_fits_mirror_persch.mat')
         load('z:/dev/rps/rps_beam_fits_type5_rerun.mat')
+        %load('z:/dev/rps/rps_beam_fits_type5_rerun_mirrorperrast.mat')
         load('z:/dev/rps/rpssch.mat')
         load('z:/dev/rps/fpuangle_fit_data.mat')
         load('z:/dev/rps/perdk_fpu_parms.mat')
@@ -406,6 +407,7 @@ fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
 fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
 
 save(sprintf('z:/dev/rps/rps_beam_fits_type%01i_rerun_cut.mat',schtype),'fd','scheds','dks','titles');
+%save(sprintf('z:/dev/rps/rps_beam_fits_type%01i_rerun_mirrorperrast_cut.mat',schtype),'fd','scheds','dks','titles');
 
 %% Angle vs time
 
