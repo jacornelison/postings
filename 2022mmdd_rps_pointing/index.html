@@ -45,7 +45,7 @@
 </p>
 <p>
     Lastly, I find that cutting any of the Moon data when calculating the mirror orientation impinges a bias on the focal plane orientation angle up to 0.02&deg;. As such, we are able to use the geometric relationship between the mirror and the source to establish a tighter constraints on both by minimizing the apparent focal plane orientation angle.
-    With all of these factors accounted for, the upper limit on bias in the focal plane orientation is given by the intrinsic scatter of FPU angle estimates: $\Delta\phi_s<0.04^\circ$
+    With all of these factors accounted for, the uncertainty on bias in the focal plane orientation is given by the intrinsic scatter of FPU angle estimates and the difference between the optimized mirror rolls given by the main Type-5 RPS data and our Type-11 RPS cross-check data: $\sigma\phi_s=\pm0.025^\circ\text{stat}\pm0.014^\circ\text{sys}$
 </p>
 
 <hr>
@@ -152,7 +152,7 @@
     </figure>
 
 <p>
-    My last few postings on the Moon analysis used only the Type-7 data. This posting mostly focuses on the Type-5 main RPS data, but I will also look into the Type-10 and Type-11 cross-check data.
+    My last few postings on the Moon analysis used only the Type-7 data. This posting mostly focuses on the Type-5 main RPS data, but I will also look into the Type-11 cross-check data. The Type-10 data would also be used for this, but I hadn't thought through the scanning strategy all that well and thus didn't acquire many detectors with full rastersets. I'll have to think more about how to make the Type-10 data more immediately useful.
 </p>
 
     <h3>RPS Analysis in a nutshell</h3>
@@ -519,11 +519,11 @@ Important links:
     <p>
         Regarding the uncertainty of the FPU angle, I calculate an upper limit on the statistical uncertainty by comparing the per-rasterset FPU angles between the two Type-5 observations at DK=68&deg; (See &sect; A.1).
         The statistical uncertainty is given as the 1-&sigma; standard deviation of the difference between the two datasets divided by $\sqrt{2}$ which comes out to 0.025&deg;.
-        From point 5 in both sections, we can see that we can constrain the mirror and source parameters more tightly by minimizing bias in the FPU orientation angle. The upper limit on bias on the focal plane angle then comes from the instrinsic statistical uncertainty of the measurement itself combined in quadrature with the systematic uncerainty from minimizing the FPU angle in the previous section:
+        From point 5 in both sections, we can see that we can constrain the mirror and source parameters more tightly by minimizing bias in the FPU orientation angle. The upper limit on bias on the focal plane angle then comes from the instrinsic statistical uncertainty of the measurement itself and the systematic uncertainty from minimizing the FPU angle in the previous section:
     </p>
 
     $$
-    \Delta\phi_s < \pm0.04^\circ
+    \sigma\phi_s = \pm0.025^\circ\text{stat}\pm0.014^\circ\text{sys}
     $$
 
     <p>
