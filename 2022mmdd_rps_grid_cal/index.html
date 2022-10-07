@@ -39,21 +39,38 @@
 <hr>
 
 <p>
-    Abstract
+    We observe the RPS to determine the polarization angle of the CMB in absolute terms making three primary connections:
+    <ol>
+    <li>Determine the angle to the RPS's polarizing wire grid with respect to gravity.</li>
+    <li>Relate the polarization angle of the telescope WRT to the source.</li>
+    <li>Relate the polarization angle of the CMB WRT the telescope.</li>
+</ol>
+</p>
+<p>
+    This posting covers part 1: Determining the polarization angle of the RPS's wire grid WRT to gravity. In later sections, I will also discuss possible cross checks.
 </p>
 
 <hr>
 
-<section><h2>Bridgeport Measurements</h2>
+<section><h2>Wire Grid Calibration</h2>
 <!--<section><h2>Attempt 1 at Pole</h2>-->
-
-<!--    <h3>Bridgeport Measurements</h3>-->
+    <p>Relating the polarization orientation occurs in two major steps:
+    <ol type="I">
+        <li>Measuring the angle of the polarizing wire grid WRT to a reference surface.</li>
+        <li>Measuring the angle of the reference surface with respect to gravity.</li>
+    </ol>
+    </p>
+    <p>The first part is accomplished by measuring the mechanical orientation of the grid's wires in a Bridgeport (aka knee mill) using the top flat surface of the rotation stage as the reference plane. The second part is accomplished using the RPS's tilt meter: with the RPS completely assembled, we place a precision machinist level on the reference surface of the rotation stage and record the number given by the tilt meter. Thus, when we're observing the RPS on-mast we know the wire grid is horizontal WRT gravity as long as the tilt meter is reading our that reference value.</p>
+    <p>
+        The following sections describe how we accomplish parts I and II in detail.
+    </p>
+    <h3>Bridgeport Measurements</h3>
 
     <p>
     Describe what went into this measurement:
     </p>
     <p>
-        The wire grid calibration follows a similar procedure outlined in <a href="http://bicep3.bicepkeck.org/calibration/calibration_hardware_logbook.html#20131108">JMK's 08-Nov-2013 Entry</a> in the Calibration HW Logbook which I paraphrase here:
+        During the 2021/2022 RPS campaign, the wire grid calibration followed a similar procedure outlined in <a href="http://bicep3.bicepkeck.org/calibration/calibration_hardware_logbook.html#20131108">JMK's 08-Nov-2013 Entry</a> in the Calibration HW Logbook which I paraphrase here:
     </p>
     <ol>
         <li>Install RPS rotation stage into Bridgeport vise</li>
@@ -78,7 +95,7 @@
 
     <p>It's currently unclear if the backlash developed during the RPS measurements or during transport back to CONUS. However, the backlash is small compared to our error budget. Further, the center of mass of the RPS is offset such that some torque is applied to the stage except at roughly &pm;90&deg; so it might be possible to model this effect in the BICEP3 and ISAAC to determine when it happened.</p>
 
-    <h3>Homing repeatability</h3>
+    <h4>Homing repeatability</h4>
 
     <p>I determine the homing repeatability of the stage by commanding the RPS to -180&deg;, then to 180&deg; and then homing again, recording the angle at each homing. Before the RPS went on the mast in late December, I measured the the grid angle to be to be centered at 0.004&deg; with a 1&sigma; standard deviation of 0.0002&deg; (Left plot of Figure 1.1).
     </p>
@@ -93,6 +110,10 @@
 
     </figcaption>
 </figure>
+
+<!--    <h3>Tilt Meter</h3>-->
+<!--    <h4>Calibration</h4>-->
+<!--    <h4>Real-Time Monitoring</h4>-->
 
 <!--    <table>-->
 <!--        <tr>-->
