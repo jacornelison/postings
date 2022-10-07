@@ -62,21 +62,28 @@
         <li>Home the rotation stage</li>
         <li>Determine the angle of the wire grid WRT to the reference surface</li>
         <ul>
-            <li>The angle of the grid is $tan^{-1} \left(\frac{\text{wires travelled}\times\text{wire pitch}}{\text{X-stage distance travelled}}\right)$ </li>
+            <li>The angle of the grid is $tan^{-1} \left(\frac{\text{wires travelled}\times\text{wire pitch}}{\text{stage distance travelled}}\right)$ </li>
         </ul>
         <li>Optional: Manually adjust the wire grid orientation such that the wires align with the home angle.</li>
     </ol>
 
-    <p>I determine the homing repeatability of the stage by repeating steps 5 & 6, recording each new angle. Before the RPS went on the mast in late December, I zeroed the RPS grid to the homing position and measured the grid angle and homing repeatability to be 0.004&deg;&pm;0.0002&deg; (Left plot of Figure 1.1). When we brought the RPS down from the mast in late January, I had less that 24 hours before I was supposed to leave Pole and so opted to use the ISAAC to double check the health of the stage before packing up (more on that later). I disassembled and packed the RPS in such a way that I could repeat the bridgeport measurements when I returned to the states.
+    <p>Before the RPS went on the mast in late December, I zeroed the RPS grid to the homing position and measured the grid angle to be 0.004&deg;.When we brought the RPS down from the mast in late January, I had less that 24 hours before I was supposed to leave Pole and so opted to use the ISAAC to double check the health of the stage before packing up (more on that later). I disassembled and packed the RPS in such a way that I could repeat the bridgeport measurements when I returned to the states.
     </p>
-        <p>In early March, I measured the wire grid angle on the bridgeport at Harvard in the Smithsonian's RX Lab. This time there was a small amount of backlash in the rotation stage:
-        </p>
+    <p>In early March, I measured the wire grid angle on the bridgeport at Harvard in the Smithsonian's RX Lab. This time there was a small amount of backlash in the rotation stage:
+    </p>
     <ul>
         <li>Putting slight pressure on the shroud in the clockwise direction, the wire grid angle was at exactly the same value: 0.004&deg;.</li>
         <li>With pressure in the counter-clockwise direction, the wire grid was at an angle of 0.057&deg;</li>
     </ul>
+
+    <p>It's currently unclear if the backlash developed during the RPS measurements or during transport back to CONUS. However, the backlash is small compared to our error budget. Further, the center of mass of the RPS is offset such that some torque is applied to the stage except at roughly &pm;90&deg; so it might be possible to model this effect in the BICEP3 and ISAAC to determine when it happened.</p>
+
+    <h3>Homing repeatability</h3>
+
+    <p>I determine the homing repeatability of the stage by commanding the RPS to -180&deg;, then to 180&deg; and then homing again, recording the angle at each homing. Before the RPS went on the mast in late December, I measured the the grid angle to be to be centered at 0.004&deg; with a 1&sigma; standard deviation of 0.0002&deg; (Left plot of Figure 1.1).
+    </p>
     <p>
-        After assembling the RPS and ISAAC here in the lab and doing a number of measurements, I re-measureed the homing repeatability, this time recording both angles due to the backlash (see right plot of Figure 1.1).
+        After assembling the RPS and ISAAC here in the lab and doing a number of measurements, I re-measured the homing repeatability, this time recording both angles due to the backlash (see right plot of Figure 1.1).
     </p>
 
 
