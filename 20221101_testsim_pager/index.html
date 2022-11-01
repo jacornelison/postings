@@ -1,5 +1,34 @@
 <head>
 <title>B2018 Sims Pager</title>
+
+
+  <style type="text/css">
+    /* Legend entry styling */
+    dl.legend {
+      margin: 0px 40px;
+    }
+    dl.legend > dt {
+      font-weight: bold;
+    }
+    dl.legend > dd + dt {
+      margin-top: 0.5em;
+    }
+    dl.legend dd.legend_table {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      grid-gap: 0.3em 2em;
+    }
+
+    *[title] {
+      text-decoration: underline dashed;
+    }
+
+    .alert { font-weight:bold; background: #ff7070; }
+    .lowalert { font-weight:bold; background: #a0a0ff; }
+    table thead td { font-weight:bold; text-align:center; }
+
+  </style>
+
 </head>
 <body text="#000000" bgcolor="#ffffff">
 <center>
@@ -17,7 +46,7 @@ A rerun of the B2018 Type 5 sims, to make sure I can run the sim pipeline correc
 <p>
 <h3>Pager</h3>
 <p>
-  I compare the real and Type 5 maps created by me to the maps created by Howard back in 2020.
+  I compare the real and Type 5 maps created by me to the maps created by Howard back in 2020 <a href="../../../bkcmb/analysis_logbook/analysis/20201010_B18_mapspager/">20201010_B18_mapspager</a>. Everything looks very close for the most part -- there is a very slight difference in coverage which I think is due some update in the minimum tag list used.
 </p>
 
 <SCRIPT SRC="pager.js"></SCRIPT>
@@ -104,15 +133,29 @@ function make_fignames() {
  // if(param.dp=='1102'){
  //   param.type3='real';
  // }
-  var norot = "";
 
-  if (param.type3=='real'){
-    norot = '_norot';
+
+  var overfreq = '';
+  var norot = "";
+  if (param.rx=='B2018_95'){
+    param.base = '3553';
   }
-  else{
-    norot = ''
+  if (param.rx=='B2018'){
+    param.base = '6600';
+    overfreq = '_overfreq';
+
+
+    if (param.type3=='real'){
+      norot = '_norot';
+    }
+    else{
+      norot = ''
+    }
+
   }
-  fig.fig1.fname='reduc_plotcomap_pager/'+param.base+dirapp+'/'+param.type3+'_'+param.dgt+fix+'_filtp3_weight3_gs_dp'+param.dp+'_jack'+param.jack+coaddtype+'_cm_overfreq'+norot+'_'+param.type1+est+'_'+param.type2+'_'+param.rx+param.cscale+'.png';
+
+
+  fig.fig1.fname='reduc_plotcomap_pager/'+param.base+dirapp+'/'+param.type3+'_'+param.dgt+fix+'_filtp3_weight3_gs_dp'+param.dp+'_jack'+param.jack+coaddtype+'_cm'+overfreq+norot+'_'+param.type1+est+'_'+param.type2+'_'+param.rx+param.cscale+'.png';
 
 }
 
@@ -155,8 +198,8 @@ pager.jack=['Jack',
 	    'tile','4','phase (az)','5','mux col','6','alt dk','7',
 	    'mux row','8','tile/dk','9','FP inner/outer',
 	    'a','tile top/bottom','b','tile inner/outer','c','moon up/down','d','diffpoint best/worst','e'];
-pager.rx=['Rx',
-          'B2018','B2018'
+pager.rx=['Version',
+          'B2018_James','B2018','B2018_Howard','B2018_95'
 ]; 
 pager.cscale=['Color scale','fixed','_fcs','free','']
 //,'0','_rx0','1','_rx1','2','_rx2','3','_rx3','4','_rx4'];
@@ -211,9 +254,223 @@ plupdate();
 </SCRIPT>
 
 
-<p>&nbsp;&nbsp;</p>
+
+
+<h3>Legend of options</h3>
+<dl class="legend">
+  <dt>Sim Types</dt>
+  <dd class="legend_table">
+    <span>real</span>
+    <span>Map made of real BICEP/Keck data or external maps processed by
+          the observing matrix.</span>
+
+    <span>type 2</span>
+    <span>Signal-only simulation of unlensed ΛCDM scalars. <b>Any B-mode
+            power is due to T->Pol or E->B leakage.</b> </span>
+
+    <span>type 3</span>
+    <span>Signal-only simulation of gaussian dust. <b>The Temperature map
+          is <span
+              title="It's actually Pol -> T leakage, something we're not used to thinking
+about, but is present since the simulated timestreams are
+T + Qcos(2ψ) + Usin(2ψ). While T is zeroed out during simulation, the A + B
+timestreams have real Q/U content that are summed into the T
+map.">meaningless</span>.
+          </b></span>
+
+    <span>type 4</span>
+    <span>\(B\)-mode only \(r=0.1\) tensors. <b>The Temperature map is
+          <span
+                  title="It's actually Pol -> T leakage, something we're not used to thinking
+about, but is present since the simulated timestreams are
+T + Qcos(2ψ) + Usin(2ψ). While T is zeroed out during simulation, the A + B
+timestreams have real Q/U content that are summed into the T
+map.">meaningless</span>.
+          </b></span>
+
+    <span>type 5</span>
+    <span>Signal-only simulation of lensed-ΛCDM scalars.</span>
+
+    <span>type 6</span>
+    <span>Noise pseudo-simulation formed by inverting the sign of ~50% of
+          input data; coherent signal cancels, leaving behind only
+          noise.</span>
+
+    <span>type 7</span>
+    <span>Lensed-ΛCDM + noise simulation; map-space sum of types 5 +
+          6.</span>
+
+    <span>type 8</span>
+    <span>Lensed-ΛCDM + noise + dust simulation; map-space sum of types 5
+          + 6 + 3.</span>
+
+    <span>type 9</span>
+    <span>Lensed-ΛCDM + noise + tensors simulation; map-space sum of types
+          5 + 6 + 4.</span>
+  </dd>
+
+  <dt>Estimator</dt>
+  <dd class="legend_table">
+
+    <span>normal</span>
+    <span>
+          simplest E/B estimator — Fourier transform, rotate Q/U to E/B in
+          Fourier space, and then take average of squares in annular rings
+        </span>
+
+    <span>kendrick</span>
+    <span>
+          <span
+                  title="K. Smith. “Pseudo-C_ℓ estimators which do no mix E and B modes.”
+In: Physical Review D 74, 083002 (Oct 2006),
+DOI: 10.1103/PhysRevD.74.083002, arXiv: astro-ph/0511629">Kendrick Smith
+pure-B estimator</span>, a variation on the normal estimator which accounts
+for the effects of applying an apodization mask
+        </span>
+
+    <span>matrix</span>
+    <span>
+          An estimator which first performs a map-space projection to leave
+          behind only spatial modes corresponding to B-modes. (Either normal
+          or kendrick estimators can be subsequently used to produce the power
+          spectra.) Described in detail in <span
+            title="The BICEP/Keck Array Collaboration. “BICEP/Keck Array VII: Matrix Based
+E/B Separation Applied to BICEP2 and the Keck Array.”
+In: The Astrophysical Journal 825, 66 (Jul 2016),
+DOI: 10.3847/0004-637X/825/1/66, arXiv: 1603.05976">BK-VII</span>.
+        </span>
+
+  </dd>
+
+  <dt>Type0</dt>
+  <dd class="legend_table">
+
+    <span>poly subtracted</span>
+    <span>
+          The timestream-subtracted polynomial component, sent through map
+          making. <b>Only plotted for real data.</b>
+        </span>
+
+    <span>ground subtracted</span>
+    <span>
+          The timestream-subtracted scan-synchronous component, sent through
+          map-making. <b>Only plotted for real data.</b>
+        </span>
+
+    <span>deprojected</span>
+    <span>
+          Sum of deprojection templates as applied (i.e. scaled by the
+          deprojection fit coefficient and summed over only enabled
+          deprojection modes).
+          <b>Only plotted for polarization fields in the real data. For
+          dp0000, the templates are unscaled and show the raw sum of all
+          templates.</b>
+        </span>
+
+    <span>remaining signal</span>
+    <span>
+          The final map after all filtering has been applied.
+        </span>
+
+  </dd>
+
+  <dt>Type1</dt>
+  <dd class="legend_table">
+
+    <span>T</span>
+    <span>
+          Temperature (or intensity) field, derived from pair-sum data.
+        </span>
+
+    <span>Q / U</span>
+    <span>
+          Stokes Q and U fields, derived from pair-difference data.
+          <b>The purified (B-mode dominated) Q/U maps are displayed for the
+          matrix Estimator option.</b>
+        </span>
+
+    <span>E / B</span>
+    <span>
+          Fourier-space transform of Q and U into E and B vector spaces.
+          <b>Only valid for apmap and spec Type2 options.</b>
+        </span>
+
+    <span>TE / TB / EB</span>
+    <span>
+          Fourier plane cross-spectra of two different fields.
+          <b>Only valid for spec Type2 option.</b>
+        </span>
+
+  </dd>
+
+  <dt>Type2</dt>
+  <dd class="legend_table">
+
+    <span>map</span>
+    <span>
+          Raw selected Type1 map.
+          <b>This option also includes the map depth and area estimates printed
+            into the plot title.</b>
+        </span>
+
+    <span>1/varmap</span>
+    <span>
+          Inverse of the variance of the selected Type1 map.
+          <b>For E / B maps, the polarization apodization mask is shown; note
+            that this may be the common mask over all rxs/frequencies.</b>
+        </span>
+
+    <span>apmap</span>
+    <span>
+          Type1 map with the apodization mask applied.
+        </span>
+
+    <span>spec (lin or log)</span>
+    <span>
+          Fourier plane of the corresponding Type1 map.
+        </span>
+
+  </dd>
+
+  <dt>Jack</dt>
+  <dd>
+    Selects the type of jackknife to show, or the non-jackknife map in the
+    case of “none”.
+  </dd>
+
+  <dt>Deproj</dt>
+  <dd>
+    Selects map variations of a particular deprojection style. Typically,
+    only the real map is valid for all listed variations, and
+    <b>simulations only have dp1100 available</b>.
+  </dd>
+
+  <dt>Data set</dt>
+  <dd>
+    Choice of data to show; may work in combination with <b>Version</b>, in
+    which case this option will typically select amongst portions of the
+    data set within a single year (i.e. selecting the a particular receiver
+    and/or frequency band).
+  </dd>
+
+  <dt>Color Scale</dt>
+  <dd>
+    Free or fixed. For fixed, a hard-coded color axis range is used,
+    otherwise free heuristically chooses the color range based on examining
+    a portion of the data.
+  </dd>
+
+  <dt>Version</dt>
+  <dd>
+    Choice of data to show; works in concert with <b>Data set</b>, in which
+    case this option typically selects across years or through revision
+    history.
+  </dd>
+
+</dl>
+
+</section>
 <hr>
-<p>
 
 </body>
 </html>
