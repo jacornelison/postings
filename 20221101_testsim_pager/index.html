@@ -1,57 +1,25 @@
 <head>
-<title>Pol Rot Sims Pager</title>
+<title>B2018 Sims Pager</title>
 </head>
 <body text="#000000" bgcolor="#ffffff">
 <center>
 <H2>Polarization Rotation Sims Pager</H2>
-<H3>2016 Nov 07 - E.W. Bullock</H3>
+<H3>2020 Nov 01 - J. Cornelison</H3>
 </center>
 <hr>
 <h3>Introduction</h3>
-I'm in the process of making LCDM unlensed sims for K2014 data where the chi angles
-are rotated for the sims but the standard chi angles are used for map
-making.  This post presents the pager for the first realization for
-the sims.
+A rerun of the B2018 Type 5 sims, to make sure I can run the sim pipeline correctly.
 <br>
-<hr>
-<h3>Rotation</h3>
-I've made simulations with 5 different rotations, and there is also a
-button to compare to the standard type 2 sims.  The options under
-PolRot in the pager are:
-<ol>
-<li><b>None </b>- These are from the
-  mainline <a href="../20151005_1351d_mapspager/">K2014 sims</a>.  So
-  the same chi angles are used during simulation and map making.
-<li><b>DSC </b>- The standard chi angles are offset according to the
-  results of the Keckycal analysis for Rx4,
-  Fig. 10c <a href="../20160713_keckycal_consistency/">in this
-  post</a>. Detectors where the fit was more than 0.5 degrees from the
-  mean were set to the weighted mean.  The chi angles for Rx
-  1 and 3 were also offset from their standard values by the same
-  amount.  Rx 0 and 2 were not rotated since the 95's don't have the
-  same number of detectors.
-<li><b>0.14 rms </b>- The weighted mean and STD across detectors of the Rx4 Keckycal
-  fits is -0.11 deg and 0.14 deg, respectively.  Those are the values
-  used to dither all detectors.
-<li><b>1.00 rms </b>- All chi angles dithered by -0.11 deg mean and 1.00
-  deg STD.
-<li><b>5.00 rms </b>- All chi angles dithered by -0.11 deg mean and 5.00
-  deg STD.
-<li><b>10.00 rms </b>- All chi angles dithered by -0.11 deg mean and 10.00
-  deg STD.
 
-</ol>
 <hr>
+
+
 <p>
 <h3>Pager</h3>
-The most important maps to look at are for rx4.  To a lesser extend,
-we can also look at rx's 1 and 3.  Rx's 0 and 2 have information for
-the rms PolRot buttons but not for DSC.  The main point of the pager
-is as a check on the simulations.  There is nothing that looks broken.
 <p>
-Visually, I'm only able to see differences in B for 5 and 10 deg rms.
-For 3, I can only convince myself of changes in the 10 deg rms sims.
-<p>
+  I compare the real and Type 5 maps created by me to the maps created by Howard back in 2020.
+</p>
+
 <SCRIPT SRC="pager.js"></SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -66,14 +34,14 @@ param.type0='';
 param.type1='T';
 param.estimator='';
 param.type2='map';
-param.type3='0012';
+param.type3='0015';
 param.dp='1100';
 param.jack='0';
-param.rx='K2014_rx4';
+param.rx='B2018';
 param.rx2=param.rx;
-param.dgt='d';
-param.base='1351';
-param.rot='';
+param.dgt='h';
+param.base='6600';
+param.rot='h';
 
 // This function sets the figure names.  You can call the
 // figures anything you like,
@@ -90,10 +58,15 @@ function make_fignames() {
 //  if (param.rx!='B2' && param.rx!='Keck'){
 //    rxadd='_'+param.rx;
 //  }
+//   if (param.rot==''){
+//     param.dgt='h';
+//     param.base='1351';
+//   }
   if (param.rot==''){
-    param.dgt='d';
-    param.base='1351';
+    param.dgt='h';
+    param.base='6600';
   }
+
   if (param.rot=='DSC'){
     param.dgt='DSC';
     param.base='1863';
@@ -131,8 +104,15 @@ function make_fignames() {
  // if(param.dp=='1102'){
  //   param.type3='real';
  // }
+  var norot = "";
 
-  fig.fig1.fname='reduc_plotcomap_pager/'+param.base+dirapp+'/'+param.type3+'_'+param.dgt+fix+'_filtp3_weight3_gs_dp'+param.dp+'_jack'+param.jack+coaddtype+'_'+param.type1+est+'_'+param.type2+'_'+param.rx+param.cscale+'.png';
+  if (param.type3=='real'){
+    norot = '_norot';
+  }
+  else{
+    norot = ''
+  }
+  fig.fig1.fname='reduc_plotcomap_pager/'+param.base+dirapp+'/'+param.type3+'_'+param.dgt+fix+'_filtp3_weight3_gs_dp'+param.dp+'_jack'+param.jack+coaddtype+'_cm_overfreq'+norot+'_'+param.type1+est+'_'+param.type2+'_'+param.rx+param.cscale+'.png';
 
 }
 
@@ -160,7 +140,7 @@ get_query_words();
 // %  xxx9 - the sum of 4+5+6 
 
 
-pager.type3=['Sim Type/Real','LCDM unlensed scalars (type2)','0012'];
+pager.type3=['Sim Type/Real','Real','real','Lensed LCDM (type2)','0015'];
 //pager.dp=['Deproj','0000 none','0000','1000 relgain (rg)','1000','0100 diff point (dp)','0100','1100 dp+rg','1100','1110 rg+dp + diff beamwidth','1110','1101 rg+dp + diff ellipt. (de)','1101','1111 all four','1111'];
 pager.dp=['Deproj','1100 dp+rg','1100'];
 //pager.type0=['Type0','poly subtracted','psub','ground subtracted','gsub','deprojected (Pol only)','dsub','remaining signal',''];
@@ -176,12 +156,11 @@ pager.jack=['Jack',
 	    'mux row','8','tile/dk','9','FP inner/outer',
 	    'a','tile top/bottom','b','tile inner/outer','c','moon up/down','d','diffpoint best/worst','e'];
 pager.rx=['Rx',
-          'K2014_95','K2014_95','K2014_150','K2014_150','','','','', 
-          'rx0','K2014_rx0','rx1','K2014_rx1','rx2','K2014_rx2','rx3','K2014_rx3','rx4','K2014_rx4' 
+          'B2018','B2018'
 ]; 
 pager.cscale=['Color scale','fixed','_fcs','free','']
 //,'0','_rx0','1','_rx1','2','_rx2','3','_rx3','4','_rx4'];
-pager.rot=['PolRot','None','','DSC','DSC','0.14rms','0.14','1.00rms','1.00','5.00rms','5.00','10.00rms','10.00'];
+pager.rot=['PolRot','None','h'];
 
 
 //-->
