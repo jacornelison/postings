@@ -1,0 +1,239 @@
+<head>
+<title>Pol Rot Sims Pager</title>
+</head>
+<body text="#000000" bgcolor="#ffffff">
+<center>
+<H2>Polarization Rotation Sims Pager</H2>
+<H3>2016 Nov 07 - E.W. Bullock</H3>
+</center>
+<hr>
+<h3>Introduction</h3>
+I'm in the process of making LCDM unlensed sims for K2014 data where the chi angles
+are rotated for the sims but the standard chi angles are used for map
+making.  This post presents the pager for the first realization for
+the sims.
+<br>
+<hr>
+<h3>Rotation</h3>
+I've made simulations with 5 different rotations, and there is also a
+button to compare to the standard type 2 sims.  The options under
+PolRot in the pager are:
+<ol>
+<li><b>None </b>- These are from the
+  mainline <a href="../20151005_1351d_mapspager/">K2014 sims</a>.  So
+  the same chi angles are used during simulation and map making.
+<li><b>DSC </b>- The standard chi angles are offset according to the
+  results of the Keckycal analysis for Rx4,
+  Fig. 10c <a href="../20160713_keckycal_consistency/">in this
+  post</a>. Detectors where the fit was more than 0.5 degrees from the
+  mean were set to the weighted mean.  The chi angles for Rx
+  1 and 3 were also offset from their standard values by the same
+  amount.  Rx 0 and 2 were not rotated since the 95's don't have the
+  same number of detectors.
+<li><b>0.14 rms </b>- The weighted mean and STD across detectors of the Rx4 Keckycal
+  fits is -0.11 deg and 0.14 deg, respectively.  Those are the values
+  used to dither all detectors.
+<li><b>1.00 rms </b>- All chi angles dithered by -0.11 deg mean and 1.00
+  deg STD.
+<li><b>5.00 rms </b>- All chi angles dithered by -0.11 deg mean and 5.00
+  deg STD.
+<li><b>10.00 rms </b>- All chi angles dithered by -0.11 deg mean and 10.00
+  deg STD.
+
+</ol>
+<hr>
+<p>
+<h3>Pager</h3>
+The most important maps to look at are for rx4.  To a lesser extend,
+we can also look at rx's 1 and 3.  Rx's 0 and 2 have information for
+the rms PolRot buttons but not for DSC.  The main point of the pager
+is as a check on the simulations.  There is nothing that looks broken.
+<p>
+Visually, I'm only able to see differences in B for 5 and 10 deg rms.
+For 3, I can only convince myself of changes in the 10 deg rms sims.
+<p>
+<SCRIPT SRC="pager.js"></SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+// Parameters that the user can set using the
+// pager buttons.  These are the options that will
+// come up by default when the page first loads.
+// You can define whatever parameters you like,
+//   param.something='value';
+param.cscale='_fcs'
+param.type0='';
+param.type1='T';
+param.estimator='';
+param.type2='map';
+param.type3='0012';
+param.dp='1100';
+param.jack='0';
+param.rx='K2014_rx4';
+param.rx2=param.rx;
+param.dgt='d';
+param.base='1351';
+param.rot='';
+
+// This function sets the figure names.  You can call the
+// figures anything you like,
+//   fig.somename={};
+//   fig.somename.fname='image_file_to_display.png';
+//   fig.somename.link='url_to_link_to';
+// If not specified, the 'link' value is the same as 'fname'.
+function make_fignames() {
+  fig.fig1={};
+  dirapp = param.type0;
+
+//  base='1351';
+  coaddtype='1';
+//  if (param.rx!='B2' && param.rx!='Keck'){
+//    rxadd='_'+param.rx;
+//  }
+  if (param.rot==''){
+    param.dgt='d';
+    param.base='1351';
+  }
+  if (param.rot=='DSC'){
+    param.dgt='DSC';
+    param.base='1863';
+  }
+
+  if (param.rot=='0.14'){
+    param.dgt='s0p14';
+    param.base='1864';
+  }
+  if (param.rot=='1.00'){
+    param.dgt='s1p00';
+    param.base='1865';
+  }
+  if (param.rot=='5.00'){
+    param.dgt='s5p00';
+    param.base='1866';
+  }
+
+  if (param.rot=='10.00'){
+    param.dgt='s10p00';
+    param.base='1867';
+  }
+
+  est = param.estimator;
+  if (param.type1.indexOf('B')==-1){
+    est='';
+  }
+  fix='';
+  
+  if(param.type0!=''){
+    param.type3='real';
+  }
+ // if(param.dp=='1102'){
+ //   param.type3='real';
+ // }
+
+  fig.fig1.fname='reduc_plotcomap_pager/'+param.base+dirapp+'/'+param.type3+'_'+param.dgt+fix+'_filtp3_weight3_gs_dp'+param.dp+'_jack'+param.jack+coaddtype+'_'+param.type1+est+'_'+param.type2+'_'+param.rx+param.cscale+'.png';
+
+}
+
+set_figname_fun(make_fignames);
+
+// Automatically colorize the buttons as they're pressed
+//   set_autocolor(1,on_color,off_color)
+//   set_autocolor(0) to turn off this feature
+set_autocolor(1,'Red','LightBlue');
+
+// Check if the user is looking for particular settings
+get_query_words();
+
+// Setup for automatic pager button writer
+// %  xxx1 - reserved for traditional noise sims
+// %  xxx2 - LCDM unlensed scalars with diff point on
+// %  xxx4 - r=0.1 tensors with E forced to zero (and T switched off at makesim stage)
+// %  xxx5 - LCDM lensed scalars with diff point on
+// %  xxx6 - sign flip noise
+// %  xxx8 - reserved for alternate artificial B-mode input spectrum
+// 
+// %  combinations:
+// %  xxx3 - reserved for the map sum of 1+2 
+// %  xxx7 - the map sum 5+1 or 5+6 
+// %  xxx9 - the sum of 4+5+6 
+
+
+pager.type3=['Sim Type/Real','LCDM unlensed scalars (type2)','0012'];
+//pager.dp=['Deproj','0000 none','0000','1000 relgain (rg)','1000','0100 diff point (dp)','0100','1100 dp+rg','1100','1110 rg+dp + diff beamwidth','1110','1101 rg+dp + diff ellipt. (de)','1101','1111 all four','1111'];
+pager.dp=['Deproj','1100 dp+rg','1100'];
+//pager.type0=['Type0','poly subtracted','psub','ground subtracted','gsub','deprojected (Pol only)','dsub','remaining signal',''];
+pager.estimator=['Estimator','normal','','Kendrick','_kendrick']
+pager.type1=['Type1',
+  'T','T','Q','Q','U','U',
+  'E','E','B','B','TE','TE','TB','TB','EB','EB'];
+pager.type2=['Type2','map','map','1/varmap','noi','apmap','apmap',
+             'spec(lin)','speclin','','','',''];
+pager.jack=['Jack',
+            'none','0','dk','1','scan dir','2','1st/2nd half weights','3',
+	    'tile','4','phase (az)','5','mux col','6','alt dk','7',
+	    'mux row','8','tile/dk','9','FP inner/outer',
+	    'a','tile top/bottom','b','tile inner/outer','c','moon up/down','d','diffpoint best/worst','e'];
+pager.rx=['Rx',
+          'K2014_95','K2014_95','K2014_150','K2014_150','','','','', 
+          'rx0','K2014_rx0','rx1','K2014_rx1','rx2','K2014_rx2','rx3','K2014_rx3','rx4','K2014_rx4' 
+]; 
+pager.cscale=['Color scale','fixed','_fcs','free','']
+//,'0','_rx0','1','_rx1','2','_rx2','3','_rx3','4','_rx4'];
+pager.rot=['PolRot','None','','DSC','DSC','0.14rms','0.14','1.00rms','1.00','5.00rms','5.00','10.00rms','10.00'];
+
+
+//-->
+</SCRIPT>
+
+
+<style>
+.mainimage {
+        max-width: 1000px;
+        /* Resize the image for IE6 */
+        width: expression(this.width > 1000 ? 1000: true);
+}
+</style>
+
+
+
+
+<table border="1">
+  <tr>
+    <td><b>Fig.&nbsp;1</b></td>
+    <th>Maps Pager</th>
+  </tr>
+  <tr>
+    <td valign="top">
+        <script language="JavaScript">
+        <!--
+          auto_pager(['type3','rot','estimator','type1','type2','jack','dp','rx','cscale'],'maxcols','4','style','2','figname','fig1');
+        -->
+        </script>
+    </td>
+
+    <td align="left" width="900">
+      <a href="javascript:location.href=fig.fig1.link;">
+        <img src="" name="fig1" class="mainimage" onerror="onImgError(this);"></a>
+    </td>
+
+  </tr>
+</table>
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+plupdate();
+-->
+</SCRIPT>
+
+
+<p>&nbsp;&nbsp;</p>
+<hr>
+<p>
+
+</body>
+</html>
+
