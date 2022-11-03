@@ -287,19 +287,19 @@
             </figcaption>
             <script type="text/javascript">
                 function fcn(params){
-                        return 'figs/quiver_dk'+params.dk+'_fit_'+params.fit+params.coord+'_'+params.corr+'_rps.png';
+                        return 'figs/quiver_dk'+params.dk+'_fit_perrast'+params.coord+'_'+params.corr+'_rps.png';
                 }
 
                 pager.link("#quiverpager",
                     {
                         'Obs DK|dk' : ['0','61','23','174','68_1','-81','90','45','135','68_2'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
-                        'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],
+                        //'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],
                             'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
                         'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
                      },
                 fcn);
                 pager.setparams({
-                    'fit': 'overall',
+                    //'fit': 'overall',
                     'dk' : '68_1',
                     'corr': 'none',
                     'coord': '',
@@ -345,22 +345,22 @@
         <script type="text/javascript">
             pager.link("#versuspager",
                 {
-                    'Y-Axis|param' : ['Tilt|tilt','Roll|roll','FPU Angle Overall|fpu_ang','FPU Scale Overall|fpu_scale','FPU Angle per obs|fpu_ang_obs','FPU Scale per obs|fpu_scale_obs'],
-                    'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs','Mirror Tilt|tilt','Mirror Roll|roll','$x$|x','$y$|y','$r$|r','$\\theta$|theta','$x_m$|xm','$y_m$|ym','$\\theta_m$|thm','tiltmeter'],
+                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs'],
+                    'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],
                     'Target|tgt': ['Moon|moon','RPS|rps'],
-                    'Resolution|res': ['per-obs|perobs','per-rasterset|perscan'],
-                    'Moon Data Cut|cut': ['Off|_nocut', 'Early|_earlycut','Late|_latecut'],
+                    'Y Limits|lim': ['Free|','Fixed|_fixed'],
+
                 },
 
                 function(params) {
-                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt+'_'+params.res+params.cut+'.png';
+                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt+params.lim+'.png';
                 });
             pager.setparams({
                 'param': 'tilt',
                 'x': 't',
                 'tgt': 'moon',
-                'res': 'perobs',
-                'cut': '_nocut',
+                'lim': '_fixed',
+
             });
         </script>
     </figure>
@@ -368,7 +368,7 @@
     <p>Important clicks:</p>
     <ol>
         <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'moon','res':'perobs'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'rps','res':'perscan'})">RPS</a> Scaling vs. Sun-Target Azimuth: We saw some indication in the Moon data that the scaling of the mirror was affected by the location of the Sun with respect to the mirror pointing. If you squint real hard at the RPS data, you can convince yourself of a slight dip in the scaling around -25&deg;, but it's hard to say anything definitive here.
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'moon'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'rps'})">RPS</a> Scaling vs. Sun-Target Azimuth: We saw some indication in the Moon data that the scaling of the mirror was affected by the location of the Sun with respect to the mirror pointing. There's no indication of that with the RPS data here because each data point represents 36 hours of observing time.
 
         </li>
         <li>
@@ -414,13 +414,13 @@
         </figcaption>
         <script type="text/javascript">
             function fcn(params){
-                return 'figs/quiver_dk'+params.dk2+'_fit_'+params.fit+params.coord+'_'+params.corr+'_rps11.png';
+                return 'figs/quiver_dk'+params.dk2+'_fit_perrast'+params.coord+'_'+params.corr+'_rps11.png';
             }
 
             pager.link("#quiver2pager",
                 {
                     'Obs DK|dk2' : ['0_1','0_2','90_1','90_2','-68','-23'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
-                    'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],
+                    //'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],
                     'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
                     'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
                 },
@@ -446,22 +446,22 @@
         <script type="text/javascript">
             pager.link("#versuspager2",
                 {
-                    'Y-Axis|param' : ['Tilt|tilt','Roll|roll','FPU Angle Overall|fpu_ang','FPU Scale Overall|fpu_scale','FPU Angle per obs|fpu_ang_obs','FPU Scale per obs|fpu_scale_obs'],
-                    'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs','Mirror Tilt|tilt','Mirror Roll|roll','$x$|x','$y$|y','$r$|r','$\\theta$|theta','$x_m$|xm','$y_m$|ym','$\\theta_m$|thm','tiltmeter'],
+                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs'],
+                    'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],//,'Mirror Tilt|tilt','Mirror Roll|roll','$x$|x','$y$|y','$r$|r','$\\theta$|theta','$x_m$|xm','$y_m$|ym','$\\theta_m$|thm','tiltmeter'],
                     'Target|tgt2': ['Moon|moon','RPS Type-5|rps' ,'RPS Type-11|rps11'],
-                    'Resolution|res': ['per-obs|perobs','per-rasterset|perscan'],
-                    'Moon Data Cut|cut': ['Off|_nocut', 'Early|_earlycut','Late|_latecut'],
+                    'Y Limits|lim': ['Free|','Fixed|_fixed'],
+                    //'Moon Data Cut|cut': ['Off|_nocut', 'Early|_earlycut','Late|_latecut'],
                 },
 
                 function(params) {
-                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt2+'_'+params.res+params.cut+'.png';
+                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt2+params.lim+'.png';
                 });
             pager.setparams({
                 'param': 'fpu_scale_obs',
                 'x': 'sun_azs',
                 'tgt2': 'rps11',
-                'res': 'perscan',
-                'cut': '_nocut',
+                'lim': '_fixed',
+                //'cut': '_nocut',
             });
         </script>
     </figure>
