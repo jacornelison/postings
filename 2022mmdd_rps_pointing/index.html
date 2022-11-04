@@ -345,7 +345,7 @@
         <script type="text/javascript">
             pager.link("#versuspager",
                 {
-                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs'],
+                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs','FPU R Trans|fpu_rtrans_obs'],
                     'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],
                     'Target|tgt': ['Moon|moon','RPS|rps'],
                     'Y Limits|lim': ['Free|','Fixed|_fixed'],
@@ -446,7 +446,7 @@
         <script type="text/javascript">
             pager.link("#versuspager2",
                 {
-                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs'],
+                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs','FPU R Trans|fpu_rtrans_obs','FPU Theta Trans|fpu_thtrans_obs'],
                     'X-Axis|x' : ['Time|t','Time-of-day|tod','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],//,'Mirror Tilt|tilt','Mirror Roll|roll','$x$|x','$y$|y','$r$|r','$\\theta$|theta','$x_m$|xm','$y_m$|ym','$\\theta_m$|thm','tiltmeter'],
                     'Target|tgt2': ['Moon|moon','RPS Type-5|rps' ,'RPS Type-11|rps11'],
                     'Y Limits|lim': ['Free|','Fixed|_fixed'],
@@ -458,7 +458,7 @@
                 });
             pager.setparams({
                 'param': 'fpu_scale_obs',
-                'x': 'sun_azs',
+                'x': 'dk',
                 'tgt2': 'rps11',
                 'lim': '_fixed',
                 //'cut': '_nocut',
