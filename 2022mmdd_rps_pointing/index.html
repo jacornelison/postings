@@ -439,7 +439,7 @@
 </li>
 
         <li>
-            RPS <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt': 'rps','lim':'_fixed'})">X-Trans</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ytrans_obs','tgt': 'rps','lim':'_fixed'})">Y-Trans</a>: There ~1.5&sigma; offsets in the global X- and Y-translations at around  -0.5 arcseconds in the RPS data across all observations.
+            RPS <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt': 'rps','lim':'_fixed'})">X-Trans</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ytrans_obs','tgt': 'rps','lim':'_fixed'})">Y-Trans</a>: There ~1.5&sigma; offsets in the global X- and Y-translations at around  -0.5 arcseconds in the RPS data across all observations -- a feature which is not seen in the Moon data.
         </li>
 
         <li>
@@ -471,10 +471,13 @@
     <figure class="table">
         <table>
             <tr>
-                <td  style="padding: 100px;">
+                <td  style="padding-left: 100px; padding-right: 100px;">
                     <table class="results">
                         <tr>
                             <th colspan="5">RPS</th>
+                        </tr>
+                        <tr>
+                            <th colspan="5">Correlation Coefficient</th>
                         </tr>
                         <tr>
                             <td></td>
@@ -511,6 +514,44 @@
                             <td><font color="F748A5">0.29</font></td>
                             <td>1</td>
                         </tr>
+                        <tr>
+                            <th colspan="5">PTE</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Angle</td>
+                            <td>Scaling</td>
+                            <td>X-trans</td>
+                            <td>Y-trans</td>
+                        </tr>
+                        <tr>
+                            <td>Angle</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling</td>
+                            <td><font color="#2272B2">0.77</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>X-trans</td>
+                            <td>0.92</td>
+                            <td><font color="orange">0.13</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Y-trans</td>
+                            <td><font color="359B73">0.51</font></td>
+                            <td>0.003</td>
+                            <td><font color="F748A5">0.41</font></td>
+                            <td>1</td>
+                        </tr>
                     </table>
                 </td>
                 <td>
@@ -520,6 +561,9 @@
                     <table class="results">
                         <tr>
                             <th colspan="5">Moon</th>
+                        </tr>
+                        <tr>
+                            <th colspan="5">Correlation Coefficient</th>
                         </tr>
                         <tr>
                             <td></td>
@@ -554,6 +598,44 @@
                             <td><font color="359B73">0.31</font></td>
                             <td>-0.10</td>
                             <td><font color="F748A5">-0.02</font></td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <th colspan="5">PTE</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Angle</td>
+                            <td>Scaling</td>
+                            <td>X-trans</td>
+                            <td>Y-trans</td>
+                        </tr>
+                        <tr>
+                            <td>Angle</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling</td>
+                            <td><font color="#2271B2">0.40</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>X-trans</td>
+                            <td>0.68</td>
+                            <td><font color="orange">0.004</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Y-trans</td>
+                            <td><font color="359B73">0.12</font></td>
+                            <td>0.61</td>
+                            <td><font color="F748A5">0.93</font></td>
                             <td>1</td>
                         </tr>
                     </table>
@@ -600,6 +682,7 @@
                     -->
                 </td>
             </tr>
+
         </table>
 
         <figcaption>
@@ -707,6 +790,9 @@ A comparison of angle/scaling/translation correlation coefficients between real 
 </figure>
 -->
 <p>
+    We do see some relatively strong correlations between the angle-translation and scaling-translation in both datasets. The PTE's for all but a few of these are pretty high, however, so I'm not very convinced that most of the correlations are real. Since both datasets have strong correlations between Scaling and translation, a possible next step would be to try thinking about what sort of systematic could cause similar features in both parameters.
+</p>
+    <p>
     In the next section, I put the Type-11 cross-check data through the same analysis as was done in this section in order to provide an extra independent cross-check of the instrumental effects that we see.
 </p>
 
@@ -782,11 +868,11 @@ Important links:
     <ol>
 
         <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'moon','lim':'_fixed'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps','lim':'_fixed'})">RPS Type-5</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps11','lim':'_fixed'})">RPS Type-11</a> Angle: The Type-11 data has higher variance than either the RPS or Moon data, likely because we're not sampling enough of the focal plane.
+            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'moon','lim':'_fixed'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps','lim':'_fixed'})">RPS Type-5</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps11','lim':'_fixed'})">RPS Type-11</a> Angle: The Type-11 data has higher variance than either the RPS or Moon data, likely because we have so few samples and we're not sampling enough of the focal plane.
         </li>
 
         <li>
-            RPS Type-11 <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps11','lim':'_fixed'})">Angle</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt2': 'rps11','lim':'_fixed'})">X-Trans</a> Vs. DK: We possibly see a similar anticorrelation between angle and X/Y translation from in the Type-11 data also, but both are also consistent with zero.
+            RPS Type-11 <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','tgt2': 'rps11','lim':'_fixed'})">Angle</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt2': 'rps11','lim':'_fixed'})">X-Trans</a> Vs. DK: We possibly see a similar correlation between scaling and X-translation from in the Type-11 data also.
         </li>
 
         <li>
@@ -796,49 +882,279 @@ Important links:
         </li>
     </ol>
 
-    <!--<table class="results">
-                <tr>
-                    <th colspan="5">Real</th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Angle</td>
-                    <td>Scaling</td>
-                    <td>X-trans</td>
-                    <td>Y-trans</td>
-                </tr>
-                <tr>
-                    <td>Angle</td>
-                    <td>1</td>
-                    <td>-0.42</td>
-                    <td>-0.61</td>
-                    <td>0.64</td>
-                </tr>
-                <tr>
-                    <td>Scaling</td>
-                    <td>-0.42</td>
-                    <td>1</td>
-                    <td>0.70</td>
-                    <td>-0.56</td>
-                </tr>
-                <tr>
-                    <td>X-trans</td>
-                    <td>-0.61</td>
-                    <td>0.70</td>
-                    <td>1</td>
-                    <td>-0.11</td>
-                </tr>
-                <tr>
-                    <td>Y-trans</td>
-                    <td>0.64</td>
-                    <td>-0.56</td>
-                    <td>-0.11</td>
-                    <td>1</td>
-                </tr>
-            </table> -->
+    <p>
+        As with the previous section, I include the correlation coefficients and PTE's for the parameters. The only correlation that the Type-11 strongly agrees with is between Scaling and X-translation. Despite the low sample size, that it shows as clearly as it does in the Type-11 data leads me to believe it's real.
+    </p>
+
+
+    <figure class="table">
+        <table>
+            <tr>
+                <td>
+                    <table class="results">
+                        <tr>
+                            <th colspan="5">RPS Type-5</th>
+                        </tr>
+                        <tr>
+                            <th colspan="5">Correlation Coefficient</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Angle</td>
+                            <td>Scaling</td>
+                            <td>X-trans</td>
+                            <td>Y-trans</td>
+                        </tr>
+                        <tr>
+                            <td>Angle</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling</td>
+                            <td><font color="#2272B2">-0.10</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>X-trans</td>
+                            <td>0.03</td>
+                            <td><font color="orange">0.52</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Y-trans</td>
+                            <td><font color="359B73">-0.24</font></td>
+                            <td>0.83</td>
+                            <td><font color="F748A5">0.29</font></td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <th colspan="5">PTE</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Angle</td>
+                            <td>Scaling</td>
+                            <td>X-trans</td>
+                            <td>Y-trans</td>
+                        </tr>
+                        <tr>
+                            <td>Angle</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling</td>
+                            <td><font color="#2272B2">0.77</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>X-trans</td>
+                            <td>0.92</td>
+                            <td><font color="orange">0.13</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Y-trans</td>
+                            <td><font color="359B73">0.51</font></td>
+                            <td>0.003</td>
+                            <td><font color="F748A5">0.41</font></td>
+                            <td>1</td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table class="results">
+                        <tr>
+                            <th colspan="5">Moon</th>
+                        </tr>
+                        <tr>
+                            <th colspan="5">Correlation Coefficient</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Angle</td>
+                            <td>Scaling</td>
+                            <td>X-trans</td>
+                            <td>Y-trans</td>
+                        </tr>
+                        <tr>
+                            <td>Angle</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling</td>
+                            <td><font color="#2271B2">-0.17</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>X-trans</td>
+                            <td>-0.08</td>
+                            <td><font color="orange">0.55</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Y-trans</td>
+                            <td><font color="359B73">0.31</font></td>
+                            <td>-0.10</td>
+                            <td><font color="F748A5">-0.02</font></td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <th colspan="5">PTE</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Angle</td>
+                            <td>Scaling</td>
+                            <td>X-trans</td>
+                            <td>Y-trans</td>
+                        </tr>
+                        <tr>
+                            <td>Angle</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling</td>
+                            <td><font color="#2271B2">0.40</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>X-trans</td>
+                            <td>0.68</td>
+                            <td><font color="orange">0.004</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Y-trans</td>
+                            <td><font color="359B73">0.12</font></td>
+                            <td>0.61</td>
+                            <td><font color="F748A5">0.93</font></td>
+                            <td>1</td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table class="results">
+                        <tr>
+                            <th colspan="5">RPS Type-11</th>
+                        </tr>
+                        <tr>
+                            <th colspan="5">Correlation Coefficient</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Angle</td>
+                            <td>Scaling</td>
+                            <td>X-trans</td>
+                            <td>Y-trans</td>
+                        </tr>
+                        <tr>
+                            <td>Angle</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling</td>
+                            <td><font color="#2271B2">-0.42</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>X-trans</td>
+                            <td>-0.61</td>
+                            <td><font color="orange">0.70</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Y-trans</td>
+                            <td><font color="359B73">0.64</font></td>
+                            <td>-0.56</td>
+                            <td><font color="F748A5">-0.11</font></td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <th colspan="5">PTE</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Angle</td>
+                            <td>Scaling</td>
+                            <td>X-trans</td>
+                            <td>Y-trans</td>
+                        </tr>
+                        <tr>
+                            <td>Angle</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scaling</td>
+                            <td><font color="#2271B2">0.40</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>X-trans</td>
+                            <td>0.20</td>
+                            <td><font color="orange">0.12</font></td>
+                            <td>1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Y-trans</td>
+                            <td><font color="359B73">0.17</font></td>
+                            <td>0.25</td>
+                            <td><font color="F748A5">0.83</font></td>
+                            <td>1</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+
+        <figcaption>
+            A comparison of angle/scaling/translation correlation coefficients between our standard Type-5 RPS data, Moon data, and the Type-11 RPS cross-check data. Colors are used for easier comparison.
+        </figcaption>
+    </figure>
+
 
     <h3>Discussion and Conclusions</h3>
-    <p>Words words words</p>
+    <p>
+        We detect in the Moon data to some small significance an offset in FPU orientation angle of 0.005&deg; that is not seen in the RPS data. Conversely, we see ~1-arcsecond offsets in the X- and Y-translation parameters in the standard RPS data but not in the Moon data. It's probable that these are related in some way, given that we use the mirror parameters derived from Moon data to derive the RPS location. As such, we have to consider the offsets in both Moon and RPS datasets when accounting for systematic uncertainty.
+    </p>
+
+    <p>That said, these offsets are extremely small compared to our uncertainty goal on the global absolute polarization angle (<0.1&deg;), so this shouldn't limit us in any way. In my next posting, I plan to go over the actual polarization angle estimates and address any systematics we see there.</p>
 </section>
 
 
@@ -917,6 +1233,7 @@ Important links:
     <p id="code"></p>
 
     <h3>Data</h3>
+    <p>The relevant data products can be found in the <tt>data/</tt> directory of this posting.</p>
     <p id="data"></p>
     <h3>References</h3>
 
@@ -953,12 +1270,12 @@ Important links:
 
         // Shorthand tags
         var data = [
-            "moonsch.mat",
+            "",
             ];
 
         // Posting titles
         var desc = [
-            "Metadata of Moon observations",
+            "",
             ];
 
         // Make a list of references
