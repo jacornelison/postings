@@ -1,6 +1,5 @@
 function rps_pointing_plots_Aug2022()
 
-
 %load('z:/dev/rps/rps_beam_fits_type11_rerun_cut.mat')
 load('z:/dev/rps/rps_beam_fits_type5_rerun_cut.mat')
 %load('z:/dev/rps/rps_beam_fits_rerun_all_cut.mat')

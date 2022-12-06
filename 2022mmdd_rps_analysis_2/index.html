@@ -46,73 +46,45 @@
 
 <section><h2>Section 1</h2>
 
-    <h3>Subsection 1</h3>
+
     <p>
-    Words
+
     </p>
-    <figure class="table">
-        <table class="results">
-            <tr>
-                <th>Schedule</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>DK</th>
-            </tr>
-            <tr>
-                <td>8_ffflat_moonraster_28_dk000_001.sch</td>
-                <td>170121 22:29:58</td>
-                <td>170121 23:25:36</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>8_ffflat_moonraster_28_dk045_001.sch</td>
-                <td>170121 23:26:36</td>
-                <td>170122 00:20:45</td>
-                <td>45</td>
-            </tr>
-            <tr>
-                <td>8_ffflat_moonraster_28_dk090_001.sch</td>
-                <td>170122 00:36:46</td>
-                <td>170122 01:31:05</td>
-                <td>90</td>
-            </tr>
-
-        </table>
-    <figcaption>
-        Example results table
-    </figcaption>
-    </figure>
-<p>
-    Example equation:
-</p>
-
-    \begin{equation}
-    x_0 = 2 \sin(r_0/2) \cos(\theta_0)\\
-    y_0 = 2 \sin(r_0/2) \sin(\theta_0)
-    \end{equation}
 
 
-<p>An example footnote<sup><a href="#ftn1">1</a></sup> and reference citation <a href="CAB2012"></a>.</p>
-      <p>
- Example pager:
-    </p>
+    <ul>
+        <li>
+            <b>Obs DK</b> - Observations denoted by the DK at which they were taken.
+        </li>
+        <li>
+        <li>
+            <b>Fit Choice</b> -
+        </li>
+    </ul>
+
+    <p></p>
     <figure>
-        <img alt="Name pager" id="namepager" src="#" width="65%"/>
+        <img alt="Name pager" id="quiverpager" src="#" />
         <figcaption>
-            Example pager
+
         </figcaption>
         <script type="text/javascript">
-            pager.link("#namepager",
+            function fcn(params){
+                return 'figs/'+params.dk+'_vs_'+params.dk2+'_'+params.fit+'.png';
+            }
+
+            pager.link("#quiverpager",
                 {
-                    'Select A|a': ['Yesname|yesparam', 'No|no'],
-                    'Select B|b': ['One|1','Two|2'],
+                    'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],
+                    'Obs DK|dk2' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],
+                    'Fit Choice|fit' : ['Per-Observation|perobs','Per-Rasterset|perrast'],
                 },
-                function(params) {
-                    return 'figs/plot_param1_'+params.a+'_param2_'+params.b+'.png';
-                });
+                fcn);
             pager.setparams({
-                'a': 'no',
-                'b': '1',
+                //'fit': 'overall',
+                'dk' : '68_1',
+                'dk2':'0',
+                'fit': 'perobs',
             });
         </script>
     </figure>
