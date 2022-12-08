@@ -47,7 +47,7 @@
 <section><h2>Section 1</h2>
 
     <figure>
-        <img alt="Name pager" id="namepager" src="#" width="65%"/>
+        <img alt="Name pager" id="namepager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
         <figcaption>
             Example pager
         </figcaption>
@@ -56,13 +56,15 @@
                 {
                     'Signal Type|sig': ['2','3','5','6','7','8'],
                     'Purification Method|pure': ['None|','PureB|pureB_','Matrix|pureB_matrix_'],
+                    'Sernum|sernum': ['3553','6600'],
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.pure+params.sig+'.png';
+                    return 'figs/alpha_hist_'+params.sernum+params.pure+params.sig+'.png';
                 });
             pager.setparams({
                 'sig': '2',
                 'pure': 'pureB_matrix_',
+                'sernum': '6600',
             });
         </script>
     </figure>
