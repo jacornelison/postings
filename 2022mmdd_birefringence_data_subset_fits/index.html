@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<!--suppress HtmlDeprecatedAttribute -->
+<head>
+    <meta charset="utf-8">
+    <title>Birefringence Analysis: B2018 Sims</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+            // src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Uniform Birefringence Analysis II: Cross-checks of RPS-Derived polarization angles in B2018 sim subsets</h1>
+
+    <time datetime="2020-xx-xx" class="published updated">
+        yyyy Mmm dd
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+
+</p>
+
+<hr>
+
+
+
+<section><h2>Cross-checking our Polarization Angles</h2>
+    <p>
+        We've come up with a procedure to cross-check that the RPS-derived polarization angles likely correct without unblinding ourselves to the birefrinence angle. My RPS measurements indicate that the the tile-to-tile spread in pair-difference polarization angle is ~1&deg;. That means that I should be able to split our coadded maps into subsets based on spread we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in angle among the different subsets. Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle.
+    </p>
+
+    <p>The limiting factor to this technique is going to be the increased uncertainty on &alpha; due to decreasing the detector count per-map. So before I do anything with the real data, I want to know beforehand whether of not this will actually work by looking first at the subsets created from the 10 B2018 sims I made.</p>
+    <figure>
+        <img alt="Name pager" id="apspager2" src="#" width="65%" onerror=this.src="figs/blank.png" />
+        <figcaption>
+            A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell. Note that no matrix purification was applied to just B2018, so matrix purified APS are shown for only my sims.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#apspager2",
+                {
+                    'Signal Type|sig': ['2','3','5','6','7','8'],
+                    'Purification Method|pure': ['None|','PureB|pureB_','Matrix|pureB_matrix_'],
+                    'Simset|sernum2': ['B2018|3553','B2018-rerun|6600','B2018-subset|6603'],
+                    'y-axes|axes': ['Fixed|_fixed','Free|_free']
+                },
+                function(params) {
+                    return 'figs/aps_'+params.sernum2+'_'+params.pure+params.sig+params.axes+'.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                'pure': '',
+                'sernum2': '6600',
+                'axes': '_fixed',
+            });
+        </script>
+    </figure>
+
+    <figure>
+        <img alt="Name pager" id="histpager2" src="#" onerror=this.src="figs/blank.png" width="65%"/>
+        <figcaption>
+            Example pager
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager2",
+                {
+                    'Signal Type|sig': ['2','3','5','6','7','8'],
+                    'Purification Method|pure': ['None|','PureB|pureB_','Matrix|pureB_matrix_'],
+                    'Simset|sernum2': ['B2018|3553','B2018-rerun|6600','B2018-subset|6603'],
+                },
+                function(params) {
+                    return 'figs/alpha_hist_'+params.sernum2+params.pure+params.sig+'.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                'pure': '',
+                'sernum2': '6600',
+            });
+        </script>
+    </figure>
+
+</section>
+<section><h2>Conclusions</h2>
+    <p>
+        By fitting rotation angles to our standard suite of sims, we now have answers to the questions we asked in &sect;1:
+    <ol type="A">
+        <li>Does the global rotation fitting function impart a bias on &alpha;?</li>
+        <ul><li>No, all angles are consistent with zero.</li></ul>
+        <li>What is the expected statistical uncertainties on &alpha;?</li>
+        <ul><li>I quote the baseline statistical uncertainty from the 1-&sigma; standard deviation of the matrix-purified Lensed-LCDM+Noise+Dust distribution: 0.08&deg;.</li></ul>
+        <li>Can we accurately capture the statistics on &alpha; with fewer than 499 sims?</li>
+        <ul><li>Yes, the difference between the 499 sims and 10 is, at most, ~0.01&deg; which is satisfactory.</li></ul>
+        <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>
+        <ul><li>The variance on &alpha; decreases by at least a factor of 1.5 without any apparent negative side-effects.</li></ul>
+    </ol>
+    </p>
+    <h3>Next Steps</h3>
+    <p>
+        An immediate follow-up to this posting will be exploring the ability of low-N simsets to perform independent cross-checks of RPS-derived polarization angles.
+    </p>
+</section>
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+    <h3>Footnotes</h3>
+    <p>Click on the number to return to the main text.</p>
+    <div class="footnote">
+        <p>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+        A more recent global rotation posting for BK18 exists, but to remain blind in this analysis I have not looked at it and do not link it here.
+    </p>
+    </div>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+    <h3>Data</h3>
+    <p id="data"></p>
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "rps_fit_mirror_from_moon.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Derives mirror parameters from observations of the moon.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "moonsch.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Metadata of Moon observations",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "JBW2016",
+            "EWB2016",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which it lies if you can.
+        // This ensures that we can view the linked postings at Pole without the internet.
+        var hrefs = [
+            "bkcmb/analysis_logbook/analysis/20160907_polrot/",
+            "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
+
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Birefringence/Polarization rotation in K2015 and BK15",
+            "Polarization Rotation Sims Global Rotation",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
