@@ -47,23 +47,41 @@
 
 
 
-<section><h2>Cross-checking our Polarization Angles</h2>
+<section><h2>Cross-checking RPS Polarization Angles</h2>
     <p>
-        We've come up with a procedure to cross-check that the RPS-derived polarization angles likely correct without unblinding ourselves to the birefrinence angle. My RPS measurements indicate that the the tile-to-tile spread in pair-difference polarization angle is ~1&deg;. That means that I should be able to split our coadded maps into subsets based on spread we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in angle among the different subsets. Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle.
+        We've come up with a procedure to cross-check that the RPS-derived polarization angles without unblinding ourselves to the birefrinence angle.
+
+        A comparison of my preliminary RPS measurements vs the polarization angles we're currently using to make maps shows a variance across the focal plane on the order of ~1&deg;.
+
+        That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in global rotation angle among the different subsets. Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle. While it doesn't really give us information on the absolute angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the RPS analysis.
+    </p>
+    <p>
+        The figure below shows how the data could be split up. In this case, I choose to split the pairs evenly into thirds where the mean difference in global rotation angle between the lower-to-middle and middle-to-upper datasets is expected to be ~0.45&deg;.
     </p>
 
-    <p>The limiting factor to this technique is going to be the increased uncertainty on &alpha; due to decreasing the detector count per-map. So before I do anything with the real data, I want to know beforehand whether of not this will actually work by looking first at the subsets created from the 10 B2018 sims I made.</p>
+    <figure>
+        <img src="figs/hist_diffphi.png">
+        <figcaption>
+        Histogram
+        </figcaption>
+    </figure>
+
+    <p>The limiting factor to this technique is going to be the increased uncertainty on &alpha; due to decreasing the detector count and map coverage. So before I create new sims or do anything with the real data, I want to know beforehand whether of not the data has the statistical power at these lower detector-counts/map-coverages to differente the angles. I can quickly check this by looking first at some subsets created from the 10 B2018 sims I made for my previous posting <a href="JAC2022"></a>. These sims use the same polarization angles at both the TOD-creation and mapmaking stage so the mean angles will be zero but the distribution should accurately reflect what we can expect when we try doing this on the real data or with sims with as-measured angles injected into them.
+    </p>
+    <p>
+        The figure below shows the same pager from Fig 2.1, but now includes APS of the three data subsets. My previous posting showed that the B18 purifcation matrix still worked on the whole-year B2018 daughter sims, so I also applied it to these smaller subsets as well to see if it still works.</p>
     <figure>
         <img alt="Name pager" id="apspager2" src="#" width="65%" onerror=this.src="figs/blank.png" />
         <figcaption>
             A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell. Note that no matrix purification was applied to just B2018, so matrix purified APS are shown for only my sims.
         </figcaption>
+
         <script type="text/javascript">
             pager.link("#apspager2",
                 {
                     'Signal Type|sig': ['2','3','5','6','7','8'],
-                    'Purification Method|pure': ['None|','PureB|pureB_','Matrix|pureB_matrix_'],
-                    'Simset|sernum2': ['B2018|3553','B2018-rerun|6600','B2018-subset|6603'],
+                    'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
+                    'Simset|sernum2': ['B2018|3553','B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
                     'y-axes|axes': ['Fixed|_fixed','Free|_free']
                 },
                 function(params) {
@@ -78,17 +96,25 @@
         </script>
     </figure>
 
+    <p>
+    Not surprisingly, we see a slight increase in variance in the smaller B2018 subsets due to a drop in detector-count and coverage. On the plus side, we can still see that the purification matrix still appears to be working effectively.
+    </p>
+
+    <p>
+        I now fit the global rotation angle to each signal type of each subset and examine the distributions.
+    </p>
+
     <figure>
         <img alt="Name pager" id="histpager2" src="#" onerror=this.src="figs/blank.png" width="65%"/>
         <figcaption>
-            Example pager
+
         </figcaption>
         <script type="text/javascript">
             pager.link("#histpager2",
                 {
                     'Signal Type|sig': ['2','3','5','6','7','8'],
-                    'Purification Method|pure': ['None|','PureB|pureB_','Matrix|pureB_matrix_'],
-                    'Simset|sernum2': ['B2018|3553','B2018-rerun|6600','B2018-subset|6603'],
+                    'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
+                    'Simset|sernum2': ['B2018|3553','B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
                 },
                 function(params) {
                     return 'figs/alpha_hist_'+params.sernum2+params.pure+params.sig+'.png';
@@ -101,37 +127,157 @@
         </script>
     </figure>
 
-</section>
-<section><h2>Conclusions</h2>
     <p>
-        By fitting rotation angles to our standard suite of sims, we now have answers to the questions we asked in &sect;1:
-    <ol type="A">
-        <li>Does the global rotation fitting function impart a bias on &alpha;?</li>
-        <ul><li>No, all angles are consistent with zero.</li></ul>
-        <li>What is the expected statistical uncertainties on &alpha;?</li>
-        <ul><li>I quote the baseline statistical uncertainty from the 1-&sigma; standard deviation of the matrix-purified Lensed-LCDM+Noise+Dust distribution: 0.08&deg;.</li></ul>
-        <li>Can we accurately capture the statistics on &alpha; with fewer than 499 sims?</li>
-        <ul><li>Yes, the difference between the 499 sims and 10 is, at most, ~0.01&deg; which is satisfactory.</li></ul>
-        <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>
-        <ul><li>The variance on &alpha; decreases by at least a factor of 1.5 without any apparent negative side-effects.</li></ul>
+        In the Type-8 sims, the scatter in the histograms for the subsets increases by roughly a factor of two compared to B2018-rerun. Still, since the differences in angle between each subset is at least ~0.5&deg;, we should be able to detect the differences in angle to high significance in the real data. We can also see that the purification matrix still appears to work on these subsets, albeit to a lesser degree. All of the means are consistent with zero, so I think it's still appropriate to continue using the B18 matrix in lieu of creating new daughter matrices. I tabulate the statistics from the histograms in the figure below:
+    </p>
+
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th></th>
+                <th colspan="8">EB</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th colspan="2">B2018-rerun</th>
+                <th colspan="2">B2018-lower</th>
+                <th colspan="2">B2018-middle</th>
+                <th colspan="2">B2018-upper</th>
+            </tr>
+            <tr>
+                <th class="cstart">Signal</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th>STD (&deg;)</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th class=>STD (&deg;)</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th>STD (&deg;)</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th>STD (&deg;)</th>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.00</td>
+                <td class='cstart'>0.0</td>
+                <td>0.01</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.01</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.01</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td class='cstart'>0.0</td>
+                <td>0.00</td>
+                <td class='cstart'>0.0</td>
+                <td>0.00</td>
+                <td class='cstart'>0.0</td>
+                <td>0.00</td>
+                <td class='cstart'>0.0</td>
+                <td>0.00</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.06</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.06</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.06</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.06</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td class='cstart'>0.0</td>
+                <td>0.01</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.03</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.04</td>
+                <td class='cstart'>0.0</td>
+                <td>0.04</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.07</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.12</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.13</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.13</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.08</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.14</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.14</td>
+                <td class='cstart'>-0.0</td>
+                <td>0.14</td>
+            </tr>
+        </table>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>
+        Before we try this on the real data, my next step is to attempt this on sims with preliminary RPS angles used during TOD creation.
+    </p>
+
+    <h3>Testing on Polarization Rotation Sims</h3>
+    <p>
+        I plan to first try this with sims, replicating what I expect happened with the real data:
+    <ol>
+        <li>Create TOD sims with RPS-measured polarization angles.</li>
+        <li>Create pairmaps with our fiducial angles (the 'obs' option in <tt>get_array_info</tt>).</li>
+        <li>Create three sets of B2018 daughter coadded maps split into lower, middle, and upper as shown above in Figure 1.1.</li>
+        <li>Convert to APS.</li>
+        <li>Fit global rotation angle to each subset.</li>
     </ol>
     </p>
-    <h3>Next Steps</h3>
-    <p>
-        An immediate follow-up to this posting will be exploring the ability of low-N simsets to perform independent cross-checks of RPS-derived polarization angles.
-    </p>
+
+</section>
+<section><h2>Conclusions</h2>
+
 </section>
 
 <hr>
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+    <figure>
+        <img alt="Name pager" id="coveragepager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
+        <figcaption>
+            Focal plane coverage for each of the simsets. Yellow indicates detector pairs used in the coadds.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#coveragepager",
+                {
+                    'Simset|sernum3': ['B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
+                },
+                function(params) {
+                    return 'figs/'+params.sernum3+'_tile_plot.png';
+                });
+            pager.setparams({
+                'sernum3': '6600',
+            });
+        </script>
+    </figure>
+
+
     <h3>Footnotes</h3>
     <p>Click on the number to return to the main text.</p>
     <div class="footnote">
         <p>
         <sup><a name="ftn1" href="#sup1">[1]</a></sup>
-        A more recent global rotation posting for BK18 exists, but to remain blind in this analysis I have not looked at it and do not link it here.
+
     </p>
     </div>
     <h3>Code</h3>
@@ -151,12 +297,12 @@
 
         // Shorthand tags
         var codes = [
-            "rps_fit_mirror_from_moon.m",
+            "dummycode.m",
             ];
 
         // Posting titles
         var desc = [
-            "Derives mirror parameters from observations of the moon.",
+            "dummy description",
         ];
 
         // Make a list of references
@@ -174,12 +320,12 @@
 
         // Shorthand tags
         var data = [
-            "moonsch.mat",
+            "dummydata.mat",
             ];
 
         // Posting titles
         var desc = [
-            "Metadata of Moon observations",
+            "Dummy description",
             ];
 
         // Make a list of references
@@ -239,6 +385,7 @@
         var tags = [
             "JBW2016",
             "EWB2016",
+            "JAC2022",
         ];
 
         // Links
@@ -247,6 +394,7 @@
         var hrefs = [
             "bkcmb/analysis_logbook/analysis/20160907_polrot/",
             "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
+            "bkcmb/analysis_logbook/analysis/20221213_birefringence_fits_to_B2018/index.html"
 
         ];
 
@@ -255,6 +403,7 @@
         var desc = [
             "Birefringence/Polarization rotation in K2015 and BK15",
             "Polarization Rotation Sims Global Rotation",
+            "Uniform Birefringence Analysis I: Global Polarization Rotation Fits on Standard B2018 Sims",
         ];
         // Debug
         var posty = document.getElementById("testp");
