@@ -4,7 +4,7 @@ addpath('z:/pipeline/beammap')
 addpath('z:/pipeline/util')
 addpath('z:/dev/rps')
 
-%%
+%% Scatter plots mirrorfit per-rasterset / transformation fits per-rasterset
 clc
 clear all;
 load('z:/dev/rps/fpu_data_obs.mat')
@@ -176,6 +176,7 @@ for targind = 1:3
     parmnames = {'fpu_ang_obs','fpu_scale_obs','fpu_xtrans_obs','fpu_ytrans_obs'};%,'fpu_rtrans_obs','fpu_thtrans_obs'};
     parmlabels = {'FPU Angle Obs [Deg]','FPU Scaling Obs','FPU X Trans Obs [Deg]','FPU Y Trans Obs [Deg]'};%,'FPU R Trans Obs [Deg]','FPU Theta Trans Obs [Deg]'};
     parmlims = {[-1 1]*0.01, [0.9995 1.0002],[-1 1]*0.001, [-1 1]*0.001};%, [-1 1]*0.015,[0 360]};
+    parmlims = {[-1 1]*0.2, [0.993 1.002],[-1 1]*0.001, [-1 1]*0.001};%, [-1 1]*0.015,[0 360]};
     fpparms{targind} = [parms{1} parms{2}, parms{3}, parms{4}];
     C_real = cov(fpparms{targind});
     
@@ -724,3 +725,227 @@ end
 corrcoef(fpuparms)
 
 end
+
+%% Scatter plots mirrorfit per-rasterset / transformation fits per-rasterset
+clc
+clear all;
+load('z:/dev/rps/fpu_data_obs.mat')
+load('z:/dev/rps/pm.mat')
+load('z:/dev/rps/source_fit_data.mat')
+figdir = 'c:/Users/James/Documents/GitHub/postings/2022mmdd_rps_pointing/figs/';
+inrange = @(A,B,C) B <= A & A <= C;
+outrange = @(A,B,C) A <= B | C <= A;
+[prx, pry] = pol2cart(p.theta*pi/180,p.r);
+
+% Pager plots
+rpsopt.model = model;
+
+% Target Specific stuff
+targnames = {'moon', 'rps','rps11'};
+
+clc;
+tic;
+
+mirror = struct();
+mirror.height = 1.4592;
+mirror.tilt = 44.88;%44.88;
+mirror.roll = -0.07;%-0.07;
+load('z:/pipeline/beammap/viridis_cm.mat')
+% Loop over targets
+[fa, nchans] = deal([]);
+[prx, pry] = pol2cart(p.theta*pi/180,p.r);
+fpparms = {};
+for targind = 1:3
+
+    % Load Moon or RPS data
+    switch targnames{targind}
+        case 'moon'
+            load('z:/dev/rps/moon_beam_fits_phase_corrected_cut_mirror_refit.mat')
+            px = reshape(prx(fd.ch),size(fd.ch));
+            py = reshape(pry(fd.ch),size(fd.ch));
+            % Cut some wonky fits real quick:
+            cutind = abs(px-fd.x)*20<1 & abs(py-fd.y)*20<1 & fd.schind ~= 29;% & ismember(fd.schind,1:29);
+            fd = structcut(fd,cutind);
+
+            fd.schnum = fd.schind;
+            fd.rowind = fd.scanind;
+            fd.t = fd.t_cen;
+
+            source = struct();
+            source.azimuth = reshape(fd.az_cen_src,[],1);
+            source.distance = 3.8e8*cosd(reshape(fd.el_cen_src,[],1));
+            source.height = 3.8e8*sind(reshape(fd.el_cen_src,[],1));
+            source.elevation = reshape(fd.el_cen_src,[],1);
+
+
+        case 'rps'
+            load('z:/dev/rps/rps_beam_fits_type5_rerun_mirror_refit.mat')
+
+
+            rpsopt.mirror = mirror;
+            rpsopt.source.distance = 195.5;
+            % Fit for the source params given our mirror info:
+            source = rps_fit_source(fd,rpsopt,p,'');
+            rpsopt.source = source;
+
+        case 'rps11'
+            load('z:/dev/rps/rps_beam_fits_type11_rerun_mirror_refit.mat')
+
+
+
+            rpsopt.mirror = mirror;
+            rpsopt.source.distance = 195.5;
+            % Fit for the source params given our mirror info:
+            source = rps_fit_source(fd,rpsopt,p,'');
+            rpsopt.source = source;
+
+
+    end
+
+    % Resolution of data (Per-obs, or per-scan)
+    % Fit the mirror stuff per-rasterset
+    % Fit the fpu angle per-obs
+
+    fprintf('%s\n',targnames{targind})
+    [mirrparms, fpuparms, fpuparmsobs, sun_els, sun_azs, times, dksch,schedules,az,el] = deal([]);
+    for obsind = 1:length(scheds)
+        ind = ismember(fd.schnum,scheds{obsind});
+
+        if ~isempty(find(ind))
+            fd0 = structcut(fd,ind);
+
+            s = scheds{obsind};
+            dummyparms = [];
+            schedloop = 1:length(s);
+            for schedind = schedloop
+
+                % Fit the mirror params per-rasterset
+                for rastind = 1:19
+                    idx = fd0.schnum== s(schedind) & fd0.rowind==rastind;
+
+                    if ~isempty(find(idx))
+                        fd_rast = structcut(fd0,idx);
+                        mirrorperrast = struct();
+                        mirrorperrast.height = 1.4592;
+                        switch targnames{targind}
+                            case 'moon'
+                                fd_rast = moon_fit_mirror(fd_rast,'p',p,'p_ind',p_ind,'savedir','','pm',model);
+                                mirrparms(end+1,:) = fd_rast.fitparam;
+                                mirrorperrast.tilt = fd_rast.fitparam(1);
+                                mirrorperrast.roll = fd_rast.fitparam(2);
+
+                                source = struct();
+                                source.azimuth = reshape(fd_rast.az_cen_src,[],1);
+                                source.distance = 3.8e8*cosd(reshape(fd_rast.el_cen_src,[],1));
+                                source.height = 3.8e8*sind(reshape(fd_rast.el_cen_src,[],1));
+                                source.elevation = reshape(fd_rast.el_cen_src,[],1);
+
+                            case {'rps','rps11'}
+                                mirrorperrast = rps_fit_mirror(fd_rast,rpsopt,p,'');
+                                mirrparms(end+1,:) = [mirrorperrast.tilt,mirrorperrast.roll];
+
+
+                        end
+
+                        [fd_rast.x,fd_rast.y,phi] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,fd_rast.dk_cen,model,'bicep3',mirrorperrast,source,[]);
+                        fd_rast.x = reshape(fd_rast.x,size(fd_rast.ch));
+                        fd_rast.y = reshape(fd_rast.y,size(fd_rast.ch));
+
+                        fd0.x(idx) = fd_rast.x;
+                        fd0.y(idx) = fd_rast.y;
+
+
+
+                        switch targnames{targind}
+                            case 'moon'
+                                % cut wonky channels in the moon data real quick
+
+                                sun_azs(end+1) = wrapTo180(nanmean(fd_rast.az_cen_moon-fd_rast.az_cen_sun));
+                                sun_els(end+1) = nanmean(fd_rast.el_cen_moon-fd_rast.el_cen_sun);
+                            case {'rps','rps11'}
+                                sun_azs(end+1) = wrapTo180(nanmean(source.azimuth-fd_rast.az_cen_sun));
+                                sun_els(end+1) = nanmean(fd_rast.el_cen_sun-source.elevation);
+                        end
+                        az(end+1) = nanmedian(wrapTo180(fd_rast.az_cen));
+                        el(end+1) = nanmedian(fd_rast.el_cen);
+                        fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[1,0,0,0]);
+                        fpuparmsobs(end+1,1) = fpuobs.angle;
+                        fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,1,0,0]);
+                        fpuparmsobs(end,2) = fpuobs.scaling;
+                        fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,0,1,0]);
+                        fpuparmsobs(end,3) = fpuobs.xtrans;
+                        fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,0,0,1]);
+                        fpuparmsobs(end,4) = fpuobs.ytrans;
+                        nchans(end+1) = length(find(ind));
+                        times(end+1) = nanmean(fd_rast.t);
+                        dksch(end+1) = -nanmean(fd_rast.dk_cen);
+                        schedules(end+1) = nanmean(fd_rast.schnum);
+                        fa(end+1) = fpuobs.angle;
+                        %fd.x(ind) = fd_rast.x;
+                        %fd.y(ind) = fd_rast.y;
+                    end
+                end
+            end
+        end
+    end
+
+    %
+    % X-axis
+    vals = {times-59548, (times-floor(times))*24, dksch, sun_els, sun_azs};
+    valnames = {'t','tod','dk','sun_els','sun_azs'};
+    vallabels = {'Time [Days]', 'Time-of-day [Hrs]','DK [Deg]','Sun-Target Elevation [Deg]',...
+        'Sun-Target Azimuth [Deg]'};
+    vallims = {[-1 60], [-0.5 24.5], [-100 200], [-20 20], [-185 185]};
+
+    % Y-Axis
+    %[thtrans, rtrans]  = cart2pol(fpuparmsobs(:,3),fpuparmsobs(:,4));
+    %thtrans = wrapTo360(thtrans*180/pi);
+    parms = {fpuparmsobs(:,1), fpuparmsobs(:,2),fpuparmsobs(:,3), fpuparmsobs(:,4)};%,rtrans,thtrans};
+    parmnames = {'fpu_ang_obs','fpu_scale_obs','fpu_xtrans_obs','fpu_ytrans_obs'};%,'fpu_rtrans_obs','fpu_thtrans_obs'};
+    parmlabels = {'FPU Angle Obs [Deg]','FPU Scaling Obs','FPU X Trans Obs [Deg]','FPU Y Trans Obs [Deg]'};%,'FPU R Trans Obs [Deg]','FPU Theta Trans Obs [Deg]'};
+    parmlims = {[-1 1]*0.2, [0.993 1.002],[-1 1]*0.001, [-1 1]*0.001};%, [-1 1]*0.015,[0 360]};
+    fpparms{targind} = [parms{1} parms{2}, parms{3}, parms{4}];
+    C_real = cov(fpparms{targind});
+    
+    if 1
+        for valind = 1:length(vals)
+            for parmind = 1:length(parms)
+                axlimnames = {'','_fixed'};
+                for axind = 2%1:2
+                    fig = figure(1);
+                    fig.Position(3:4) = [900 300];
+                    clf; hold on;
+
+                    if 1
+                        scatter(vals{valind},parms{parmind},14,schedules,'filled')
+                        colormap(cm)
+                    else
+                        scatter(vals{valind},parms{parmind},14,1:length(scheds),'filled')
+                        colormap(cm)
+                    end
+
+                    Soff = sqrt(C_real(parmind,parmind))*ones(size(vallims{valind}));
+                    if parmind == 2
+                        plot(vallims{valind},1+Soff,'--','Color',[1 1 1]*0.7)
+                        plot(vallims{valind},1-Soff,'--','Color',[1 1 1]*0.7)
+                    else
+                        plot(vallims{valind},Soff,'--','Color',[1 1 1]*0.7)
+                        plot(vallims{valind},-Soff,'--','Color',[1 1 1]*0.7)
+                    end
+
+                    grid on
+                    xlabel(vallabels{valind})
+                    ylabel(parmlabels{parmind})
+                    xlim(vallims{valind})
+                    if axind == 2
+                        ylim(parmlims{parmind})
+                    end
+                    figname = fullfile(figdir,sprintf('%s_vs_%s_%s%s_perrast.png',parmnames{parmind},valnames{valind},targnames{targind},axlimnames{axind}));
+                    saveas(fig,figname)
+                end
+            end
+        end
+    end
+end
+toc
+

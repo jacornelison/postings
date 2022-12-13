@@ -410,18 +410,19 @@
                     'X-Axis|x' : ['Time|t','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],
                     'Target|tgt': ['Moon|moon','RPS|rps'],
                     'Y Limits|lim': ['Free|','Fixed|_fixed'],
+                    'Resolution|res': ['per obs|','per rast|_perrast'],
 
                 },
 
                 function(params) {
-                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt+params.lim+'.png';
+                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt+params.lim+params.res+'.png';
                 });
             pager.setparams({
                 'param': 'tilt',
                 'x': 't',
                 'tgt': 'moon',
                 'lim': '_fixed',
-
+                'res': '',
             });
         </script>
     </figure>
@@ -817,6 +818,7 @@ A comparison of angle/scaling/translation correlation coefficients between real 
                     'Obs DK|dk2' : ['0_1','0_2','90_1','90_2','-68','-23'],
                     'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
                     'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+
                 },
                 fcn);
             pager.setparams({
@@ -844,18 +846,18 @@ A comparison of angle/scaling/translation correlation coefficients between real 
                     'X-Axis|x' : ['Time|t','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],
                     'Target|tgt2': ['Moon|moon','RPS Type-5|rps' ,'RPS Type-11|rps11'],
                     'Y Limits|lim': ['Free|','Fixed|_fixed'],
-                    //'Moon Data Cut|cut': ['Off|_nocut', 'Early|_earlycut','Late|_latecut'],
+                    'Resolution|res': ['per obs|','per rast|_perrast'],
                 },
 
                 function(params) {
-                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt2+params.lim+'.png';
+                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt2+params.lim+params.res+'.png';
                 });
             pager.setparams({
                 'param': 'fpu_scale_obs',
                 'x': 'dk',
                 'tgt2': 'rps11',
                 'lim': '_fixed',
-                //'cut': '_nocut',
+                'res': '',
             });
         </script>
     </figure>
