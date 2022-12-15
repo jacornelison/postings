@@ -28,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Analysis: Wire Grid Calibration</h1>
+    <h1>RPS Analysis: Wire Grid Polarization Angle Calibration</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         yyyy Mmm dd
@@ -39,7 +39,7 @@
 <hr>
 
 <p>
-    We observe the RPS to determine the polarization angle of the CMB in absolute terms making three primary connections:
+    We observe the Rotating Polarized Source (RPS) to determine the polarization angle of the CMB in absolute terms making three primary connections:
     <ol>
     <li>Determine the angle to the RPS's polarizing wire grid with respect to gravity.</li>
     <li>Relate the polarization angle of the telescope WRT to the source.</li>
@@ -51,8 +51,8 @@
 </p>
 
 <hr>
-
-<section><h2>Wire Grid Calibration</h2>
+<section>
+<h2>Introduction</h2>
 <!--<section><h2>Attempt 1 at Pole</h2>-->
     <p>Relating the polarization orientation occurs in two major steps:
     <ol type="I">
@@ -64,11 +64,8 @@
     <p>
         The following sections describe how we accomplish parts I and II in detail.
     </p>
-    <h3>Bridgeport Measurements</h3>
-
-    <p>
-    Describe what went into this measurement:
-    </p>
+</section>
+<section><h2>Calibrating the Wire Grid Angle WRT Reference Surface</h2>
     <p>
         During the 2021/2022 RPS campaign, the wire grid calibration followed a similar procedure outlined in <a href="http://bicep3.bicepkeck.org/calibration/calibration_hardware_logbook.html#20131108">JMK's 08-Nov-2013 Entry</a> in the Calibration HW Logbook which I paraphrase here:
     </p>
@@ -79,8 +76,10 @@
         <li>Home the rotation stage</li>
         <li>Determine the angle of the wire grid WRT to the reference surface</li>
         <ul>
-            <li>The angle of the grid is $tan^{-1} \left(\frac{\text{wires travelled}\times\text{wire pitch}}{\text{stage distance travelled}}\right)$ </li>
+            <li>Command the stage to an angle such that there is zero apparent travel in the wires when driving the linear stage of the bridgeport.</li>
+            <!--<li>The angle of the grid is $tan^{-1} \left(\frac{\text{wires travelled}\times\text{wire pitch}}{\text{stage distance travelled}}\right)$ </li>-->
         </ul>
+
         <li>Optional: Manually adjust the wire grid orientation such that the wires align with the home angle.</li>
     </ol>
 
@@ -93,7 +92,7 @@
         <li>With pressure in the counter-clockwise direction, the wire grid was at an angle of 0.057&deg;</li>
     </ul>
 
-    <p>It's currently unclear if the backlash developed during the RPS measurements or during transport back to CONUS. However, the backlash of 0.05&deg; is within our error budget. Further, the center of mass of the RPS is offset such that some torque is applied to the stage except at roughly &pm;90&deg; so it might be possible to model this effect in the BICEP3 and ISAAC data to determine if it occurred during the RPS observations.</p>
+    <p>I'm fairly certain this backlash developed during travel.</p>
 
     <h4>Homing repeatability</h4>
 
@@ -110,10 +109,6 @@
 
     </figcaption>
 </figure>
-
-<!--    <h3>Tilt Meter</h3>-->
-<!--    <h4>Calibration</h4>-->
-<!--    <h4>Real-Time Monitoring</h4>-->
 
 <!--    <table>-->
 <!--        <tr>-->
@@ -170,11 +165,50 @@
 
 </section>
 
-<!--<section>-->
-<!--    <h2>Tilt Meter</h2>-->
-<!--    <h3>Calibration</h3>-->
-<!--    <h3>Real-Time Monitoring</h3>-->
-<!--</section>-->
+<section>
+    <h2>Calibrating the Reference Surface Angle WRT Gravity</h2>
+<p>
+
+</p>
+
+    <h3>Calibration</h3>
+    <h3>Real-Time Monitoring</h3>
+    <p>
+        During the RPS observations, I recorded the output of the tilt meter using a Labjack in order to monitor and correct for any changes in the orientation of the RPS as detected by the tilt meter. In the figure below, I show the output of the tilt meter during RPS observations with two very different weather conditions:
+    </p>
+
+        <figure>
+            <img alt="Name pager" id="monitorpager" src="#" width="100%"/>
+            <figcaption>
+                RPS tilt meter monitor plots for some select days to demonstrate the effect of weather on the RPS wire grid angle. The gray boundary represents the error due to uncertainties in the tilt meter calibration.
+            </figcaption>
+            <script type="text/javascript">
+
+                pager.link("#monitorpager",
+                    {
+                        //'Measurement|meas': ['No Homing, No fine sw.|009','With homing, No fine sw.|011','Added Fine Homing sw|022','Post RPS obs|023'],
+                        'Day|day':  ['59583','59587'],
+
+                 },
+                    function(params) {
+                        return 'figs/tilt_monitor_plot_day_'+params.day+'.png';
+                    });
+                pager.setparams({
+                    'day': '59583',
+                });
+            </script>
+        </figure>
+
+    <p>
+        In another posting, I will show the improvements to the overall scatter in the per-detetor polarization angle estimates with and without tilt correction.
+    </p>
+
+</section>
+<section>
+<h2>Summary</h2>
+
+</section>
+
 
 <!--<section>-->
 <!--    <h2>Cross Checks</h2>-->
