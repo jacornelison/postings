@@ -53,14 +53,27 @@
 <hr>
 <section>
 <h2>Introduction</h2>
-<!--<section><h2>Attempt 1 at Pole</h2>-->
-    <p>Relating the polarization orientation occurs in two major steps:
+
+    <figure>
+        <img src="figs/rps_annotated.png"/>
+        <figcaption>
+            Typical setup of the Rotating Polarized Source for polarization calibration. A. 95GHz Broad Spectrum Noise Source. B. Thorlabs rotation stage. C. Polarizing Wire Grid. D. Tuff Tilt precision tilt meter.
+        </figcaption>
+    </figure>
+
+    <p>Relating the polarization orientation of the wire grid occurs in two steps:
     <ol type="I">
         <li>Measuring the angle of the polarizing wire grid WRT to a reference surface.</li>
         <li>Measuring the angle of the reference surface with respect to gravity.</li>
     </ol>
     </p>
-    <p>The first part is accomplished by measuring the mechanical orientation of the grid's wires in a Bridgeport (aka knee mill) using the top flat surface of the rotation stage as the reference plane. The second part is accomplished using the RPS's tilt meter: with the RPS completely assembled, we place a precision machinist level on the reference surface of the rotation stage and record the number given by the tilt meter. Thus, when we're observing the RPS on-mast we know the wire grid is horizontal WRT gravity as long as the tilt meter is reading our that reference value.</p>
+    <p>The first part is accomplished by measuring the mechanical orientation of the grid's wires in a Bridgeport (AKA knee mill) using the top flat surface of the rotation stage as the reference plane -- the arrow from B points to this surfase in figure 1.1. The second part is accomplished using the RPS's tilt meter: with the RPS completely assembled, we place a precision machinist level on the reference surface of the rotation stage and record the number given by the tilt meter when the level is perfectly centered. In addition, I monitor the output of the tilt meter during the entire campaign.</p>
+
+    <p>Thus, when we're observing the RPS on-mast we calculate the angle of the wire grid WRT gravity, $\theta_{grav}$, using our knowledge of the stage's command angle, $\theta_{stage}$, grid-horizontal, $\theta_{grid}$, tilt meter output, $\theta_{tilt}$, and tilt meter calibration $\theta_{tilt,0}$:
+    </p>
+    \begin{equation}
+    \theta_{grav} = \theta_{stage}-\theta_{grid}+\theta_{tilt}-\theta_{tilt,0}
+    \end{equation}
     <p>
         The following sections describe how we accomplish parts I and II in detail.
     </p>
@@ -168,10 +181,13 @@
 <section>
     <h2>Calibrating the Reference Surface Angle WRT Gravity</h2>
 <p>
-
+We determine the orientation of the reference surface to gravity using a high-precision tilt meter.
 </p>
 
     <h3>Calibration</h3>
+    <p>
+
+    </p>
     <h3>Real-Time Monitoring</h3>
     <p>
         During the RPS observations, I recorded the output of the tilt meter using a Labjack in order to monitor and correct for any changes in the orientation of the RPS as detected by the tilt meter. In the figure below, I show the output of the tilt meter during RPS observations with two very different weather conditions:

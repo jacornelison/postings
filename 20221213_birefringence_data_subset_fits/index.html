@@ -56,7 +56,7 @@
         That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in global rotation angle among the different subsets. Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle. While it doesn't really give us information on the absolute angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the RPS analysis.
     </p>
     <p>
-        The figure below shows how the data could be split up. In this case, I choose to split the pairs evenly into thirds where the mean difference in global rotation angle between the lower-to-middle and middle-to-upper datasets is expected to be ~0.45&deg;.
+        The figure below shows how the data could be split up. In this case, I choose to split the pairs evenly into thirds where the mean difference in global rotation angle between the lower-to-middle and middle-to-upper datasets is expected to be ~0.3&deg;.
     </p>
 
     <figure>
@@ -128,7 +128,7 @@
     </figure>
 
     <p>
-        In the Type-8 sims, the scatter in the histograms for the subsets increases by roughly a factor of two compared to B2018-rerun. Still, since the differences in angle between each subset is at least ~0.5&deg;, we should be able to detect the differences in angle to high significance in the real data. We can also see that the purification matrix still appears to work on these subsets, albeit to a lesser degree. All of the means are consistent with zero, so I think it's still appropriate to continue using the B18 matrix in lieu of creating new daughter matrices. I tabulate the statistics from the histograms in the figure below:
+        In the Type-8 sims, the scatter in the histograms for the subsets increases by roughly a factor of two compared to B2018-rerun. Still, since the differences in angle between each subset is at least ~0.3&deg;, we should be able to detect the differences in angle to >1-&sigma; in the real data. We can also see that the purification matrix still appears to work on these subsets, albeit to a lesser degree. All of the means are consistent with zero, so I think it's still appropriate to continue using the B18 matrix in lieu of creating new daughter matrices. I tabulate the statistics from the histograms in the figure below:
     </p>
 
     <figure class="table">
@@ -262,7 +262,7 @@
                 });
             pager.setparams({
                 'sig': '2',
-                'pure': '',
+                'pure': 'pureB_matrix_',
                 'sernum3': '6610',
             });
         </script>
