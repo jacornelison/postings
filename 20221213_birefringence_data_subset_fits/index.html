@@ -58,9 +58,12 @@ The goal of this posting is to probe for potential biases when fitting angles in
         <li>Convert to APS.</li>
         <li>Fit global rotation angle to the APS.</li>
     </ol>
-    In the pager below, I show the global rotation fits for sims create with the above procedure called "B2018+RPS". From the histogram in Figure 1.1, we can likely expect the distribution of &alpha; around -0.78&deg; and with standard deviations slightly higher than "B2018-rerun" in Figure 1.3. As a sanity check, I also created another set of sims with a flat +0.5&deg; offset added to the 'obs' chi angles in Step 1 instead of RPS-derived angles -- the expectation being that the distribution would look identical to "B2018-rerun" in figure 1.1 but with a mean of 0.5&deg;
+    In the pager below, I show the global rotation fits for sims create with the above procedure called "B2018+RPS". From the histogram in Figure 1.1, we can likely expect the distribution of &alpha; around -0.78&deg; and with standard deviations slightly higher than "B2018-rerun" in Figure 1.3. As a sanity check, I also created another few sets of sims with a flat +0.5&deg;,-0.5, 0.25, and 1&deg; offset added to the 'obs' chi angles in Step 1 instead of RPS-derived angles -- the expectation being that the distribution would look identical to "B2018-rerun" in figure 1.1 but with a mean of the flat input.
     </p>
 
+    <p>
+        I find a scaling relation between the angles with the constant offsets of 0.86 and 0.80 for EB and TB respectively.
+    </p>
     <figure>
         <img alt="Name pager" id="polrothistpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
         <figcaption>
@@ -87,7 +90,7 @@ The goal of this posting is to probe for potential biases when fitting angles in
     </figure>
 
 <p>
-Both are off by about 14%, which was an indication in previous attempts of using an incorrect BPWF.
+
 </p>
 
 </section>
