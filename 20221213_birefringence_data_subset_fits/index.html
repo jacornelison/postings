@@ -71,15 +71,17 @@ The goal of this posting is to probe for potential biases when fitting angles in
                 {
                     'Sim Type|sig': ['2','3','5','6','7','8'],
                     'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
-                    'Simset|sernum3': ['B2018|3553','B2018+RPS|6606','B2018+0.5deg|6610'],
+                    'Simset|sernum3': ['B2018|3553','B2018+RPS|6606','B2018+0.5deg|6610','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+1deg|6613'],
+                    'Correction|corr': ['Off|','On|_corr'],
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.sernum3+params.pure+params.sig+'.png';
+                    return 'figs/alpha_hist_'+params.sernum3+params.pure+params.sig+params.corr+'.png';
                 });
             pager.setparams({
                 'sig': '2',
                 'pure': 'pureB_matrix_',
                 'sernum3': '6610',
+                'corr':'',
             });
         </script>
     </figure>
@@ -109,7 +111,7 @@ Both are off by about 14%, which was an indication in previous attempts of using
         </figcaption>
     </figure>
 
-    <p>The limiting factor to this technique is going to be the increased uncertainty on &alpha; due to decreasing the detector count and map coverage. So before I create new sims or do anything with the real data, I want to know beforehand whether of not the data has the statistical power at these lower detector-counts/map-coverages to differente the angles. I can quickly check this by looking first at some subsets created from the 10 B2018 sims I made for my previous posting <a href="JAC2022"></a>. These sims use the same polarization angles at both the TOD-creation and mapmaking stage so the mean angles will be zero but the distribution should accurately reflect what we can expect when we try doing this on the real data or with sims with as-measured angles injected into them.
+    <p>The limiting factor to this technique is going to be the increased uncertainty on &alpha; due to decreasing the detector count and map coverage. So before I create new sims or do anything with the real data, I want to know beforehand whether of not the data has the statistical power at these lower detector-counts/map-coverages to differentiate the angles. I can quickly check this by looking first at some subsets created from the 10 B2018 sims I made for my previous posting <a href="JAC2022"></a>. These sims use the same polarization angles at both the TOD-creation and mapmaking stage so the mean angles will be zero but the distribution should accurately reflect what we can expect when we try doing this on the real data or with sims with as-measured angles injected into them.
     </p>
     <p>
         The figure below shows the same pager from Fig 2.1, but now includes APS of the three data subsets. My previous posting showed that the B18 purifcation matrix still worked on the whole-year B2018 daughter sims, so I also applied it to these smaller subsets as well to see if it still works.</p>

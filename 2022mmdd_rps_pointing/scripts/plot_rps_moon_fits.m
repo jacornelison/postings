@@ -755,7 +755,7 @@ load('z:/pipeline/beammap/viridis_cm.mat')
 [fa, nchans] = deal([]);
 [prx, pry] = pol2cart(p.theta*pi/180,p.r);
 fpparms = {};
-for targind = 1:3
+for targind = 2%1:3
 
     % Load Moon or RPS data
     switch targnames{targind}
@@ -907,7 +907,7 @@ for targind = 1:3
     fpparms{targind} = [parms{1} parms{2}, parms{3}, parms{4}];
     C_real = cov(fpparms{targind});
     
-    if 1
+    if 0
         for valind = 1:length(vals)
             for parmind = 1:length(parms)
                 axlimnames = {'','_fixed'};
