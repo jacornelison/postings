@@ -34,7 +34,6 @@ load('z:/pipeline/beammap/viridis_cm.mat')
 [prx, pry] = pol2cart(p.theta*pi/180,p.r);
 fpparms = {};
 for targind = 1:3
-
     % Load Moon or RPS data
     switch targnames{targind}
         case 'moon'
@@ -149,8 +148,12 @@ for targind = 1:3
             end
             az(end+1) = nanmedian(wrapTo180(fd0.az_cen));
             el(end+1) = nanmedian(fd0.el_cen);
-            fpuobs = fit_fpu_angle_and_scaling_from_xy(fd0,p);
-            fpuparmsobs(end+1,:) = [fpuobs.angle,fpuobs.scaling,fpuobs.xtrans,fpuobs.ytrans];
+            fpuobs = fit_fpu_angle_and_scaling_from_xy(fd0,p,'',[1,0,0,0]);
+            fpuparmsobs(end+1,1) = [fpuobs.angle];
+            fpuobs = fit_fpu_angle_and_scaling_from_xy(fd0,p,'',[0,1,1,1]);
+            fpuparmsobs(end,2:4) = [fpuobs.scaling,fpuobs.xtrans,fpuobs.ytrans];
+%             fpuobs = fit_fpu_angle_and_scaling_from_xy(fd0,p,'',[1,1,1,1]);
+%             fpuparmsobs(end+1,:) = [fpuobs.angle,fpuobs.scaling,fpuobs.xtrans,fpuobs.ytrans];
             nchans(end+1) = length(find(ind));
             times(end+1) = nanmean(fd0.t);
             dksch(end+1) = -nanmean(fd0.dk_cen);
@@ -176,7 +179,7 @@ for targind = 1:3
     parmnames = {'fpu_ang_obs','fpu_scale_obs','fpu_xtrans_obs','fpu_ytrans_obs'};%,'fpu_rtrans_obs','fpu_thtrans_obs'};
     parmlabels = {'FPU Angle Obs [Deg]','FPU Scaling Obs','FPU X Trans Obs [Deg]','FPU Y Trans Obs [Deg]'};%,'FPU R Trans Obs [Deg]','FPU Theta Trans Obs [Deg]'};
     parmlims = {[-1 1]*0.01, [0.9995 1.0002],[-1 1]*0.001, [-1 1]*0.001};%, [-1 1]*0.015,[0 360]};
-    parmlims = {[-1 1]*0.2, [0.993 1.002],[-1 1]*0.001, [-1 1]*0.001};%, [-1 1]*0.015,[0 360]};
+    %parmlims = {[-1 1]*0.2, [0.993 1.002],[-1 1]*0.001, [-1 1]*0.001};%, [-1 1]*0.015,[0 360]};
     fpparms{targind} = [parms{1} parms{2}, parms{3}, parms{4}];
     C_real = cov(fpparms{targind});
     
@@ -184,7 +187,7 @@ for targind = 1:3
         for valind = 1:length(vals)
             for parmind = 1:length(parms)
                 axlimnames = {'','_fixed'};
-                for axind = 2%1:2
+                for axind = 1:2
                     fig = figure(1);
                     fig.Position(3:4) = [900 300];
                     clf; hold on;
@@ -755,7 +758,7 @@ load('z:/pipeline/beammap/viridis_cm.mat')
 [fa, nchans] = deal([]);
 [prx, pry] = pol2cart(p.theta*pi/180,p.r);
 fpparms = {};
-for targind = 2%1:3
+for targind = 1:3
 
     % Load Moon or RPS data
     switch targnames{targind}
@@ -807,10 +810,11 @@ for targind = 2%1:3
     % Fit the fpu angle per-obs
 
     fprintf('%s\n',targnames{targind})
-    [mirrparms, fpuparms, fpuparmsobs, sun_els, sun_azs, times, dksch,schedules,az,el] = deal([]);
+    [mirrparms, fpuparmsobs, sun_els, sun_azs, times, dksch,schedules,az,el] = deal([]);
+    [mirrparms0,fpuparmsobs0, sun_els0, sun_azs0, times0, dksch0,schedules0,az0,el0] = deal([]);
     for obsind = 1:length(scheds)
         ind = ismember(fd.schnum,scheds{obsind});
-
+        count = 0;
         if ~isempty(find(ind))
             fd0 = structcut(fd,ind);
 
@@ -870,19 +874,23 @@ for targind = 2%1:3
                         el(end+1) = nanmedian(fd_rast.el_cen);
                         fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[1,0,0,0]);
                         fpuparmsobs(end+1,1) = fpuobs.angle;
-                        fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,1,0,0]);
-                        fpuparmsobs(end,2) = fpuobs.scaling;
-                        fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,0,1,0]);
-                        fpuparmsobs(end,3) = fpuobs.xtrans;
-                        fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,0,0,1]);
-                        fpuparmsobs(end,4) = fpuobs.ytrans;
+%                         fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,1,0,0]);
+%                         fpuparmsobs(end,2) = fpuobs.scaling;
+%                         fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,0,1,0]);
+%                         fpuparmsobs(end,3) = fpuobs.xtrans;
+%                         fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,0,0,1]);
+%                         fpuparmsobs(end,4) = fpuobs.ytrans;
+                        fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[0,1,1,1]);
+                        fpuparmsobs(end,2:4) = [fpuobs.scaling,fpuobs.xtrans,fpuobs.ytrans];
+%                         fpuobs = fit_fpu_angle_and_scaling_from_xy(fd_rast,p,'',[1,1,1,1]);
+%                         fpuparmsobs(end+1,:) = [fpuobs.angle,fpuobs.scaling,fpuobs.xtrans,fpuobs.ytrans];
                         nchans(end+1) = length(find(ind));
                         times(end+1) = nanmean(fd_rast.t);
                         dksch(end+1) = -nanmean(fd_rast.dk_cen);
                         schedules(end+1) = nanmean(fd_rast.schnum);
-                        fa(end+1) = fpuobs.angle;
                         %fd.x(ind) = fd_rast.x;
                         %fd.y(ind) = fd_rast.y;
+                        count = count+1;
                     end
                 end
             end
@@ -904,14 +912,15 @@ for targind = 2%1:3
     parmnames = {'fpu_ang_obs','fpu_scale_obs','fpu_xtrans_obs','fpu_ytrans_obs'};%,'fpu_rtrans_obs','fpu_thtrans_obs'};
     parmlabels = {'FPU Angle Obs [Deg]','FPU Scaling Obs','FPU X Trans Obs [Deg]','FPU Y Trans Obs [Deg]'};%,'FPU R Trans Obs [Deg]','FPU Theta Trans Obs [Deg]'};
     parmlims = {[-1 1]*0.2, [0.993 1.002],[-1 1]*0.001, [-1 1]*0.001};%, [-1 1]*0.015,[0 360]};
+    %parmlims = {[-1 1]*0.01, [0.9995 1.0002],[-1 1]*0.001, [-1 1]*0.001};%, [-1 1]*0.015,[0 360]};
     fpparms{targind} = [parms{1} parms{2}, parms{3}, parms{4}];
     C_real = cov(fpparms{targind});
     
-    if 0
+    if 1
         for valind = 1:length(vals)
             for parmind = 1:length(parms)
                 axlimnames = {'','_fixed'};
-                for axind = 2%1:2
+                for axind = 1:2
                     fig = figure(1);
                     fig.Position(3:4) = [900 300];
                     clf; hold on;

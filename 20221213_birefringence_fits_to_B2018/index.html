@@ -89,7 +89,7 @@
 </p>
 
     <figure>
-        <img alt="Name pager" id="apspager" src="#" width="65%" onerror=this.src="figs/blank.png" />
+        <img alt="Name pager" id="apspager" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />
         <figcaption>
             A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell. Note that no matrix purification was applied to just B2018, so matrix purified APS are shown for only my sims.
         </figcaption>
@@ -98,7 +98,7 @@
                 {
                     'Sim Type|sig': ['2','3','5','6','7','8'],
                     'Purification Method|pure': ['None|','PureB|pureB_','Matrix|pureB_matrix_'],
-                    'Simset|sernum': ['B2018|3553','B2018-rerun|6600'],
+                    'Simset|sernum': ['B2018|3553','B2018-rerun|6600','6614'],
                     'y-axes|axes': ['Fixed|_fixed','Free|_free']
                 },
                 function(params) {
@@ -135,7 +135,7 @@
 
     </p>
     <figure>
-        <img alt="Name pager" id="histpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
+        <img alt="Name pager" id="histpager" src="#" onerror=this.src="figs/blank_6x4.png" width="65%"/>
         <figcaption>
             Example pager
         </figcaption>
@@ -144,7 +144,7 @@
                 {
                     'Sim Type|sig': ['2','3','5','6','7','8'],
                     'Purification Method|pure': ['None|','PureB|pureB_','Matrix|pureB_matrix_'],
-                    'Simset|sernum': ['B2018|3553','B2018-rerun|6600'],
+                    'Simset|sernum': ['B2018|6614','B2018-rerun|6600'],
                 },
                 function(params) {
                     return 'figs/alpha_hist_'+params.sernum+params.pure+params.sig+'.png';
