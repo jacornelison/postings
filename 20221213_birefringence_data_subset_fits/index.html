@@ -65,7 +65,7 @@ The goal of this posting is to probe for potential biases when fitting angles in
         I find a scaling relation between the angles with the constant offsets of 0.86 and 0.80 for EB and TB respectively.
     </p>
     <figure>
-        <img alt="Name pager" id="polrothistpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
+        <img alt="Name pager" id="polrothistpager" src="#" onerror=this.src="figs/blank.png" width="85%"/>
         <figcaption>
 
         </figcaption>
@@ -74,7 +74,7 @@ The goal of this posting is to probe for potential biases when fitting angles in
                 {
                     'Sim Type|sig': ['2','3','5','6','7','8'],
                     'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
-                    'Simset|sernum3': ['B2018|3553','B2018+RPS|6606','B2018+0.5deg|6610','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+1deg|6613'],
+                    'Simset|sernum3': ['B2018|6614','B2018+RPS|6606','B2018+0.5deg|6610','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+1deg|6613'],
                     'Correction|corr': ['Off|','On|_corr'],
                 },
                 function(params) {
@@ -119,7 +119,7 @@ The goal of this posting is to probe for potential biases when fitting angles in
     <p>
         The figure below shows the same pager from Fig 2.1, but now includes APS of the three data subsets. My previous posting showed that the B18 purifcation matrix still worked on the whole-year B2018 daughter sims, so I also applied it to these smaller subsets as well to see if it still works.</p>
     <figure>
-        <img alt="Name pager" id="apspager2" src="#" width="65%" onerror=this.src="figs/blank.png" />
+        <img alt="Name pager" id="apspager2" src="#" width="85%" onerror=this.src="figs/blank.png" />
         <figcaption>
             A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell. Note that no matrix purification was applied to just B2018, so matrix purified APS are shown for only my sims.
         </figcaption>
@@ -129,7 +129,7 @@ The goal of this posting is to probe for potential biases when fitting angles in
                 {
                     'Signal Type|sig': ['2','3','5','6','7','8'],
                     'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
-                    'Simset|sernum2': ['B2018|3553','B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
+                    'Simset|sernum2': ['B2018|6614','B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
                     'y-axes|axes': ['Fixed|_fixed','Free|_free']
                 },
                 function(params) {
