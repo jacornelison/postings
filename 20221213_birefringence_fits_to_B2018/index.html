@@ -141,15 +141,15 @@
             pager.link("#histpager",
                 {
                     'Sim Type|sig': ['2','3','5','6','7','8'],
-                    'Purification Method|pure': ['None|','Matrix|matrix_'],
+                    'Purification Method|pure2': ['None|','Matrix|matrix_'],
                     'Simset|sernum': ['B2018|6614','B2018-rerun|6600'],
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.sernum+params.pure+params.sig+'.png';
+                    return 'figs/alpha_hist_'+params.sernum+params.pure2+params.sig+'.png';
                 });
             pager.setparams({
                 'sig': '2',
-                'pure': '',
+                'pure2': '',
                 'sernum': '6600',
             });
         </script>
