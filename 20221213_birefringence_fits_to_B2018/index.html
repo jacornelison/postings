@@ -84,7 +84,19 @@
     <p>
         The pager below shows EB/TB angular power spectra (APS) for both B2018 (sernum 3553) and my sims (sernum 6600) where I visually compare the means. To see if can still work for smaller subsets of data, I also apply the B18 purification matrix -- which was created from the combined B2016, B2017, and B2018 -- to my 10 sims.
 </p>
+    <p>
+        Sim types:
+        <ol start="2">
 
+        <li>Unlensed &Lambda;CDM</li>
+        <li>Gaussian Dust</li>
+        <li>Unlensed &Lambda;CDM + r=0.1</li>
+        <li>Lensed &Lambda;CDM</li>
+        <li>Sign-flip noise</li>
+        <li>Lensed &Lambda;CDM+Noise [Type 5+6]</li>
+        <li>Lensed &Lambda;CDM+Noise+Dust [Type 7+3]</li>
+    </ol>
+    </p>
 
     <figure>
         <img alt="Name pager" id="apspager" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />
@@ -157,19 +169,42 @@
 <p>
     It's pretty easy just to confirm from the histograms that the means are all consistent with zero; the 1-&sigma; STD's between the B2018 standard and my rerun are consistent; and matrix purification still does a good job of reducing E-to-B leakage from mode-mixing despite using only a subset of the original data. Still, I create some tables below to give a more quantitative look.
 </p>
+
+    <h4>
+        Fractional uncertainty when going from 499 to 10 sims
+    </h4>
+    <p>The uncertainty on the standard error when drawing N samples from a parent distribution with width &sigma; is:</p>
+
+    \begin{equation*}
+    \sigma_{SE} = \frac{\sigma}{\sqrt{2N-2}}
+    \end{equation*}
+
+    <p>So the fractional uncertainty when going from 499 to 10 sims is </p>
+
+    \begin{equation*}
+    \sqrt{\frac{N_2-1}{N_2-1}}\,=\,\sqrt{\frac{9}{498}}\sim13\%
+    \end{equation*}
+
+
     <p>
-In table 1.1, I compare the mean and 1-&sigma; standard deviations for the alphas fit from EB between the standard 499 B2018 and my 10 sims (with no purification). We can see that the means are all consistent with zero and the distributions are consistent between each other to ~0.01&deg;.
+In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alphas fit from EB between the standard 499 B2018 and my 10 sims (with no purification). We can see that the means are all consistent with zero and the distributions are consistent between each other to ~0.01&deg;.
 </p>
     <figure class="table">
         <table class="results">
             <tr>
                 <th></th>
                 <th colspan="4">EB</th>
+                <th colspan="4">TB</th>
+                <th colspan="4">EB+TB</th>
             </tr>
             <tr>
                 <th></th>
-                <th colspan="2">B2018</th>
-                <th colspan="2">B2018-rerun</th>
+                <th class="cstart" colspan="2">B2018</th>
+                <th class="cend" colspan="2">B2018-rerun</th>
+                <th class="cstart" colspan="2">B2018</th>
+                <th class="cend" colspan="2">B2018-rerun</th>
+                <th class="cstart" colspan="2">B2018</th>
+                <th class="cend" colspan="2">B2018-rerun</th>
             </tr>
             <tr>
                 <th class="cstart">Signal</th>
@@ -177,48 +212,104 @@ In table 1.1, I compare the mean and 1-&sigma; standard deviations for the alpha
                 <th>STD (&deg;)</th>
                 <th class="cstart">Mean (&deg;)</th>
                 <th class="cend">STD (&deg;)</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th>STD (&deg;)</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th class="cend">STD (&deg;)</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th>STD (&deg;)</th>
+                <th class="cstart">Mean (&deg;)</th>
+                <th class="cend">STD (&deg;)</th>
             </tr>
             <tr>
                 <td>2</td>
-                <td class='cstart'>0.0</td>
-                <td>0.09</td>
-                <td class='cstart'>0.0</td>
-                <td>0.09</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.01</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.01</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.00</td>
             </tr>
             <tr>
                 <td>3</td>
-                <td class='cstart'>0.0</td>
+                <td class='cstart'>0.00</td>
                 <td>0.00</td>
-                <td class='cstart'>0.0</td>
+                <td class='cstart'>0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>0.00</td>
                 <td>0.00</td>
             </tr>
             <tr>
                 <td>5</td>
-                <td class='cstart'>0.0</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.05</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.06</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.09</td>
+                <td class='cstart'>0.01</td>
                 <td>0.10</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.11</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.05</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.06</td>
             </tr>
             <tr>
                 <td>6</td>
-                <td class='cstart'>-0.0</td>
+                <td class='cstart'>-0.00</td>
                 <td>0.01</td>
-                <td class='cstart'>0.0</td>
+                <td class='cstart'>0.00</td>
+                <td>0.01</td>
+                <td class='cstart'>0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>0.00</td>
+                <td>0.00</td>
+                <td class='cstart'>-0.00</td>
+                <td>0.01</td>
+                <td class='cstart'>0.00</td>
                 <td>0.01</td>
             </tr>
             <tr>
                 <td>7</td>
-                <td class='cstart'>0.0</td>
-                <td>0.14</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.12</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.10</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.07</td>
+                <td class='cstart'>-0.02</td>
+                <td>0.18</td>
+                <td class='cstart'>-0.05</td>
+                <td>0.15</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.11</td>
+                <td class='cstart'>-0.02</td>
+                <td>0.07</td>
             </tr>
             <tr>
                 <td>8</td>
-                <td class='cstart'>0.0</td>
-                <td>0.14</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.13</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.10</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.08</td>
+                <td class='cstart'>-0.02</td>
+                <td>0.19</td>
+                <td class='cstart'>-0.05</td>
+                <td>0.16</td>
+                <td class='cstart'>-0.01</td>
+                <td>0.11</td>
+                <td class='cstart'>-0.02</td>
+                <td>0.08</td>
             </tr>
         </table>
         <figcaption>
@@ -227,7 +318,7 @@ In table 1.1, I compare the mean and 1-&sigma; standard deviations for the alpha
     </figure>
 
 <p>
-In Table 1.2, I look at the effect of matrix purification. Once again only showing EB, I show my 10 sims with and without matrix purification for each sim type. I find that using the purification matrix reduced the variance on &alpha; at least a factor of 1.5.
+In Table 2.2, I look at the effect of matrix purification. Once again only showing EB, I show my 10 sims with and without matrix purification for each sim type. I find that using the purification matrix reduced the variance on &alpha; at least a factor of 1.5.
 </p>
 
     <figure class="table">
