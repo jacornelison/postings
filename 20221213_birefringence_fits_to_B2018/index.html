@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Uniform Birefringence Analysis I: Global Polarization Rotation Fits on Standard B2018 Sims</h1>
+    <h1>Uniform Birefringence Analysis: Global Polarization Rotation Fits on Standard B2018 Sims</h1>
 
     <time datetime="2022-12-13" class="published updated">
         2022 Dec 13
@@ -47,7 +47,7 @@
 
 <section><h2>Introduction</h2>
     <p>
-        The ultimate goal of this analysis is to report on a constraint of Uniform Cosmic Birefringence using the combination of our BICEP3 B18 3-year dataset on conjunction with the RPS-based polarization calibration I performed over January 2022. This is different from previous recent analyses that explore spatial or temporal birefringence -- i.e. this is a constraint on the monopole or DC birefringence signal.
+        The ultimate goal of this analysis is to report on a constraint of Uniform Cosmic Birefringence using the combination of our BICEP3 B18 3-year dataset and the RPS-based polarization calibration I performed over January 2022. This is different from previous recent analyses that explore spatial <a href="BKIX"></a> or temporal <a href="BKXIV"></a> birefringence -- i.e. this is a constraint on the monopole or DC birefringence signal.
     </p>
     <p>
         The fundamental procedure is fairly straightforward:
@@ -173,21 +173,21 @@
     <h4>
         Fractional uncertainty when going from 499 to 10 sims
     </h4>
-    <p>The uncertainty on the standard error when drawing N samples from a parent distribution with width &sigma; is:</p>
+    <p>The uncertainty on the standard deviation of a distribution when drawing N samples from a parent distribution with width &sigma; is:</p>
 
     \begin{equation*}
-    \sigma_{SE} = \frac{\sigma}{\sqrt{2N-2}}
+    \sigma_{\sigma\alpha} = \frac{\sigma_\alpha}{\sqrt{2N-2}}
     \end{equation*}
 
     <p>So the fractional uncertainty when going from 499 to 10 sims is </p>
 
     \begin{equation*}
-    \sqrt{\frac{1}{N_1-1}}\,=\,\sqrt{\frac{1}{18}}\sim20\%
+    \sqrt{\frac{1}{N_1-1}}\,=\,\sqrt{\frac{1}{18}}\sim25\%
     \end{equation*}
 
 
     <p>
-In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alphas fit from EB between the standard 499 B2018 and my 10 sims (with no purification). We should expect the standard deviations on B2018-rerun to fluctuate around &pm;13% of B2018 -- but it doesn't look like that's the case here.
+In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alphas fit from EB between the standard 499 B2018 and my 10 sims (with no purification). We should expect the standard deviations on B2018-rerun to fluctuate around &pm;20% of B2018 -- and we can argue that that's the case here.
 </p>
     <figure class="table">
         <table class="results">
@@ -327,17 +327,21 @@ In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alpha
     </figure>
 
     <p>
-        And this is where understanding how the bandpower weighting affects alpha. Going from type 5 to type 7 (adding noise): Type 5 alpha is 51% of type 7.
+        And this is where understanding how the bandpower weighting affects alpha. Going from type L-LCDM (5) to L-LCDM+Noise (7): The standard deviation of Type 5's alphas is 51% of type 7's.
     </p>
 
     <figure>
         <img src="figs/bb_power_ratio_57.png"/>
     </figure>
-    <p>Going from 7 to 8 (addiing dust): Type 7 is 99% of type8.</p>
+    <p>Going from L-LCDM+Noise to L-LCDM+Noise+Dust: The standard deviation of Type 7's alphas is 99% of type 5's.</p>
     <figure>
         <img src="figs/bb_power_ratio_78.png"/>
     </figure>
-
+    <p>Going from LCDM (2) to L-LCDM: The standard deviation of Type 2's alphas is 10% of type 5's.</p>
+    <figure>
+        <img src="figs/bb_power_ratio_25.png"/>
+    </figure>
+    
     <!--
 <p>
 In Table 2.2, I look at the effect of matrix purification. Once again only showing EB, I show my 10 sims with and without matrix purification for each sim type. I find that using the purification matrix reduced the variance on &alpha; at least a factor of 1.5.
@@ -548,6 +552,8 @@ In Table 2.2, I look at the effect of matrix purification. Once again only showi
         var tags = [
             "JBW2016",
             "EWB2016",
+            "BKIX",
+            "BKXIV",
         ];
 
         // Links
@@ -556,6 +562,8 @@ In Table 2.2, I look at the effect of matrix purification. Once again only showi
         var hrefs = [
             "bkcmb/analysis_logbook/analysis/20160907_polrot/",
             "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
+            "https://arxiv.org/pdf/1705.02523.pdf",
+            "https://arxiv.org/pdf/2108.03316.pdf",
 
         ];
 
@@ -564,6 +572,8 @@ In Table 2.2, I look at the effect of matrix purification. Once again only showi
         var desc = [
             "Birefringence/Polarization rotation in K2015 and BK15",
             "Polarization Rotation Sims Global Rotation",
+            "New Bounds on Anisotropies of CMB Polarization Rotation and Implications for Axion-Like Particles and Primordial Magnetic Fields",
+            "Improved Constraints on axion-like polarization oscillations in the Cosmic Microwave Background",
         ];
         // Debug
         var posty = document.getElementById("testp");
