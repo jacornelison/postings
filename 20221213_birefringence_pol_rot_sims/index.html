@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>Birefringence Analysis: B2018 Sims</title>
+    <title>Birefringence Analysis: B2018 PolRotSims</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sim subsets</h1>
+    <h1>Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sims</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         yyyy Mmm dd
@@ -40,7 +40,7 @@
 <hr>
 
 <p>
-The goal of this posting is to probe for potential biases when fitting angles in our Polarization Rotation Sims. I also look into a possible cross-check using subsets of CMB data which would help validate as-measured polarization angles.
+The goal of this posting is to probe for potential pathologies in fitting angles to Polarization Rotation sims and to understand how non-zero polarizatin angles in sims contribute to the uncertainty of our birefringence analysis.
 </p>
 
 <hr>
@@ -159,24 +159,7 @@ The goal of this posting is to probe for potential biases when fitting angles in
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
-    <figure>
-        <img alt="Name pager" id="coveragepager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
-        <figcaption>
-            Focal plane coverage for each of the simsets. Yellow indicates detector pairs used in the coadds.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#coveragepager",
-                {
-                    'Simset|sernum4': ['B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
-                },
-                function(params) {
-                    return 'figs/'+params.sernum4+'_tile_plot.png';
-                });
-            pager.setparams({
-                'sernum4': '6600',
-            });
-        </script>
-    </figure>
+
 
 
     <h3>Footnotes</h3>
