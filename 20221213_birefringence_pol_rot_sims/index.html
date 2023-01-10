@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<!--suppress HtmlDeprecatedAttribute -->
+<head>
+    <meta charset="utf-8">
+    <title>Birefringence Analysis: B2018 Sims</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+            // src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sim subsets</h1>
+
+    <time datetime="2020-xx-xx" class="published updated">
+        yyyy Mmm dd
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+The goal of this posting is to probe for potential biases when fitting angles in our Polarization Rotation Sims. I also look into a possible cross-check using subsets of CMB data which would help validate as-measured polarization angles.
+</p>
+
+<hr>
+
+<section>
+    <h2>Testing on Polarization Rotation Sims</h2>
+    <p>
+        In this section, I verify that I can correctly create Polarization Rotation sims. These are sims that use one set of polarization angles as input when making TOD sims and another set as input during mapmaking. The procedure I follow is similar to <a href="EWB2016a"></a>:
+    <ol>
+        <li>Create TOD sims substituting fiducial angles (the 'obs' option in <tt>get_array_info</tt>) with RPS-measured polarization angles.</li>
+        <li>Create pairmaps with our fiducial angles.</li>
+        <li>Convert to APS.</li>
+        <li>Fit global rotation angle to the APS.</li>
+    </ol>
+
+</p>
+    <p>
+        I created a few sets of sims with a flat +0.5&deg;,0,-0.5, 0.25, and 1&deg; offset added to the 'obs' chi angles in Step 1 instead of just 'obs'. For speed, each simset only has 10 realizations of unlensed-LCDM signal only (type-2) and all simsets are matrix-purified.
+    </p>
+
+    <figure>
+        <img alt="Name pager" id="apspager" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />
+        <figcaption>
+            A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#apspager",
+                {
+                    'Sim Type|sig': ['2'],//,'3','5','6','7','8'],
+                    //'Purification Method|pure': ['None|','Matrix|matrix_'],
+                    'Simset|sernum': ['B2018|6614','B2018+0deg|6600','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+0.5deg|6610','B2018+1deg|6613'],
+                    'y-axes|axes': ['Fixed|_fixed','Free|_free']
+                },
+                function(params) {
+                    return 'figs/aps_'+params.sernum+'_'+'matrix_'+params.sig+params.axes+'.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                //'pure': '',
+                'sernum': '6600',
+                'axes': '_fixed',
+            });
+        </script>
+    </figure>
+
+
+        <p>Before we look at the angles, I should note that the default BPWF used by B2018 is "mask_bpwf" instead of "direct_bpwf" and it has been shown in previous analyses that not using the direct BPWF causes an underestimation of global rotation angles by a constant scaling relation. So we can already expect the distribution of alpha would look identical to "B2018+0deg" in figure 1.1 but with a simple mean offset that is some fraction of the input angle.
+    </p>
+    <p>
+        I find a scaling relation between the angles by computing the weighted mean of the ratio between average alpha vs. expected weighted by the standard deviation of the distribution. The scaling relations are 0.865, 0.803, and 0.848 for EB, TB, and EB+TB respectively (all &pm;0.006 from the weighted standard deviation).
+    </p>
+    <figure>
+        <img alt="Name pager" id="polrothistpager" src="#" onerror=this.src="figs/blank.png" width="85%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#polrothistpager",
+                {
+                    'Sim Type|sig': ['2'],
+                    //'Purification Method|pure': ['None|','Matrix|matrix_'],
+                    'Simset|sernum': ['B2018|6614','B2018+0deg|6600','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+0.5deg|6610','B2018+1deg|6613'],
+                    'Scaling Correction|corr': ['Off|','On|_corr'],
+                },
+                function(params) {
+                    return 'figs/alpha_hist_'+params.sernum+'matrix_'+params.sig+params.corr+'.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                'pure': 'matrix_',
+                'sernum': '6610',
+                'corr':'',
+            });
+        </script>
+    </figure>
+
+    <h3>RPS-derived Pol-angles</h3>
+
+    <p>
+        In the pager below, I show the global rotation fits for sims created with the above procedure but with preliminary RPS-derived angles input into the TOD's and 'obs' angles used during mapmaking. The mean of this distribution is going to be representative of the <i>difference</i> between the RPS-derived angles and the 'obs' angles (which are derived from the CMB and based on pointing only). To estimate what we should expect the mean of alpha to be, I had originally assumed that the mean would depend greatly on the individual weighting of each detector pair in much the same way each pair contributes signal to coadded maps. I found however that this isn't necessarily the case: The non-weighted mean of the difference between RPS-derived and CMB-derived angles for all pairs used in B2018 is $\bar{\phi}_{pair}=-0.778&deg;$. As we can see from the pager below, the mean of the scaling corrected distributions matches this exactly. But why?
+    </p>
+
+    <figure>
+        <img alt="Name pager" id="polrothistpager2" src="#" onerror=this.src="figs/blank_6x4" width="85%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#polrothistpager2",
+                {
+                    'Sim Type|sig2': ['2'],//,'3','5','6','7','8'],
+                    //'Purification Method|pure': ['None|','Matrix|matrix_'],
+                    'Simset|sernum2': ['B2018|6614','B2018+RPS|6606','B2018+0.5deg|6610','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+1deg|6613'],
+                    'Correction|corr': ['Off|','On|_corr'],
+                },
+                function(params) {
+                    return 'figs/alpha_hist_'+params.sernum2+'matrix_'+params.sig+params.corr+'.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                //'pure': 'matrix_',
+                'sernum2': '6606',
+                'corr':'_corr',
+            });
+        </script>
+    </figure>
+
+
+</section>
+
+<section><h2>Conclusions</h2>
+
+</section>
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+    <figure>
+        <img alt="Name pager" id="coveragepager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
+        <figcaption>
+            Focal plane coverage for each of the simsets. Yellow indicates detector pairs used in the coadds.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#coveragepager",
+                {
+                    'Simset|sernum4': ['B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
+                },
+                function(params) {
+                    return 'figs/'+params.sernum4+'_tile_plot.png';
+                });
+            pager.setparams({
+                'sernum4': '6600',
+            });
+        </script>
+    </figure>
+
+
+    <h3>Footnotes</h3>
+    <p>Click on the number to return to the main text.</p>
+    <div class="footnote">
+        <p>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+
+    </p>
+    </div>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+    <h3>Data</h3>
+    <p id="data"></p>
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "dummycode.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "dummy description",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "dummydata.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Dummy description",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "JBW2016",
+            "EWB2016a",
+            "EWB2016b",
+            "JAC2022",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which it lies if you can.
+        // This ensures that we can view the linked postings at Pole without the internet.
+        var hrefs = [
+            "bkcmb/analysis_logbook/analysis/20160907_polrot/",
+            "bkcmb/analysis_logbook/analysis/20161103_polrotsims_pager/",
+            "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
+            "bkcmb/analysis_logbook/analysis/20221213_birefringence_fits_to_B2018/index.html",
+
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Birefringence/Polarization rotation in K2015 and BK15",
+            "Polarization Rotation Sims Pager",
+            "Polarization Rotation Sims Global Rotation",
+            "Uniform Birefringence Analysis I: Global Polarization Rotation Fits on Standard B2018 Sims",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>

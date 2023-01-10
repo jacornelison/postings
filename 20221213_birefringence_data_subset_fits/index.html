@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Uniform Birefringence Analysis II: Global Polarization Rotation Angles in B2018 sim subsets</h1>
+    <h1>Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sim subsets</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         yyyy Mmm dd
@@ -40,93 +40,11 @@
 <hr>
 
 <p>
-The goal of this posting is to probe for potential biases when fitting angles in our Polarization Rotation Sims. I also look into a possible cross-check using subsets of CMB data which would help validate as-measured polarization angles.
+
 </p>
 
 <hr>
 
-
-
-<section>
-    <h2>Testing on Polarization Rotation Sims</h2>
-    <p>
-        In this section, I verify that I can correctly create Polarization Rotation sims. These are sims that use one set of polarization angles as input when making TOD sims and another set as input during mapmaking. The procedure I follow is similar to <a href="EWB2016a"></a>:
-    <ol>
-        <li>Create TOD sims substituting fiducial angles with RPS-measured polarization angles.</li>
-        <li>Create pairmaps with our fiducial angles (the 'obs' option in <tt>get_array_info</tt>).</li>
-<!--        <li>Create three sets of B2018 daughter coadded maps split into lower, middle, and upper as shown above in Figure 1.1.</li>-->
-        <li>Convert to APS.</li>
-        <li>Fit global rotation angle to the APS.</li>
-    </ol>
-
-
-      As a sanity check, I also created another few sets of sims with a flat +0.5&deg;,-0.5, 0.25, and 1&deg; offset added to the 'obs' chi angles in Step 1 instead of RPS-derived angles -- the expectation being that the distribution would look identical to "B2018-rerun" in figure 1.1 but with a mean of the flat input.
-    </p>
-
-    <p>
-        I find a scaling relation between the angles by computing the weighted mean of the ratio between average alpha vs. expected weighted by the standard deviation of the distribution. The scaling relations are 0.865, 0.803, and 0.848 for EB, TB, and EB+TB respectively (all &pm;0.006 from the weighted standard deviation).
-    </p>
-    <figure>
-        <img alt="Name pager" id="polrothistpager" src="#" onerror=this.src="figs/blank.png" width="85%"/>
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#polrothistpager",
-                {
-                    'Sim Type|sig': ['2'],
-                    //'Purification Method|pure': ['None|','Matrix|matrix_'],
-                    'Simset|sernum': ['B2018|6614','B2018+0deg|6600','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+0.5deg|6610','B2018+1deg|6613'],
-                    'Correction|corr': ['Off|','On|_corr'],
-                },
-                function(params) {
-                    return 'figs/alpha_hist_'+params.sernum+'matrix_'+params.sig+params.corr+'.png';
-                });
-            pager.setparams({
-                'sig': '2',
-                'pure': 'matrix_',
-                'sernum': '6610',
-                'corr':'',
-            });
-        </script>
-    </figure>
-
-    <h3>RPS-derived Pol-angles</h3>
-
-    <p>
-        In the pager below, I show the global rotation fits for sims create with the above procedure called "B2018+RPS". I try to estimate the expected mean from this distribution by computing the average per-pair pol angle across all detectors weighted by their NET's across 2018 and get &alpha;=-0.78&deg; .
-    </p>
-
-    <figure>
-        <img alt="Name pager" id="polrothistpager2" src="#" onerror=this.src="figs/blank.png" width="85%"/>
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#polrothistpager2",
-                {
-                    'Sim Type|sig2': ['2','3','5','6','7','8'],
-                    //'Purification Method|pure': ['None|','Matrix|matrix_'],
-                    'Simset|sernum2': ['B2018|6614','B2018+RPS|6606','B2018+0.5deg|6610','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+1deg|6613'],
-                    'Correction|corr': ['Off|','On|_corr'],
-                },
-                function(params) {
-                    return 'figs/alpha_hist_'+params.sernum2+'matrix_'+params.sig+params.corr+'.png';
-                });
-            pager.setparams({
-                'sig': '2',
-                //'pure': 'matrix_',
-                'sernum2': '6606',
-                'corr':'',
-            });
-        </script>
-    </figure>
-
-<p>
-    We can try to
-</p>
-
-</section>
 <section>
     <h2>Cross-checking RPS Polarization Angles</h2>
     <p>
@@ -195,15 +113,15 @@ The goal of this posting is to probe for potential biases when fitting angles in
                 {
                     'Sim Type|sig': ['2','3','5','6','7','8'],
                     'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
-                    'Simset|sernum2': ['B2018|3553','B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
+                    'Simset|sernum4': ['B2018|3553','B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.sernum2+params.pure+params.sig+'.png';
+                    return 'figs/alpha_hist_'+params.sernum4+params.pure+params.sig+'.png';
                 });
             pager.setparams({
                 'sig': '2',
                 'pure': '',
-                'sernum2': '6600',
+                'sernum4': '6600',
             });
         </script>
     </figure>
