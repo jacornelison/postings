@@ -87,7 +87,7 @@ The goal of this posting is to probe for potential pathologies in fitting angles
     </figure>
 
 
-        <p>Before we look at the angles, I should note that the default BPWF used by B2018 is "mask_bpwf" instead of "direct_bpwf" and it has been shown in previous analyses that not using the direct BPWF causes an underestimation of global rotation angles by a constant scaling relation. So we can already expect the distribution of alpha would look identical to "B2018+0deg" in figure 1.1 but with a simple mean offset that is some fraction of the input angle.
+        <p>Before we look at the angles, I should note that the default BPWF used by B2018 is "mask_bpwf" instead of "direct_bpwf" and it has been shown in previous analyses <a href="JBW2017"></a> that not using the direct BPWF causes an underestimation of global rotation angles by a constant scaling relation. So we can already expect the distribution of alpha would look identical to "B2018+0deg" in figure 1.1 but with a simple mean offset that is some fraction of the input angle.
     </p>
     <p>
         I find a scaling relation between the angles by computing the weighted mean of the ratio between average alpha vs. expected weighted by the standard deviation of the distribution. The scaling relations are 0.865, 0.803, and 0.848 for EB, TB, and EB+TB respectively (all &pm;0.006 from the weighted standard deviation).
@@ -120,7 +120,7 @@ The goal of this posting is to probe for potential pathologies in fitting angles
     <h3>RPS-derived Pol-angles</h3>
 
     <p>
-        In the pager below, I show the global rotation fits for sims created with the above procedure but with preliminary RPS-derived angles input into the TOD's and 'obs' angles used during mapmaking. The mean of this distribution is going to be representative of the <i>difference</i> between the RPS-derived angles and the 'obs' angles (which are derived from the CMB and based on pointing only). To estimate what we should expect the mean of alpha to be, I had originally assumed that the mean would depend greatly on the individual weighting of each detector pair in much the same way each pair contributes signal to coadded maps. I found however that this isn't necessarily the case: The non-weighted mean of the difference between RPS-derived and CMB-derived angles for all pairs used in B2018 is $\bar{\phi}_{pair}=-0.778&deg;$. As we can see from the pager below, the mean of the scaling corrected distributions matches this exactly. But why?
+        In the pager below, I show the global rotation fits for sims created with the above procedure but with preliminary RPS-derived angles input into the TOD's and 'obs' angles used during mapmaking. The mean of this distribution is going to be representative of the <i>difference</i> between the RPS-derived angles and the 'obs' angles (which are derived from the CMB and based on pointing only). To estimate what we should expect the mean of alpha to be, I had originally assumed that the mean would depend greatly on the individual weighting of each detector pair in much the same way each pair contributes signal to coadded maps. I found however that this isn't necessarily the case: The uniformly-weighted mean of the difference between RPS-derived and CMB-derived angles for all pairs used in B2018 is $\bar{\phi}_{pair}=-0.778&deg;$. As we can see from the pager below, the mean of the scaling corrected distributions matches this exactly. But why?
     </p>
 
     <figure>
@@ -131,18 +131,18 @@ The goal of this posting is to probe for potential pathologies in fitting angles
         <script type="text/javascript">
             pager.link("#polrothistpager2",
                 {
-                    'Sim Type|sig2': ['2'],//,'3','5','6','7','8'],
+                    //'Sim Type|sig2': ['2'],//,'3','5','6','7','8'],
                     //'Purification Method|pure': ['None|','Matrix|matrix_'],
-                    'Simset|sernum2': ['B2018|6614','B2018+RPS|6606','B2018+0.5deg|6610','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+1deg|6613'],
+                    //'Simset|sernum2': ['B2018|6614','B2018+RPS|6606','B2018+0.5deg|6610','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+1deg|6613'],
                     'Correction|corr': ['Off|','On|_corr'],
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.sernum2+'matrix_'+params.sig+params.corr+'.png';
+                    return 'figs/alpha_hist_6606matrix_2'+params.corr+'.png';
                 });
             pager.setparams({
-                'sig': '2',
+                //'sig': '2',
                 //'pure': 'matrix_',
-                'sernum2': '6606',
+                //'sernum2': '6606',
                 'corr':'_corr',
             });
         </script>
@@ -276,6 +276,7 @@ The goal of this posting is to probe for potential pathologies in fitting angles
             "JBW2016",
             "EWB2016a",
             "EWB2016b",
+            "JBW2017",
             "JAC2022",
         ];
 
@@ -286,6 +287,7 @@ The goal of this posting is to probe for potential pathologies in fitting angles
             "bkcmb/analysis_logbook/analysis/20160907_polrot/",
             "bkcmb/analysis_logbook/analysis/20161103_polrotsims_pager/",
             "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
+            "bkcmb/analysis_logbook/analysis/20170421_global_rotation_bias/",
             "bkcmb/analysis_logbook/analysis/20221213_birefringence_fits_to_B2018/index.html",
 
         ];
@@ -296,6 +298,7 @@ The goal of this posting is to probe for potential pathologies in fitting angles
             "Birefringence/Polarization rotation in K2015 and BK15",
             "Polarization Rotation Sims Pager",
             "Polarization Rotation Sims Global Rotation",
+            "Investigating apparent bias in recovered polarization rotation angles in rotated sims",
             "Uniform Birefringence Analysis I: Global Polarization Rotation Fits on Standard B2018 Sims",
         ];
         // Debug
