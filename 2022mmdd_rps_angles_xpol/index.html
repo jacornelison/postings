@@ -43,81 +43,65 @@
 </p>
 
 <hr>
-
+<!--
+- This is a presentation of the RPS-derived angles
+- These are the schedules we used during the measurement
+- This is how we fit angles
+- These are the angles
+-- phi-pair, phia, phib
+-- compared fiducial
+- This section attempts to understand the uncertainties
+-->
 <section><h2>Introduction</h2>
 
+    <p>
+        ... before committing these to the pipeline, these angles will converted to their final &chi;-angle values via:
+    </p>
+
+    $$\chi = \phi-\theta$$
 </section>
 
-<section><h2>Estimates of A/B Polarization Angles and Cross-Polar Efficiency</h2>
+<section><h2>Estimates of Polarization Angles and Cross-Polar Efficiency</h2>
+    <p>In the pager below, I show this year's polarization angles (in terms of $\phi$, not &chi;) and cross-polar efficiency per channel and per-observation. I include the data I took in 2018 for comparison.</p>
+
+    <figure>
+        <img alt="Name pager" id="phiplotpager" src="#" />
+        <figcaption>
+            Scatter plot of polarization params as a function of GCP Channel number. <b>Top/Middle:</b> Detectors are separated by their orientation along the theta=0 axis. <b>Bottom:</b> subtracted to show orthogonality in the case of $\phi$.
+            The black dashed lines indicate the MCE's.
+            The colors differentiate observations.
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/'+params.val+'_vs_chan_090_'+params.year+'.png';
+            }
+
+            pager.link("#phiplotpager",
+                {
+                    'Y-Axis|val' : ['phi','xpol'],
+                    'Year|year' : ['2018','2022'],
+                },
+                fcn);
+            pager.setparams({
+                'val' : 'phi',
+                'year': '2022',
+            });
+        </script>
+    </figure>
+
+    <p>The data between 2018 and 2022 are very consistent -- the major differences (~0.1deg shift, higher variance) can be well explained by the 2018 data having a bad tiltmeter calibration <a href="CV2021"></a>.
+    Other than that, we have a confirmation that the polarization properties over the years have remained relatively unchanged (even after swapping out a window).
+    </p>
+
+
+</section>
+<section><h2>Uncertainty and Systematics</h2>
+
+
     <p>
 
     </p>
 
-
-    <ul>
-        <li>
-            <b>Obs DK</b> - Observations denoted by the DK at which they were taken.
-        </li>
-        <li>
-        <li>
-            <b>Fit Choice</b> -
-        </li>
-    </ul>
-
-    <p></p>
-    <figure>
-        <img alt="Name pager" id="quiverpager" src="#" />
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            function fcn(params){
-                return 'figs/'+params.dk+'_vs_'+params.dk2+'_'+params.fit+'.png';
-            }
-
-            pager.link("#quiverpager",
-                {
-                    'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],
-                    'Obs DK|dk2' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],
-                    'Fit Choice|fit' : ['Per-Observation|perobs','Per-Rasterset|perrast'],
-                },
-                fcn);
-            pager.setparams({
-                //'fit': 'overall',
-                'dk' : '68_1',
-                'dk2':'0',
-                'fit': 'perobs',
-            });
-        </script>
-    </figure>
-
-    <figure>
-        <img alt="Name pager" id="tppager" src="#" />
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            function fcn(params){
-                return 'figs/abdiff_tileplot_dk'+params.dk+'_'+params.fit+'.png';
-            }
-
-            pager.link("#tppager",
-                {
-                    'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],
-                    'Fit Choice|fit' : ['Per-Observation|perobs','Per-Rasterset|perrast'],
-                },
-                fcn);
-            pager.setparams({
-                //'fit': 'overall',
-                'dk' : '68_1',
-                'fit': 'perobs',
-            });
-        </script>
-    </figure>
-
-
-</section>
-<section><h2>Per-Pair Polarization Estimates</h2>
 
 </section>
 
@@ -125,6 +109,8 @@
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+    <h3>Channel Cuts</h3>
+
     <h3>Footnotes</h3>
     <p>Click on the number to return to the main text.</p>
     <div class="footnote">
@@ -237,6 +223,7 @@
         // Shorthand tags
         var tags = [
             "CAB2012",
+            "CV2021",
         ];
 
         // Links
@@ -244,12 +231,14 @@
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
             "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+            "bicep3/analysis_logbook/20210916_rps_calibration_plan/"
         ];
 
 
         // Posting titles
         var desc = [
             "Pointing Model for Keck Beam Maps",
+            "RPS Summary and Austral Summer 2021/2022 Calibration Plan",
         ];
         // Debug
         var posty = document.getElementById("testp");

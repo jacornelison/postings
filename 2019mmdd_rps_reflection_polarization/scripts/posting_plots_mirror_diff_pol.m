@@ -1,7 +1,10 @@
 function posting_plots_mirror_diff_pol()
 
-
-load('../data/b3rpsfiles.mat')
+postdir = fullfile('C:','Users','James','Documents','GitHub','postings','2019mmdd_rps_reflection_polarization','');
+datadir = fullfile(postdir,'data','');
+figdir = fullfile(postdir,'figs','');
+%load(fullfile(datadir,'b3rpsfiles.mat'))
+load('z:/dev/rps/fpu_data_obs.mat')
 n = 2400;
 k = 2400;
 dk = -180:45:135;
@@ -25,20 +28,23 @@ for dkind = 1:length(dk)
     plot_tiles(vals{valind}(:,dkind),p,'fig',1,'clim',[-1,1]*scales(valind),'title',['dk ' num2str(dk(dkind))],'pair','mean','clab',labels{valind});
     %plot_tiles(vals{valind}(:,dkind),p,'fig',1,'title',['dk ' num2str(dk(dkind))],'pair','mean','clab',labels{valind});
     colormap jet
-    fname = sprintf('../figs/tileplot_%s_dk_%i',names{valind},dk(dkind));
+    fname = sprintf('tileplot_%s_dk_%i',names{valind},dk(dkind));
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
 end
 
 
 plot_tiles(mean(vals{valind},2),p,'fig',1,'clim',[-1,1]*scales(valind),'title','mean','pair','mean','clab',labels{valind});
     colormap jet
-    fname = sprintf('../figs/tileplot_%s_dk_mean',names{valind});
+    fname = sprintf('tileplot_%s_dk_mean',names{valind});
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
 
     
     plot_tiles(mean(vals{valind}(:,1:4),2),p,'fig',1,'clim',[-1,1]*scales(valind),'title','mean 0-135','pair','mean','clab',labels{valind});
     colormap jet
-    fname = sprintf('../figs/tileplot_%s_dk_mean_rps',names{valind});
+    fname = sprintf('tileplot_%s_dk_mean_rps',names{valind});
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
 
 end
@@ -48,19 +54,22 @@ for dkind = 1:length(dk)
     figure(1); clf;
     plot_tiles(phia(:,dkind),p,'fig',1,'clim',[-1,1]*scaling,'title',['dk ' num2str(dk(dkind))],'pair','mean','clab','\phi_a');
     colormap jet
-    fname = sprintf('../figs/tileplot_phia_dk_%i',dk(dkind));
+    fname = sprintf('tileplot_phia_dk_%i',dk(dkind));
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
 end
 
 plot_tiles(mean(phia,2),p,'fig',1,'clim',[-1,1]*scaling,'title',['mean'],'pair','mean','clab','\phi_a');
     colormap jet
-    fname = sprintf('../figs/tileplot_phia_dk_mean');
+    fname = sprintf('tileplot_phia_dk_mean');
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
 
     
     plot_tiles(mean(phia(:,1:4),2),p,'fig',1,'clim',[-1,1]*scaling,'title',['mean 0-135'],'pair','mean','clab','\phi_a');
     colormap jet
-    fname = sprintf('../figs/tileplot_phia_dk_mean_rps');
+    fname = sprintf('tileplot_phia_dk_mean_rps');
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
 
 
@@ -68,17 +77,20 @@ for dkind = 1:length(dk)
     figure(1); clf;
     plot_tiles(phib(:,dkind)-90,p,'fig',1,'clim',[-1,1]*scaling,'title',['dk ' num2str(dk(dkind))],'pair','mean','clab','\phi_b-90');
     colormap jet
-    fname = sprintf('../figs/tileplot_phib_dk_%i',dk(dkind));
+    fname = sprintf('tileplot_phib_dk_%i',dk(dkind));
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
 end
 
 plot_tiles(mean(phib,2)-90,p,'fig',1,'clim',[-1,1]*scaling,'title',['mean'],'pair','mean','clab','\phi_b-90');
     colormap jet
-    fname = sprintf('../figs/tileplot_phib_dk_mean');
+    fname = sprintf('tileplot_phib_dk_mean');
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
 
     
     plot_tiles(mean(phib(:,1:4),2)-90,p,'fig',1,'clim',[-1,1]*scaling,'title',['mean 0-135'],'pair','mean','clab','\phi_b-90');
     colormap jet
-    fname = sprintf('../figs/tileplot_phib_dk_mean_rps');
+    fname = sprintf('tileplot_phib_dk_mean_rps');
+    fname = fullfile(figdir,fname);
     saveas(1,fname,'png')
