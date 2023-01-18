@@ -28,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Analysis II: Polarization Angles</h1>
+    <h1>RPS Analysis: Polarization Angles and Cross-polar responses</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         yyyy Mmm dd
@@ -39,8 +39,34 @@
 <hr>
 
 <p>
-    Abstract
+    Outline:
 </p>
+<ol>
+    <li>Intro</li>
+    <ol type="A">
+        <li>Recap of definitions and parameter estimation</li>
+        <li>Schedule types</li>
+    </ol>
+    <li>Results</li>
+    <ol type="A">
+        <li>phi/eps vs. channel</li>
+        <li>Focal plane averages</li>
+    </ol>
+    <li>Uncertainties & Systematics</li>
+    <ol type="A">
+        <li>Consistency checks</li>
+        <ul>
+            <li>2018 Vs. 2022</li>
+            <li>2022 self-consistency</li>
+        </ul>
+        <li>Cross-checks with Type-9's</li>
+        <ul>
+            <li>Type-9 phi/eps vs. time, DK, N-Rotations, etc</li>
+        </ul>
+    </ol>
+</ol>
+
+
 
 <hr>
 <!--
@@ -54,11 +80,219 @@
 -->
 <section><h2>Introduction</h2>
 
+<h3>RPS Analysis in a nutshell</h3>
+
     <p>
-        ... before committing these to the pipeline, these angles will converted to their final &chi;-angle values via:
+        The general approach to converting the RPS data to estimations on the polarization angles and cross-polar response of a given detector is to done in two parts: fit 2D Gaussians to a rasterstet to derive the amplitudes of a modulation curve and then fit a sinusoidal function to the modulation curve to derive the polarization angle and cross-polar response (see Figure 1.1 below).
+    </p>
+
+    <figure>
+        <img src="figs\spie_mod_curve.png"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+    <p>The Gaussian we fit is done at the timestream level in raw mount coordinates <a href="KWY2007"></a> and is of the form:</p>
+
+    \begin{equation}
+    B(\mathbf{x}) = A e^{(\mathbf{x}-\mathbf{\mu})^T\Sigma^{-1}(\mathbf{x}-\mathbf{\mu})}
+    \end{equation}
+    Where $A$ is the amplitude, $\mathbf{\mu} = (Az_0\,\,El_0)$ is the beam centroid, and
+
+    \begin{equation}
+    \Sigma =
+    \begin{bmatrix} \sigma_{Az}^2& \rho \sigma_{Az} \sigma_{El} \\ \rho \sigma_{Az} \sigma_{El} & \sigma_{El}^2 \end{bmatrix}
+    \end{equation}
+
+    <p>
+        where $(\sigma_{Az},\,\sigma_{El})$ is the beam width, and $\rho$ is the beam ellipticity. The significant difference between this analysis and other analyses involving beams is that we include 13 amplitude parameters to account for each beam in the modulation curve while fitting only a single $Az_0$, $El_0$, $\sigma_{Az}$, $\sigma_{El}$, and $\rho$ parameter across all the beams in a rasterset. This is to mitigate pointing effects from the Roger Effect <a href="RWO2013"></a> and to allow good beam centroid fits for rasters during which the RPS angle is orthogonal to a given detector and the SNR on the beam amplitude is low.
+    </p>
+
+    <p>Once we have our modulation curve, we could fit a sinusoidal function of the form:</p>
+
+    \begin{equation}\label{eq:modcurve}
+    A(\varphi) = G\left(\cos\left(2\left(\varphi+\psi\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\varphi)+n_2\sin(\varphi)+1\right)
+    \end{equation}
+    <p>
+        where $G$ is the detector gain, $\varphi$ is the RPS angle WRT gravity, $\psi$ is the detector polarization angle with respect to the source, $\epsilon$
+        is the detector cross-polar response, and ($n_1,\,n_2$) are nuisance parameters to account for miscollimation of the source rotation axis.
+    </p>
+    <p>
+        The polarization angle $\psi$ in Equation \ref{eq:modcurve} is a relative measurement and is agnostic to the orientation of the focal plane.
+        We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the &theta;=0 axis -- this gives us a set of parameters in cartesian coordinates $(x,\,y,\,\phi_{d})$ which is analogous to the polar set of $(r,\,\theta,\,\chi)$ [See <a href="JAC2019"></a>]. This is done by combining $\psi$ with the angle measured from the telescope's &theta;=0 axis and the RPS's &phi;=0 axis, called $\phi_s$, which is computed through the pointing model.
+    </p>
+    \begin{equation}
+    \phi_d = \psi + \phi_s
+    \end{equation}
+
+    <p>In application, $\phi_s$ is computed for at every RPS angle to account for any polarization projection effects from the mirror<sup><a name="sup2" href="#ftn2">[2]</a></sup>:</p>
+
+
+    \begin{equation}\label{eq:modcurve2}
+    A(\varphi) = G\left(\cos\left(2\left(\varphi+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\varphi)+n_2\sin(\varphi)+1\right)
+    \end{equation}
+
+    <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
+
+    <p><b>Note:</b> Our mainline CMB analysis uses detector polarization angles in terms of &chi; for inputs; I present angles in terms of $\phi_d$ here because these angles are easier to interpret since detectors line up with ~0/90&deg; as opposed to &chi; which has an additional dependence on &theta;.
+        Before committing these to the pipeline, these angles will converted to their final &chi;-angle values via:
     </p>
 
     $$\chi = \phi-\theta$$
+
+    <h4>Pair-Difference Polarization Angles</h4>
+
+    <p>
+        It is also useful to calculate the "pair-difference" polarization angle. In practice, the contribution of the cross-polar response to this angle is very small so the per-pair polarization angle can be approximated by:
+    </p>
+    \begin{equation}
+    \phi_{pair}\sim\frac{\phi_A+\phi_B}{2}
+    \end{equation}
+
+    <p>
+        We first calculate the contribution to Q and U:
+    </p>
+
+    \begin{equation}
+    \begin{split}
+    &Q_{tot} = Q^+-(Q^-)\\
+    &U_{tot} = U^+-(U^-)\\
+    \end{split}
+    \end{equation}
+
+    <p>
+    +Q and -Q have contributions from the polarization response given by the polarization angle and the cross-polar response. The total contribution is a weighted average
+    </p>
+
+    \begin{equation}
+    \begin{split}
+        Q = \frac{( Q^+_A+\epsilon_B Q^+_B)-( Q_B^{-}+\epsilon_B Q^-_A)}{2+\epsilon_A+\epsilon_B}
+    \end{split}
+    \end{equation}
+
+
+    <p>If I orient Q such that +Q is aligned with $\phi_d=0/180^\circ$, I can rewrite </p>
+
+    \begin{equation}
+    \begin{split}
+
+    \end{split}
+    \end{equation}
+
+    <p></p>
+
+    \begin{equation}\label{eq:QU}
+    \begin{split}
+    &Q = \frac{\left[\cos(2\phi_A)+\epsilon_B\cos(2\,(\phi_B+90))\right]-\left[\cos(2\phi_B)+\epsilon_A\cos(2\,(\phi_A+90))\right]}{2+\epsilon_A+\epsilon_B}\\
+    &\\
+    &U = \frac{\left[\sin(2\phi_A)+\epsilon_B\sin(2\phi_B+90)\right]-\left[\sin(2\phi_B)+\epsilon_A\sin(2\phi_A+90)\right]}{2+\epsilon_A+\epsilon_B}\\
+    \end{split}
+    \end{equation}
+
+
+    <p>
+        and the effective per-pair polarization angle $\phi_{pair}$ and polarization efficiency
+     $\epsilon_{pair}$ is simply
+    </p>
+    \begin{equation}\label{eq:phiq}
+    \begin{split}
+    &\phi_{pair} = \frac{1}{2}\tan^{-1}\frac{U}{Q}\\
+    &\\
+    &\epsilon_{pair} = 1-\sqrt{Q^2+U^2}
+    \end{split}
+    \end{equation}
+
+
+    <h3>Schedule Types</h3>
+
+    <figure class="table">
+        <table class="center results">
+            <tr>
+                <th colspan="1">Schedule Type</th>
+                <th colspan="1">Obs. Length (Hrs.)</th>
+                <th colspan="1">Total Time (Hrs.)</th>
+                <th colspan="1">Adjusted Parameter</th>
+                <th colspan="1">Systematics Probed</th>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>13.5</td>
+                <td>420.4</td>
+                <td>None</td>
+                <td>Standard RPS Observations</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>13.6</td>
+                <td>13.6</td>
+                <td>RPS angle -180 to 180 Minus DK angle</td>
+                <td>Importance of nulling mod curve</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>1</td>
+                <td>70.7</td>
+                <td>Target Moon, only one raster</td>
+                <td>Standard Moon Observations</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>0.1</td>
+                <td>0.5</td>
+                <td>No Mount Movement</td>
+                <td>Rotation stage operational checks</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>0.5</td>
+                <td>22.9</td>
+                <td>Quick-turnaround 1&deg;&times;1&deg; single-pair map</td>
+                <td>System stability</td>
+            </tr>
+            <tr>
+                <td>9.1</td>
+                <td>0.3</td>
+                <td>3.5</td>
+                <td>1&deg;&times;1&deg; map, 45&deg; increments</td>
+                <td>&sigma;-Angle vs. Mod Curve Samples</td>
+            </tr>
+            <tr>
+                <td>9.2</td>
+                <td>1.1</td>
+                <td>11.0</td>
+                <td>1&deg;&times;1&deg; map, 10&deg; increments</td>
+                <td>&sigma;-Angle vs. Mod Curve Samples</td>
+            </tr>
+            <tr>
+                <td>9.3</td>
+                <td>0.5</td>
+                <td>4.6</td>
+                <td>1&deg;&times;1&deg; map, No Homing between obs.</td>
+                <td>RPS homing precision</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>3.1</td>
+                <td>9.2</td>
+                <td>RPS fixed & boresight rotated instead</td>
+                <td>Pointing model validation</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>3.2</td>
+                <td>9.2</td>
+                <td>Rasters 27&deg; in Az</td>
+                <td>Short- & long-timescale mirror deformation</td>
+            </tr>
+
+        </table>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+    <p>Type-5 are our standard observations from which pol angles and efficiencies are derived. In previous postings, we used Type-7's and Type-11's to check for systematics in the pointing model. In this posting, we'll be using type-9's to check for systematics in our polarization angle estimates.</p>
 </section>
 
 <section><h2>Estimates of Polarization Angles and Cross-Polar Efficiency</h2>
@@ -220,25 +454,52 @@
         // spuder:  www/~spuder/hieno_analysis_logbook/
         // bicep1:  www/~bicep1/analysis_logbook_north/
 
+
         // Shorthand tags
         var tags = [
+            "KWY2007",
             "CAB2012",
-            "CV2021",
+            "RWO2013",
+            "JBW2018a",
+            "JBW2018b",
+            "JAC2019",
+            "JAC2021",
+            "JAC2022a",
+            "JAC2022b",
+            "JAC2022c",
+            "BS2022",
         ];
 
         // Links
-        // Truncate the link down to the www directory in which it lies if you can.
-        // This ensures that we can view the linked postings at Pole without the internet.
+        // Truncate the link down to the www directory in which is lies if you can.
         var hrefs = [
+            "general_projects/rps/pointing_article.pdf",
             "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-            "bicep3/analysis_logbook/20210916_rps_calibration_plan/"
+            "bkcmb/analysis_logbook/analysis/20130205_polofs_model/",
+            "bkcmb/analysis_logbook/analysis/20181129_B2016_beamcen_yrquarters/",
+            "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
+            "bkcmb/analysis_logbook/analysis/20190516_rps_pointing_defs/",
+            "bkcmb/analysis_logbook/analysis/20210518_bmpm/",
+            "bicep3/analysis_logbook/20220428_mirror_analysis/",
+            "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
+            "bicep3/analysis_logbook/20220816_mirror_analysis_3/",
+            "bkcmb/analysis_logbook/analysis/20220922_B2021_beamcens/"
         ];
 
 
         // Posting titles
         var desc = [
+            "BICEP Pointing Supplement",
             "Pointing Model for Keck Beam Maps",
-            "RPS Summary and Austral Summer 2021/2022 Calibration Plan",
+            "Modeling Polarization-Dependent Beam Offsets",
+            "B2016 per-deck, per-scan direction beam centers for quarter-season data sets",
+            "B2016, B2017, and B2018 CMB-derived beam center correlations",
+            "Pointing Model Definitions for Polarized Beam Mapping",
+            "A New Pointing Model for Beam Mapping",
+            "Deriving Mirror Properties from the Moon",
+            "2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
+            "2022 Moon Analysis III: Moon Phase Correction and Mirror Systematics",
+            "B2021 Beam Centers",
         ];
         // Debug
         var posty = document.getElementById("testp");
