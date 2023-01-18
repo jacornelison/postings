@@ -91,8 +91,9 @@ The goal of this posting is to probe for potential pathologies in fitting angles
         <p>Before we look at the angles, I should note that the default BPWF used by B2018 is "mask_bpwf" instead of "direct_bpwf" and it has been shown in previous analyses <a href="JBW2017"></a> that not using the direct BPWF causes an underestimation of global rotation angles by a constant scaling relation. So we can already expect the distribution of alpha would look identical to "B2018+0deg" in figure 1.1 but with a simple mean offset that is some fraction of the input angle.
     </p>
     <p>
-        I find a scaling relation between the angles by computing the weighted mean of the ratio between average alpha vs. expected weighted by the standard deviation of the distribution. The scaling relations are 0.865, 0.803, and 0.848 for EB, TB, and EB+TB respectively (all &pm;0.006 from the weighted standard deviation).
+        I find a scaling relation between the angles by computing the weighted mean of the ratio between average alpha vs. expected weighted by one over the standard deviation of the distribution. The scaling relations are 0.862, 0.802, and 0.846 for EB, TB, and EB+TB respectively (all &pm;0.007 from the weighted standard deviation).
     </p>
+<!--
     <figure>
         <img alt="Name pager" id="polrothistpager" src="#" onerror=this.src="figs/blank.png" width="85%"/>
         <figcaption>
@@ -117,9 +118,12 @@ The goal of this posting is to probe for potential pathologies in fitting angles
             });
         </script>
     </figure>
-
+-->
     <figure>
         <img src="figs/angle_input_vs_output.png"/>
+        <figcaption>
+            
+        </figcaption>
     </figure>
 
     <h3>RPS-derived Pol-angles</h3>
