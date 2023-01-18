@@ -72,14 +72,15 @@ The goal of this posting is to probe for potential pathologies in fitting angles
                     'Sim Type|sig': ['2'],//,'3','5','6','7','8'],
                     //'Purification Method|pure': ['None|','Matrix|matrix_'],
                     'Simset|sernum': ['B2018|6614','B2018+0deg|6600','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+0.5deg|6610','B2018+1deg|6613'],
-                    'y-axes|axes': ['Fixed|_fixed','Free|_free']
+                    'Fit Compare|fit': ['None|','EB|_EB','TB|_TB','EB+TB|_EB+TB'],
+                    'y-axes|axes': ['Fixed|_fixed','Free|_free'],
                 },
                 function(params) {
-                    return 'figs/aps_'+params.sernum+'_'+'matrix_'+params.sig+params.axes+'.png';
+                    return 'figs/aps_'+params.sernum+'_'+'matrix_'+params.sig+params.axes+params.fit+'.png';
                 });
             pager.setparams({
                 'sig': '2',
-                //'pure': '',
+                'fit': '',
                 'sernum': '6600',
                 'axes': '_fixed',
             });
@@ -115,6 +116,10 @@ The goal of this posting is to probe for potential pathologies in fitting angles
                 'corr':'',
             });
         </script>
+    </figure>
+
+    <figure>
+        <img src="figs/angle_input_vs_output.png"/>
     </figure>
 
     <h3>RPS-derived Pol-angles</h3>
