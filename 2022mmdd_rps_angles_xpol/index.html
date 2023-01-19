@@ -113,10 +113,10 @@
     <p>Once we have our modulation curve, we could fit a sinusoidal function of the form:</p>
 
     \begin{equation}\label{eq:modcurve}
-    A(\varphi) = G\left(\cos\left(2\left(\varphi+\psi\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\varphi)+n_2\sin(\varphi)+1\right)
+    A(\zeta) = G\left(\cos\left(2\left(\zeta+\psi\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\zeta)+n_2\sin(\zeta)+1\right)
     \end{equation}
     <p>
-        where $G$ is the detector gain, $\varphi$ is the RPS angle WRT gravity, $\psi$ is the detector polarization angle with respect to the source, $\epsilon$
+        where $G$ is the detector gain, $\zeta$ is the RPS angle WRT gravity, $\psi$ is the detector polarization angle with respect to the source, $\epsilon$
         is the detector cross-polar response, and ($n_1,\,n_2$) are nuisance parameters to account for miscollimation of the source rotation axis.
     </p>
     <p>
@@ -131,7 +131,7 @@
 
 
     \begin{equation}\label{eq:modcurve2}
-    A(\varphi) = G\left(\cos\left(2\left(\varphi+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\varphi)+n_2\sin(\varphi)+1\right)
+    A(\zeta) = G\left(\cos\left(2\left(\zeta+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\zeta)+n_2\sin(\zeta)+1\right)
     \end{equation}
 
     <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
@@ -140,7 +140,9 @@
         Before committing these to the pipeline, these angles will converted to their final &chi;-angle values via:
     </p>
 
-    $$\chi = \phi-\theta$$
+    \begin{equation}\label{eq:chiangle}
+    \chi = \phi-\theta
+    \end{equation}
 
     <h4>Pair-Difference Polarization Angles</h4>
 
@@ -201,9 +203,10 @@
     \begin{split}
     &\phi_{pair} = \frac{1}{2}\tan^{-1}\frac{S_3}{S_2}\\
     &\\
-    &\epsilon_{pair} = S_1-\sqrt{S_2^2+S_3^2}
+    &\epsilon_{pair} = \frac{\sqrt{S_2^2+S_3^2}}{S_1}
     \end{split}
     \end{equation}
+
 
 
     <h3>Schedule Types</h3>
@@ -300,7 +303,69 @@
     <p>In the pager below, I show this year's polarization angles (in terms of $\phi$, not &chi;) and cross-polar efficiency per channel and per-observation. I include the data I took in 2018 for comparison.</p>
 
     <figure>
-        <img alt="Name pager" id="phiplotpager" src="#" />
+        <img alt="Name pager" id="channelpager" src="#" />
+        <figcaption>
+            Scatter plot of polarization params as a function of GCP Channel number. <b>Top/Middle:</b> Detectors are separated by their orientation along the theta=0 axis. <b>Bottom:</b> subtracted to show orthogonality in the case of $\phi$.
+            The black dashed lines indicate the MCE's.
+            The colors differentiate observations.
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/'+params.val+'_vs_chan_090_2022.png';
+            }
+
+            pager.link("#channelpager",
+                {
+                    'Y-Axis|val' : ['phi','xpol'],
+                    //'Year|year' : ['2018','2022'],
+                },
+                fcn);
+            pager.setparams({
+                'val' : 'phi',
+                //'year': '2022',
+            });
+        </script>
+    </figure>
+
+
+
+    <figure>
+        <img alt="Name pager" id="tileplotpager" src="#" />
+        <figcaption>
+            Scatter plot of polarization params as a function of GCP Channel number. <b>Top/Middle:</b> Detectors are separated by their orientation along the theta=0 axis. <b>Bottom:</b> subtracted to show orthogonality in the case of $\phi$.
+            The black dashed lines indicate the MCE's.
+            The colors differentiate observations.
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/'+params.val+'_tile_plot'+params.ms+'.png';
+            }
+
+            pager.link("#tileplotpager",
+                {
+                    'Y-Axis|val' : ['phi','xpol'],
+                    'Med-Sub|ms' : ['Off|','On|_medsub'],
+                },
+                fcn);
+            pager.setparams({
+                'val' : 'phi',
+                'ms': '',
+            });
+        </script>
+    </figure>
+
+
+</section>
+
+<section><h2>Consistency and Statistical Uncertainty</h2>
+
+    <p>
+        I first take a look at how this dataset compares to the RPS measurements I took back in 2018 and also how it compares to the parameters that were were used for BK18. For the BK18 phis, I just do the reverse of Eq. \ref{eq:chiangle}: $\phi = \chi + \theta_{ref}$ where $\chi$ and $\theta_{ref}$ are <tt>p.chi</tt> and <tt>p.chi_thetaref</tt> from the FP data file respectively.
+    </p>
+
+
+    <figure>
+        <img alt="Name pager" id="channelpager2" src="#" />
         <figcaption>
             Scatter plot of polarization params as a function of GCP Channel number. <b>Top/Middle:</b> Detectors are separated by their orientation along the theta=0 axis. <b>Bottom:</b> subtracted to show orthogonality in the case of $\phi$.
             The black dashed lines indicate the MCE's.
@@ -311,10 +376,10 @@
                 return 'figs/'+params.val+'_vs_chan_090_'+params.year+'.png';
             }
 
-            pager.link("#phiplotpager",
+            pager.link("#channelpager2",
                 {
                     'Y-Axis|val' : ['phi','xpol'],
-                    'Year|year' : ['2018','2022'],
+                    'Year|year' : ['RPS 2018|2018','RPS 2022|2022','B18 FPU Data|exp'],
                 },
                 fcn);
             pager.setparams({
@@ -325,18 +390,8 @@
     </figure>
 
     <p>The data between 2018 and 2022 are very consistent -- the major differences (~0.1deg shift, higher variance) can be well explained by the 2018 data having a bad tiltmeter calibration <a href="CV2021"></a>.
-    Other than that, we have a confirmation that the polarization properties over the years have remained relatively unchanged (even after swapping out a window).
+        Other than that, we have a confirmation that the polarization properties over the years have remained relatively unchanged (even after swapping out a window).
     </p>
-
-
-</section>
-<section><h2>Uncertainty and Systematics</h2>
-
-
-    <p>
-
-    </p>
-
 
 </section>
 
@@ -350,9 +405,9 @@
     <p>Click on the number to return to the main text.</p>
     <div class="footnote">
         <p>
-        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
-        This is a footnote. Click the number to return to main text.
-    </p>
+        <p>
+            <a name="ftn2" href="#sup2">[2]</a>This is strictly speaking in the geometrical sense. I plan to discuss differential reflection of polarization due to the fact that the mirror is aluminum in another posting.
+        </p>
     </div>
     <h3>Code</h3>
     <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>

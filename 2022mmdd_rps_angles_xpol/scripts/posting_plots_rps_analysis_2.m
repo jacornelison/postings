@@ -181,14 +181,19 @@ else
     end
 end
 
+%% Expected pol params from FPU data
+phis_exp = atand(tand(p.chi+p.chi_thetaref))';
+eps_exp = p.epsilon';
+
+[phi_pair_exp, poleff_pair_exp] = deal(NaN(1,2640));
+[phi_pair_exp(ind0), poleff_pair_exp(ind0)] = calc_pair_diff_pol(phis_exp(ind0),phis_exp(ind90),eps_exp(ind0),eps_exp(ind90));
 
 %% Fig 2.1 Angle vs. channel
 
-phi_fiducial = atand(tand(p.chi_thetaref+p.chi));
-yrnames = {'2022','2018'};
-V = {phis, phis_2018};
-V2 = {phi_pair, phi_pair_2018};
-for yearind = 1:2
+yrnames = {'2022','2018','exp'};
+V = {phis, phis_2018, phis_exp};
+V2 = {phi_pair, phi_pair_2018, phi_pair_exp};
+for yearind = 3%1:length(V)
 
 
     fig = figure(21);
@@ -197,7 +202,7 @@ for yearind = 1:2
 
     clc
     cmlines = colormap('lines');
-    for dkind = 1:length(dks)
+    for dkind = 1:size(V{yearind},1)
         X = {ind0, ind90, ind0, ind0};
         Y = {V{yearind}(dkind,ind0), V{yearind}(dkind,ind90), ...
             V{yearind}(dkind,ind0)-V{yearind}(dkind,ind90)+90 ,V2{yearind}(dkind,ind0)};
@@ -234,22 +239,22 @@ end
 
 %% Fig 2.1.2 Xpol vs. channel
 
-yrnames = {'2022','2018'};
-V = {xpols, xpols_2018};
-V2 = {poleff_pair,poleff_pair_2018};
-for yearind = 1:2
+yrnames = {'2022','2018','exp'};
+V = {xpols, xpols_2018,eps_exp};
+V2 = {poleff_pair,poleff_pair_2018,poleff_pair_exp};
+for yearind = 1:length(V)
 
 
-fig = figure(21);
+fig = figure(22);
 fig.Position(3:4) = [900 500];
 clf;
 
 
 cmlines = colormap('lines');
-for dkind = 1:length(dks)
-    X = {ind0, ind90, 1:2640};
-    Y = {V{yearind}(dkind,ind0), V{yearind}(dkind,ind90), V2{yearind}(dkind,:)};
-    ylab = {'\epsilon_0','\epsilon_{90}','POLEFF_{pair}'};
+for dkind = 1:size(V{yearind},1)
+    X = {ind0, ind90, ind0};
+    Y = {V{yearind}(dkind,ind0), V{yearind}(dkind,ind90), V2{yearind}(dkind,ind0)};
+    ylab = {'\epsilon_0','\epsilon_{90}','1-\epsilon_{pair}'};
     ylims = {[-1 1]*0.05, [-1 1]*0.05, [-0.1 2]*0.001};
 
     for pltind = 1:length(X)
@@ -279,6 +284,95 @@ sgtitle('Xpol Vs. Channel')
 fname = sprintf('xpol_vs_chan_090_%s.png',yrnames{yearind});
 saveas(fig,fullfile(figdir,fname))
 end
+
+
+%% Fig. 2.1.3 Averaged tile plots
+
+clc
+for valind = 1:2
+    for pltind = 1:2
+        vals = {nanmean(phi_pair,1) nanmean(poleff_pair,1)};
+        valname = {'phi','xpol'};
+        lims = {[-3.25 -1], [-1 1]*0.25; [0 1]*2e-4, [-1 1]*0.0001};
+        labs = {'\phi_{pair} [Deg]','1-\epsilon_{pair}'};
+        ttls = {'\phi_{pair} Tile Plot','\phi_{pair} Tile Plot - Median Subtracted';...
+            '1-\epsilon_{pair} Tile Plot','1-\epsilon_{pair} Tile Plot - Median Subtracted'};
+        pltname = {'','_medsub'};
+
+
+        fig = figure(22+pltind);
+        fig.Position(3:4) = [900 800];
+        if pltind == 2
+            for tileind = 1:20
+                ind = p.tile==tileind;
+                vals{valind}(ind) = vals{valind}(ind)-nanmedian(vals{valind}(ind));
+            end
+        end
+        vals{valind}(ind90) = 0;
+        plot_tiles(vals{valind},p,'fig',fig,'pair','sum','clim',lims{valind,pltind},'clab',labs{valind},'title',ttls{valind,pltind});
+        colormap(cm)
+        fname = sprintf('%s_tile_plot%s.png',valname{valind},pltname{pltind});
+        saveas(fig,fullfile(figdir,fname))
+        
+    end
+end
+
+%% Figure 3.2.1 Consistency Checks Part 2
+
+clc
+V0 = phi_pair;
+V = {phi_pair,phi_pair_2018,phi_pair_exp};
+lims1 = {[-3.5 -1], [-3.5 -1], [-3.5 -1]};
+lims2 = {[-1 1]*0.4, [-1 1]*0.4 [-1 1]*2};
+ttls = {'2022','2018','B18 FPU Data'};
+
+
+for pltind = 1:length(V)
+    V1ttl = ttls{1};
+    V2ttl = ttls{pltind};
+    if pltind == 1
+        V1 = V0(1:5,:);
+        V2 = V{pltind}(6:10,:);
+        V1ttl = [V1ttl '\_SUB1'];
+        V2ttl = [V2ttl '\_SUB2'];
+    else
+        V1 = V0;
+        V2 = V{pltind};
+    end
+    V1 = nanmean(V1,1);
+    V2 = nanmean(V2,1);
+
+    fig = figure(320+pltind);
+    fig.Position(3:4) = [900 500];
+    clf;
+    
+    subplot(1,2,1)
+    hold on
+    plot(lims1{pltind},lims1{pltind},'k--')
+    scatter(V1,V2,14,cmlines(1,:),'filled')
+    xlim(lims1{pltind})
+    ylim(lims1{pltind})
+    grid on
+
+    subplot(1,2,2)
+    hold on
+    edges = lims2{pltind}(1):diff(lims2{pltind})/30:lims2{pltind}(2);
+    N = histc(V1-V2,edges);
+    b = bar(edges,N,'histc');
+    b.FaceColor = cmlines(1,:);
+    grid on
+    xlim(lims2{pltind})
+    Nchans = length(find(~isnan(V1-V2)));
+    M = nanmean(V1-V2);
+    S = nanstd(V1-V2);
+    title({...
+        sprintf('%s minus %s',V1ttl,V2ttl),...
+        sprintf('M: %0.3f | S: %0.3f | N: %03i',M,S,Nchans)...
+        });
+    
+
+end
+
 
 
 
