@@ -317,27 +317,33 @@ for valind = 1:2
     end
 end
 
-%% Figure 3.2.1 Consistency Checks Part 2
+%% Figure 3.2.1 Consistency Checks Part 2 -- phi
 
 clc
-V0 = phi_pair;
-V = {phi_pair,phi_pair_2018,phi_pair_exp};
-lims1 = {[-3.5 -1], [-3.5 -1], [-3.5 -1]};
-lims2 = {[-1 1]*0.4, [-1 1]*0.4 [-1 1]*2};
+V0 = {phi_pair; poleff_pair};
+V = {phi_pair,phi_pair_2018,phi_pair_exp;...
+    poleff_pair,poleff_pair_2018,poleff_pair_exp};
+lims1 = {[-3.5 -1], [-3.5 -1], [-3.5 -1];...
+    [0 6e-4], [0 6e-4], [0 6e-4]};
+lims2 = {[-1 1]*0.4, [-1 1]*0.4 [-1 1]*2;
+    [-1 1]*0.6e-3,[-1 1]*0.6e-3,[-1 1]*0.6e-3};
 ttls = {'2022','2018','B18 FPU Data'};
+pltnames = {'2022','2018','fpu'};
+valnames = {'phi','xpol'};
 
+for valind = 1:size(V,1)
 
-for pltind = 1:length(V)
+for pltind = 1:size(V,2)
     V1ttl = ttls{1};
     V2ttl = ttls{pltind};
     if pltind == 1
-        V1 = V0(1:5,:);
-        V2 = V{pltind}(6:10,:);
+        V1 = V0{valind}(1:5,:);
+        V2 = V{valind,pltind}(6:10,:);
         V1ttl = [V1ttl '\_SUB1'];
         V2ttl = [V2ttl '\_SUB2'];
     else
-        V1 = V0;
-        V2 = V{pltind};
+        V1 = V0{valind};
+        V2 = V{valind,pltind};
     end
     V1 = nanmean(V1,1);
     V2 = nanmean(V2,1);
@@ -348,20 +354,20 @@ for pltind = 1:length(V)
     
     subplot(1,2,1)
     hold on
-    plot(lims1{pltind},lims1{pltind},'k--')
+    plot(lims1{valind,pltind},lims1{valind,pltind},'k--')
     scatter(V1,V2,14,cmlines(1,:),'filled')
-    xlim(lims1{pltind})
-    ylim(lims1{pltind})
+    xlim(lims1{valind,pltind})
+    ylim(lims1{valind,pltind})
     grid on
 
     subplot(1,2,2)
     hold on
-    edges = lims2{pltind}(1):diff(lims2{pltind})/30:lims2{pltind}(2);
+    edges = lims2{valind,pltind}(1):diff(lims2{valind,pltind})/30:lims2{valind,pltind}(2);
     N = histc(V1-V2,edges);
     b = bar(edges,N,'histc');
     b.FaceColor = cmlines(1,:);
     grid on
-    xlim(lims2{pltind})
+    xlim(lims2{valind,pltind})
     Nchans = length(find(~isnan(V1-V2)));
     M = nanmean(V1-V2);
     S = nanstd(V1-V2);
@@ -370,9 +376,11 @@ for pltind = 1:length(V)
         sprintf('M: %0.3f | S: %0.3f | N: %03i',M,S,Nchans)...
         });
     
+    fname = sprintf('consistplot_%s_2022_vs_%s.png',valnames{valind},pltnames{pltind});
+    saveas(fig,fullfile(figdir,fname))
 
 end
-
+end
 
 
 

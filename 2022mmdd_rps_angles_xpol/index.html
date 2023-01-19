@@ -393,6 +393,31 @@
         Other than that, we have a confirmation that the polarization properties over the years have remained relatively unchanged (even after swapping out a window).
     </p>
 
+
+    <figure>
+        <img alt="Name pager" id="consistpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/consistplot_'+params.val+'_2022_vs_'+params.year2+'.png';
+            }
+
+            pager.link("#consistpager",
+                {
+                    'Comparison|val' : ['phi','xpol'],
+                    'Year|year2' : ['RPS 2018|2018','RPS 2022|2022','B18 FPU Data|fpu'],
+                },
+                fcn);
+            pager.setparams({
+                'val' : 'phi',
+                'year2': '2022',
+            });
+        </script>
+    </figure>
+
+
 </section>
 
 <hr>
