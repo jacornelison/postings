@@ -145,52 +145,53 @@
     <h4>Pair-Difference Polarization Angles</h4>
 
     <p>
-        It is also useful to calculate the "pair-difference" polarization angle. In practice, the contribution of the cross-polar response to this angle is very small so the per-pair polarization angle can be approximated by:
+        It is also useful to calculate the "pair-difference" polarization angle.
+        In practice, the contribution of the cross-polar response to this angle is very small so the per-pair polarization angle can be approximated by:
     </p>
     \begin{equation}
     \phi_{pair}\sim\frac{\phi_A+\phi_B}{2}
     \end{equation}
 
-    <p>
-        We first calculate the contribution to Q and U:
-    </p>
+
+    <p>We start with a Stokes vector aligned with +Q:</p>
 
     \begin{equation}
-    \begin{split}
-    &Q_{tot} = Q^+-(Q^-)\\
-    &U_{tot} = U^+-(U^-)\\
-    \end{split}
+    S =
+    \begin{bmatrix}
+    I \\
+    Q \\
+    U \\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    1 \\
+    1 \\
+    0 \\
+    \end{bmatrix}
     \end{equation}
 
-    <p>
-    +Q and -Q have contributions from the polarization response given by the polarization angle and the cross-polar response. The total contribution is a weighted average
-    </p>
+    <p>and rotate Q into U by the per-detector polarization angle $\phi$</p>
 
     \begin{equation}
-    \begin{split}
-        Q = \frac{( Q^+_A+\epsilon_B Q^+_B)-( Q_B^{-}+\epsilon_B Q^-_A)}{2+\epsilon_A+\epsilon_B}
-    \end{split}
+    S_{rot} = R(\phi)S
     \end{equation}
 
-
-    <p>If I orient Q such that +Q is aligned with $\phi_d=0/180^\circ$, I can rewrite </p>
+    <p>Where R is the rotation matrix</p>
 
     \begin{equation}
-    \begin{split}
-
-    \end{split}
+    R(\phi) =
+    \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & \cos(2\phi) & -\sin(2\phi) \\
+    0 & \sin(2\phi) & \cos(2\phi) \\
+    \end{bmatrix}
     \end{equation}
 
-    <p></p>
+<p>The pair-combined Stokes vector is the sum of the rotated vectors from A and B detectors as well as two additional terms to account for cross-polar response which are orthogonal to their respective A/B terms and scaled by the cross-polar response</p>
 
-    \begin{equation}\label{eq:QU}
-    \begin{split}
-    &Q = \frac{\left[\cos(2\phi_A)+\epsilon_B\cos(2\,(\phi_B+90))\right]-\left[\cos(2\phi_B)+\epsilon_A\cos(2\,(\phi_A+90))\right]}{2+\epsilon_A+\epsilon_B}\\
-    &\\
-    &U = \frac{\left[\sin(2\phi_A)+\epsilon_B\sin(2\phi_B+90)\right]-\left[\sin(2\phi_B)+\epsilon_A\sin(2\phi_A+90)\right]}{2+\epsilon_A+\epsilon_B}\\
-    \end{split}
+    \begin{equation}
+    S_{total} = \left[R(\phi_A)+R(\phi_B+\frac{\pi}{2})+\epsilon_A R(\phi_A+\frac{\pi}{2})+ \epsilon_B R(\phi_B)\right]S
     \end{equation}
-
 
     <p>
         and the effective per-pair polarization angle $\phi_{pair}$ and polarization efficiency
@@ -198,9 +199,9 @@
     </p>
     \begin{equation}\label{eq:phiq}
     \begin{split}
-    &\phi_{pair} = \frac{1}{2}\tan^{-1}\frac{U}{Q}\\
+    &\phi_{pair} = \frac{1}{2}\tan^{-1}\frac{S_3}{S_2}\\
     &\\
-    &\epsilon_{pair} = 1-\sqrt{Q^2+U^2}
+    &\epsilon_{pair} = S_1-\sqrt{S_2^2+S_3^2}
     \end{split}
     \end{equation}
 

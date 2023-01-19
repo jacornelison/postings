@@ -19,8 +19,8 @@ p_ind = coaddopt.ind;
 figdir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_angles_xpol','figs','');
 %% Grab the chis
 
-inda = p_ind.a;
-indb = p_ind.b;
+inda = p_ind.rgl100a;
+indb = p_ind.rgl100b;
 
 ind0 = [p_ind.rgl100a(ismember(p_ind.rgl100a,find(p.mce~=0))) ...
     p_ind.rgl100b(ismember(p_ind.rgl100b,find(p.mce==0)))];
@@ -56,26 +56,25 @@ end
 
 % Calculate pair-diff angles
 % Loop over channels to account for MCE0;
-[phi_pair, poleff_pair, phi_pair_err] = deal(NaN(len,2640));
+[phi_pair, poleff_pair, phi_pair_err,Qpair,Upair] = deal(NaN(len,2640));
 for schind = 1:len
-    for chind = 1:length(inda)
+    for chind = 1:length(ind0)
 
-        pha = phis(schind,inda(chind));
-        phb = phis(schind,indb(chind));
-        ea = xpols(schind,inda(chind));
-        eb = xpols(schind,indb(chind));
+        pha = phis(schind,ind0(chind));
+        phb = phis(schind,ind90(chind));
+        ea = xpols(schind,ind0(chind));
+        eb = xpols(schind,ind90(chind));
 
-        phi_pair_err(schind,inda(chind)) = max(phis_err(schind,[inda(chind) indb(chind)]));
-        if p.mce(inda(chind))~=0
+        phi_pair_err(schind,ind0(chind)) = max(phis_err(schind,[ind0(chind) ind90(chind)]));
 
-            [phi_pair(schind,inda(chind)), poleff_pair(schind,inda(chind))] = calc_pair_diff_pol(pha,phb,ea,eb);
-        else
+            [phi_pair(schind,ind0(chind)), poleff_pair(schind,ind0(chind))] = calc_pair_diff_pol(pha,phb,ea,eb);
+            [Qpair(schind,ind0(chind)),Upair(schind,ind0(chind))] = calc_pair_diff_stokes(pha,phb,ea,eb);
 
-            [phi_pair(schind,inda(chind)), poleff_pair(schind,inda(chind))] = calc_pair_diff_pol(phb,pha,eb,ea);
-        end
 
     end
 end
+
+
 
 % Do the same thing for 2018 data
 
@@ -133,20 +132,20 @@ if 1
     % Loop over channels to account for MCE0;
     [phi_pair_2018, poleff_pair_2018, phi_pair_err_2018] = deal(NaN(len,2640));
     for schind = 1:len
-        for chind = 1:length(inda)
+        for chind = 1:length(ind0)
 
-            pha = phis_2018(schind,inda(chind));
-            phb = phis_2018(schind,indb(chind));
-            ea = xpols_2018(schind,inda(chind));
-            eb = xpols_2018(schind,indb(chind));
+            pha = phis_2018(schind,ind0(chind));
+            phb = phis_2018(schind,ind90(chind));
+            ea = xpols_2018(schind,ind0(chind));
+            eb = xpols_2018(schind,ind90(chind));
 
-            phi_pair_err_2018(schind,inda(chind)) = max(phis_err_2018(schind,[inda(chind) indb(chind)]));
-            if p.mce(inda(chind))~=0
+            phi_pair_err_2018(schind,ind0(chind)) = max(phis_err_2018(schind,[ind0(chind) ind90(chind)]));
+            if p.mce(ind0(chind))~=0
 
-                [phi_pair_2018(schind,inda(chind)), poleff_pair_2018(schind,inda(chind))] = calc_pair_diff_pol(pha,phb,ea,eb);
+                [phi_pair_2018(schind,ind0(chind)), poleff_pair_2018(schind,ind0(chind))] = calc_pair_diff_pol(pha,phb,ea,eb);
             else
 
-                [phi_pair_2018(schind,inda(chind)), poleff_pair_2018(schind,inda(chind))] = calc_pair_diff_pol(phb,pha,eb,ea);
+                [phi_pair_2018(schind,ind0(chind)), poleff_pair_2018(schind,ind0(chind))] = calc_pair_diff_pol(phb,pha,eb,ea);
             end
 
 
@@ -192,43 +191,44 @@ V2 = {phi_pair, phi_pair_2018};
 for yearind = 1:2
 
 
-fig = figure(21);
-fig.Position(3:4) = [900 500];
-clf;
+    fig = figure(21);
+    fig.Position(3:4) = [900 500];
+    clf;
 
-clc
-cmlines = colormap('lines');
-for dkind = 1:length(dks)
-    X = {ind0, ind90, 1:2640};
-    Y = {V{yearind}(dkind,ind0), V{yearind}(dkind,ind90), V2{yearind}(dkind,:)};
-    ylab = {'\phi_0','\phi_{90}','\phi_{pair}'};
-    ylims = {[-5 1], [85 91], [-5 1]};
+    clc
+    cmlines = colormap('lines');
+    for dkind = 1:length(dks)
+        X = {ind0, ind90, ind0, ind0};
+        Y = {V{yearind}(dkind,ind0), V{yearind}(dkind,ind90), ...
+            V{yearind}(dkind,ind0)-V{yearind}(dkind,ind90)+90 ,V2{yearind}(dkind,ind0)};
+        ylab = {'\phi_0','\phi_{90}','\phi_0-\phi_{90}+90','\phi_{pair}'};
+        ylims = {[-5 1], [85 91], [-3 3],[-5 1]};
 
-    for pltind = 1:length(X)
-
-
-        subplot(3,1,pltind)
-        hold on
+        for pltind = 1:length(X)
 
 
+            subplot(length(X),1,pltind)
+            hold on
 
-        plot(X{pltind},Y{pltind},'.','Color',cmlines(dkind,:))
-        grid on
-        ylabel([ylab{pltind} ' [Degrees]'])
 
-        for mceind = 0:3
-            chind = max(find(p.mce==mceind));
-            plot([1 1]*chind,ylims{pltind},'k--')
+
+            plot(X{pltind},Y{pltind},'.','Color',cmlines(dkind,:))
+            grid on
+            ylabel([ylab{pltind} ' [Degrees]'])
+
+            for mceind = 0:3
+                chind = max(find(p.mce==mceind));
+                plot([1 1]*chind,ylims{pltind},'k--')
+            end
+            ylim(ylims{pltind})
+            xlim([-50 2700])
         end
-        ylim(ylims{pltind})
-        xlim([-50 2700])
-    end
 
-end
-xlabel('Channel Number')
-sgtitle('Angles Vs. Channel')
-fname = sprintf('phi_vs_chan_090_%s.png',yrnames{yearind});
-saveas(fig,fullfile(figdir,fname))
+    end
+    xlabel('Channel Number')
+    sgtitle('Angles Vs. Channel')
+    fname = sprintf('phi_vs_chan_090_%s.png',yrnames{yearind});
+    saveas(fig,fullfile(figdir,fname))
 end
 
 
@@ -279,10 +279,6 @@ sgtitle('Xpol Vs. Channel')
 fname = sprintf('xpol_vs_chan_090_%s.png',yrnames{yearind});
 saveas(fig,fullfile(figdir,fname))
 end
-
-
-
-
 
 
 
