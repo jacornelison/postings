@@ -181,14 +181,22 @@
 <section>
     <h2>Calibrating the Reference Surface Angle WRT Gravity</h2>
 <p>
-We determine the orientation of the reference surface to gravity using a high-precision tilt meter.
+We determine the orientation of the reference surface to gravity using a high-precision tilt meter. The tilt meter and the rotation stage are fixed to the same aluminum base plate such that any rotation of the reference surface along the rotation axis of the wire grid is accurately captured in the tilt readout. We calibrate the gain and tilt-zero of the tilt meter using a machinist's bubble level before installing the RPS on the mast. We record the tilt meter output throughout the observation campaign so that was can correct for fluctuations in tilt during the analysis.
 </p>
 
-    <h3>Calibration</h3>
+    <h3>Tilt Meter Calibration</h3>
     <p>
-
+        We calibrate the tilt meter using a Starrett No.98 bubble level which has a precision of ~0.001&deg;. The bubble level is placed on the reference surface
     </p>
-    <h3>Real-Time Monitoring</h3>
+
+    <figure>
+        <img src="figs/tilt_cal.png" width="60%"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <h3>Real-Time Tilt Monitoring</h3>
     <p>
         During the RPS observations, I recorded the output of the tilt meter using a Labjack in order to monitor and correct for any changes in the orientation of the RPS as detected by the tilt meter. In the figure below, I show the output of the tilt meter during RPS observations with two very different weather conditions:
     </p>
@@ -203,7 +211,7 @@ We determine the orientation of the reference surface to gravity using a high-pr
                 pager.link("#monitorpager",
                     {
                         //'Measurement|meas': ['No Homing, No fine sw.|009','With homing, No fine sw.|011','Added Fine Homing sw|022','Post RPS obs|023'],
-                        'Day|day':  ['59583','59587'],
+                        'Day|day':  ['Sunny|59583','Cloudy|59587'],
 
                  },
                     function(params) {
@@ -215,9 +223,15 @@ We determine the orientation of the reference surface to gravity using a high-pr
             </script>
         </figure>
 
-    <p>
-        In another posting, I will show the improvements to the overall scatter in the per-detetor polarization angle estimates with and without tilt correction.
-    </p>
+    <h3>Tilt Correction</h3>
+
+    <figure>
+        <img src="figs/tilt_corr_hist.png" />
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
 
 </section>
 <section>
@@ -225,85 +239,6 @@ We determine the orientation of the reference surface to gravity using a high-pr
 
 </section>
 
-
-<!--<section>-->
-<!--    <h2>Cross Checks</h2>-->
-<!--    <h3>In-Situ Absolute Angle Checker (ISAAC)</h3>-->
-<!--    <h3>Diffraction Pattern Measurements</h3>-->
-
-<!--</section>-->
-
-
-<!--
-Example codes
-<figure class="table">
-    <table class="results">
-        <tr>
-            <th>Schedule</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>DK</th>
-        </tr>
-        <tr>
-            <td>8_ffflat_moonraster_28_dk000_001.sch</td>
-            <td>170121 22:29:58</td>
-            <td>170121 23:25:36</td>
-            <td>0</td>
-        </tr>
-        <tr>
-            <td>8_ffflat_moonraster_28_dk045_001.sch</td>
-            <td>170121 23:26:36</td>
-            <td>170122 00:20:45</td>
-            <td>45</td>
-        </tr>
-        <tr>
-            <td>8_ffflat_moonraster_28_dk090_001.sch</td>
-            <td>170122 00:36:46</td>
-            <td>170122 01:31:05</td>
-            <td>90</td>
-        </tr>
-
-    </table>
-<figcaption>
-    Example results table
-</figcaption>
-</figure>
-<p>
-Example equation:
-</p>
-
-\begin{equation}
-x_0 = 2 \sin(r_0/2) \cos(\theta_0)\\
-y_0 = 2 \sin(r_0/2) \sin(\theta_0)
-\end{equation}
-
-
-<p>An example footnote<sup><a href="#ftn1">1</a></sup> and reference citation <a href="CAB2012"></a>.</p>
-  <p>
-Example pager:
-</p>
-<figure>
-    <img alt="Name pager" id="namepager" src="#" width="65%"/>
-    <figcaption>
-        Example pager
-    </figcaption>
-    <script type="text/javascript">
-        pager.link("#namepager",
-            {
-                'Select A|a': ['Yesname|yesparam', 'No|no'],
-                'Select B|b': ['One|1','Two|2'],
-            },
-            function(params) {
-                return 'figs/plot_param1_'+params.a+'_param2_'+params.b+'.png';
-            });
-        pager.setparams({
-            'a': 'no',
-            'b': '1',
-        });
-    </script>
-</figure>
-
--->
 
 
 <hr>

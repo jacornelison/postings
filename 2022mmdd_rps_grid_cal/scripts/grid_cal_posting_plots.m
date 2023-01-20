@@ -99,6 +99,27 @@ end
 parm_mean = mean(parms,1);
 parm_std = std(parms,[],1);
 
+%% Plot the Tilt Calibration
+clc
+fig = figure(31);
+fig.Position(3:4) = [500 400];
+clf; hold on;
+
+lims = [-1 1]*0.25;
+plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'.')
+plot(lims,polyval(rps_tilt_cals_all{end} ,lims),'k')
+xlim(lims)
+
+grid on
+xlabel('Tilt Meter Output [V]')
+ylabel('Starrett Level Angle [Degrees]')
+text(-0.23,0.04,{'Tilt Calibration:',...
+    sprintf('Slope [Deg/V]: %0.2f +/- %0.2f',rps_tilt_cals_all{end}(1),parm_std(1)),...
+    sprintf('Offset [Deg]: %0.3f +/- %0.3f',rps_tilt_cals_all{end}(2),parm_std(2))})
+ylim([-0.06 0.06])
+title('Tilt Meter Calibration')
+fname = 'tilt_cal.png';
+saveas(fig,fullfile(figdir,fname))
 
 %% Grab two days and plot them
 
@@ -142,7 +163,7 @@ Tday = (ljd.time-floor(ljd.time))*24;
 clc
 for dayind = 1:length(days)
 
-    fig = figure(3);
+    fig = figure(32);
     fig.Position(3:4) = [750 300];
     clf;
     subplot(2,1,1)
