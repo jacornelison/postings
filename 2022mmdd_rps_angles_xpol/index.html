@@ -151,7 +151,7 @@
         In practice, the contribution of the cross-polar response to this angle is very small so the per-pair polarization angle can be approximated by:
     </p>
     \begin{equation}
-    \phi_{pair}\sim\frac{\phi_A+\phi_B}{2}
+    \phi_{pair}\sim\frac{\phi_A+\phi_B-90}{2}
     \end{equation}
 
 
@@ -189,7 +189,7 @@
     \end{bmatrix}
     \end{equation}
 
-<p>The pair-combined Stokes vector is the sum of the rotated vectors from A and B detectors as well as two additional terms to account for cross-polar response which are orthogonal to their respective A/B terms and scaled by the cross-polar response</p>
+<p>The pair-combined Stokes vector is the sum of the rotated vectors from A and B detectors as well as two additional terms to account for cross-polar response which are orthogonal to their respective A/B terms and scaled by $\epsilon$</p>
 
     \begin{equation}
     S_{total} = \left[R(\phi_A)+R(\phi_B+\frac{\pi}{2})+\epsilon_A R(\phi_A+\frac{\pi}{2})+ \epsilon_B R(\phi_B)\right]S
@@ -416,6 +416,41 @@
             });
         </script>
     </figure>
+
+
+</section>
+
+<section>
+    <h2>Systematics</h2>
+
+    <figure>
+        <img alt="Name pager" id="scatterpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/scatter_'+params.val+'_'+params.y+'_vs_'+params.x+'.png';
+            }
+
+            pager.link("#scatterpager",
+                {
+                    'Comparison|val' : ['phi','xpol'],
+                    'Y|y': ['A|a','B|b','Diff|p'],
+                    'X|x' : ['t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y',
+                        'xm','ym','r','theta','thetam'],
+                },
+                fcn);
+            pager.setparams({
+                'val' : 'phi',
+                'y': 'a',
+                'x': 't',
+            });
+        </script>
+    </figure>
+
+    <h3>Cross Checks with Type-9 Schedules</h3>
+
 
 
 </section>

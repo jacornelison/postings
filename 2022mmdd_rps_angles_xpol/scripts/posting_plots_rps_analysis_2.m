@@ -3,6 +3,13 @@ function posting_plots_rps_analysis_2()
 %%
 clear all
 close all
+
+% Load Type 9 data
+% Load type 9 data
+load('z:/dev/rps/type9_fit_dat_mirrorfitted_cut.mat')
+load('z:/dev/rps/sch_type9.mat')
+fd_type9 = fd;
+
 % Load 2018 data
 load('z:/dev/rps/rps_beam_fits_cut_2018.mat')
 fd.xpol = fd.aparam(:,2);
@@ -181,7 +188,7 @@ else
     end
 end
 
-%% Expected pol params from FPU data
+% Expected pol params from FPU data
 phis_exp = atand(tand(p.chi+p.chi_thetaref))';
 eps_exp = p.epsilon';
 
@@ -193,7 +200,7 @@ eps_exp = p.epsilon';
 yrnames = {'2022','2018','exp'};
 V = {phis, phis_2018, phis_exp};
 V2 = {phi_pair, phi_pair_2018, phi_pair_exp};
-for yearind = 3%1:length(V)
+for yearind = 1:length(V)
 
 
     fig = figure(21);
@@ -317,7 +324,25 @@ for valind = 1:2
     end
 end
 
-%% Figure 3.2.1 Consistency Checks Part 2 -- phi
+%% Find the maximum STD for 2022 data subsets
+
+Niter = 1000;
+
+[M, S, N] = deal(NaN(Niter,1));
+idx = NaN(Niter,5);
+for iterind = 1:Niter
+    ind1 = randperm(10,5);
+    ind2 = find(~ismember(1:10,ind1));
+    
+    Vdiff = nanmean(phi_pair(ind1,:),1)-nanmean(phi_pair(ind2,:),1);
+    M(iterind) = nanmean(Vdiff);
+    S(iterind) = nanstd(Vdiff);
+    N(iterind) = length(find(~isnan(Vdiff)));
+    idx(iterind,:) = ind1;
+end
+
+
+%% Figure 3.2.1 Consistency Checks Part 2 
 
 clc
 V0 = {phi_pair; poleff_pair};
@@ -331,14 +356,16 @@ ttls = {'2022','2018','B18 FPU Data'};
 pltnames = {'2022','2018','fpu'};
 valnames = {'phi','xpol'};
 
-for valind = 1:size(V,1)
+for valind = 1%1:size(V,1)
 
-for pltind = 1:size(V,2)
+for pltind = 1%1:size(V,2)
     V1ttl = ttls{1};
     V2ttl = ttls{pltind};
     if pltind == 1
-        V1 = V0{valind}(1:5,:);
-        V2 = V{valind,pltind}(6:10,:);
+        ind1 = [9 8 5 6 10];
+        ind2 = find(~ismember(1:10,ind1));
+        V1 = V0{valind}(ind1,:);
+        V2 = V{valind,pltind}(ind2,:);
         V1ttl = [V1ttl '\_SUB1'];
         V2ttl = [V2ttl '\_SUB2'];
     else
@@ -381,6 +408,126 @@ for pltind = 1:size(V,2)
 
 end
 end
+
+%% Type 9 schedules
+
+% Load type 9 data
+load('z:/dev/rps/sch_type9.mat')
+
+clc
+% Collate each schedule into phi_pair
+unqsch = unique(fd_type9.schnum);
+[phi_pair_type9, poleff_pair_type9, nrots, dks, times] = deal(NaN(length(unqsch),1));
+for schind = 1:length(unqsch)
+    inda = find(fd_type9.schnum==unqsch(schind) & fd_type9.ch==696);
+    indb = find(fd_type9.schnum==unqsch(schind) & fd_type9.ch==697);
+    
+    if ~isempty(inda) & ~isempty(indb)
+    [phi_pair_type9(schind), poleff_pair_type9(schind)] = calc_pair_diff_pol(fd_type9.phi(inda),fd_type9.phi(indb),fd_type9.xpol(inda),fd_type9.xpol(indb));
+    nrots(schind) = fd_type9.nrots(inda);
+    dks(schind) = fd_type9.dk_cen(inda);
+    times(schind) = fd_type9.time(inda);
+    end
+
+end
+
+
+%% We need some extra stuff for the next section
+% Grab time, obs number, and phi_pair in the structure
+load('z:/dev/rps/sch_type5.mat')
+
+clc
+[fd.t, fd.obsnum,fd.phi_pair, fd.poleff,fd.r,fd.theta,fd.xm,fd.ym,fd.thetam] = deal(NaN(size(fd.ch)));
+for chind = 1:length(fd.ch)
+    s = sch{fd.schnum(chind)};
+    idx = s.index(fd.rowind(chind),1);
+    fd.t(chind) = s.scans(idx).t1;
+
+    % Obs Number
+    for schind = 1:length(scheds)
+        if ismember(fd.schnum(chind),scheds{schind})
+            fd.obsnum(chind) = schind;
+        end
+    end
+
+    % Phi/poleff pair
+    isind0 = find(ismember(ind0,fd.ch(chind)));
+    if ~isempty(isind0)
+        has90 = find(fd.schnum == fd.schnum(chind) & fd.rowind==fd.rowind(chind) & fd.ch == ind90(isind0));
+        if ~isempty(has90)
+            [fd.phi_pair(chind) fd.poleff(chind)] = calc_pair_diff_pol(fd.phi(chind),...
+                nanmean(fd.phi(has90)),fd.xpol(chind),nanmean(fd.xpol(has90)));
+        end
+    end
+
+    
+end
+
+%% Mirror coords
+    [fd.theta, fd.r] = cart2pol(fd.x,fd.y);
+    fd.theta = wrapTo360(fd.theta*180/pi);
+    fd.thetam = wrapTo360(fd.theta-fd.dk_cen);
+    [fd.xm, fd.ym] = pol2cart(fd.thetam*pi/180,fd.r);
+
+%% Grab the moon-sun angles
+% MJD, , ,raapp,decapp
+fname = fullfile('z:/dev/sun_check_2022Aug12.txt');
+f = fopen(fname);
+hd_sun = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',60);
+hd_sun{1} = hd_sun{1}-2400000.5;
+fclose(f);
+%fd.az_cen_sun = interp1(hd_sun{1},hd_sun{4},fd.t_cen);
+fd.az_cen_sun = wrapTo180(interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t));
+fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t);
+
+%
+clc
+% MJD, , ,raapp,decapp
+fname = fullfile('z:/dev/moon_check_2022Aug12.txt');
+f = fopen(fname);
+hd_moon = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',61);
+hd_moon{1} = hd_moon{1}-2400000.5;
+fclose(f);
+%fd.az_cen_moon = interp1(hd_moon{1},hd_moon{4},fd.t_cen);
+fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
+fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
+
+%% phi vs. other stuff
+
+fd.az_cen = wrapTo360(fd.az_cen);
+
+clc
+Y = {'phi', 'phi','phi_pair';
+    'xpol','xpol','poleff'};
+yidx = {ismember(fd.ch,ind0), ismember(fd.ch,ind90), ismember(fd.ch,ind0)};
+ynames = {'phi_a','phi_b','phi_p';...
+    'xpol_a','xpol_b','xpol_p'};
+yttls = {'Pol A','Pol B','Pair-Diff'};
+ylims = {[-4.5 0], [-4.5 0]+90, [-4.5 0];...
+    [-1 1]*0.02,[-1 1]*0.02, [-1 10]*1e-4};
+
+X = {'t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y','xm','ym','r','theta','thetam'};
+
+fig = figure(51);
+fig.Position(3:4) = [900 400];
+clf
+
+for valind = 1:size(Y,1)
+for yind = 1:size(Y,2)
+
+    for xind = 1:length(X)
+        
+        scatter(fd.(X{xind})(yidx{yind}),fd.(Y{valind,yind})(yidx{yind}),14,fd.obsnum(yidx{yind}),'filled')
+        grid on
+        xlabel(X{xind})
+        ylabel(Y{valind,yind})
+        ylim(ylims{valind,yind})
+        fname = sprintf('scatter_%s_vs_%s.png',ynames{valind,yind},X{xind});
+        saveas(fig,fullfile(figdir,fname))
+    end
+end
+end
+
 
 
 
