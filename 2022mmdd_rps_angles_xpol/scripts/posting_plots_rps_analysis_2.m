@@ -24,6 +24,8 @@ load('z:/pipeline/beammap/viridis_cm.mat')
 load('z:/dev/sims/coaddopt_6600.mat')
 p_ind = coaddopt.ind;
 figdir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_angles_xpol','figs','');
+
+cmlines = colormap('lines');
 %% Grab the chis
 
 inda = p_ind.rgl100a;
@@ -362,7 +364,7 @@ for pltind = 1%1:size(V,2)
     V1ttl = ttls{1};
     V2ttl = ttls{pltind};
     if pltind == 1
-        ind1 = [9 8 5 6 10];
+        ind1 = [3 8 7 5 2];
         ind2 = find(~ismember(1:10,ind1));
         V1 = V0{valind}(ind1,:);
         V2 = V{valind,pltind}(ind2,:);
@@ -400,7 +402,7 @@ for pltind = 1%1:size(V,2)
     S = nanstd(V1-V2);
     title({...
         sprintf('%s minus %s',V1ttl,V2ttl),...
-        sprintf('M: %0.3f | S: %0.3f | N: %03i',M,S,Nchans)...
+        sprintf('M: %0.3f | S: %0.3f | N: %03i | EOM: %0.3f',M,S,Nchans,S./sqrt(Nchans))...
         });
     
     fname = sprintf('consistplot_%s_2022_vs_%s.png',valnames{valind},pltnames{pltind});

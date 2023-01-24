@@ -93,7 +93,7 @@
             <!--<li>The angle of the grid is $tan^{-1} \left(\frac{\text{wires travelled}\times\text{wire pitch}}{\text{stage distance travelled}}\right)$ </li>-->
         </ul>
 
-        <li>Optional: Manually adjust the wire grid orientation such that the wires align with the home angle.</li>
+
     </ol>
 
     <p>Before the RPS went on the mast in late December, I zeroed the RPS grid to the homing position and measured the grid angle to be 0.004&deg;. When we brought the RPS down from the mast in late January, I had less that 24 hours before I was supposed to leave Pole and so opted to use the ISAAC to double check the health of the stage before packing up (more on that later). I disassembled and packed the RPS in such a way that I could repeat the bridgeport measurements when I returned to the states.
@@ -112,7 +112,7 @@
     <p>I determine the homing repeatability of the stage by commanding the RPS to -180&deg;, then to 180&deg; and then homing again, recording the angle at each homing. Before the RPS went on the mast in late December, I measured the the grid angle to be to be centered at 0.004&deg; with a 1&sigma; standard deviation of 0.0002&deg; (Left plot of Figure 1.1).
     </p>
     <p>
-        After assembling the RPS and ISAAC here in the lab and doing a number of measurements, I re-measured the homing repeatability, this time recording both angles due to the backlash (see right plot of Figure 1.1).
+        After assembling the RPS here in the lab and doing a number of measurements, I re-measured the homing repeatability, this time recording both angles due to the backlash (see right plot of Figure 1.1).
     </p>
 
 
@@ -122,59 +122,6 @@
 
     </figcaption>
 </figure>
-
-<!--    <table>-->
-<!--        <tr>-->
-<!--            <th>Grid Angle</th>-->
-<!--            <th>Knob Angle</th>-->
-<!--        </tr>-->
-<!--    </table>-->
-
-<!--    <h3>Independent Cross-Checks with the ISAAC</h3>-->
-
-
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="isaacpager" src="#" width="100%"/>-->
-<!--        <figcaption>-->
-<!--            Example pager-->
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-
-<!--            var vstart = 35;-->
-<!--            var vallist2 = new Array(vstart);-->
-<!--            for (var ii=0; ii<=vstart-1; ++ii) {-->
-<!--                vallist2[ii] = ii+6;-->
-
-<!--            }-->
-
-<!--            var valopt2 = new Pager.DataList(vallist2);-->
-<!--            valopt2.toString = function() {-->
-<!--                var val = this.list[this.idx].toString();-->
-<!--                while (val.length < 3) { val = "0"+val; }-->
-<!--                return val;-->
-<!--            }-->
-<!--            valopt2.fromString = function(val) {-->
-<!--                return parseInt(val);-->
-<!--            }-->
-
-<!--            pager.link("#isaacpager",-->
-<!--                {-->
-<!--                    //'Measurement|meas': ['No Homing, No fine sw.|009','With homing, No fine sw.|011','Added Fine Homing sw|022','Post RPS obs|023'],-->
-<!--                    'Measurement|meas':  valopt2,-->
-<!--                    'Fitter|fittype': ['fmin','lsq','complex'],-->
-<!--                    'Weight|wgt': ['Uniform|_uniform', 'Threshold|_threshold','1/Amp|_one_on_r'],-->
-<!--             },-->
-<!--                function(params) {-->
-<!--                    return 'figs/isaac_cal_'+params.meas+params.wgt+'_'+params.fittype+'.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                'wgt': '_uniform',-->
-<!--                'fittype': 'fmin',-->
-<!--                'meas':'009'-->
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
-
 
 </section>
 
@@ -186,7 +133,7 @@ We determine the orientation of the reference surface to gravity using a high-pr
 
     <h3>Tilt Meter Calibration</h3>
     <p>
-        We calibrate the tilt meter using a Starrett No.98 bubble level which has a precision of ~0.001&deg;. The bubble level is placed on the reference surface
+        We calibrate the tilt meter using a Starrett No.98 bubble level which has a precision of ~0.001&deg;. The bubble level is placed on the reference surface and the RPS is tilted by placing shims under the aluminum baseplate on one side. The tick marks on the level and the voltage reading from the tilt meter are recorded for a number of angles in either direction. The width of the bubble in the level is smaller than the width of the tick marks, so I account errors in the calibration by reading out the tilt meter with the bubble at both tick marks. In the figure below, we can see that the calibration error is quite small with uncertainties of 0.01&deg;/V and 0.001&deg; for the gain and tilt-zero respectively.
     </p>
 
     <figure>
@@ -224,7 +171,9 @@ We determine the orientation of the reference surface to gravity using a high-pr
         </figure>
 
     <h3>Tilt Correction</h3>
-
+    <p>
+        When computing the polarization angles, we account for the tilt by subtracting it from the rotation stage angle at every command angle. In the image below, I show histograms of the per-pair polarization angles with the per-pair median angle subtracted so that only the scatter on the angles is presented. We can see that the tilt correction improves the standard deviation of the distribution by ~0.014&deg;.
+    </p>
     <figure>
         <img src="figs/tilt_corr_hist.png" />
         <figcaption>
