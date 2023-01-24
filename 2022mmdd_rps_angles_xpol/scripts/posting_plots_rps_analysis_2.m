@@ -348,23 +348,30 @@ end
 
 clc
 V0 = {phi_pair; poleff_pair};
-V = {phi_pair,phi_pair_2018,phi_pair_exp;...
-    poleff_pair,poleff_pair_2018,poleff_pair_exp};
-lims1 = {[-3.5 -1], [-3.5 -1], [-3.5 -1];...
-    [0 6e-4], [0 6e-4], [0 6e-4]};
-lims2 = {[-1 1]*0.4, [-1 1]*0.4 [-1 1]*2;
-    [-1 1]*0.6e-3,[-1 1]*0.6e-3,[-1 1]*0.6e-3};
-ttls = {'2022','2018','B18 FPU Data'};
-pltnames = {'2022','2018','fpu'};
+V = {phi_pair,phi_pair,phi_pair_2018,phi_pair_exp;...
+    poleff_pair,poleff_pair,poleff_pair_2018,poleff_pair_exp};
+lims1 = {[-3.5 -1], [-3.5 -1], [-3.5 -1], [-3.5 -1];...
+    [0 6e-4], [0 6e-4], [0 6e-4], [0 6e-4]};
+lims2 = {[-1 1]*0.4,[-1 1]*0.4, [-1 1]*0.4, [-1 1]*2;
+    [-1 1]*0.6e-3,[-1 1]*0.6e-3,[-1 1]*0.6e-3,[-1 1]*0.6e-3};
+ttls = {'2022','2022','2018','B18 FPU Data'};
+pltnames = {'2022_min','2022_max','2018','fpu'};
 valnames = {'phi','xpol'};
 
-for valind = 1%1:size(V,1)
+for valind = 1:size(V,1)
 
-for pltind = 1%1:size(V,2)
+for pltind = 1:size(V,2)
     V1ttl = ttls{1};
     V2ttl = ttls{pltind};
     if pltind == 1
-        ind1 = [3 8 7 5 2];
+        ind1 = [10 8 3 1 2];
+        ind2 = find(~ismember(1:10,ind1));
+        V1 = V0{valind}(ind1,:);
+        V2 = V{valind,pltind}(ind2,:);
+        V1ttl = [V1ttl '\_SUB1'];
+        V2ttl = [V2ttl '\_SUB2'];
+    elseif pltind == 2
+        ind1 = [5 2 7 6 1];
         ind2 = find(~ismember(1:10,ind1));
         V1 = V0{valind}(ind1,:);
         V2 = V{valind,pltind}(ind2,:);

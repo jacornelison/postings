@@ -391,7 +391,7 @@
 
 <p>We already have a qualitative confirmation that the polarization properties over the years have remained relatively unchanged (even after swapping out a window).</p>
 
-    <p>The pager below shows direct comparisons between the 2018, 2022, and the B18 FPU 'obs' data. For 2018 vs. 2022, I compare the years per-pair where the pairs are averaged over all 4 observations for 2018 and all 10 observations for 2022. For 2022 vs. B18 FPU Data, the 2022 data is averaged over all 10 observations. For 2022 vs. 2022, I compare the averages of two subsets of 5 observations each where the 5 observations for a given subset were selected at random with no repeating observations between the two sets.</p>
+    <p>The pager below shows direct comparisons between the 2018, and the B18 FPU 'obs' data. For 2018 vs. 2022, I compare the years per-pair where the pairs are averaged over all 4 observations for 2018 and all 10 observations for 2022. For 2022 vs. B18 FPU Data, the 2022 data is averaged over all 10 observations. For 2022 vs. 2022, I compare the averages of two subsets of 5 observations each where the 5 observations for a given subset were selected at random with no repeating observations between the two sets.</p>
 
     <figure>
         <img alt="Name pager" id="consistpager" src="#" />
@@ -422,47 +422,74 @@
 
     <p>For 2022 vs. B18, we see an offset of -0.778 degrees. In another posting where I create Pol Rot sims of B2018 CMB data <a href="JAC2023"></a>, we can see that this matches the angle that we'd naively expect given a mismatch between the actual angles and the angles we use to create our CMB maps<sup><a name="sup3" href="#ftn3">[3]</a></sup>.</p>
 
-    <p>For 2022 vs. 2022, we can see that the mean deviates from zero at a level that is significant compared to the error on the mean.</p>
+<h3>Self-consistency</h3>
+    <p>I compare the 2022 data with itself by splitting the observations into two different subsets and comparing them to each other. I choose two different subsets to compare to. The first set, "Min", I find the permutation set which minimizes the mean in the difference distribution which checks for systematics between the observations. The second set, "Max", ... tells you about the scatter on the mean of the observations.</p>
 
-</section>
-
-<section>
-    <h2>Systematics</h2>
-<h3>Pol Angles Vs. Themselves</h3>
-
-
-
-    <h3>Pol angles </h3>
     <figure>
-        <img alt="Name pager" id="scatterpager" src="#" />
+        <img alt="Name pager" id="consistpager2" src="#" />
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
             function fcn(params){
-                return 'figs/scatter_'+params.val+'_'+params.y+'_vs_'+params.x+'.png';
+                return 'figs/consistplot_'+params.val+'_2022_vs_'+params.subs+'.png';
             }
 
-            pager.link("#scatterpager",
+            pager.link("#consistpager2",
                 {
                     'Comparison|val' : ['phi','xpol'],
-                    'Y|y': ['A|a','B|b','Diff|p'],
-                    'X|x' : ['t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y',
-                        'xm','ym','r','theta','thetam'],
+                    'Subsets|subs' : ['min|2022_min','max|2022_max'],
                 },
                 fcn);
             pager.setparams({
                 'val' : 'phi',
-                'y': 'a',
-                'x': 't',
+                'subs': '2022_min',
             });
         </script>
     </figure>
 
 
-
+    <p>We can see that the </p>
 
 </section>
+
+<!--<section>-->
+<!--    <h2>Systematics</h2>-->
+<!--<h3>Pol Angles Vs. Themselves</h3>-->
+
+
+
+<!--    <h3>Pol angles </h3>-->
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="scatterpager" src="#" />-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            function fcn(params){-->
+<!--                return 'figs/scatter_'+params.val+'_'+params.y+'_vs_'+params.x+'.png';-->
+<!--            }-->
+
+<!--            pager.link("#scatterpager",-->
+<!--                {-->
+<!--                    'Comparison|val' : ['phi','xpol'],-->
+<!--                    'Y|y': ['A|a','B|b','Diff|p'],-->
+<!--                    'X|x' : ['t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y',-->
+<!--                        'xm','ym','r','theta','thetam'],-->
+<!--                },-->
+<!--                fcn);-->
+<!--            pager.setparams({-->
+<!--                'val' : 'phi',-->
+<!--                'y': 'a',-->
+<!--                'x': 't',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+
+
+
+
+<!--</section>-->
 
 <hr>
 
