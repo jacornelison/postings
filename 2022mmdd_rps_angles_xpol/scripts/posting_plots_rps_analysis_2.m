@@ -449,7 +449,7 @@ load('z:/dev/rps/rps_tilt_data_2022.mat')
 
 %%
 clc
-[fd.t, fd.obsnum,fd.phi_pair, fd.poleff,fd.r,fd.theta,fd.xm,fd.ym,fd.thetam,] = deal(NaN(size(fd.ch)));
+[fd.t, fd.obsnum,fd.phi_pair, fd.poleff,fd.r,fd.theta,fd.xm,fd.ym,fd.thetam] = deal(NaN(size(fd.ch)));
 for chind = 1:length(fd.ch)
     s = sch{fd.schnum(chind)};
     idx = s.index(fd.rowind(chind),1);
@@ -522,8 +522,8 @@ ynames = {'phi_a','phi_b','phi_p';...
 yttls = {'Pol A','Pol B','Pair-Diff'};
 ylims = {[-4.5 0], [-4.5 0]+90, [-4.5 0];...
     [-1 1]*0.02,[-1 1]*0.02, [-1 10]*1e-4};
-ylims = {[-1 1]*1.5, [-1 1]*1.5, [-1 1]*1.5;...
-    [-1 1]*0.02,[-1 1]*0.02, [-1 1]*6e-4};
+ylims = {[-1 1]*1, [-1 1]*1, [-1 1]*0.5;...
+    [-1 1]*0.01,[-1 1]*0.01, [-1 1]*6e-4};
 
 
 
@@ -545,10 +545,10 @@ for yind = 1:size(Y,2)
         ylim(ylims{valind,yind})
        else
         y = fd.(Y{valind,yind})(yidx{yind})-medval(fd.ch(yidx{yind}));
-        scatter(fd.(X{xind})(yidx{yind}),y,14,fd.obsnum(yidx{yind}),'filled')
+        scatter(fd.(X{xind})(yidx{yind}),y,14,fd.dk_cen(yidx{yind}))%,'filled')
         ylim(ylims{valind,yind})
            end
-           
+        colormap(cm)
         grid on
         xlabel(X{xind})
         ylabel(Y{valind,yind})

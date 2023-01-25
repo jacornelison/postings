@@ -5,7 +5,46 @@ addpath('z:/dev/rps')
 figdir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_grid_cal','figs','');
 datadir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_grid_cal','data','');
 
-%% Tilt cals
+
+%% Plot of pol angles vs time
+
+load('z:/dev/rps/rps_beam_fits_type5_final_cut')
+load('z:/dev/rps/phi_pairs_per_obs.mat')
+load('z:/dev/rps/sch_type5.mat')
+
+clc
+[fd.t, fd.phi_pair] = deal(NaN(size(fd.ch)));
+for chind = 1:length(fd.ch)
+    s = sch{fd.schnum(chind)};
+    idx = s.index(fd.rowind(chind),1);
+    fd.t(chind) = s.scans(idx).t1;
+
+    % Obs Number
+    for schind = 1:length(scheds)
+        if ismember(fd.schnum(chind),scheds{schind})
+            fd.obsnum(chind) = schind;
+        end
+    end
+
+    % Phi/poleff pair
+    isind0 = find(ismember(ind0,fd.ch(chind)));
+    if ~isempty(isind0)
+        has90 = find(fd.schnum == fd.schnum(chind) & fd.rowind==fd.rowind(chind) & fd.ch == ind90(isind0));
+        if ~isempty(has90)
+            [fd.phi_pair(chind) fd.poleff(chind)] = calc_pair_diff_pol(fd.phi(chind),...
+                nanmean(fd.phi(has90)),fd.xpol(chind),nanmean(fd.xpol(has90)));
+        end
+    end
+        
+end
+
+medvals = nanmedian(phi_pair,1);
+fig = figure(11);
+fig.Position(3:4) = [900 500];
+clf;
+plot(fd.t,fd.phi_pair-medvals(fd.ch),'.')
+ylim([-1 1]*0.2)
+
 %% Tilt Cals
 clc
 close all

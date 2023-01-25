@@ -67,12 +67,12 @@
         <li>Measuring the angle of the reference surface with respect to gravity.</li>
     </ol>
     </p>
-    <p>The first part is accomplished by measuring the mechanical orientation of the grid's wires in a Bridgeport (AKA knee mill) using the top flat surface of the rotation stage as the reference plane -- the arrow from B points to this surfase in figure 1.1. The second part is accomplished using the RPS's tilt meter: with the RPS completely assembled, we place a precision machinist level on the reference surface of the rotation stage and record the number given by the tilt meter when the level is perfectly centered. In addition, I monitor the output of the tilt meter during the entire campaign.</p>
+    <p>The first part is accomplished by measuring the mechanical orientation of the grid's wires in a Bridgeport (AKA knee mill) using the top flat surface of the rotation stage as the reference plane -- the arrow from B points to this surface in figure 1.1. The second part is accomplished using the RPS's tilt meter: with the RPS completely assembled, we place a precision machinist level on the reference surface of the rotation stage and record the number given by the tilt meter when the level is perfectly centered. In addition, I monitor the output of the tilt meter during the entire campaign and correct for tilt fluctuations in the analysis of RPS data.</p>
 
-    <p>Thus, when we're observing the RPS on-mast we calculate the angle of the wire grid WRT gravity, $\theta_{grav}$, using our knowledge of the stage's command angle, $\theta_{stage}$, grid-horizontal, $\theta_{grid}$, tilt meter output, $\theta_{tilt}$, and tilt meter calibration $\theta_{tilt,0}$:
+    <p>When we're observing the RPS on-mast we calculate the angle of the wire grid WRT gravity, $\zeta_{grav}$, using our knowledge of the stage's command angle, $\zeta_{stage}$, grid-horizontal, $\zeta_{grid}$, tilt meter output, $\zeta_{tilt}$, and tilt meter calibration $\zeta_{tilt,0}$<sup><a name="sup1" href="#ftn1">[1]</a></sup>:
     </p>
     \begin{equation}
-    \theta_{grav} = \theta_{stage}-\theta_{grid}+\theta_{tilt}-\theta_{tilt,0}
+    \zeta_{grav} = \zeta_{stage}-\zeta_{grid}+\zeta_{tilt}-\zeta_{tilt,0}
     \end{equation}
     <p>
         The following sections describe how we accomplish parts I and II in detail.
@@ -96,7 +96,7 @@
 
     </ol>
 
-    <p>Before the RPS went on the mast in late December, I zeroed the RPS grid to the homing position and measured the grid angle to be 0.004&deg;. When we brought the RPS down from the mast in late January, I had less that 24 hours before I was supposed to leave Pole and so opted to use the ISAAC to double check the health of the stage before packing up (more on that later). I disassembled and packed the RPS in such a way that I could repeat the bridgeport measurements when I returned to the states.
+    <p>Before the RPS went on the mast in late December, I zeroed the RPS grid to the homing position and measured the grid angle to be 0.004&deg;. When we brought the RPS down from the mast in late January, I had less that 24 hours before I was supposed to leave Pole and was unable to repeat the measurement of the wires on the Bridgeport before leaving. I disassembled and packed the RPS in such a way that I could repeat the bridgeport measurements when I returned to the states.
     </p>
     <p>In early March, I measured the wire grid angle on the bridgeport at Harvard in the Smithsonian's RX Lab. This time there was a small amount of backlash in the rotation stage:
     </p>
@@ -105,23 +105,14 @@
         <li>With pressure in the counter-clockwise direction, the wire grid was at an angle of 0.057&deg;</li>
     </ul>
 
-    <p>I'm fairly certain this backlash developed during travel.</p>
+    <figure>
+        <img src="figs/grid_cal.png"/>
+        <figcaption>
 
-    <h4>Homing repeatability</h4>
+        </figcaption>
+    </figure>
 
-    <p>I determine the homing repeatability of the stage by commanding the RPS to -180&deg;, then to 180&deg; and then homing again, recording the angle at each homing. Before the RPS went on the mast in late December, I measured the the grid angle to be to be centered at 0.004&deg; with a 1&sigma; standard deviation of 0.0002&deg; (Left plot of Figure 1.1).
-    </p>
-    <p>
-        After assembling the RPS here in the lab and doing a number of measurements, I re-measured the homing repeatability, this time recording both angles due to the backlash (see right plot of Figure 1.1).
-    </p>
-
-
-<figure>
-    <img src="figs/grid_cal.png"/>
-    <figcaption>
-
-    </figcaption>
-</figure>
+    <p>In my next posting, I'll look at the polarization angle fits from the RPS observations to try to determine whether this backlash developed during the observing campaign or during transport on the way back from Pole was more likely.</p>
 
 </section>
 
@@ -185,6 +176,10 @@ We determine the orientation of the reference surface to gravity using a high-pr
 </section>
 <section>
 <h2>Summary</h2>
+    <p>
+        Before putting the RPS on the mast, we established a reference of the wire grid WRT gravity with combined precision of <0.01&deg; between the Bridgeport and tiltmeter calibrations. When the RPS observations were complete I didn't have enough time before I had to leave Pole to check the calibration on the bridgeport again. Upon returning to the U.S., I found the rotation stage had developed some play in the gears resulting in 0.06&deg; of movement in the wire grid. In a follow-up posting, I'll take a look at the polarization angle estimates from the RPS campaign to discern if the backlash developed during the observations or during shipment back home.
+    </p>
+
 
 </section>
 
@@ -195,13 +190,13 @@ We determine the orientation of the reference surface to gravity using a high-pr
 <section class="appendix">
     <h2 class="appendix">Appendix</h2>
 
-<!--    <h3>Footnotes</h3>-->
-<!--    <p>Click on the number to return to the main text.</p>-->
-<!--    <div class="footnote">-->
-<!--        <p>-->
-<!--        <sup><a name="ftn1" href="#sup1">[1]</a></sup>-->
-<!--        This is a footnote. Click the number to return to main text.-->
-<!--    </p>-->
+    <h3>Footnotes</h3>
+    <p>Click on the number to return to the main text.</p>
+    <div class="footnote">
+        <p>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+        We used to refer to this term using &theta; but have changed it to &zeta; to avoid confusion with the polar instrument-fixed detector centers which are also defined by r and &theta;.
+    </p>
 <!--    </div>-->
 <!--    <h3>Code</h3>-->
 <!--    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>-->
