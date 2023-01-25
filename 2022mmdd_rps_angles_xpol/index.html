@@ -423,7 +423,7 @@
     <p>For 2022 vs. B18, we see an offset of -0.778 degrees. In another posting where I create Pol Rot sims of B2018 CMB data <a href="JAC2023"></a>, we can see that this matches the angle that we'd naively expect given a mismatch between the actual angles and the angles we use to create our CMB maps<sup><a name="sup3" href="#ftn3">[3]</a></sup>.</p>
 
 <h3>Self-consistency</h3>
-    <p>I compare the 2022 data with itself by splitting the observations into two different subsets and comparing them to each other. I choose two different subsets to compare to. The first set, "Min", I find the permutation set which minimizes the mean in the difference distribution which checks for systematics between the observations. The second set, "Max", ... tells you about the scatter on the mean of the observations.</p>
+    <p>I compare the 2022 data with itself by splitting the observations into two different subsets and comparing them to each other. I choose two different subsets to compare to. The first set, "Min", I find the permutation set which minimizes the mean in the difference distribution which checks for systematics between the observations -- if the mean of the difference histogram never goes to zero, then the this indicates that the observations have some systematic affecting some of the data in some way. The second set, "Max", which is the permutation that maximizes the mean in the difference histogram tells you about the scatter on the mean angle of the observations.</p>
 
     <figure>
         <img alt="Name pager" id="consistpager2" src="#" />
@@ -449,47 +449,47 @@
     </figure>
 
 
-    <p>We can see that the </p>
+    <p>We can see that the mean of the distribution in "Min" is consistent with zero which indicates that statistical fluctuations are dominating the sample variance. The mean and standard deviation of the distribution in "Max" can be seen as best-estimates of the statistical uncertainty.</p>
 
 </section>
 
-<!--<section>-->
-<!--    <h2>Systematics</h2>-->
-<!--<h3>Pol Angles Vs. Themselves</h3>-->
+<section>
+    <h2>Systematics</h2>
+<h3>Pol Angles Vs. Themselves</h3>
 
 
 
-<!--    <h3>Pol angles </h3>-->
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="scatterpager" src="#" />-->
-<!--        <figcaption>-->
+    <h3>Pol angles </h3>
+    <figure>
+        <img alt="Name pager" id="scatterpager" src="#" />
+        <figcaption>
 
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-<!--            function fcn(params){-->
-<!--                return 'figs/scatter_'+params.val+'_'+params.y+'_vs_'+params.x+'.png';-->
-<!--            }-->
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/scatter_'+params.val+'_'+params.y+'_vs_'+params.x+'.png';
+            }
 
-<!--            pager.link("#scatterpager",-->
-<!--                {-->
-<!--                    'Comparison|val' : ['phi','xpol'],-->
-<!--                    'Y|y': ['A|a','B|b','Diff|p'],-->
-<!--                    'X|x' : ['t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y',-->
-<!--                        'xm','ym','r','theta','thetam'],-->
-<!--                },-->
-<!--                fcn);-->
-<!--            pager.setparams({-->
-<!--                'val' : 'phi',-->
-<!--                'y': 'a',-->
-<!--                'x': 't',-->
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
-
-
+            pager.link("#scatterpager",
+                {
+                    'Comparison|val' : ['phi','xpol'],
+                    'Y|y': ['A|a','B|b','Diff|p'],
+                    'X|x' : ['t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y',
+                        'xm','ym','r','theta','thetam','tilt_out','tilt_temp','tod'],
+                },
+                fcn);
+            pager.setparams({
+                'val' : 'phi',
+                'y': 'a',
+                'x': 't',
+            });
+        </script>
+    </figure>
 
 
-<!--</section>-->
+
+
+</section>
 
 <hr>
 

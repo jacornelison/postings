@@ -49,6 +49,7 @@ for schind = 1:len
             %ch_chi = atand(tand(p.theta(chind)+p.chi(chind)));
 
             val = reshape(fd.phi(ci),[],1);
+            %val = reshape(atand(tand(fd.phi(ci)-fd.phi_s(ci)+fd.dk_cen(ci)-90)),[],1);
             xp = reshape(fd.xpol(ci),[],1);
             err = reshape(fd.phi_err(ci),[],1);
 
@@ -358,9 +359,9 @@ ttls = {'2022','2022','2018','B18 FPU Data'};
 pltnames = {'2022_min','2022_max','2018','fpu'};
 valnames = {'phi','xpol'};
 
-for valind = 1:size(V,1)
+for valind = 1%1:size(V,1)
 
-for pltind = 1:size(V,2)
+for pltind = 1:2%1:size(V,2)
     V1ttl = ttls{1};
     V2ttl = ttls{pltind};
     if pltind == 1
@@ -409,7 +410,7 @@ for pltind = 1:size(V,2)
     S = nanstd(V1-V2);
     title({...
         sprintf('%s minus %s',V1ttl,V2ttl),...
-        sprintf('M: %0.3f | S: %0.3f | N: %03i | EOM: %0.3f',M,S,Nchans,S./sqrt(Nchans))...
+        sprintf('M: %0.4f | S: %0.4f | N: %03i | EOM: %0.4f',M,S,Nchans,S./sqrt(Nchans))...
         });
     
     fname = sprintf('consistplot_%s_2022_vs_%s.png',valnames{valind},pltnames{pltind});
@@ -444,9 +445,11 @@ end
 %% We need some extra stuff for the next section
 % Grab time, obs number, and phi_pair in the structure
 load('z:/dev/rps/sch_type5.mat')
+load('z:/dev/rps/rps_tilt_data_2022.mat')
 
+%%
 clc
-[fd.t, fd.obsnum,fd.phi_pair, fd.poleff,fd.r,fd.theta,fd.xm,fd.ym,fd.thetam] = deal(NaN(size(fd.ch)));
+[fd.t, fd.obsnum,fd.phi_pair, fd.poleff,fd.r,fd.theta,fd.xm,fd.ym,fd.thetam,] = deal(NaN(size(fd.ch)));
 for chind = 1:length(fd.ch)
     s = sch{fd.schnum(chind)};
     idx = s.index(fd.rowind(chind),1);
@@ -468,9 +471,13 @@ for chind = 1:length(fd.ch)
                 nanmean(fd.phi(has90)),fd.xpol(chind),nanmean(fd.xpol(has90)));
         end
     end
-
-    
+        
 end
+
+% Tilt info
+fd.tilt_out = interp1(lj_data.time,lj_data.AIN0,fd.t);
+fd.tilt_temp = interp1(lj_data.time,lj_data.AIN2,fd.t);
+
 
 %% Mirror coords
     [fd.theta, fd.r] = cart2pol(fd.x,fd.y);
@@ -504,6 +511,7 @@ fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
 %% phi vs. other stuff
 
 fd.az_cen = wrapTo360(fd.az_cen);
+fd.tod = fd.t-floor(fd.t);
 
 clc
 Y = {'phi', 'phi','phi_pair';
@@ -514,23 +522,36 @@ ynames = {'phi_a','phi_b','phi_p';...
 yttls = {'Pol A','Pol B','Pair-Diff'};
 ylims = {[-4.5 0], [-4.5 0]+90, [-4.5 0];...
     [-1 1]*0.02,[-1 1]*0.02, [-1 10]*1e-4};
+ylims = {[-1 1]*1.5, [-1 1]*1.5, [-1 1]*1.5;...
+    [-1 1]*0.02,[-1 1]*0.02, [-1 1]*6e-4};
 
-X = {'t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y','xm','ym','r','theta','thetam'};
+
+
+X = {'t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y','xm','ym','r','theta','thetam','tilt_out','tilt_temp','tod'};
 
 fig = figure(51);
 fig.Position(3:4) = [900 400];
 clf
 
+medvals = {phis, phis,phi_pair;
+    xpols, xpols, poleff_pair};
+
 for valind = 1:size(Y,1)
 for yind = 1:size(Y,2)
-
+    medval = nanmedian(medvals{valind,yind},1);
     for xind = 1:length(X)
-        
+           if 0 
         scatter(fd.(X{xind})(yidx{yind}),fd.(Y{valind,yind})(yidx{yind}),14,fd.obsnum(yidx{yind}),'filled')
+        ylim(ylims{valind,yind})
+       else
+        y = fd.(Y{valind,yind})(yidx{yind})-medval(fd.ch(yidx{yind}));
+        scatter(fd.(X{xind})(yidx{yind}),y,14,fd.obsnum(yidx{yind}),'filled')
+        ylim(ylims{valind,yind})
+           end
+           
         grid on
         xlabel(X{xind})
         ylabel(Y{valind,yind})
-        ylim(ylims{valind,yind})
         fname = sprintf('scatter_%s_vs_%s.png',ynames{valind,yind},X{xind});
         saveas(fig,fullfile(figdir,fname))
     end
