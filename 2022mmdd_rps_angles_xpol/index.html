@@ -467,7 +467,7 @@
         </figcaption>
         <script type="text/javascript">
             function fcn(params){
-                return 'figs/scatter_'+params.val+'_'+params.y+'_vs_'+params.x+'.png';
+                return 'figs/scatter_'+params.val+'_'+params.y+'_vs_'+params.x+params.corr+'.png';
             }
 
             pager.link("#scatterpager",
@@ -475,13 +475,15 @@
                     'Comparison|val' : ['phi','xpol'],
                     'Y|y': ['A|a','B|b','Diff|p'],
                     'X|x' : ['t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun','x','y',
-                        'xm','ym','r','theta','thetam','tilt_out','tilt_temp','tod'],
+                        'xm','ym','r','theta','thetam','tilt_out','tilt_out_std','tilt_temp','tod'],
+                    'Corr|corr' : ['None|_notilt','Tilt Only|','Diff Pol|_corr'],
                 },
                 fcn);
             pager.setparams({
                 'val' : 'phi',
                 'y': 'a',
                 'x': 't',
+                'corr':'',
             });
         </script>
     </figure>

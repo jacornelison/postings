@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Posting Title — J. Cornelison</title>
+    <title>Diff Pol Posting — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -16,7 +16,8 @@
         });
     </script>
     <script type="text/javascript"
-        src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+        //src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
 </head>
 
@@ -26,22 +27,71 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Systematics from Differential Reflection of Polarization</h1>
+    <h1>Effect of Polarization Angle Estimates due to Differential Polarization Reflection of Aluminum</h1>
 
     <time datetime="2019-07-20" class="published updated">
-        2019 Jul 20
+        2023 Jan 20
     </time> —
     J. Cornelison
 </header>
 
 <hr>
 
+<p>
+    In this posting, I calculate the effect of differential polarization rotation on polarization angles due to reflecting off of a surface of aluminum and develop a method for correcting for it.
+</p>
+
+<hr>
 <section>
 
-    I calculate the conductivity of Aluminum using the reflection loss at 150GHz, scaled from 290K to 240K (from the data in Fig 10 of <a href="data/reflectivity_of_metals_at_mm_wavelengths_SPandB.pdf" target="_blank">this paper</a>, see below) the index of refraction for Aluminum is
+    <h3>Complex Refractive Index of Aluminum</h3>
+
+    <p>The complex index of refraction of a medium is given by</p>
+
+    \begin{equation}
+    \underline{n} = n+ik
+    \end{equation}
+
+    <p>Where</p>
+
+    \begin{equation}
+    \begin{split}
+    &n = \sqrt{\frac{\left|\underline{\varepsilon}\right|+\varepsilon}{2}}\\
+    &k = \sqrt{\frac{\left|\underline{\varepsilon}\right|-\varepsilon}{2}}\\
+    \end{split}
+    \end{equation}
+
+    <p>and $\varepsilon$ is the complex dielectric permittivity.</p>
+
+    <p></p>
+
+
+    \begin{equation}
+    \varepsilon = \frac{2\sigma}{f}i
+    \end{equation}
+
+    <p>Where $f$ is the frequency of the photon of interest and $\sigma$ is the conductance.</p>
+
+    <p>I calculate the conductance of Aluminum $\sigma$ as a function of temperature $T$ using a model given in Eq. 24 in <a href="data/reflectivity_of_metals_at_mm_wavelengths_SPandB.pdf" target="_blank">this paper</a>
+    </p>
+    \begin{equation}
+    \sigma(T) = A\left(\frac{A}{\sigma_0(T)}+\rho_0\right)^{-1}
+    \end{equation}
+
+    Where
+
+    \begin{equation}
+    \sigma_0(T) = C\cdot\left(\frac{\theta}{T}\right)^5\left(\int_{0}^{\theta/T}\frac{x^5}{cosh(x)-1}\right)^{-1}
+    \end{equation}
+
+    <p>and $\theta$ is the Debye temperature of Aluminum, $\rho_0$ is some residual resistance and $A$ and $C$ are emperically derived coefficients.</p>
+
+    the index of refraction for Aluminum is
     $$
-    n_{90} \sim (1+i)\sqrt{2\frac{90}{150}\sigma_{Al}} = 2400
+    n_{Al}(90GHz,240K) = 2200(1+i)
     $$
+
+
 
     <figure>
         <img alt="Test" src="figs/ref_loss_curve.png" width="50%"/>
@@ -50,13 +100,37 @@
         </figcaption>
     </figure>
 
+    <h3>Calculating the Reflection Coeffecients</h3>
+
+    <p>To calculate the new adjusted polarization angle, we start with the set of basis vectors which define the detector pointing $\left[\hat{D}_1,\,\hat{D}_2,\,\hat{D}_3\right]$, the basis vector which describes the co-polar axis $\hat{D}_p$ (See <a href="JAC2019"></a>, &sect;II), and the vector which describes the mirror normal $\hat{N}_{mirr}$.</p>
+
+    <p>
+        We first calculate the reflection coefficients for the S- and P-components which are a function of the incident angle $\theta_{inc}$ and the refractive index of aluminum
+    </p>
+
+    \begin{equation}
+    \theta_{inc} = \cos^{-1}\left(\hat{N}_{mirr}\cdot-\hat{D}_3\right)
+    \end{equation}
+
+    <p>Note: that $\hat{D}_3$ is negative because it normally points into the mirror and we need to calculate the angle with it pointing out of the mirror.</p>
+
+    <p>And the coefficients are calculated as</p>
+    \begin{equation}
+    \begin{split}
+    &r_S = \frac{n_{air}\cos\theta_{inc}-n_{al}\sqrt{1-\left(\frac{n_{air}}{n_{al}}\sin\theta_{inc}\right)}}{n_{air}\cos\theta_{inc}+n_{al}\sqrt{1-\left(\frac{n_{air}}{n_{al}}\sin\theta_{inc}\right)}}\\
+    &r_P = \frac{n_{air}\sqrt{1-\left(\frac{n_{air}}{n_{al}}\sin\theta_{inc}\right)}-n_{al}\cos\theta_{inc}}{n_{air}\sqrt{1-\left(\frac{n_{air}}{n_{al}}\sin\theta_{inc}\right)}+n_{al}\cos\theta_{inc}}\\
+    \end{split}
+    \end{equation}
+
+    <p>During the calculations, $n_{air}=1$ and $n_{al}=2200(1+i)$ as described above. The reflection coefficients as a function of incident angle are plotted below.</p>
+
 
 
 
     <figure>
         <img alt="Test" src="figs/al_reflectivity.png" />
         <figcaption>
-            Reflectivity of Aluminum as a function of incident angle, $\theta_i$.
+            Reflectivity of Aluminum as a function of incident angle, $\theta_{inc}$.
         </figcaption>
     </figure>
 
@@ -95,143 +169,241 @@ Incident angle as a function of pixel location on the focal plane per DK-angle.
 
 </figure>
 
-For set of A and B detectors of a given pixel with an on-FPU polarization, the effective polarization changes due differential polarization reflection. The detector co-polar axes form vectors, $\hat{B}_A$ and $\hat{B}_B$, which can be separated into components, $\hat{V}_\perp$ and $\hat{V}_\parallel$ that are perpendicular and parallel to the plane of incidence respectively.
+    <h3>Calculating Pol Angles Due to Differential Reflection</h3>
 
-$$
-\hat{B}_A = \left(\hat{B}_1\cdot\hat{V}_\parallel\right)\hat{V}_\parallel+\left(\hat{B}_1\cdot\hat{V}_\perp\right)\hat{V}_\perp
-$$
-
-The effective polarization orientation due to reflection off of the mirror becomes
-
-$$
-\tilde{B}_A = |r_\parallel|^2\left(\hat{B}_1\cdot\hat{V}_\parallel\right)\hat{V}_\parallel+|r_\perp|^2\left(\hat{B}_1\cdot\hat{V}_\perp\right)\hat{V}_\perp
-$$
- 
-where $r_\parallel$ and $r_\perp$ are the parallel and perpendicular reflection coefficients respectively. Assuming Pol A and B detectors are orthogonal, the effective polarization angle due to differential polarization reflection is then just
-$$
-\tilde{\phi}_A = \phi_A + \tan^{-1}\left(\frac{\hat{B}_B\cdot\tilde{B}_A}{\hat{B}_A\cdot\tilde{B}_A}\right)
-$$
-
-Then, the effective pair-diff polarization angle becomes
-    \begin{equation}\label{eq:QU}
-    \begin{split}
-    &Q = \frac{\left[\cos(2\phi_A)-\epsilon_A\cos(2\phi_A)\right]-\left[\cos(2\phi_B)-\epsilon_B\cos(2\phi_B)\right]}{2+\epsilon_A+\epsilon_B}\\
-    &\\
-    &U = \frac{\left[\sin(2\phi_A)-\epsilon_A\sin(2\phi_A)\right]-\left[\sin(2\phi_B)-\epsilon_B\sin(2\phi_B)\right]}{2+\epsilon_A+\epsilon_B}\\
-    \end{split}
+    <p>We first describe the plane of incidence by calculating its normal which is the cross between the detector pointing and the mirror normal:</p>
+    \begin{equation}
+    \hat{N}_{inc} = \frac{\hat{D}_3\times\hat{N}_{mirr}}{\left|\hat{D}_3\times\hat{N}_{mirr}\right|}
     \end{equation}
-    $\epsilon_{pair}$ is simply
-    \begin{equation}\label{eq:phiq}
+
+<p>We then calculate the vectors describing the S- and P- components. The S-component is the projection of the co-polar axis onto the axis orthogonal to the plane of incidence (i.e. $\hat{N}_{inc}$). The P-component is just the part of the co-polar axis that isn't projected onto $\hat{N}_{inc}$:</p>
+
+    \begin{equation}
     \begin{split}
-    &\phi_{pair} = \frac{1}{2}\tan^{-1}\frac{U}{Q}\\
-    &\\
-    &\epsilon_{pair} = 1-\sqrt{Q^2+U^2}
+    &V_S = \left(\hat{D}_P\cdot\hat{N}_{inc}\right)\hat{N}_{inc}\\
+    &V_P = \hat{D}_P - V_S \\
     \end{split}
     \end{equation}
 
-Figure 1.3 shows the effective pair-diff polarization due to reflections off of the mirror.
+    <p>We then apply the reflection coefficients to the S- and P-components and add them back together to get the rotated co-polar axis vector $\tilde{D}_P$</p>
 
+    \begin{equation}
+    \tilde{D}_P = r_S V_S + r_P V_P
+    \end{equation}
+
+    <p>Then we can convert $\tilde{D}_P$ into a polarization angle working backwards from Eq. 6 in <a href="JAC2019"></a></p>
+
+    \begin{equation}\label{newangle}
+    \tilde{\phi}_P = \tan^{-1}\left(\frac{\tilde{D}_P\cdot-\hat{D}_2}{\tilde{D}_P\cdot\hat{D}_1}\right)
+    \end{equation}
+
+    <p>It's useful to calculate the "pair-diff" polarization angle between an A and B detector pair which, when we have no cross-polar response, is simplified to</p>
+
+    \begin{equation}
+    \phi_{pair} \sim \frac{\phi_A+\left(\phi_B-90^\circ\right)}{2}
+    \end{equation}
+
+    <p>The figure below shows the level of bias for input angles of 0&deg; and 90&deg; and for different distances away from the focal plane as a function of DK angle. As we can see, the level of bias on the polarization angle can get quite high depending on the deck angle and the effect is equal and opposite for the orthogonal polarization state. So while it is significant when just looking at pol A or Pol B, the effect cancels out in the pair-difference signal.</p>
 
     <figure>
-
-        <img alt="" id="tp2" src="#" onerror="this.src='plot_blank.png';" width=50% />
-
-
-        <script type="text/javascript">
-
-            var pager = new Pager("tp2");
-            pager.link("#tp2",
-                {
-                    'Angle|a': ['phia','phib','phipair','epspair'],
-                    'Deck|dk': ['-180','-135','-90','-45','0','45','90','135','mean','mean (0-135)|mean_rps']
-                },
-                function(params) {
-                    //return 'figs'+params.s+'/'+params.t+'_final_'+params.d+'.png';
-                    return 'figs/tileplot_'+params.a+'_dk_'+params.dk+'.png';
-                });
-
-            pager.setparams({
-
-                'a': 'phipair',
-                'dk': '0'
-
-            });
-            pager.gridalign('#tp2', 4);
-        </script>
+        <img src="figs/phi_bias.png" width="60%"/>
 
         <figcaption>
-            Effective change in $\phi_Q$ due to differential polarization reflection as a function of location on the focal plane per DK-angle.
+
         </figcaption>
     </figure>
 
+    <h3>Correcting for Differential Reflection</h3>
+    <p>Given that this effect is physical, we should correct for it. Given a knowledge of the pointing model and given some measured polarization angle $\tilde{D}_P$ that involves reflecting off of the FFFlat (from measurements with the RPS, say) we can start at Eq. \ref{newangle} and work backwards to solve for $\hat{D}_P$ and convert into an angle.</p>
 
+    <p>We can write the projections of $\tilde{D}_P$ onto the plane of incidence</p>
+    \begin{equation}
+    \tilde{D}_P = \tilde{V}_S+\tilde{V}_P
+    \end{equation}
 
+    <p>Where</p>
+    \begin{equation}
+    \begin{split}
+    &\tilde{V}_S = (\tilde{D}_P\cdot\hat{N}_{inc})\hat{N}_{inc}\\
+    &\tilde{V}_P = \tilde{D}_P-\tilde{V}_S\\
+    \end{split}
+    \end{equation}
 
-<!--    For DK-angles of 0 and 90, the bias on $\phi_Q$ is mean-zero and the variation is less than $0.01^\circ$ across the focal plane. For DK-angles of 45 and 135, however, the biases are $\pm0.025^\circ$ on average with variation of $\sim0.015^\circ$. Additionally, because this is a 1-theta dependent function, averaging $\phi_Q$ over DK-angles from 0 to 135, like we have for RPS data, doesn't go to zero.-->
+    <p>then</p>
+    \begin{equation}
+    \hat{D}_P = \frac{\tilde{V}_S}{r_S}+\frac{\tilde{V}_P}{r_P}
+    \end{equation}
 
-<!--For future polarization calibrations, we'll want to acquire measurements over $360^\circ$ of DK-angle so that it averages down more.-->
+    <p>And we convert that back into an angle with Eq: \ref{newangle}.</p>
 
+    <p>The figure below shows the result of correcting the values given in figure 1.4.</p>
 
+    <figure>
+        <img src="figs/phi_correction.png" width="60%"/>
 
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>In another posting, I'll compare pol angles acquired from the RPS with and without this correction.</p>
 
 </section>
 <hr>
-<!--
+
 <h3>References</h3>
 <p id="references"></p>
-	<script type="text/javascript">
-	// This my way of making shorthand links.
-	// We'll make a couple arrays with the 'tag' and href information
-	// and then look through each anchor element for the specified tag.
-	// The anchors should then just look like: <a href="tagname"></a>
-	// and the script will automatically fill in the hyperlings and text.
-	var tags = [
-	"HCC2007",
-	"KWY2007",
-	"CAB2012",
-	"CLW2013",
-	"IDB2013",
-	"CAB2014",
-	];
-	
-	var hrefs = [
-	"../../../..//general_projects/rps/inverse_pointing.pdf",
-	"../../../../general_projects/rps/pointing_article.pdf",
-	"../../../..//keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-	"../20130521_elipgausmaps/",
-	"../20131005_sidelobe_coordinates/sidelobe_coordinates.pdf",
-	"../../../../keck/analysis_logbook/analysis/20140203_beam_map_pointing/",
-	];
-	
-	var desc = [
-	"Inverse Pointing Model",
-	"BICEP Pointing Supplement",
-	"Pointing Model for Keck Beam Maps",
-	"Constructed elliptical gaussian maps and coordinate system definitions",
-	"Calculations for Beam Mapping in Spherical Coordinates",
-	"Spherical coordinates for beam maps",
-	];
-	
-	
-	var post = document.getElementById("references");
-	var msg = "<table>";
-	for (var tag in tags){
-		msg = msg + "<tr><td><a href="+hrefs[tag]+">"+tags[tag]+"</a></td><td> - </td><td>"+desc[tag]+"</td>";
-	};
-	msg = msg+ "</table>";
-	post.innerHTML = msg;
 
-	var links = document.getElementsByTagName("A");
-	for (var link in links){
-		for (var tag in tags){
-			if (links[link].href.endsWith(tags[tag])){
-				links[link].text = "("+tags[tag]+")";
-				links[link].href = hrefs[tag];
-				links[link].target = "_blank";
-			}
-		}
-	}
-	
-	</script>
--->
+
+<script type="text/javascript">
+
+    // This my way of making shorthand links.
+    // We'll make a couple arrays with the 'tag' and href information
+    // and then look through each anchor element for the specified tag.
+    // The anchors should then just look like: <a href="tagname"></a>
+    // and the script will automatically fill in the hyperlings and text.
+
+
+    var posting_dir = window.location.href; // What's the current url?
+
+    var bkurl = "bicep.rc.fas.harvard.edu";
+    var spurl = "bicep.usap.gov";
+
+    // These are the possible places to find postings
+    // The strings are for if you post your posting in that directory.
+    var sitemap = {
+        jcornelison: "../../../",   // /jcornelison/postings/
+        bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+        bicep3: "../../../",        //
+        bicep_array: "../../../",   //
+        bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+        keck  : "",                 // keck/analysis_logbook/analysis/
+        spuder: "",                 // ~spuder/hieno_analysis_logboo
+        bicep1: "",                 // ~bicep1/analysis_logbook_north/
+        general_projects:"",
+    };
+    // Logbook Site map:
+    // personal:www/jcornelison/postings/
+    // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+    // keck:    www/keck/analysis_logbook/analysis/
+    // BICEP3:  www/bicep3/analysis_logbook/
+    // BA:      www/bicep_array/analysis_logbook/
+    // We shouldn't be posting in these, but still have postings.
+    // bicep2:
+    // keck:    www/keck/analysis_logbook/analysis/
+    // spuder:  www/~spuder/hieno_analysis_logbook/
+    // bicep1:  www/~bicep1/analysis_logbook_north/
+
+
+    // Shorthand tags
+    var tags = [
+        "KWY2007",
+        "CAB2012",
+        "RWO2013",
+        "JBW2018a",
+        "JBW2018b",
+        "JAC2019",
+        "JAC2021",
+        "CV2021",
+        "JAC2022a",
+        "JAC2022b",
+        "JAC2022c",
+        "BS2022",
+        "JAC2023",
+    ];
+
+    // Links
+    // Truncate the link down to the www directory in which is lies if you can.
+    var hrefs = [
+        "general_projects/rps/pointing_article.pdf",
+        "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+        "bkcmb/analysis_logbook/analysis/20130205_polofs_model/",
+        "bkcmb/analysis_logbook/analysis/20181129_B2016_beamcen_yrquarters/",
+        "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
+        "bkcmb/analysis_logbook/analysis/20190516_rps_pointing_defs/",
+        "bkcmb/analysis_logbook/analysis/20210518_bmpm/",
+        "bicep3/analysis_logbook/20210916_rps_calibration_plan/",
+        "bicep3/analysis_logbook/20220428_mirror_analysis/",
+        "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
+        "bicep3/analysis_logbook/20220816_mirror_analysis_3/",
+        "bkcmb/analysis_logbook/analysis/20220922_B2021_beamcens/",
+        "jcornelison/postings/20221213_birefringence_pol_rot_sims/",
+    ];
+
+
+    // Posting titles
+    var desc = [
+        "BICEP Pointing Supplement",
+        "Pointing Model for Keck Beam Maps",
+        "Modeling Polarization-Dependent Beam Offsets",
+        "B2016 per-deck, per-scan direction beam centers for quarter-season data sets",
+        "B2016, B2017, and B2018 CMB-derived beam center correlations",
+        "Pointing Model Definitions for Polarized Beam Mapping",
+        "A New Pointing Model for Beam Mapping",
+        "RPS Summary and Austral Summer 2021/2022 Calibration Plan",
+        "Deriving Mirror Properties from the Moon",
+        "2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
+        "2022 Moon Analysis III: Moon Phase Correction and Mirror Systematics",
+        "B2021 Beam Centers",
+        "Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sims",
+    ];
+    // Debug
+    var posty = document.getElementById("testp");
+
+
+    var preface = "";
+    var keys = Object.keys(sitemap);
+    // If we're not at pole or bicep, just post the full URL
+    // If we are, go back to the www directory.
+    if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+        posting_dir.match(new RegExp(spurl))!=spurl){
+        preface = "http://" + bkurl+"/";
+    }
+    else {
+        for (key in keys){
+            if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                preface = sitemap[keys[key]];
+            };
+        };
+
+    };
+
+    // Add the prefixes we can.
+    // Only add prefixes to directories in the sitemap so we don't break
+    // external references.
+    for (ref in hrefs) {
+        for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+        };
+    };
+
+    // posty.innerHTML = preface;
+
+    // Make a list of references
+    var post = document.getElementById("references");
+    var msg = "<table>";
+    for (var tag in tags){
+        msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+    };
+    msg = msg+ "</table>";
+    post.innerHTML = msg;
+
+    // Look through all the hyperlinks and insert the proper links to the postings
+    var links = document.getElementsByTagName("A");
+    for (var link in links){
+        for (var tag in tags){
+            if (links[link].href.endsWith(tags[tag])){
+                links[link].text = "("+tags[tag]+")";
+                links[link].href = hrefs[tag];
+                links[link].target = "_blank";
+            }
+        }
+    }
+
+</script>
 </body>
