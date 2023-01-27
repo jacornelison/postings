@@ -43,6 +43,55 @@
 
 <hr>
 <section>
+<h3>Concept</h3>
+    <p>For a photon travelling through a medium with refraction index of $n_1$ and reflecting off of a surface with a refractive index $n_2$, we can use Fresnel's equations to calculate the reflection loss of the parts of the electric field parallel (P-component, $r_P$) and orthogonal (S-component, $r_S$) to the plane of incidence as a function of the angle of incidence, $\theta_{inc}$.</p>
+
+    \begin{equation}
+    \begin{split}
+    &r_S = \frac{n_1\cos\theta_{inc}-n_2\sqrt{1-\left(\frac{n_1}{n_2}\sin\theta_{inc}\right)}}{n_1\cos\theta_{inc}+n_2\sqrt{1-\left(\frac{n_1}{n_2}\sin\theta_{inc}\right)}}\\
+    &r_P = \frac{n_1\sqrt{1-\left(\frac{n_1}{n_2}\sin\theta_{inc}\right)}-n_2\cos\theta_{inc}}{n_1\sqrt{1-\left(\frac{n_1}{n_2}\sin\theta_{inc}\right)}+n_2\cos\theta_{inc}}\\
+    \end{split}\label{refcoeffs}
+    \end{equation}
+
+
+    <p>Since linear polarization states of the photons electric field $\vec{E}$ can be written as the superposition of two orthogonal polarization states, we can write $\vec{E}$ as the sum of it's projections on the plane of incidence and along the axis orthogonal to it.</p>
+
+    \begin{equation}
+    \vec{E} = (\vec{E}\cdot\hat{x}_S)\hat{x}_S + (\vec{E}\cdot\hat{x}_P)\hat{x}_P
+    \end{equation}
+
+    <p>where $\hat{x}_S$ represents the axis normal to the plane of incidence and $\hat{x}_P$ is the axis in the plane of incidence, aligned with $\vec{E}$.</p>
+
+    <p>We can also calculate the angle $\phi_E$ that $\vec{E}$ makes with the plane of incidence</p>
+
+    \begin{equation}
+    \phi_E = \tan^{-1}\left(\frac{\vec{E}\cdot\hat{x}_S}{\vec{E}\cdot\hat{x}_P}\right)
+    \end{equation}
+
+
+    <p>The non-uniform reflection of the S- and P-components of a linearly polarized photon off a surface will result in a reflected electric field $\hat{E}'$ of</p>
+
+    \begin{equation}
+    \vec{E}' = r_S(\vec{E}\cdot\hat{x}_S)\hat{x}_S + r_P(\vec{E}\cdot\hat{x}_P)\hat{x}_P
+    \end{equation}
+
+    <p>And the angle of this new electric field can be calculated the same way</p>
+
+    \begin{equation}
+    \begin{split}
+    \phi_{E'} &= \tan^{-1}\left(\frac{\vec{E}'\cdot\hat{x}_S}{\vec{E}'\cdot\hat{x}_P}\right)\\
+    & = \tan^{-1}\left(\frac{r_S\vec{E}\cdot\hat{x}_S}{r_P\vec{E}\cdot\hat{x}_P}\right)\\
+    & = \tan^{-1}\left(\frac{r_S\sin\phi_E}{r_P\cos\phi_E}\right)\\
+    \phi_{E'} & = \tan^{-1}\left(\frac{r_S}{r_P}\tan\phi_E\right)\\
+    \end{split}
+    \end{equation}
+
+    <p>And so we can see now that linear polarized light reflecting off of a surface will change the polarization angle by some ratio between the reflectivity of the S- and P-components</p>
+
+    <p>This phenomenon could be important during our calibrations where we are observing ground-based sources by redirecting our beams of off an aluminum mirror (AKA Far Field Flat). This is especially important if we want to precisely measure the polarization angles WRT some absolute reference frame.</p>
+
+    <p>The rest of this posting goes over estimating the level of polarization angle rotation from reflecting beams off of the FFFlat. I cover the calculation of the refractive index of aluminum from existing literature, the angle of incidence with the mirror, and the calculation of the polarization angle rotation. Finally, I provide a method for correcting for this angle.</p>
+
 
     <h3>Complex Refractive Index of Aluminum</h3>
 
@@ -58,24 +107,22 @@
     \begin{split}
     &n = \sqrt{\frac{\left|\underline{\varepsilon}\right|+\varepsilon}{2}}\\
     &k = \sqrt{\frac{\left|\underline{\varepsilon}\right|-\varepsilon}{2}}\\
-    \end{split}
+    \end{split}\label{index}
     \end{equation}
 
-    <p>and $\varepsilon$ is the complex dielectric permittivity.</p>
+    <p>and $\underline{\varepsilon}$ is the complex dielectric permittivity, which is a function of the medium's conductance $\sigma$ and the frequency of incident radiation $f$.</p>
 
     <p></p>
 
 
-    \begin{equation}
-    \varepsilon = \frac{2\sigma}{f}i
+    \begin{equation}\label{perm}
+    \underline{\varepsilon} = \frac{2\sigma}{f}i
     \end{equation}
 
-    <p>Where $f$ is the frequency of the photon of interest and $\sigma$ is the conductance.</p>
-
-    <p>I calculate the conductance of Aluminum $\sigma$ as a function of temperature $T$ using a model given in Eq. 24 in <a href="data/reflectivity_of_metals_at_mm_wavelengths_SPandB.pdf" target="_blank">this paper</a>
+    <p>I calculate the conductance of Aluminum $\sigma$ as a function of temperature $T$ using a model given in Eq. 24 in <a href="data/reflectivity_of_metals_at_mm_wavelengths_SPandB.pdf" target="_blank">Serov et al. (2016)</a>
     </p>
     \begin{equation}
-    \sigma(T) = A\left(\frac{A}{\sigma_0(T)}+\rho_0\right)^{-1}
+    \sigma(T) = \left(\frac{A}{\sigma_0(T)}+\rho_0\right)^{-1}
     \end{equation}
 
     Where
@@ -84,46 +131,47 @@
     \sigma_0(T) = C\cdot\left(\frac{\theta}{T}\right)^5\left(\int_{0}^{\theta/T}\frac{x^5}{cosh(x)-1}\right)^{-1}
     \end{equation}
 
-    <p>and $\theta$ is the Debye temperature of Aluminum, $\rho_0$ is some residual resistance and $A$ and $C$ are emperically derived coefficients.</p>
+    <p>and $\theta$ is the Debye temperature of Aluminum, $\rho_0$ is some residual resistance and $A$ and $C$ are empirically derived coefficients. From the paper, I use $\theta=433\,K$, $A=1.05$, $C=9.8\times10^{-18}$ and $\rho_0=0.01/A$. The figure below compares my calculation to the paper's, converting conductance to a reflection loss $D$ at an incidence angle of zero at 150 GHz by</p>
 
-    the index of refraction for Aluminum is
-    $$
-    n_{Al}(90GHz,240K) = 2200(1+i)
-    $$
+    \begin{equation}
+    D = 2\sqrt{\frac{150\times10^9}{\sigma(T)}}
+    \end{equation}
 
-
+    <p>I find that my calculation matches that of the paper's to within <1% at a temperature of 240K -- the temperature I'm picking for the mean ambient temperature of the mirror.</p>
 
     <figure>
-        <img alt="Test" src="figs/ref_loss_curve.png" width="50%"/>
+        <table style="padding: 0px">
+        <tr>
+            <td><img alt="Test" src="figs/ref_loss_curve.png" width="100%"/></td>
+            <td><img alt="Test" src="figs/conductance_compare.png" width="100%"/></td>
+        </tr>
+        </table>
         <figcaption>
             Reflection loss as a function of temperature
         </figcaption>
     </figure>
 
-    <h3>Calculating the Reflection Coeffecients</h3>
+<p>With the conductance in hand, I scale the permittivity in frequency to 90GHz (I'm primarily interested in BICEP3) using Eq. \ref{perm} and then calculate the complex index using Eq. \ref{index}, giving an index of refraction for Aluminum $n_{Al}$ of</p>
 
-    <p>To calculate the new adjusted polarization angle, we start with the set of basis vectors which define the detector pointing $\left[\hat{D}_1,\,\hat{D}_2,\,\hat{D}_3\right]$, the basis vector which describes the co-polar axis $\hat{D}_p$ (See <a href="JAC2019"></a>, &sect;II), and the vector which describes the mirror normal $\hat{N}_{mirr}$.</p>
 
-    <p>
-        We first calculate the reflection coefficients for the S- and P-components which are a function of the incident angle $\theta_{inc}$ and the refractive index of aluminum
-    </p>
 
-    \begin{equation}
-    \theta_{inc} = \cos^{-1}\left(\hat{N}_{mirr}\cdot-\hat{D}_3\right)
+    \begin{equation}\label{nal}
+    n_{Al}(90GHz,240K) = 2190(1+i)
     \end{equation}
 
-    <p>Note: that $\hat{D}_3$ is negative because it normally points into the mirror and we need to calculate the angle with it pointing out of the mirror.</p>
+<p>In an earlier attempt, we used the refractive index of silver 100 at 5 &mu;m from Borne and Wolf and the ratio of the conductances of silver to aluminum at 290 Kelvin given from the CRC handbook of 2.82/1.59 and scaled to 240K at 90GHz (3333 &mu;m):</p>
 
-    <p>And the coefficients are calculated as</p>
     \begin{equation}
     \begin{split}
-    &r_S = \frac{n_{air}\cos\theta_{inc}-n_{al}\sqrt{1-\left(\frac{n_{air}}{n_{al}}\sin\theta_{inc}\right)}}{n_{air}\cos\theta_{inc}+n_{al}\sqrt{1-\left(\frac{n_{air}}{n_{al}}\sin\theta_{inc}\right)}}\\
-    &r_P = \frac{n_{air}\sqrt{1-\left(\frac{n_{air}}{n_{al}}\sin\theta_{inc}\right)}-n_{al}\cos\theta_{inc}}{n_{air}\sqrt{1-\left(\frac{n_{air}}{n_{al}}\sin\theta_{inc}\right)}+n_{al}\cos\theta_{inc}}\\
+    n_{Al} &= n_{Ag} \sqrt{\frac{\lambda_{Al}}{\lambda_{Ag}}\frac{\sigma_{Al}}{\sigma_{Ag}}\frac{T_{0}}{T}}\\
+    &= 100 \sqrt{\frac{3333}{5}\frac{1.59}{2.82}\frac{290}{240}}
+    & = 2140(1+i)
     \end{split}
     \end{equation}
 
-    <p>During the calculations, $n_{air}=1$ and $n_{al}=2200(1+i)$ as described above. The reflection coefficients as a function of incident angle are plotted below.</p>
+    and is within 3% of the index I get from Eq. \ref{nal} following <a href="data/reflectivity_of_metals_at_mm_wavelengths_SPandB.pdf" target="_blank">Serov et al. (2016)</a>.
 
+    <p>Below is a plot of the reflectivity of the S- and P-components given an index of refraction of aluminum of 2200.</p>
 
 
 
@@ -135,8 +183,24 @@
     </figure>
 
 
-For the detectors on BICEP3, I use the functions in <tt>keck_beam_map_pointing</tt> to calculate the incident angle on a mirror with $45^\circ$ tilt and $0^\circ$ roll and plot the incident angle as a function of location on the focal plane in Fig 1.2.
+    <h3>Calculating Angle of Incidence using the BK Pointing Model</h3>
 
+    <p>To calculate the new adjusted polarization angle, we start with the set of basis vectors which define the detector pointing $\left[\hat{D}_1,\,\hat{D}_2,\,\hat{D}_3\right]$, the basis vector which describes the co-polar axis $\hat{D}_p$ (See <a href="JAC2019"></a>, &sect;II), and the vector which describes the mirror normal $\hat{N}_{mirr}$.</p>
+
+    <p>
+        We first calculate the reflection coefficients for the S- and P-components which are a function of the incident angle $\theta_{inc}$
+    </p>
+
+    \begin{equation}
+    \theta_{inc} = \cos^{-1}\left(\hat{N}_{mirr}\cdot-\hat{D}_3\right)
+    \end{equation}
+
+    <p>Note: that $\hat{D}_3$ is negative because it normally points into the mirror and we need to calculate the angle with it pointing out of the mirror.</p>
+
+
+<p>
+For the detectors on BICEP3, I use the functions in <tt>keck_beam_map_pointing</tt> to calculate the incident angle on a mirror with $45^\circ$ tilt and $0^\circ$ roll and plot the incident angle as a function of location on the focal plane in Fig 1.2.
+</p>
 <figure>
 
 <img alt="" id="tp" src="#" onerror="this.src='plot_blank.png';" width=50% />
@@ -191,6 +255,8 @@ Incident angle as a function of pixel location on the focal plane per DK-angle.
     \tilde{D}_P = r_S V_S + r_P V_P
     \end{equation}
 
+    <p>The coefficients are calculated from Eq. \ref{refcoeffs} using $n_1=1$ and $n_2=2200(1+i)$ as described above.</p>
+
     <p>Then we can convert $\tilde{D}_P$ into a polarization angle working backwards from Eq. 6 in <a href="JAC2019"></a></p>
 
     \begin{equation}\label{newangle}
@@ -203,7 +269,8 @@ Incident angle as a function of pixel location on the focal plane per DK-angle.
     \phi_{pair} \sim \frac{\phi_A+\left(\phi_B-90^\circ\right)}{2}
     \end{equation}
 
-    <p>The figure below shows the level of bias for input angles of 0&deg; and 90&deg; and for different distances away from the focal plane as a function of DK angle. As we can see, the level of bias on the polarization angle can get quite high depending on the deck angle and the effect is equal and opposite for the orthogonal polarization state. So while it is significant when just looking at pol A or Pol B, the effect cancels out in the pair-difference signal.</p>
+    <p>The figure below shows the level of bias for input angles of 0&deg; and 90&deg; and for different distances away from the focal plane as a function of DK angle. As we can see, the level of bias on the polarization angle can get quite high depending on the deck angle and is more severe for pixels farther away from the boresight.
+        Additionally, the effect is equal and opposite for the orthogonal polarization state. So while it is significant when just looking at pol A or Pol B, the effect cancels out in the pair-difference signal.</p>
 
     <figure>
         <img src="figs/phi_bias.png" width="60%"/>
