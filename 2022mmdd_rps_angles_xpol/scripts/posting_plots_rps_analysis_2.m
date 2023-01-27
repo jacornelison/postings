@@ -35,7 +35,7 @@ cmlines = colormap('lines');
 [fd.theta, fd.r] = pol2cart(fd.x,fd.y);
 fd.theta = fd.theta*180/pi;
 
-fd.phi_corr = mirror_diff_pol_calc(fd.phi,fd.r,fd.theta,2132,2132,fd.dk_cen,fd.mirr_tilt,fd.mirr_roll);
+fd.phi_corr = mirror_diff_pol_calc(fd.phi,fd.r,fd.theta,2200,2200,fd.dk_cen,fd.mirr_tilt,fd.mirr_roll);
 fd.phi_corr = reshape(fd.phi_corr,size(fd.ch));
 
 
