@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>Birefringence Analysis: polrot data subsets</title>
+    <title>polrot data subsets</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -29,10 +29,10 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Birefringence Analysis: Cross checking angles in B2018 data subsets</h1>
+    <h1>Isotropic Polarization Rotation Analysis: Cross checking angles in B2018 data subsets</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
-        yyyy Mmm dd
+        2023 Jan 20
     </time> —
     J. Cornelison
 </header>
@@ -61,174 +61,77 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
     <figure>
         <img src="figs/hist_diffphi.png">
         <figcaption>
-            Histogram
+            Histogram of the difference between RPS-derived and CMB-derived pair-diff polarization angles. The colored vertical lines denote the intended grouping of the subsets of data.
         </figcaption>
     </figure>
-
-    <p>The limiting factor to this technique is going to be the increased uncertainty on &alpha; due to decreasing the detector count and map coverage. So before I create new sims or do anything with the real data, I want to know beforehand whether of not the data has the statistical power at these lower detector-counts/map-coverages to differentiate the angles. I can quickly check this by looking first at some subsets created from the 10 B2018 sims I made for my previous posting <a href="JAC2022"></a>. These sims use the same polarization angles at both the TOD-creation and mapmaking stage so the mean angles will be zero but the distribution should accurately reflect what we can expect when we try doing this on the real data or with sims with as-measured angles injected into them.
-    </p>
-    <p>
-        The figure below shows the same pager from Fig 2.1, but now includes APS of the three data subsets. My previous posting showed that the B18 purifcation matrix still worked on the whole-year B2018 daughter sims, so I also applied it to these smaller subsets as well to see if it still works.</p>
-    <figure>
-        <img alt="Name pager" id="apspager2" src="#" width="85%" onerror=this.src="figs/blank.png" />
-        <figcaption>
-            A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell. Note that no matrix purification was applied to just B2018, so matrix purified APS are shown for only my sims.
-        </figcaption>
-
-        <script type="text/javascript">
-            pager.link("#apspager2",
-                {
-                    'Signal Type|sig2': ['2','3','5','6','7','8'],
-                    'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
-                    'Simset|sernum3': ['B2018|6614','B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
-                    'y-axes|axes': ['Fixed|_fixed','Free|_free']
-                },
-                function(params) {
-                    return 'figs/aps_'+params.sernum3+'_'+params.pure+params.sig2+params.axes+'.png';
-                });
-            pager.setparams({
-                'sig2': '2',
-                'pure': '',
-                'sernum3': '6600',
-                'axes': '_fixed',
-            });
-        </script>
-    </figure>
-
-    <p>
-        Not surprisingly, we see a slight increase in variance in the smaller B2018 subsets due to a drop in detector-count and coverage. On the plus side, we can still see that the purification matrix still appears to be working effectively.
-    </p>
 
     <p>
         I now fit the global rotation angle to each signal type of each subset and examine the distributions.
     </p>
 
+    <p>As we saw in my previous posting <a href="JAC2023b"></a>, we can calculate the expected angles by taking the uniform mean of the difference between the RPS-derived and CMB-derived polarization angles.</p>
+
+    <p>Expected angles:</p>
+
+    <ul>
+        <li>B2018+RPS: -0.778&deg;</li>
+        <li>subset-lower: -1.069&deg;</li>
+        <li>subset-middle: -0.796&deg;</li>
+        <li>subset-upper: -0.468&deg;</li>
+    </ul>
+
+    <p>The pager below shows the expected angle vs. the mean alpha of the the realizations per-signal type with the 1-&sigma; standard deviations as the error bars.</p>
+
+
     <figure>
-        <img alt="Name pager" id="histpager2" src="#" onerror=this.src="figs/blank.png" width="65%"/>
+        <img alt="Name pager" id="comparpager" src="#" onerror=this.src="figs/blank.png" width="75%"/>
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
-            pager.link("#histpager2",
+            pager.link("#comparpager",
                 {
-                    'Sim Type|sig': ['2','3','5','6','7','8'],
-                    'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
-                    'Simset|sernum4': ['B2018|3553','B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
+                    'Signal Type|sig2': ['Unlensed-LCDM|2','Lensed-LCDM|5','L-LCDM+Noise|7','L-LCDM+N+Dust|8'],
+
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.sernum4+params.pure+params.sig+'.png';
+                    return 'figs/subset_mean_compare_type_'+params.sig2+'.png';
                 });
             pager.setparams({
-                'sig': '2',
-                'pure': '',
-                'sernum4': '6600',
+                'sig2': '2',
+
             });
         </script>
     </figure>
 
-    <p>
-        In the Type-8 sims, the scatter in the histograms for the subsets increases by roughly a factor of two compared to B2018-rerun. Still, since the differences in angle between each subset is at least ~0.3&deg;, we should be able to detect the differences in angle to >1-&sigma; in the real data. We can also see that the purification matrix still appears to work on these subsets, albeit to a lesser degree. All of the means are consistent with zero, so I think it's still appropriate to continue using the B18 matrix in lieu of creating new daughter matrices. I tabulate the statistics from the histograms in the figure below:
-    </p>
 
-    <figure class="table">
-        <table class="results">
-            <tr>
-                <th></th>
-                <th colspan="8">EB</th>
-            </tr>
-            <tr>
-                <th></th>
-                <th colspan="2">B2018-rerun</th>
-                <th colspan="2">B2018-lower</th>
-                <th colspan="2">B2018-middle</th>
-                <th colspan="2">B2018-upper</th>
-            </tr>
-            <tr>
-                <th class="cstart">Signal</th>
-                <th class="cstart">Mean (&deg;)</th>
-                <th>STD (&deg;)</th>
-                <th class="cstart">Mean (&deg;)</th>
-                <th class=>STD (&deg;)</th>
-                <th class="cstart">Mean (&deg;)</th>
-                <th>STD (&deg;)</th>
-                <th class="cstart">Mean (&deg;)</th>
-                <th>STD (&deg;)</th>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.00</td>
-                <td class='cstart'>0.0</td>
-                <td>0.01</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.01</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.01</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td class='cstart'>0.0</td>
-                <td>0.00</td>
-                <td class='cstart'>0.0</td>
-                <td>0.00</td>
-                <td class='cstart'>0.0</td>
-                <td>0.00</td>
-                <td class='cstart'>0.0</td>
-                <td>0.00</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.06</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.06</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.06</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.06</td>
-            </tr>
-            <tr>
-                <td>6</td>
-                <td class='cstart'>0.0</td>
-                <td>0.01</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.03</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.04</td>
-                <td class='cstart'>0.0</td>
-                <td>0.04</td>
-            </tr>
-            <tr>
-                <td>7</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.07</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.12</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.13</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.13</td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.08</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.14</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.14</td>
-                <td class='cstart'>-0.0</td>
-                <td>0.14</td>
-            </tr>
-        </table>
+
+    <p>The pager below shows the resulting differences of the angles </p>
+
+    <figure>
+        <img alt="Name pager" id="diffpager" src="#" onerror=this.src="figs/blank.png" width="75%"/>
         <figcaption>
 
         </figcaption>
+        <script type="text/javascript">
+            pager.link("#diffpager",
+                {
+                    'Signal Type|sig2': ['Unlensed-LCDM|2','Lensed-LCDM|5','L-LCDM+Noise|7','L-LCDM+N+Dust|8'],
+
+                },
+                function(params) {
+                    return 'figs/subset_diff_compare_type_'+params.sig2+'.png';
+                });
+            pager.setparams({
+                'sig2': '2',
+
+            });
+        </script>
     </figure>
 
-    <p>
-        Before we try this on the real data, my next step is to attempt this on sims with preliminary RPS angles used during TOD creation.
-    </p>
+
+
+
 </section>
 <section><h2>Conclusions</h2>
 
@@ -238,6 +141,59 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+
+    <h3>APS for data Subsets</h3>
+
+    <figure>
+        <img alt="Name pager" id="apspager2" src="#" width="85%" onerror=this.src="figs/blank.png" />
+        <figcaption>
+
+        </figcaption>
+
+        <script type="text/javascript">
+            pager.link("#apspager2",
+                {
+                    'Signal Type|sig2': ['2','3','5','6','7','8'],
+                    'Simset|sernum3': ['B2018|6614','B2018+RPS|6606','subset-lower|6607','subset-middle|6608','subset-upper|6609'],
+                    'y-axes|axes': ['Fixed|_fixed','Free|_free']
+                },
+                function(params) {
+                    return 'figs/aps_'+params.sernum3+'_matrix_'+params.sig2+params.axes+'.png';
+                });
+            pager.setparams({
+                'sig2': '2',
+                'sernum3': '6607',
+                'axes': '_fixed',
+            });
+        </script>
+    </figure>
+
+<h3>Alpha histograms for data subsets</h3>
+
+    <figure>
+        <img alt="Name pager" id="histpager3" src="#" onerror=this.src="figs/blank.png" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager3",
+                {
+                    'Signal Type|sig': ['Unlensed-LCDM|2','Dust Only|3','Lensed-LCDM|5','Noise Only|6','L-LCDM+Noise|7','L-LCDM+N+Dust|8'],
+                    'Simset|sernum5': ['B2018+RPS|6606','subset-lower|6607','subset-middle|6608','subset-upper|6609'],
+                },
+                function(params) {
+                    return 'figs/alpha_hist_'+params.sernum5+'matrix_'+params.sig+'_corr.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                'sernum5': '6606',
+            });
+        </script>
+    </figure>
+
+
+
+    <h3>Focal Plane Coverage for data subsets</h3>
     <figure>
         <img alt="Name pager" id="coveragepager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
         <figcaption>
@@ -372,7 +328,8 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
             "JBW2016",
             "EWB2016a",
             "EWB2016b",
-            "JAC2022",
+            "JAC2023a",
+            "JAC2023b"
         ];
 
         // Links
@@ -382,7 +339,8 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
             "bkcmb/analysis_logbook/analysis/20160907_polrot/",
             "bkcmb/analysis_logbook/analysis/20161103_polrotsims_pager/",
             "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
-            "bkcmb/analysis_logbook/analysis/20221213_birefringence_fits_to_B2018/index.html",
+            "jcornelison/postings/20221213_birefringence_fits_to_B2018/index.html",
+            "jcornelison/postings/20221213_birefringence_pol_rot_sims/",
 
         ];
 
@@ -393,6 +351,7 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
             "Polarization Rotation Sims Pager",
             "Polarization Rotation Sims Global Rotation",
             "Uniform Birefringence Analysis I: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sims",
         ];
         // Debug
         var posty = document.getElementById("testp");

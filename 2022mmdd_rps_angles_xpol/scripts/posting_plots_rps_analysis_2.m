@@ -1,6 +1,10 @@
 function posting_plots_rps_analysis_2()
 
 %%
+addpath('z:/dev/rps/')
+addpath('z:/pipeline/beammap')
+addpath('z:/pipeline/util')
+%%
 clear all
 close all
 
@@ -38,7 +42,14 @@ fd.theta = fd.theta*180/pi;
 fd.phi_corr = mirror_diff_pol_calc(fd.phi,fd.r,fd.theta,2200,2200,fd.dk_cen,fd.mirr_tilt,fd.mirr_roll);
 fd.phi_corr = reshape(fd.phi_corr,size(fd.ch));
 
-
+for chind = 1:length(fd.ch)
+    % Obs Number
+    for schind = 1:length(scheds)
+        if ismember(fd.schnum(chind),scheds{schind})
+            fd.obsnum(chind) = schind;
+        end
+    end
+end
 
 % If 1 use chflags from B18
 if 1
@@ -530,6 +541,23 @@ for chind = 1:length(fd.ch)
     end
 end
 
+[phis,phi_pair,...
+    phis_corr,phi_pair_corr,...
+    phis_notilt,phi_pair_notilt] = deal(NaN(length(dks),length(p.gcp)));
+for obsind = 1:size(phi_pair_corr,1)
+    for chind = 1:size(phi_pair_corr,2)
+        ind = find(fd.obsnum==obsind & fd.ch==chind);
+        if ~isempty(ind)
+            phis(obsind,chind) = nanmean(fd.phi(ind));
+            phi_pair(obsind,chind) = nanmean(fd.phi_pair(ind));
+            phis_corr(obsind,chind) = nanmean(fd.phi_corr(ind));
+            phi_pair_corr(obsind,chind) = nanmean(fd.phi_pair_corr(ind));
+            phis_notilt(obsind,chind) = nanmean(fd.phi_notilt(ind));
+            phi_pair_notilt(obsind,chind) = nanmean(fd.phi_pair_notilt(ind));
+        end
+    end
+end
+
 
 
 % Mirror coords
@@ -656,6 +684,84 @@ title({'No Pol Correction',...
     nanstd(V{pltind})./sqrt(length(find(~isnan(V{pltind})))))})
 xlim([edges([1 end])])
 end
+
+%% Look at hists of phis vs correction
+% This does a good job of showing that 
+
+vals = {phis_notilt,phis,phis_corr};
+valttls = {'No Correction','Tilt Only','Tilt + Diff-Pol'};
+
+fig = figure(1);
+fig.Position(3:4) = [1100,400];
+clf;
+
+for pltind = 1:length(vals)
+    subplot(1,3,pltind)
+    V = nanmean(vals{pltind}(:,ind0),2);
+    edges = (-1:0.15:1)*0.15-2.36;
+    N = histc(V,edges);
+    b = bar(edges,N,'histc');
+    b.FaceColor = cmlines(1,:);
+    M = nanmean(V);
+    S = nanstd(V);
+    L = length(find(~isnan(V)));
+    title({valttls{pltind},...
+        sprintf('M: %0.4f | S: %0.4f | N: %i | EOM: %0.4f',M,S,L,S./sqrt(L))})
+    grid on
+end
+sgtitle('Pol 0')
+
+% Pol B
+vals = {phis_notilt,phis,phis_corr};
+valttls = {'No Correction','Tilt Only','Tilt + Diff-Pol'};
+
+fig = figure(2);
+fig.Position(3:4) = [1100,400];
+clf;
+
+for pltind = 1:length(vals)
+    subplot(1,3,pltind)
+    V = nanmean(vals{pltind}(:,ind90),2);
+    edges = (-1:0.15:1)*0.15+87.4;
+    N = histc(V,edges);
+    b = bar(edges,N,'histc');
+    b.FaceColor = cmlines(1,:);
+    M = nanmean(V);
+    S = nanstd(V);
+    L = length(find(~isnan(V)));
+    title({valttls{pltind},...
+        sprintf('M: %0.4f | S: %0.4f | N: %i | EOM: %0.4f',M,S,L,S./sqrt(L))})
+    grid on
+end
+sgtitle('Pol 90')
+
+
+% Pair
+vals = {phi_pair_notilt,phi_pair,phi_pair_corr};
+valttls = {'No Correction','Tilt Only','Tilt + Diff-Pol'};
+
+fig = figure(3);
+fig.Position(3:4) = [1100,400];
+clf;
+
+for pltind = 1:length(vals)
+    subplot(1,3,pltind)
+    V = nanmean(vals{pltind}(:,ind0),2);
+    edges = (-1:0.15:1)*0.15-2.5;
+    N = histc(V,edges);
+    b = bar(edges,N,'histc');
+    b.FaceColor = cmlines(1,:);
+    M = nanmean(V);
+    S = nanstd(V);
+    L = length(find(~isnan(V)));
+    title({valttls{pltind},...
+        sprintf('M: %0.4f | S: %0.4f | N: %i | EOM: %0.4f',M,S,L,S./sqrt(L))})
+    grid on
+end
+sgtitle('Pol Pair')
+
+%% Plot Mean phi vs DK
+
 
 
 
