@@ -4,15 +4,18 @@ function posting_plots_rps_analysis_2()
 addpath('z:/dev/rps/')
 addpath('z:/pipeline/beammap')
 addpath('z:/pipeline/util')
+addpath('z:/dev/diff_polarization/')
+addpath('z:/dev')
 %%
 clear all
 close all
+clc
 
 % Load no tilt data
 load('z:/dev/rps/rps_beam_fits_type5_notilt_cut.mat')
 fd_notilt = fd;
 
-% Load Type 9 data
+
 % Load type 9 data
 load('z:/dev/rps/type9_fit_dat_mirrorfitted_cut.mat')
 load('z:/dev/rps/sch_type9.mat')
@@ -597,53 +600,66 @@ fd.tod = fd.t-floor(fd.t);
 fd.xpol_corr = fd.xpol;
 
 clc
-corrnames = {'','_corr','_notilt'};
-for corrind = 2%1:length(corrnames)
-    Y = {'phi', 'phi','phi_pair';
-        'xpol','xpol','poleff'};
-    
-    yidx = {ismember(fd.ch,ind0), ismember(fd.ch,ind90), ismember(fd.ch,ind0)};
-    ynames = {'phi_a','phi_b','phi_p';...
-        'xpol_a','xpol_b','xpol_p'};
-    yttls = {'Pol A','Pol B','Pair-Diff'};
-    ylims = {[-4.5 0], [-4.5 0]+90, [-4.5 0];...
-        [-1 1]*0.02,[-1 1]*0.02, [-1 10]*1e-4};
-    ylims = {[-1 1]*1, [-1 1]*1, [-1 1]*0.5;...
-        [-1 1]*0.01,[-1 1]*0.01, [-1 1]*6e-4};
+medsubnames = {'','_medsub'};
+for medind = 1:length(medsubnames)
+    corrnames = {'','_corr','_notilt'};
+    for corrind = 2%1:length(corrnames)
+        Y = {'phi', 'phi','phi_pair';
+            'xpol','xpol','poleff'};
 
-    X = {'t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun',...
-        'x','y','xm','ym','r','theta','thetam','tod'};
+        yidx = {ismember(fd.ch,ind0), ismember(fd.ch,ind90), ismember(fd.ch,ind0)};
+        ynames = {'phi_a','phi_b','phi_p';...
+            'xpol_a','xpol_b','xpol_p'};
+        yttls = {'Pol A','Pol B','Pair-Diff'};
+        if medind == 1
+        ylims = {[-4.5 0], [-4.5 0]+90, [-4.5 0];...
+            [-1 1]*0.02,[-1 1]*0.02, [-1 10]*1e-4};
+        else
+        ylims = {[-1 1]*1, [-1 1]*1, [-1 1]*0.5;...
+            [-1 1]*0.01,[-1 1]*0.01, [-1 1]*6e-4};
+        end
 
-    fig = figure(51);
-    fig.Position(3:4) = [900 400];
-    clf
+        X = {'t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun',...
+            'x','y','xm','ym','r','theta','thetam','tod'};
+        Xlabs = {'Time [MJD]','Observation Number','Azimuth [Degrees]','Elevation [Degrees]',...
+            'Deck [Degrees]','Inst. Fixed X [Degrees]','Inst. Fixed Y [Degrees]',...
+            'Mirror-Fixed X [Degrees]','Mirror-Fixed Y [Degrees]','Inst. Fixed r [Degrees]',...
+            'Inst. Fixed \theta [Degrees]','Time-of-Day [Days]'};
+        fig = figure(51);
+        fig.Position(3:4) = [900 400];
+        clf
 
-    
-    for valind = 1:size(Y,1)
-        for yind = 1:size(Y,2)
-            Y{valind,yind} = [Y{valind,yind} corrnames{corrind}];
 
-            [medvals] = deal(NaN(1,2640));
-            for chind = 1:length(medvals)
-                ind = fd.ch==chind;
-                medvals(chind) = nanmedian(fd.(Y{valind,yind})(ind));
-            end
-
-            for xind = 1:length(X)
-                if 0
-                    scatter(fd.(X{xind})(yidx{yind}),fd.(Y{valind,yind})(yidx{yind}),14,fd.obsnum(yidx{yind}),'filled')
-                    ylim(ylims{valind,yind})
-                else
-                    y = fd.(Y{valind,yind})(yidx{yind})-medvals(fd.ch(yidx{yind}));
-                    scatter(fd.(X{xind})(yidx{yind}),y,14,fd.dk_cen(yidx{yind}))%,'filled')
-                    ylim(ylims{valind,yind})
+        for valind = 1:size(Y,1)
+            for yind = 1:size(Y,2)
+                Y{valind,yind} = [Y{valind,yind} corrnames{corrind}];
+                
+                if medind == 2
+                [medvals] = deal(NaN(1,2640));
+                for chind = 1:length(medvals)
+                    ind = fd.ch==chind;
+                    medvals(chind) = nanmedian(fd.(Y{valind,yind})(ind));
                 end
-                colormap(cm)
-                grid on
-                xlabel(X{xind})
-                ylabel(Y{valind,yind})
-                fname = sprintf('scatter_%s_vs_%s%s.png',ynames{valind,yind},X{xind},corrnames{corrind});
-                saveas(fig,fullfile(figdir,fname))
+                else
+                    medvals = zeros(1,2640);
+                end
+
+                for xind = 1:length(X)
+                    if 0
+                        scatter(fd.(X{xind})(yidx{yind}),fd.(Y{valind,yind})(yidx{yind}),14,fd.obsnum(yidx{yind}),'filled')
+                        ylim(ylims{valind,yind})
+                    else
+                        y = fd.(Y{valind,yind})(yidx{yind})-medvals(fd.ch(yidx{yind}));
+                        scatter(fd.(X{xind})(yidx{yind}),y,14,fd.dk_cen(yidx{yind}))%,'filled')
+                        ylim(ylims{valind,yind})
+                    end
+                    colormap(cm)
+                    grid on
+                    xlabel(Xlabs{xind})
+                    ylabel(Y{valind,yind})
+                    fname = sprintf('scatter_%s_vs_%s%s%s.png',ynames{valind,yind},X{xind},corrnames{corrind},medsubnames{medind});
+                    saveas(fig,fullfile(figdir,fname))
+                end
             end
         end
     end
