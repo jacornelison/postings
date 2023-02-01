@@ -601,16 +601,19 @@ fd.xpol_corr = fd.xpol;
 
 clc
 medsubnames = {'','_medsub'};
-for medind = 1:length(medsubnames)
+for medind = 2%1:length(medsubnames)
     corrnames = {'','_corr','_notilt'};
-    for corrind = 2%1:length(corrnames)
+    for corrind = 1:length(corrnames)
         Y = {'phi', 'phi','phi_pair';
             'xpol','xpol','poleff'};
 
-        yidx = {ismember(fd.ch,ind0), ismember(fd.ch,ind90), ismember(fd.ch,ind0)};
-        ynames = {'phi_a','phi_b','phi_p';...
-            'xpol_a','xpol_b','xpol_p'};
-        yttls = {'Pol A','Pol B','Pair-Diff'};
+        yidx = {ismember(fd.ch,ind0)&p.tile(fd.ch)'==11, ismember(fd.ch,ind90)&p.tile(fd.ch)'==11, ismember(fd.ch,ind0)};
+        ynames = {'phi_0','phi_90','phi_p';...
+            'xpol_0','xpol_90','xpol_p'};
+
+        Ylabs = {'\phi_0 [Degrees]','\phi_{90} [Degrees]','\phi_{pair} [Degrees]';...
+            '\epsilon_0','\epsilon_90','Pol Eff.'};
+        %yttls = {'Pol 0','Pol 90','Pair-Diff'};
         if medind == 1
         ylims = {[-4.5 0], [-4.5 0]+90, [-4.5 0];...
             [-1 1]*0.02,[-1 1]*0.02, [-1 10]*1e-4};
@@ -622,15 +625,16 @@ for medind = 1:length(medsubnames)
         X = {'t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun',...
             'x','y','xm','ym','r','theta','thetam','tod'};
         Xlabs = {'Time [MJD]','Observation Number','Azimuth [Degrees]','Elevation [Degrees]',...
-            'Deck [Degrees]','Inst. Fixed X [Degrees]','Inst. Fixed Y [Degrees]',...
-            'Mirror-Fixed X [Degrees]','Mirror-Fixed Y [Degrees]','Inst. Fixed r [Degrees]',...
-            'Inst. Fixed \theta [Degrees]','Time-of-Day [Days]'};
+            'Sun Azimuth [Degrees]','Sun Elevation [Degrees]',...
+            'Deck [Degrees]','Inst.-Fixed X [Degrees]','Inst.-Fixed Y [Degrees]',...
+            'Mirror-Fixed X [Degrees]','Mirror-Fixed Y [Degrees]','Inst.-Fixed r [Degrees]',...
+            'Inst.-Fixed \theta [Degrees]','Mirror-Fixed \theta [Degrees]','Time-of-Day [Days]'};
         fig = figure(51);
         fig.Position(3:4) = [900 400];
         clf
 
 
-        for valind = 1:size(Y,1)
+        for valind = 1%1:size(Y,1)
             for yind = 1:size(Y,2)
                 Y{valind,yind} = [Y{valind,yind} corrnames{corrind}];
                 
@@ -644,19 +648,20 @@ for medind = 1:length(medsubnames)
                     medvals = zeros(1,2640);
                 end
 
-                for xind = 1:length(X)
+                for xind = 5%1:length(X)
                     if 0
                         scatter(fd.(X{xind})(yidx{yind}),fd.(Y{valind,yind})(yidx{yind}),14,fd.obsnum(yidx{yind}),'filled')
                         ylim(ylims{valind,yind})
                     else
                         y = fd.(Y{valind,yind})(yidx{yind})-medvals(fd.ch(yidx{yind}));
-                        scatter(fd.(X{xind})(yidx{yind}),y,14,fd.dk_cen(yidx{yind}))%,'filled')
+                        %scatter(fd.(X{xind})(yidx{yind}),y,14,fd.dk_cen(yidx{yind}))%,'filled')
+                        scatter(fd.(X{xind})(yidx{yind}),y,14,p.tile(fd.ch(yidx{yind}))')%,'filled')
                         ylim(ylims{valind,yind})
                     end
                     colormap(cm)
                     grid on
                     xlabel(Xlabs{xind})
-                    ylabel(Y{valind,yind})
+                    ylabel(Ylabs{valind,yind})
                     fname = sprintf('scatter_%s_vs_%s%s%s.png',ynames{valind,yind},X{xind},corrnames{corrind},medsubnames{medind});
                     saveas(fig,fullfile(figdir,fname))
                 end
@@ -776,7 +781,45 @@ for pltind = 1:length(vals)
 end
 sgtitle('Pol Pair')
 
-%% Plot Mean phi vs DK
+%% Plot phi0 vs phi90
+clc
+corrvals = {phis_notilt,phis, phis_corr};
+corrttls = {'Pol 90 Vs Pol 0, No corrections','Pol 90 Vs Pol 0,Tilt Correction',...
+    'Pol 90 Vs Pol 0, tilt & Diff-Pol-Ref Correction'};
+corrnames = {'_notilt','','_corr'};
+for corrind = 1:3
+
+fig = figure(1);
+fig.Position(3:4) = [600 500];
+clf; hold on;
+V = corrvals{corrind}-repmat(nanmedian(corrvals{corrind},1),size(phis,1),1);
+legttls = titles;
+%ttls{end+1} = 'Slope=-1';
+%plot(V(:,ind0(p.mce(ind0)~=0))',V(:,ind90(p.mce(ind0)~=0))','.')
+z = plot(V(:,ind0)',V(:,ind90)','.');
+lims = [-1 1];
+plot(lims,-lims,'k--')
+xlim(lims)
+ylim(lims)
+grid on
+xlabel('\phi_{0}-Md(\phi_{0}) [Degrees]')
+ylabel('\phi_{90}-Md(\phi_{90}) [Degrees]')
+leg = legend(z,legttls);
+title(leg,'DK''s:')
+title(corrttls{corrind})
+
+fname = sprintf('pol90_vs_pol0%s.png',corrnames{corrind});
+saveas(fig,fullfile(figdir,fname),'png')
+end
+
+%% Estimator for diff pol correction
+
+function model = get_corr_model(phis,dks,ind0,ind90)
+    medvals = nanmedian();
+
+end
+
+
 
 
 

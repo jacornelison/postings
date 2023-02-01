@@ -2,7 +2,7 @@ function posting_plots_mirror_diff_pol()
 
 clear all
 close all
-postdir = fullfile('C:','Users','James','Documents','GitHub','postings','2019mmdd_rps_reflection_polarization','');
+postdir = fullfile('C:','Users','James','Documents','GitHub','postings','20230127_diff_reflection_polarization','');
 datadir = fullfile(postdir,'data','');
 figdir = fullfile(postdir,'figs','');
 %load(fullfile(datadir,'b3rpsfiles.mat'))
@@ -116,7 +116,7 @@ clf; hold on;
 
 clc
 rs = [0 7 14];
-DK = -180:45:180;
+DK = -180:5:180;
 phi_rot = NaN(length(DK),2);
 phi0 = {0 90};
 ylabs = {'\phi','\phi','\phi_{pair}'};
@@ -158,7 +158,7 @@ clf; hold on;
 
 clc
 rs = [0 7 14];
-DK = -180:45:180;
+DK = -180:5:180;
 phi_rot = NaN(length(DK),2);
 phi0 = {0 90};
 ylabs = {'\phi','\phi','\phi_{pair}'};
