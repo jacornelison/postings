@@ -5,45 +5,74 @@ addpath('z:/dev/rps')
 figdir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_grid_cal','figs','');
 datadir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_grid_cal','data','');
 
+%% Histogram of the wire grid measurements
 
-%% Plot of pol angles vs time
+load(fullfile(datadir,'grid_cal_homing_angles_07Oct2022.mat'))
+gc = grid_cal_homing_angles;
 
-load('z:/dev/rps/rps_beam_fits_type5_final_cut')
-load('z:/dev/rps/phi_pairs_per_obs.mat')
-load('z:/dev/rps/sch_type5.mat')
+% Before going on the mast
+clc;
+fig = figure(1);
+fig.Position(3:4) = [1000 500];
+clf; hold on
+subplot(1,2,1)
+edges = (-0.1:0.005:0.1);
+ind = gc(:,5)~=0;
+X = gc(ind,5);
+N = histc(X,edges);
+bar(edges,N,'histc');
+grid on
+xlim([min(edges),max(edges)])
+ylim([0 6])
+xlabel({'Grid Angle WRT ref surface [Deg]'})
+ylabel('N')
+title({'At Pole, Fine homing sw., 23 Dec 2021','Homed between each measurement'})
+text(0.015,4.5,{...
+sprintf('Mean: %0.2E',nanmean(X)),...
+sprintf('STD : %0.2E',nanstd(X)),...
+'No Measureable Backlash',...
+    })
 
-clc
-[fd.t, fd.phi_pair] = deal(NaN(size(fd.ch)));
-for chind = 1:length(fd.ch)
-    s = sch{fd.schnum(chind)};
-    idx = s.index(fd.rowind(chind),1);
-    fd.t(chind) = s.scans(idx).t1;
+% Return from Pole
+clc;
+%fig = figure(2);
+%fig.Position(3:4) = [500 500];
+subplot(1,2,2)
+hold on
+edges = (-0.1:0.005:0.1);
+ind = gc(:,6)~=0;
+X = gc(ind,6);
+N = histc(gc(ind,6),edges);
+bar(edges,N,'histc');
+text(-0.085,4.5,{...
+'Backlash holding CW',...
+sprintf('Mean: %0.2E',nanmean(X)),...
+sprintf('STD : %0.2E',nanstd(X)),...
+    })
 
-    % Obs Number
-    for schind = 1:length(scheds)
-        if ismember(fd.schnum(chind),scheds{schind})
-            fd.obsnum(chind) = schind;
-        end
-    end
+%edges = (-1:0.1:1)*0.03+0.06;
+ind = gc(:,7)~=0;
+X = gc(ind,7);
+N = histc(gc(ind,7),edges);
+bar(edges,N,'histc');
+text(0.025,2.5,{...
+'Backlash holding CCW',...
+sprintf('Mean: %0.2E',nanmean(X)),...
+sprintf('STD : %0.2E',nanstd(X)),...
+    })
 
-    % Phi/poleff pair
-    isind0 = find(ismember(ind0,fd.ch(chind)));
-    if ~isempty(isind0)
-        has90 = find(fd.schnum == fd.schnum(chind) & fd.rowind==fd.rowind(chind) & fd.ch == ind90(isind0));
-        if ~isempty(has90)
-            [fd.phi_pair(chind) fd.poleff(chind)] = calc_pair_diff_pol(fd.phi(chind),...
-                nanmean(fd.phi(has90)),fd.xpol(chind),nanmean(fd.xpol(has90)));
-        end
-    end
-        
-end
+grid on
+xlim([min(edges),max(edges)])
+%ylim([0 4])
+xlabel('Grid Angle WRT ref surface [Deg]')
+ylabel('N')
+title({'In-Lab, Fine homing sw., 02 Oct 2022','Homed between each measurement'})
 
-medvals = nanmedian(phi_pair,1);
-fig = figure(11);
-fig.Position(3:4) = [900 500];
-clf;
-plot(fd.t,fd.phi_pair-medvals(fd.ch),'.')
-ylim([-1 1]*0.2)
+sgtitle('Wire Grid Cal on Bridgeport')
+
+figname = fullfile(figdir,'grid_cal.png');
+saveas(fig,figname)
+
 
 %% Tilt Cals
 clc

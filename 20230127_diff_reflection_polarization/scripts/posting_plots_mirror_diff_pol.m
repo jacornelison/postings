@@ -195,5 +195,90 @@ saveas(fig,fullfile(figdir,fname),'png')
 
 
 
+%% Plot angle at a large r/theta for various angles
+fig = figure(2);
+clf; hold on;
 
+clc
+rs = [0 7 14];
+zeta = -180:5:180;
+phi_rot = NaN(length(zeta),2);
+phi0 = {0 90};
+ylabs = {'\phi','\phi','\phi_{pair}'};
+ttls = {'Input of 0 degrees','Input of 90 Degrees','Pair-Diff Angle'};
+for phiind = 1:(length(phi0)+1)
+    subplot(3,1,phiind)
+    hold on
+for rind = rs
+
+    if phiind ~=3
+    phi_in = zeta+phi0{phiind};
+    r = zeros(size(zeta))+rind;
+    DK = zeros(size(zeta));
+    theta = zeros(size(zeta));
+    mtilt = zeros(size(zeta))+45;
+    mroll = zeros(size(zeta));
+    
+    V = mirror_diff_pol_calc(phi_in,r,theta,2200,2200,DK,mtilt,mroll);
+    %V = mirror_diff_pol_correction(V,r,theta,2400,2400,DK,mtilt,mroll);
+    phi_rot(:,phiind) = wrapTo180(V-zeta');
+    plot(zeta,wrapTo180(V-zeta'))
+    else
+        V = wrapTo180((phi_rot(:,1)+phi_rot(:,2)-90)/2);
+        plot(zeta,wrapTo180(V))
+    end
+    
+    
+end
+legend({'r = 0deg' 'r = 7deg' 'r = 14deg'})
+grid on
+title(ttls{phiind})
+    ylabel([ylabs{phiind} ' [Degrees]'])
+
+end
+xlabel('Zeta [Degrees]')
+%fname = 'phi_bias.png';
+%saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot mirror diff pol at opposite ends of the FP
+fig = figure(1);
+clf; hold on;
+
+clc
+rs = [12 12];
+ths = [25 -155];
+DK = -180:5:180;
+phi_rot = NaN(length(DK),2);
+phi0 = {0 90};
+ylabs = {'\phi','\phi','\phi_{pair}'};
+ttls = {'Input of 0 degrees','Input of 90 Degrees','Pair-Diff Angle'};
+for phiind = 1:(length(phi0)+1)
+    subplot(3,1,phiind)
+    hold on
+for rind = 1:length(rs)
+    if phiind ~=3
+    phi_in = zeros(size(DK))+phi0{phiind};
+    r = zeros(size(DK))+rs(rind);
+    theta = zeros(size(DK))+ths(rind);
+    mtilt = zeros(size(DK))+45;
+    mroll = zeros(size(DK));
+    
+    V = mirror_diff_pol_calc(phi_in,r,theta,2200,2200,DK,mtilt,mroll);
+    %V = mirror_diff_pol_correction(V,r,theta,2400,2400,DK,mtilt,mroll);
+    phi_rot(:,phiind) = V;
+    else
+        V = (phi_rot(:,1)+phi_rot(:,2)-90)/2;
+    end
+    plot(DK,V)
+    
+end
+legend({'r = 0deg' 'r = 7deg' 'r = 14deg'})
+grid on
+title(ttls{phiind})
+    ylabel([ylabs{phiind} ' [Degrees]'])
+
+end
+xlabel('DK [Degrees]')
+% fname = 'phi_bias.png';
+% saveas(fig,fullfile(figdir,fname),'png')
 

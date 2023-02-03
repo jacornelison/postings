@@ -30,10 +30,12 @@ fd.schnum = fd.sch;
 fd_2018 = fd;
 
 load('z:/dev/rps/rps_beam_fits_type5_final_cut')
+dks(2) = -dks(2); % Messed this up somehow.
 load('z:/dev/rps/fpu_data_obs.mat')
 load('z:/pipeline/beammap/viridis_cm.mat')
 load('z:/dev/sims/coaddopt_6600.mat')
 load('z:/dev/rps/sch_type5.mat')
+load('z:/dev/rps/pm.mat')
 p_ind = coaddopt.ind;
 figdir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_angles_xpol','figs','');
 
@@ -502,11 +504,12 @@ for chind = 1:length(fd.ch)
 end
 
 
-%%
+% Create a bunch of extra stuff
+% Also, create the phi and phi-diff per-obs 
 clc
 [fd.t, fd.obsnum,fd.phi_pair, fd.poleff,fd.r,fd.theta,...
     fd.xm,fd.ym,fd.thetam,fd.phi_pair_corr,fd.phi_pair_notilt,...
-    fd.poleff_corr,fd.poleff_notilt] = deal(NaN(size(fd.ch)));
+    fd.poleff_corr,fd.poleff_notilt,fd.pair_idx] = deal(NaN(size(fd.ch)));
 for chind = 1:length(fd.ch)
     s = sch{fd.schnum(chind)};
     idx = s.index(fd.rowind(chind),1);
@@ -524,6 +527,7 @@ for chind = 1:length(fd.ch)
     if ~isempty(isind0)
         has90 = find(fd.schnum == fd.schnum(chind) & fd.rowind==fd.rowind(chind) & fd.ch == ind90(isind0));
         if ~isempty(has90)
+            fd.pair_idx(chind) = has90(1);
             [fd.phi_pair(chind) fd.poleff(chind)] = calc_pair_diff_pol(fd.phi(chind),...
                 nanmean(fd.phi(has90)),fd.xpol(chind),nanmean(fd.xpol(has90)));
             [fd.phi_pair_corr(chind) fd.poleff_corr(chind)] = calc_pair_diff_pol(fd.phi_corr(chind),...
@@ -551,12 +555,21 @@ for obsind = 1:size(phi_pair_corr,1)
     for chind = 1:size(phi_pair_corr,2)
         ind = find(fd.obsnum==obsind & fd.ch==chind);
         if ~isempty(ind)
+            if 1
             phis(obsind,chind) = nanmean(fd.phi(ind));
             phi_pair(obsind,chind) = nanmean(fd.phi_pair(ind));
             phis_corr(obsind,chind) = nanmean(fd.phi_corr(ind));
             phi_pair_corr(obsind,chind) = nanmean(fd.phi_pair_corr(ind));
             phis_notilt(obsind,chind) = nanmean(fd.phi_notilt(ind));
             phi_pair_notilt(obsind,chind) = nanmean(fd.phi_pair_notilt(ind));
+            else
+            phis(obsind,chind) = nanmean(fd.phi(ind)-fd.phi_s(ind)+90);
+            phi_pair(obsind,chind) = nanmean(fd.phi_pair(ind)-fd.phi_s(ind)+90);
+            phis_corr(obsind,chind) = nanmean(fd.phi_corr(ind)-fd.phi_s(ind)+90);
+            phi_pair_corr(obsind,chind) = nanmean(fd.phi_pair_corr(ind)-fd.phi_s(ind)+90);
+            phis_notilt(obsind,chind) = nanmean(fd.phi_notilt(ind)-fd.phi_s(ind)+90);
+            phi_pair_notilt(obsind,chind) = nanmean(fd.phi_pair_notilt(ind)-fd.phi_s(ind)+90);
+            end
         end
     end
 end
@@ -569,7 +582,7 @@ fd.theta = wrapTo360(fd.theta*180/pi);
 fd.thetam = wrapTo360(fd.theta-fd.dk_cen);
 [fd.xm, fd.ym] = pol2cart(fd.thetam*pi/180,fd.r);
 
-%% Grab the moon-sun angles
+% Grab the moon-sun angles
 % MJD, , ,raapp,decapp
 fname = fullfile('z:/dev/sun_check_2022Aug12.txt');
 f = fopen(fname);
@@ -601,13 +614,13 @@ fd.xpol_corr = fd.xpol;
 
 clc
 medsubnames = {'','_medsub'};
-for medind = 2%1:length(medsubnames)
+for medind = 1:length(medsubnames)
     corrnames = {'','_corr','_notilt'};
     for corrind = 1:length(corrnames)
         Y = {'phi', 'phi','phi_pair';
             'xpol','xpol','poleff'};
-
-        yidx = {ismember(fd.ch,ind0)&p.tile(fd.ch)'==11, ismember(fd.ch,ind90)&p.tile(fd.ch)'==11, ismember(fd.ch,ind0)};
+        tiles = [8,14];
+        yidx = {ismember(fd.ch,ind0)&ismember(p.tile(fd.ch)',tiles), ismember(fd.ch,ind90)&ismember(p.tile(fd.ch)',tiles), ismember(fd.ch,ind0)&ismember(p.tile(fd.ch)',tiles)};
         ynames = {'phi_0','phi_90','phi_p';...
             'xpol_0','xpol_90','xpol_p'};
 
@@ -625,8 +638,8 @@ for medind = 2%1:length(medsubnames)
         X = {'t','obsnum','az_cen','el_cen','dk_cen','az_cen_sun','el_cen_sun',...
             'x','y','xm','ym','r','theta','thetam','tod'};
         Xlabs = {'Time [MJD]','Observation Number','Azimuth [Degrees]','Elevation [Degrees]',...
-            'Sun Azimuth [Degrees]','Sun Elevation [Degrees]',...
-            'Deck [Degrees]','Inst.-Fixed X [Degrees]','Inst.-Fixed Y [Degrees]',...
+            'Deck [Degrees]','Sun Azimuth [Degrees]','Sun Elevation [Degrees]',...
+            'Inst.-Fixed X [Degrees]','Inst.-Fixed Y [Degrees]',...
             'Mirror-Fixed X [Degrees]','Mirror-Fixed Y [Degrees]','Inst.-Fixed r [Degrees]',...
             'Inst.-Fixed \theta [Degrees]','Mirror-Fixed \theta [Degrees]','Time-of-Day [Days]'};
         fig = figure(51);
@@ -635,7 +648,7 @@ for medind = 2%1:length(medsubnames)
 
 
         for valind = 1%1:size(Y,1)
-            for yind = 1:size(Y,2)
+            for yind = 1%1:size(Y,2)
                 Y{valind,yind} = [Y{valind,yind} corrnames{corrind}];
                 
                 if medind == 2
@@ -781,26 +794,30 @@ for pltind = 1:length(vals)
 end
 sgtitle('Pol Pair')
 
-%% Plot phi0 vs phi90
+%% Plot psi0 vs psi90
 clc
 corrvals = {phis_notilt,phis, phis_corr};
 corrttls = {'Pol 90 Vs Pol 0, No corrections','Pol 90 Vs Pol 0,Tilt Correction',...
     'Pol 90 Vs Pol 0, tilt & Diff-Pol-Ref Correction'};
 corrnames = {'_notilt','','_corr'};
-for corrind = 1:3
+for corrind = 2%1:3
 
 fig = figure(1);
 fig.Position(3:4) = [600 500];
 clf; hold on;
-V = corrvals{corrind}-repmat(nanmedian(corrvals{corrind},1),size(phis,1),1);
+K = 0*repmat(dks',1,length(corrvals{corrind}));
+%V = corrvals{corrind}-repmat(nanmedian(corrvals{corrind},1),size(phis,1),1);
+V = corrvals{corrind}-0*K-0*repmat(nanmedian(corrvals{corrind}-K,1),size(phis,1),1);
+V(:,ind0) = atand(tand(V(:,ind0)-0*K(:,ind0)));
+V(:,ind90) = atand(tand(V(:,ind90)-0*K(:,ind90)-0*90));
 legttls = titles;
 %ttls{end+1} = 'Slope=-1';
 %plot(V(:,ind0(p.mce(ind0)~=0))',V(:,ind90(p.mce(ind0)~=0))','.')
 z = plot(V(:,ind0)',V(:,ind90)','.');
 lims = [-1 1];
-plot(lims,-lims,'k--')
-xlim(lims)
-ylim(lims)
+%plot(lims,-lims,'k--')
+%xlim(lims)
+%ylim(lims)
 grid on
 xlabel('\phi_{0}-Md(\phi_{0}) [Degrees]')
 ylabel('\phi_{90}-Md(\phi_{90}) [Degrees]')
@@ -809,15 +826,51 @@ title(leg,'DK''s:')
 title(corrttls{corrind})
 
 fname = sprintf('pol90_vs_pol0%s.png',corrnames{corrind});
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
 end
+
+%% Calculate phi_s_prime
+
+clc
+source = struct;
+source.distance = 195.5;
+
+mirror = struct;
+mirror.height = 1.4592;
+p0 = rmfield(p,'expt');
+
+[fd.xp,fd.yp,fd.phi_sp] = deal(NaN(size(fd.ch)));
+for chind = 1:length(fd.ch)
+    source.azimuth = fd.src_az(chind);
+    source.height = source.distance*tand(fd.src_el(chind));
+    mirror.tilt = fd.mirr_tilt(chind);
+    mirror.roll = fd.mirr_roll(chind);
+    [fd.xp(chind),fd.yp(chind),fd.phi_sp(chind)] = beam_map_pointing_model(fd.az_cen(chind),fd.el_cen(chind),fd.dk_cen(chind),...
+        model,'bicep3',mirror,source,structcut(p0,fd.ch(chind)));
+end
+
+%% See if there are differences in phi_s a/b
+clf
+ind = ~isnan(fd.pair_idx);
+plot(fd.phi_medsub(find(ind)),fd.phi_medsub(fd.pair_idx(ind)),'.')
+
+
+
+%% 
+
+clf
+ind = p.tile(ind0)==3;
+plot(repmat(dks',1,length(ind0(ind)))',phis(:,ind0(ind))'-phis(:,ind90(ind))'+90,'.')
+
+
 
 %% Estimator for diff pol correction
-
-function model = get_corr_model(phis,dks,ind0,ind90)
-    medvals = nanmedian();
-
-end
+% Maybe just do a grid first
+clc
+clf
+ind = ~isnan(fd.obsnum);
+plot(dks(fd.obsnum(ind)),-fd.dk_cen(ind),'.')
+grid on
 
 
 
