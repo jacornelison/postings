@@ -32,7 +32,7 @@
     <h1>Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims</h1>
 
     <time datetime="2022-12-13" class="published updated">
-        2022 Dec 13
+        2023 Feb 7
     </time> —
     J. Cornelison
 </header>
@@ -40,14 +40,20 @@
 <hr>
 
 <p>
-    This posting is the first of a series which will ultimately lead to the report of constraints on Uniform Cosmic Birefringence. In this posting I probe for systematics in our pipeline function <tt>reduc_global_rotation</tt> by estimating angles from standard B2018 sim with a known rotation angle of 0&deg;. I also validate my knowledge of the simulation production pipeline by comparing an ensemble of 10 sims I made from B2018 data to the 499 B2018 sims created for the BK18 analysis.
+    This posting is the first of a series which will ultimately lead to the report of constraints on Isotropic Polarization Rotation. In this posting I probe for systematics in our pipeline function <tt>reduc_global_rotation</tt> by estimating angles from standard B2018 sim with a known rotation angle of 0&deg;. I also validate my knowledge of the simulation production pipeline by comparing an ensemble of 10 sims I made from B2018 data to the 499 B2018 sims created for the BK18 analysis.
 </p>
 
 <hr>
 
 <section><h2>Introduction</h2>
+
     <p>
-        The ultimate goal of this analysis is to report on a constraint of Uniform Cosmic Birefringence using the combination of our BICEP3 B18 3-year dataset and the RPS-based polarization calibration I performed over January 2022. This is different from previous recent analyses that explore spatial <a href="BKIX"></a> or temporal <a href="BKXIV"></a> birefringence -- i.e. this is a constraint on the monopole or DC birefringence signal.
+        ...+different from previous recent effort that explore spatial <a href="BKIX"></a> or temporal <a href="BKXIV"></a> birefringence -- i.e. this is a constraint on the monopole or DC birefringence signal.
+
+    </p>
+
+    <p>
+        The scope of this analysis is to report on a constraint of Isotropic Polarization Rotation using the combination of our BICEP3 B18 3-year dataset and the RPS-based polarization calibration I performed over January 2022.
     </p>
     <p>
         The fundamental procedure is fairly straightforward:
@@ -180,33 +186,6 @@
         which for B2018 Matrix-purified L-LCDM, for instance, is expected to be ~0.085&deg; compared to 0.1&deg;.
     </p>
 
-    <h4>Checking the fitter against Gaussian-random noise</h4>
-    <p>
-        My current hypothesis is that both of these artifacts result from a combination of E&rightarrow;B leakage from F_sky<1 and perhaps our choice of using Planck 2013 as our input map (I still need to do a deeper look into the history of these global rotation analyses to firm that up). However, just to make sure that there isn't something weird going on during the fits, I fit alpha to EB, TB, and EB+TB for spectra of mean-zero gaussian noise with the noise amplitudes chosen such that we get roughly the same standard deviations in our distributions as the non-purified lensed-signal-only (type 5) histograms in Fig. 2.2. I create 499 realizations and the noise injected into the TB and EB spectra are uncorrelated.
-    </p>
-
-    <figure>
-        <img src="figs/toy_model_spectra.png" width="80%"/>
-        <figcaption>
-
-        </figcaption>
-    </figure>
-    <p>
-        The histograms below confirm that each of the means are consistent with zero. Further, the standard deviation of EB+TB distribution matches the expect width of ~0.09&deg;.
-    </p>
-    <figure>
-        <img src="figs/toy_model_angle_hist.png" />
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-
-
-    <p>
-    That said, the 1-&sigma; STD's between the B2018 standard and my rerun are consistent; and matrix purification still does a good job of reducing E-to-B leakage from mode-mixing despite using only a subset of the original data. Still, I create some tables below to give a more quantitative look.
-</p>
-
     <h4>
         Fractional uncertainty when going from 499 to 10 sims
     </h4>
@@ -224,7 +203,7 @@
 
 
     <p>
-In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alphas fit from EB between the standard 499 B2018 and my 10 sims (with no purification). We should expect the standard deviations on B2018-rerun to fluctuate around &pm;20% of B2018 -- and we can argue that that's the case here.
+In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alphas fit from EB between the standard 499 B2018 and my 10 sims (with no purification). We should expect the standard deviations on B2018-rerun to fluctuate around &pm;20% of B2018 and that appears to be the case here.
 </p>
     <figure class="table">
         <table class="results">
@@ -354,9 +333,9 @@ In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alpha
         </figcaption>
     </figure>
 
-    <h4>Scaling relation between BB power and &sigma;<sub>&alpha;</sub></h4>
+    <h4>Scaling relation between absolute BB Amplitude and &sigma;<sub>&alpha;</sub></h4>
         <p>
-            In the figure below, I plot the 1-&sigma; standard deviations of &alpha; as a function of the uniform mean of the BB bandpowers of all 499 realizations in B2018.
+            In the figure below, I plot the 1-&sigma; standard deviations of &alpha; as a function of the uniform mean of the square root of the BB bandpowers of all 499 realizations in B2018. We can see that &sigma;<sub>&alpha;</sub> scales as ~1 for $\sqrt{D_{\ell}^{BB}}$ for the TB-only fits and as ~0.5 for the EB-only fits -- but only for APS with CMB signal in them.
         </p>
 
     <figure>
