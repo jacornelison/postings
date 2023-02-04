@@ -40,7 +40,7 @@
 <hr>
 
 <p>
-    This posting is the first of a series which will ultimately lead to the report of constraints on Isotropic Polarization Rotation. In this posting I probe for systematics in our pipeline function <tt>reduc_global_rotation</tt> by estimating angles from standard B2018 sim with a known rotation angle of 0&deg;. I also validate my knowledge of the simulation production pipeline by comparing an ensemble of 10 sims I made from B2018 data to the 499 B2018 sims created for the BK18 analysis.
+    This posting is the first of a series which will ultimately lead to the report of constraints on Isotropic Polarization Rotation. In this posting I ...
 </p>
 
 <hr>
@@ -48,61 +48,98 @@
 <section><h2>Introduction</h2>
 
     <p>
-        ...+different from previous recent effort that explore spatial <a href="BKIX"></a> or temporal <a href="BKXIV"></a> birefringence -- i.e. this is a constraint on the monopole or DC birefringence signal.
-
+        Coupling of photons to a generic pseudoscalar field results in a rotation of the plane of polarization for linearly polarized light as it propagates through spacetime (For example, see <a href="Carroll1990"></a>,<a href="Harari1992"></a>). Since the level of rotation is directly proportional to the distance travelled by the photon, the CMB is the arguably the most natural place to look for signals of cosmic polarization rotation.
     </p>
 
     <p>
-        The scope of this analysis is to report on a constraint of Isotropic Polarization Rotation using the combination of our BICEP3 B18 3-year dataset and the RPS-based polarization calibration I performed over January 2022.
+        In the CMB, an isotropic rotation of linearly polarized light be some angle, &alpha;, manifests as a leakage between E and B modes in a well-described way
     </p>
+
+    \(
+    \newcommand{\Cl}{\mathcal{C}_\ell}
+    \newcommand{\Cb}{\mathcal{C}_b}
+    \newcommand{\oCb}{\mathcal{\hat C}_b}
+    \newcommand{\rCb}{\mathcal{C'}_b}
+    \newcommand{\Ccov}{\mathrm{\mathbf{C}}}
+    \)
+
+    \begin{align*}
+    C'^{TT}_\ell &= C^{TT}_\ell\\
+    C'^{TE}_\ell &= \Cl^{TE}\cos(2\alpha)\\
+    C'^{EE}_\ell &= \Cl^{EE}\cos^2(2\alpha)+\Cl^{BB}\sin^2(2\alpha)\\
+    C'^{BB}_\ell &= \Cl^{EE}\sin^2(2\alpha)+\Cl^{BB}\cos^2(2\alpha)\\
+    C'^{TB}_\ell &= C^{TE}_\ell \sin(2\alpha) \\
+    C'^{EB}_\ell &= \frac 12 \left( C^{EE}_\ell - C^{BB}_\ell \right)
+    \sin(4\alpha) \\
+    \end{align*}
+
+    <p>and can result from either astrophysical sources such as cosmic polarization rotation or instrumental systematics such as a miscalibration of the polarization angle of the instrument.</p>
+
+    <p>It is customary in our CMB analysis to fit out an angle from our EB and TB spectra using the above model<a href="JBW2016"></a>, but without precise measurement of the overall polarization response angle of the instrument we don't know if whatever angle we estimate is a result from some undiscovered physics or a simple deviation of the instrument's polarization response angle from expected.</p>
+
     <p>
-        The fundamental procedure is fairly straightforward:
+        The scope of this analysis is to combine of our BICEP3 B18 3-year dataset and the RPS-based polarization calibration I performed over January 2022 and report on constraints of isotropic polarization rotation of celestial origin. This is different from previous recent effort that explore spatial </a><a href="BKXVII"></a> or temporal <a href="BKXIV"></a> linear polarization rotation -- i.e. this is a constraint on the monopole or DC birefringence signal.
+
+    </p>
+
+    <h3>Methodology</h3>
+
+        <p>The fundamental procedure is fairly straightforward:
     <ol>
         <li>Measure the per-detector polarization angle & cross-polar response WRT to gravity using an external calibrator.</li>
         <li>Relate as-measured polarization angles WRT to the overall rotation of the focal plane via a pointing model (i.e. compute the &chi;-angle).</li>
         <li>Recreate our real CMB maps using as-measured &chi;-angles.</li>
         <li>Fit for an overall polarization rotation angle, &alpha;, via EB/TB minimization (AKA global polarization rotation fits, or self-calibration) -- for more details see <a href="JBW2016"></a><sup><a name="sup1" href="#ftn1">[1]</a></sup>.</li>
-        <li>Any significantly non-zero alpha is possible signal of Cosmic Birefringence or, in the event of a non-detection, we use the uncertainties to report an upper limit.</li>
+        <li>Now that the instrument polarization angles have been measured, any significantly non-zero alpha would imply a polarization rotation originating from some celestial phenomenon.</li>
 
     </ol>
 
     </p>
+    <p>We can go one step further and rule out galactic dust as the cause by examining the effect of various dust models on our estimation of &alpha;. However, since we have polarization angle measurements for 95GHz only, we cannot rule out physics that would involve frequency scaling of the degree of rotation.
+    </p>
 
     <p>
-        There are, however, a lot of nuances at each step that need to be considered in order to convince ourselves that our results are not biased in any way. This posting focuses on Step 4 in the procedure above, particularly in answering the following questions:
+        Like our main CMB analysis, we plan to perform systematic tests and establish an uncertainty by comparing our CMB data to simulations of CMB maps which we believe are accurate representations of our real data.
+        </p>
+
+    <p>
+        There are, however, a lot of nuances at each step that need to be considered in order to convince ourselves that our results are not biased in any way. This posting focuses on the recreation of B2018 simulations and resulting &alpha; fits to EB/TB spectra -- particularly in answering the following questions:
     <ol type="A">
         <li>Does the global rotation fitting function impart a bias on &alpha;?</li>
-        <li>What is the expected statistical uncertainty on &alpha;?</li>
-        <li>Can we still accurately capture the statistics on &alpha; with fewer than 499 sims?</li>
+        <li>What is the expected statistical uncertainty on &alpha;? Is there a lower limit?</li>
+        <li>What is the impact on &sigma;<sub>&alpha;</sub> when using fewer than 499 sims?</li>
         <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>
     </ol>
     To that end, the rest of this posting examines the result of fitting &alpha; to B2018 sims which have no rotation angle injected.
     </p>
 </section>
 
-<section><h2>Global Polarization Rotation fits to B2018 Sims</h2>
-    <p>I use two independent simsets in this analysis:
-        <ul>
+<section><h2>Recreation of B2018 Sims</h2>
+    <p>To ensure I could properly run the simulation pipeline, I created a small set of CMB simulations using the same inputs as B2018 to ensure I have sufficient knowledge over how the pipeline works.
+
+    <p>
+        The pager below shows EB/TB angular power spectra (APS) for both B2018 (sernum 3553) and my sims (B2018-rerun, sernum 6600) where I visually compare the means. To see if it can improve the fits to EB/TB spectra, I also apply the B18 purification matrix -- which was created from the combined B2016, B2017, and B2018 -- to both sets of sims.
+</p>
+<!--    <p>-->
+<!--        Sim types:-->
+<!--        <ol start="2">-->
+
+<!--        <li>Unlensed &Lambda;CDM</li>-->
+<!--        <li>Gaussian Dust</li>-->
+<!--        <li>Unlensed &Lambda;CDM + r=0.1</li>-->
+<!--        <li>Lensed &Lambda;CDM</li>-->
+<!--        <li>Sign-flip noise</li>-->
+<!--        <li>Lensed &Lambda;CDM+Noise [Type 5+6]</li>-->
+<!--        <li>Lensed &Lambda;CDM+Noise+Dust [Type 7+3]</li>-->
+<!--    </ol>-->
+<!--    </p>-->
+<!--    -->
+
+    <ul>
         <li><b>B2018</b> - the ensemble of 499 B2018 sims created for the BK18 analysis (i.e. sernum: 3553, daughter: h)</li>
-        <li><b>B2018-rerun</b> - An ensemble of 10 B2018 sims I ran myself using the same inputs as B2018 to ensure I have sufficient knowledge over how the pipeline works (sernum: 6600, daughter: h).</li>
+        <li><b>B2018-rerun</b> - An ensemble of 10 B2018 sims I ran myself (sernum: 6600, daughter: h).</li>
     </ul>
 
-    <p>
-        The pager below shows EB/TB angular power spectra (APS) for both B2018 (sernum 3553) and my sims (sernum 6600) where I visually compare the means. To see if can still work for smaller subsets of data, I also apply the B18 purification matrix -- which was created from the combined B2016, B2017, and B2018 -- to my 10 sims.
-</p>
-    <p>
-        Sim types:
-        <ol start="2">
-
-        <li>Unlensed &Lambda;CDM</li>
-        <li>Gaussian Dust</li>
-        <li>Unlensed &Lambda;CDM + r=0.1</li>
-        <li>Lensed &Lambda;CDM</li>
-        <li>Sign-flip noise</li>
-        <li>Lensed &Lambda;CDM+Noise [Type 5+6]</li>
-        <li>Lensed &Lambda;CDM+Noise+Dust [Type 7+3]</li>
-    </ol>
-    </p>
 
     <figure>
         <img alt="Name pager" id="apspager" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />
@@ -112,7 +149,7 @@
         <script type="text/javascript">
             pager.link("#apspager",
                 {
-                    'Sim Type|sig': ['2','3','5','6','7','8'],
+                    'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
                     'Purification Method|pure': ['None|','Matrix|pureB_matrix_'],
                     'Simset|sernum': ['B2018|6614','B2018-rerun|6600'],
                     'y-axes|axes': ['Fixed|_fixed','Free|_free']
@@ -129,11 +166,10 @@
         </script>
     </figure>
 <p>
-    Switching between the two simsets for any signal-type, we can see that my reproduction was successful. We can also see qualitatively that the purification matrix does a great job of reducing E-to-B leakage.
+    Switching between the two simsets for any signal-type, we can see that my reproduction was successful. We can also see qualitatively that the purification matrix does a great job of reducing E-to-B leakage which should reduce the variance on &alpha; estimates.
 </p>
-
-
-    <h3>Global Rotation Angle</h3>
+</section>
+    <section><h2>Global Polarization Rotation fits to B2018 Sims</h2>
     <p>
         Now I perform the global rotation fits on each of the sims.
     </p>
@@ -158,7 +194,7 @@
         <script type="text/javascript">
             pager.link("#histpager",
                 {
-                    'Sim Type|sig': ['2','3','5','6','7','8'],
+                    'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
                     'Purification Method|pure2': ['None|','Matrix|matrix_'],
                     'Simset|sernum': ['B2018|6614','B2018-rerun|6600'],
                 },
@@ -482,30 +518,43 @@ In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alpha
 
         // Shorthand tags
         var tags = [
+            "Carroll1990",
+            "Harari1992",
             "JBW2016",
             "EWB2016",
             "BKIX",
+            "BKXII",
             "BKXIV",
+            "BKXVII",
         ];
 
         // Links
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
+            "papers/carroll1990.pdf",
+            "papers/harari1992.pdf",
             "bkcmb/analysis_logbook/analysis/20160907_polrot/",
             "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
             "https://arxiv.org/pdf/1705.02523.pdf",
+            "https://arxiv.org/pdf/2011.03483.pdf",
             "https://arxiv.org/pdf/2108.03316.pdf",
+            "https://arxiv.org/pdf/2210.08038.pdf",
+
 
         ];
 
 
         // Posting titles
         var desc = [
+            "Limits on a Lorentz- and parity-violating modification of electrodynamics",
+            "Effects of a Nambu-Goldstone boson on the polarization of radio galaxies and the cosmic microwave background",
             "Birefringence/Polarization rotation in K2015 and BK15",
             "Polarization Rotation Sims Global Rotation",
             "New Bounds on Anisotropies of CMB Polarization Rotation and Implications for Axion-Like Particles and Primordial Magnetic Fields",
+            "Constraints on axion-like polarization oscillations in the cosmic microwave background",
             "Improved Constraints on axion-like polarization oscillations in the Cosmic Microwave Background",
+            "Line of Sight Distortion Analysis: Estimates of Gravitational Lensing, Anisotropic Cosmic Birefringence, Patchy Reionization, and Systematic Errors",
         ];
         // Debug
         var posty = document.getElementById("testp");
