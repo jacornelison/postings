@@ -40,7 +40,8 @@
 <hr>
 
 <p>
-    This posting is the first of a series which will ultimately lead to the report of constraints on Isotropic Polarization Rotation. In this posting I ...
+    This posting is the first of a series which will ultimately lead to the report of constraints on Isotropic Polarization Rotation.
+    I create 10 B2018 simulations Signal, Dust, and Noise signal types and their combinations and compare them to the 499 BICEP3 B2018 sims created for B2018. I then fit global rotation angles to both sets of sims using standard pipeline code.
 </p>
 
 <hr>
@@ -78,7 +79,7 @@
     <p>It is customary in our CMB analysis to fit out an angle from our EB and TB spectra using the above model<a href="JBW2016"></a>, but without precise measurement of the overall polarization response angle of the instrument we don't know if whatever angle we estimate is a result from some undiscovered physics or a simple deviation of the instrument's polarization response angle from expected.</p>
 
     <p>
-        The scope of this analysis is to combine of our BICEP3 B18 3-year dataset and the RPS-based polarization calibration I performed over January 2022 and report on constraints of isotropic polarization rotation of celestial origin. This is different from previous recent effort that explore spatial </a><a href="BKXVII"></a> or temporal <a href="BKXIV"></a> linear polarization rotation -- i.e. this is a constraint on the monopole or DC birefringence signal.
+        The scope of this analysis is to combine of our BICEP3 B18 3-year dataset and the RPS-based polarization calibration I performed over January 2022 and report on constraints of isotropic polarization rotation of celestial origin. This is different from previous recent effort that explore spatial </a><a href="BKXVII"></a> or temporal <a href="BKXIV"></a> linear polarization rotation -- i.e. this is a constraint on a monopole polarization signal that oscillates slowly on cosmological timescales.
 
     </p>
 
@@ -95,7 +96,7 @@
     </ol>
 
     </p>
-    <p>We can go one step further and rule out galactic dust as the cause by examining the effect of various dust models on our estimation of &alpha;. However, since we have polarization angle measurements for 95GHz only, we cannot rule out physics that would involve frequency scaling of the degree of rotation.
+    <p>We can go one step further and rule out galactic dust as the cause by examining the effect of various dust models on our estimation of &alpha;, which we plan to discuss in another posting. However, since we have polarization angle measurements for 95GHz only, we cannot rule out physics that would involve frequency scaling of the degree of rotation.
     </p>
 
     <p>
@@ -105,12 +106,12 @@
     <p>
         There are, however, a lot of nuances at each step that need to be considered in order to convince ourselves that our results are not biased in any way. This posting focuses on the recreation of B2018 simulations and resulting &alpha; fits to EB/TB spectra -- particularly in answering the following questions:
     <ol type="A">
-        <li>Does the global rotation fitting function impart a bias on &alpha;?</li>
-        <li>What is the expected statistical uncertainty on &alpha;? Is there a lower limit?</li>
+        <li>Are the estimates of &alpha; for these sims mean-zero as expected?</li>
+        <li>What is the expected statistical uncertainty on &alpha;? What are we limited by?</li>
         <li>What is the impact on &sigma;<sub>&alpha;</sub> when using fewer than 499 sims?</li>
-        <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>
+<!--        <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>-->
     </ol>
-    To that end, the rest of this posting examines the result of fitting &alpha; to B2018 sims which have no rotation angle injected.
+        To that end, the rest of this posting examines the result of fitting &alpha; to standard B2018 sims which are expected to have &alpha;=0 on average.
     </p>
 </section>
 
@@ -221,7 +222,9 @@
     <p>
         which for B2018 Matrix-purified L-LCDM, for instance, is expected to be ~0.085&deg; compared to 0.1&deg;.
     </p>
-
+    <p>
+        We can see that the mean of &alpha; is brought closer to zero with matrix purification, so perhaps this is a result of using a matrix that was intended for B18 on a similar-but-not-equal data subset. It would also be worth verifying that the estimator gives expected values for a toy model of EB/TB spectra with similar statistical properties determined by the BPCM. In future postings, we'll check the former hypothesis by fitting &alpha; to coadded B2018 matrix purified sims and the latter problem by fitting &alpha;'s to psuedosims created from the BPCM.
+    </p>
     <h4>
         Fractional uncertainty when going from 499 to 10 sims
     </h4>
@@ -387,19 +390,27 @@ In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alpha
     <p>
         By fitting rotation angles to our standard suite of sims, we now have answers to the questions we asked in &sect;1:
     <ol type="A">
-        <li>Does the global rotation fitting function impart a bias on &alpha;?</li>
-        <ul><li>No, all angles are consistent with zero.</li></ul>
-        <li>What is the expected statistical uncertainties on &alpha;?</li>
-        <ul><li>I quote the baseline statistical uncertainty from the 1-&sigma; standard deviation of the matrix-purified Lensed-LCDM+Noise+Dust distribution: 0.08&deg;.</li></ul>
-        <li>Can we accurately capture the statistics on &alpha; with fewer than 499 sims?</li>
-        <ul><li>Yes, the difference between the 499 sims and 10 is, at most, ~0.01&deg; which is satisfactory.</li></ul>
-        <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>
-        <ul><li>The variance on &alpha; decreases by at least a factor of 1.5 without any apparent negative side-effects.</li></ul>
+        <li>Are estimates of &alpha; for these sims zero as expected?</li>
+        <ul>
+            <li>Estimates are all consistent with zero within the standard deviation, but not within the error-on-the-mean.</li>
+            <li>Given that matrix purification improves this, it's possible that this inconsistency can be attributed to imperfect cleaning of the E&rightarrow;B leakage due to mode-mixing, perhaps from using a purification matrix that was intended for the 3-year dataset on a single year's data.</li>
+            <li>Follow-ups to this are: seeing if non-zero means are still present when using toy models of uncorrelated sample variance in EB & TB spectra; and seeing if the mean &alpha; in the three-year dataset exhibits the same symptoms.</li>
+        </ul>
+        <li>What is the expected statistical uncertainty on &alpha;? What are we limited by?</li>
+        <ul>
+            <li>We can see from Figure 3.1 that, in the absence of dust and noise, our absolute minimum uncertainty is &sigma;<sub>&alpha;</sub>~0.05&deg; from lensing. If we want to go lower, we'd need to delense.</li>
+            <li>In the B2018, we are dominated by in BB power by noise by a factor of ~3 at &ell;=200. A rough estimate tells me that we'll still be dominated by noise using using the three-year dataset by a factor of ~2 assuming BB power drops as 1/&radic;N.</li>
+        </ul>
+        <li>What is the impact on &sigma;<sub>&alpha;</sub> when using fewer than 499 sims?</li>
+        <ul>
+            <li>The scatter on &alpha; histograms appears to be within 20% of what we expect of the scatter given by our 499 sims. This should be sufficient for doing case studies and testing of different parts of the pipeline. However, I think for purpose of doing jackknifes and calculating our final uncertainties, we'll want to create a full suite of 499 sims.</li>
+        </ul>
+        <!--        <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>-->
     </ol>
     </p>
     <h3>Next Steps</h3>
     <p>
-        An immediate follow-up to this posting will be exploring the ability of low-N simsets to perform independent cross-checks of RPS-derived polarization angles.
+        An immediate follow-up to this posting will be fitting &alpha; to B2018 simulations which use different angles in the TOD and mapmaking phases.
     </p>
 </section>
 
@@ -415,12 +426,12 @@ In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alpha
         A more recent global rotation posting for BK18 exists, but to remain blind in this analysis I have not looked at it and do not link it here.
     </p>
     </div>
-    <h3>Code</h3>
-    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
-    <p id="code"></p>
+<!--    <h3>Code</h3>-->
+<!--    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>-->
+<!--    <p id="code"></p>-->
 
-    <h3>Data</h3>
-    <p id="data"></p>
+<!--    <h3>Data</h3>-->
+<!--    <p id="data"></p>-->
     <h3>References</h3>
 
     <p id="references"></p>
