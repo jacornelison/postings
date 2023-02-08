@@ -193,180 +193,30 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             </figcaption>
         </figure>
 
-        <p>The sum of the variances between Lensed-LCDM, Noise and Dust correspond to the variance on the coadded spectra to within 4%!</p>
+        <p>The sum of the variances between Lensed-LCDM, Noise and Dust correspond to the variance on the coadded spectra to within 4%.</p>
+        
+        <h3>Estimator Transfer Function?</h3>
+        <p>
+            Now we need to get an idea of which bandpowers matter most in our alpha estimations.
+        </p>
+        <p>
+            I do this by injecting a dummy signal into an EB or TB spectra bandpower-by-bandpower whilst keeping all other bandpowers at zero and then estimating alpha (see below figure).
+        </p>
+        <figure>
+            <img src="figs/estimator_xfer_example.gif">
+            <figcaption>
+
+            </figcaption>
+        </figure>
 
         <figure>
-            <img alt="Name pager" id="eompager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+
+            <img src="figs/estimator_xfer_func.png">
             <figcaption>
-                Plots of the Mean divided the error on the mean as a function of each signal for cases with and without matrix purification.
-            </figcaption>
-            <script type="text/javascript">
-                pager.link("#eompager",
-                    {
-                        'Fit Type|fit' : ['EB Only|1','TB Only|2','EB+TB|3'],
-
-                    },
-                    function(params) {
-                        return 'figs/m_over_eom_vs_sig_'+params.fit+'.png';
-                    });
-                pager.setparams({
-                    'fit': '1',
-
-                });
-            </script>
-        </figure>
-
-
-        <p>
-        We can see that for all types with CMB signal in them, the mean of &alpha; is brought closer to zero with matrix purification. So a potential hypothesis is that the deviance of the mean from zero is a result of mode-mixing from not using the full sky and while the matrix greatly improves things, it's not perfect because the matrix was intended for B18 and this is a similar-but-not-equal data subset. A relatively easy way to check this hypothesis is by fitting &alpha; to the 3-year B18 matrix purified sims.
-    </p>
-<p>It would also be worth verifying that the estimator gives expected values for a toy model of EB/TB spectra with similar statistical properties determined by the BPCM.</p>
-        <p>
-        Lastly, the standard deviation of the EB+TB fits do not match what we'd naively expect from leveraging both spectra assuming EB and TB are uncorrelated, i.e.:
-
-        \begin{equation}
-        \sigma_{EB+TB} = \frac{1}{\sqrt{\frac{1}{\sigma_{EB}^2}+\frac{1}{\sigma_{TB}^2}}}
-        \end{equation}
-        </p>
-        <p>
-            which for B2018 Matrix-purified L-LCDM, for instance, is expected to be ~0.085&deg; compared to 0.1&deg;. This is something else that we can check against a toy model in a follow-up posting.</p>
-
-    <h3>Scaling relation between absolute BB Amplitude and &sigma;<sub>&alpha;</sub></h3>
-        <p>
-            In the figure below, I plot the 1-&sigma; standard deviations of &alpha; as a function of the uniform mean of the square root of the BB bandpowers of all 499 realizations in B2018. We can see that &sigma;<sub>&alpha;</sub> scales as ~1 for $\sqrt{D_{\ell}^{BB}}$ for the TB-only fits and as ~0.5 for the EB-only fits -- but only for APS with CMB signal in them.
-        </p>
-
-    <figure>
-        <img src="figs/sigalpha_vs_BBamp_6614.png">
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-        <p>
-            This is perhaps unsurprising because Noise (and presumably Dust) EB/TB are not crossing B with the much larger T and E signals of the CMB. A more informative plot here might instead show Dust/Noise B crossed with CMB T and E and fitting an angle to that.
-        </p>
-        <p>
-            That said, assuming B from Dust is negligible and we can average down the noise, our uncertainty is going to be limited by the lensing B-modes -- we won't be able to do better than &sigma;<sub>&alpha;</sub>~0.06&deg; unless we delense.
-        </p>
-        <h3>
-            Fractional uncertainty when going from 499 to 10 sims
-        </h3>
-        <p>For this posting, I only create 10 sims for the sake of computational speed at the cost of lowering the precision on &sigma;<sub>&alpha;</sub>. But it's pretty straightforward to determine if the &sigma;<sub>&alpha;</sub>'s from 10 sims is consistent with &sigma;<sub>&alpha;</sub>'s from 499 sims.</p>
-
-        <p>
-            The uncertainty on the standard deviation of a distribution when drawing N samples from a parent distribution with width &sigma; is:</p>
-
-        \begin{equation*}
-        \sigma_{\sigma\alpha} = \frac{\sigma_\alpha}{\sqrt{2N-2}}
-        \end{equation*}
-
-        <p>So the fractional uncertainty when going from 499 to 10 sims is </p>
-
-        \begin{equation*}
-        \sqrt{\frac{1}{N_1-1}}\,=\,\sqrt{\frac{1}{18}}\sim25\%
-        \end{equation*}
-
-
-        <p>
-  We should expect the standard deviations on B2018-rerun to fluctuate around &pm;25% of the parent distribution whereas we'd expect B2018 to only deviate by ~3% for 499 sims.
-        </p>
-        <p>In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alphas fit from EB between the standard 499 B2018 and my 10 sims (both matrix-purified).</p>
-
-        <figure class="table">
-            <table class="results">
-                <tr>
-                    <th></th>
-                    <th colspan="2">EB</th>
-                    <th colspan="2">TB</th>
-                    <th colspan="2">EB+TB</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th class="cstart" colspan="1">B2018</th>
-                    <th class="cend" colspan="1">B2018-rerun</th>
-                    <th class="cstart" colspan="1">B2018</th>
-                    <th class="cend" colspan="1">B2018-rerun</th>
-                    <th class="cstart" colspan="1">B2018</th>
-                    <th class="cstart" colspan="1">B2018-rerun</th>
-                </tr>
-                <tr>
-                    <th class="cend">Signal</th>
-                    <!--                <th class="cstart">Mean (&deg;)</th>-->
-                    <!--                <th colspan="2">STD (&deg;)</th>-->
-                    <!--                <th class="cstart">Mean (&deg;)</th>-->
-                    <th class="cend" colspan="2">STD (&deg;)</th>
-                    <!--                <th class="cstart">Mean (&deg;)</th>-->
-                    <!--                <th>STD (&deg;)</th>-->
-                    <!--                <th class="cstart">Mean (&deg;)</th>-->
-                    <th class="cend" colspan="2">STD (&deg;)</th>
-                    <!--                <th class="cstart">Mean (&deg;)</th>-->
-                    <!--                <th>STD (&deg;)</th>-->
-                    <!--                <th class="cstart">Mean (&deg;)</th>-->
-                    <th class="cstart" colspan="2">STD (&deg;)</th>
-                </tr>
-                <tr>
-                    <td>Unlensed LCDM</td>
-                    <td class='cstart'>0.005</td>
-                    <td class='cstart'>0.003</td>
-                    <td class='cstart'>0.011</td>
-                    <td class='cstart'>0.011</td>
-                    <td class='cstart'>0.006</td>
-                    <td class='cstart'>0.005</td>
-                </tr>
-                <tr>
-                    <td>Gaussian Dust</td>
-                    <td class='cstart'>0.002</td>
-                    <td class='cstart'>0.002</td>
-                    <td class='cstart'>0.000</td>
-                    <td class='cstart'>0.000</td>
-                    <td class='cstart'>0.001</td>
-                    <td class='cstart'>0.001</td>
-                </tr>
-                <tr>
-                    <td>Lensed LCDM</td>
-                    <td class='cstart'>0.060</td>
-                    <td class='cstart'>0.068</td>
-                    <td class='cstart'>0.112</td>
-                    <td class='cstart'>0.124</td>
-                    <td class='cstart'>0.063</td>
-                    <td class='cstart'>0.074</td>
-                </tr>
-                <tr>
-                    <td>Sign-Flip Noise</td>
-                    <td class='cstart'>0.014</td>
-                    <td class='cstart'>0.013</td>
-                    <td class='cstart'>0.001</td>
-                    <td class='cstart'>0.002</td>
-                    <td class='cstart'>0.011</td>
-                    <td class='cstart'>0.009</td>
-                </tr>
-                <tr>
-                    <td>Lensed-LCDM+Noise</td>
-                    <td class='cstart'>0.117</td>
-                    <td class='cstart'>0.081</td>
-                    <td class='cstart'>0.230</td>
-                    <td class='cstart'>0.182</td>
-                    <td class='cstart'>0.129</td>
-                    <td class='cstart'>0.088</td>
-                </tr>
-                <tr>
-                    <td>Lensed-LCDM+Noise+Dust</td>
-                    <td class='cstart'>0.118</td>
-                    <td class='cstart'>0.093</td>
-                    <td class='cstart'>0.232</td>
-                    <td class='cstart'>0.195</td>
-                    <td class='cstart'>0.130</td>
-                    <td class='cstart'>0.098</td>
-                </tr>
-            </table>
-            <figcaption>
-
+                
             </figcaption>
         </figure>
-
-        <p>Table 3.1 appears to confirm that expectation. This should be sufficient for doing case studies and testing of different parts of the pipeline. However, I think for purpose of doing jackknifes and calculating our final uncertainties, we'll want to create a full suite of 499 sims.</p>
-
+        
 </section>
 <section><h2>Conclusions</h2>
     <p>
