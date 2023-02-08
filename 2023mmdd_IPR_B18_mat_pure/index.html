@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+
+<!--suppress HtmlDeprecatedAttribute -->
+<head>
+    <meta charset="utf-8">
+    <title>Isotropic Polrot Analysis: B2018 Sims</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+            // src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims</h1>
+
+    <time datetime="2022-12-13" class="published updated">
+        2023 Feb 7
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+
+</p>
+
+<hr>
+
+<section><h2>Introduction</h2>
+</section>
+
+
+<section><h2>Recreation of B2018 Sims</h2>
+    <p>
+I've now included B18 into these pagers. I am also now crossing CMB T&E with B for Dust-only and Noise-only signal types.
+    </p>
+    <p>
+        The pager below shows EB/TB angular power spectra (APS) for both B2018 (sernum 3553) and my sims (B2018-rerun, sernum 6600) where I visually compare the means. To see if it can improve the fits to EB/TB spectra, I also apply the B18 purification matrix -- which was created from the combined B2016, B2017, and B2018 -- to both sets of sims.
+</p>
+<!--    <p>-->
+<!--        Sim types:-->
+<!--        <ol start="2">-->
+
+<!--        <li>Unlensed &Lambda;CDM</li>-->
+<!--        <li>Gaussian Dust</li>-->
+<!--        <li>Unlensed &Lambda;CDM + r=0.1</li>-->
+<!--        <li>Lensed &Lambda;CDM</li>-->
+<!--        <li>Sign-flip noise</li>-->
+<!--        <li>Lensed &Lambda;CDM+Noise [Type 5+6]</li>-->
+<!--        <li>Lensed &Lambda;CDM+Noise+Dust [Type 7+3]</li>-->
+<!--    </ol>-->
+<!--    </p>-->
+<!--    -->
+
+    <ul>
+        <li><b>B18</b> - the ensemble of 499 B18 sims created for the BK18 analysis (i.e. sernum: 3553, daughter: fgh)</li>
+        <li><b>B2018</b> - the ensemble of 499 B2018 sims created for the BK18 analysis (i.e. sernum: 3553, daughter: h)</li>
+        <li><b>B2018-rerun</b> - An ensemble of 10 B2018 sims I ran myself (sernum: 6600, daughter: h).</li>
+    </ul>
+
+
+    <figure>
+        <img alt="Name pager" id="apspager" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />
+        <figcaption>
+            A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#apspager",
+                {
+                    'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
+                    'Purification Method|pure': ['None|','Matrix|matrix_'],
+                    'Simset|sernum': ['B18|6614_fgh','B2018|6614_h','B2018-rerun|6600_h'],
+                    'cmb x noise/dust|c': ['Off|','On|_cross'],
+                    'y-axes|axes': ['Fixed|_fixed','Free|_free']
+                },
+                function(params) {
+                    return 'figs/aps_'+params.sernum+'_'+params.pure+params.sig+params.axes+params.c+'.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                'pure': '',
+                'sernum': '6600_h',
+                'cross': '',
+                'axes': '_fixed',
+            });
+        </script>
+    </figure>
+<p>
+    Switching between the two simsets for any signal-type, we can see that my reproduction was successful. We can also see qualitatively that the purification matrix does a great job of reducing E-to-B leakage which should reduce the variance on &alpha; estimates.
+</p>
+</section>
+    <section><h2>Global Polarization Rotation fits to B2018 Sims</h2>
+    <p>
+        Now I perform the global rotation fits on each of the sims.
+    </p>
+    <p>
+        I estimate &alpha; for each individual sim following the procedure outlined by Eric Bullock in <a href="EWB2016"></a>:
+        <ol>
+        <li>Load in a real final file and sim APS.</li>
+        <li>Apply the suppression factor from the real data to the sim APS.</li>
+        <li>Swap the real APS for the sim APS in the final file.</li>
+        <li>Pass the final file through <tt>reduc_global_rotation</tt> to fit for the angle.</li>
+    </ol>
+        This method ensures that each simmed APS has the same suppression factor and bandpower window function (BPWF) applied as the real data and also that the fit is properly normalized by the bandpower covariance matrix (BPCM).
+    </p>
+    <p>
+
+    </p>
+    <figure>
+        <img alt="Name pager" id="histpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+        <figcaption>
+            Histograms of &alpha; estimates for B2018 and my B2018-rerun for each EB/TB fit type; per signal type; and with and without matrix purification.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#histpager",
+                {
+                    'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
+                    'Purification Method|pure2': ['None|','Matrix|matrix_'],
+                    'Simset|sernum2': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
+                    'cmb x noise/dust|c': ['Off|','On|_cross'],
+                },
+                function(params) {
+                    return 'figs/alpha_hist_'+params.sernum2+params.pure2+params.sig+'_corr'+params.c+'.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                'pure2': '',
+                'sernum2': '6600h',
+                'c': '',
+            });
+        </script>
+    </figure>
+
+    <p>
+
+    </p>
+        <figure class="table">
+            <table class="results">
+                <tr>
+                    <th>Signal Type</th>
+                    <th>Variance [sq-deg]</th>
+                </tr>
+                <tr>
+                    <td>Lensed-LCDM</td>
+                    <td>0.0036</td>
+                </tr>
+                <tr>
+                    <td>Noise</td>
+                    <td>0.0104</td>
+                </tr>
+                <tr>
+                    <td>Dust</td>
+                    <td>0.0003</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub></td>
+                    <td>0.0140</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L+N</sub></td>
+                    <td>0.0135</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub>+&sigma;<sup>2</sup><sub>D</sub></td>
+                    <td>0.0143</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L+N+D</sub></td>
+                    <td>0.0139</td>
+                </tr>
+            </table>
+            <figcaption>
+                Table of variance on alpha from EB fits
+            </figcaption>
+        </figure>
+
+        <p>The sum of the variances between Lensed-LCDM, Noise and Dust correspond to the variance on the coadded spectra to within 4%!</p>
+
+        <figure>
+            <img alt="Name pager" id="eompager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+            <figcaption>
+                Plots of the Mean divided the error on the mean as a function of each signal for cases with and without matrix purification.
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#eompager",
+                    {
+                        'Fit Type|fit' : ['EB Only|1','TB Only|2','EB+TB|3'],
+
+                    },
+                    function(params) {
+                        return 'figs/m_over_eom_vs_sig_'+params.fit+'.png';
+                    });
+                pager.setparams({
+                    'fit': '1',
+
+                });
+            </script>
+        </figure>
+
+
+        <p>
+        We can see that for all types with CMB signal in them, the mean of &alpha; is brought closer to zero with matrix purification. So a potential hypothesis is that the deviance of the mean from zero is a result of mode-mixing from not using the full sky and while the matrix greatly improves things, it's not perfect because the matrix was intended for B18 and this is a similar-but-not-equal data subset. A relatively easy way to check this hypothesis is by fitting &alpha; to the 3-year B18 matrix purified sims.
+    </p>
+<p>It would also be worth verifying that the estimator gives expected values for a toy model of EB/TB spectra with similar statistical properties determined by the BPCM.</p>
+        <p>
+        Lastly, the standard deviation of the EB+TB fits do not match what we'd naively expect from leveraging both spectra assuming EB and TB are uncorrelated, i.e.:
+
+        \begin{equation}
+        \sigma_{EB+TB} = \frac{1}{\sqrt{\frac{1}{\sigma_{EB}^2}+\frac{1}{\sigma_{TB}^2}}}
+        \end{equation}
+        </p>
+        <p>
+            which for B2018 Matrix-purified L-LCDM, for instance, is expected to be ~0.085&deg; compared to 0.1&deg;. This is something else that we can check against a toy model in a follow-up posting.</p>
+
+    <h3>Scaling relation between absolute BB Amplitude and &sigma;<sub>&alpha;</sub></h3>
+        <p>
+            In the figure below, I plot the 1-&sigma; standard deviations of &alpha; as a function of the uniform mean of the square root of the BB bandpowers of all 499 realizations in B2018. We can see that &sigma;<sub>&alpha;</sub> scales as ~1 for $\sqrt{D_{\ell}^{BB}}$ for the TB-only fits and as ~0.5 for the EB-only fits -- but only for APS with CMB signal in them.
+        </p>
+
+    <figure>
+        <img src="figs/sigalpha_vs_BBamp_6614.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+        <p>
+            This is perhaps unsurprising because Noise (and presumably Dust) EB/TB are not crossing B with the much larger T and E signals of the CMB. A more informative plot here might instead show Dust/Noise B crossed with CMB T and E and fitting an angle to that.
+        </p>
+        <p>
+            That said, assuming B from Dust is negligible and we can average down the noise, our uncertainty is going to be limited by the lensing B-modes -- we won't be able to do better than &sigma;<sub>&alpha;</sub>~0.06&deg; unless we delense.
+        </p>
+        <h3>
+            Fractional uncertainty when going from 499 to 10 sims
+        </h3>
+        <p>For this posting, I only create 10 sims for the sake of computational speed at the cost of lowering the precision on &sigma;<sub>&alpha;</sub>. But it's pretty straightforward to determine if the &sigma;<sub>&alpha;</sub>'s from 10 sims is consistent with &sigma;<sub>&alpha;</sub>'s from 499 sims.</p>
+
+        <p>
+            The uncertainty on the standard deviation of a distribution when drawing N samples from a parent distribution with width &sigma; is:</p>
+
+        \begin{equation*}
+        \sigma_{\sigma\alpha} = \frac{\sigma_\alpha}{\sqrt{2N-2}}
+        \end{equation*}
+
+        <p>So the fractional uncertainty when going from 499 to 10 sims is </p>
+
+        \begin{equation*}
+        \sqrt{\frac{1}{N_1-1}}\,=\,\sqrt{\frac{1}{18}}\sim25\%
+        \end{equation*}
+
+
+        <p>
+  We should expect the standard deviations on B2018-rerun to fluctuate around &pm;25% of the parent distribution whereas we'd expect B2018 to only deviate by ~3% for 499 sims.
+        </p>
+        <p>In table 2.1, I compare the mean and 1-&sigma; standard deviations for the alphas fit from EB between the standard 499 B2018 and my 10 sims (both matrix-purified).</p>
+
+        <figure class="table">
+            <table class="results">
+                <tr>
+                    <th></th>
+                    <th colspan="2">EB</th>
+                    <th colspan="2">TB</th>
+                    <th colspan="2">EB+TB</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th class="cstart" colspan="1">B2018</th>
+                    <th class="cend" colspan="1">B2018-rerun</th>
+                    <th class="cstart" colspan="1">B2018</th>
+                    <th class="cend" colspan="1">B2018-rerun</th>
+                    <th class="cstart" colspan="1">B2018</th>
+                    <th class="cstart" colspan="1">B2018-rerun</th>
+                </tr>
+                <tr>
+                    <th class="cend">Signal</th>
+                    <!--                <th class="cstart">Mean (&deg;)</th>-->
+                    <!--                <th colspan="2">STD (&deg;)</th>-->
+                    <!--                <th class="cstart">Mean (&deg;)</th>-->
+                    <th class="cend" colspan="2">STD (&deg;)</th>
+                    <!--                <th class="cstart">Mean (&deg;)</th>-->
+                    <!--                <th>STD (&deg;)</th>-->
+                    <!--                <th class="cstart">Mean (&deg;)</th>-->
+                    <th class="cend" colspan="2">STD (&deg;)</th>
+                    <!--                <th class="cstart">Mean (&deg;)</th>-->
+                    <!--                <th>STD (&deg;)</th>-->
+                    <!--                <th class="cstart">Mean (&deg;)</th>-->
+                    <th class="cstart" colspan="2">STD (&deg;)</th>
+                </tr>
+                <tr>
+                    <td>Unlensed LCDM</td>
+                    <td class='cstart'>0.005</td>
+                    <td class='cstart'>0.003</td>
+                    <td class='cstart'>0.011</td>
+                    <td class='cstart'>0.011</td>
+                    <td class='cstart'>0.006</td>
+                    <td class='cstart'>0.005</td>
+                </tr>
+                <tr>
+                    <td>Gaussian Dust</td>
+                    <td class='cstart'>0.002</td>
+                    <td class='cstart'>0.002</td>
+                    <td class='cstart'>0.000</td>
+                    <td class='cstart'>0.000</td>
+                    <td class='cstart'>0.001</td>
+                    <td class='cstart'>0.001</td>
+                </tr>
+                <tr>
+                    <td>Lensed LCDM</td>
+                    <td class='cstart'>0.060</td>
+                    <td class='cstart'>0.068</td>
+                    <td class='cstart'>0.112</td>
+                    <td class='cstart'>0.124</td>
+                    <td class='cstart'>0.063</td>
+                    <td class='cstart'>0.074</td>
+                </tr>
+                <tr>
+                    <td>Sign-Flip Noise</td>
+                    <td class='cstart'>0.014</td>
+                    <td class='cstart'>0.013</td>
+                    <td class='cstart'>0.001</td>
+                    <td class='cstart'>0.002</td>
+                    <td class='cstart'>0.011</td>
+                    <td class='cstart'>0.009</td>
+                </tr>
+                <tr>
+                    <td>Lensed-LCDM+Noise</td>
+                    <td class='cstart'>0.117</td>
+                    <td class='cstart'>0.081</td>
+                    <td class='cstart'>0.230</td>
+                    <td class='cstart'>0.182</td>
+                    <td class='cstart'>0.129</td>
+                    <td class='cstart'>0.088</td>
+                </tr>
+                <tr>
+                    <td>Lensed-LCDM+Noise+Dust</td>
+                    <td class='cstart'>0.118</td>
+                    <td class='cstart'>0.093</td>
+                    <td class='cstart'>0.232</td>
+                    <td class='cstart'>0.195</td>
+                    <td class='cstart'>0.130</td>
+                    <td class='cstart'>0.098</td>
+                </tr>
+            </table>
+            <figcaption>
+
+            </figcaption>
+        </figure>
+
+        <p>Table 3.1 appears to confirm that expectation. This should be sufficient for doing case studies and testing of different parts of the pipeline. However, I think for purpose of doing jackknifes and calculating our final uncertainties, we'll want to create a full suite of 499 sims.</p>
+
+</section>
+<section><h2>Conclusions</h2>
+    <p>
+        By fitting rotation angles to our standard suite of sims, we now have answers to the questions we asked in &sect;1:
+    <ol type="A">
+        <li>Are estimates of &alpha; for these sims zero as expected?</li>
+        <ul>
+            <li>Estimates are all consistent with zero within the standard deviation, but not within the error-on-the-mean.</li>
+            <li>Given that matrix purification improves this, it's possible that this inconsistency can be attributed to imperfect cleaning of the E&rightarrow;B leakage due to mode-mixing, perhaps from using a purification matrix that was intended for the 3-year dataset on a single year's data.</li>
+            <li>Follow-ups to this are: seeing if non-zero means are still present when using toy models of uncorrelated sample variance in EB & TB spectra; and seeing if the mean &alpha; in the three-year dataset exhibits the same symptoms.</li>
+        </ul>
+        <li>What is the expected statistical uncertainty on &alpha;? What are we limited by?</li>
+        <ul>
+            <li>We can see from Figure 3.1 that, in the absence of dust and noise, our absolute minimum uncertainty is &sigma;<sub>&alpha;</sub>~0.05&deg; from lensing. If we want to go lower, we'd need to delense.</li>
+            <li>In the B2018, we are dominated by in BB power by noise by a factor of ~3 at &ell;=200. A rough estimate tells me that we'll still be dominated by noise using using the three-year dataset by a factor of ~2 assuming BB power drops as 1/&radic;N.</li>
+        </ul>
+        <li>How do the uncertainties from Signal/Noise/Dust contribute to our overall uncertainty on &alpha;?</li>
+        <ul>
+             <li>
+                &sect;3.1 shows that, for cases with CMB signal, &sigma;<sub>&alpha;</sub> scales with BB-amplitude.
+            </li>
+
+        </ul>
+        <!--        <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>-->
+    </ol>
+    </p>
+    <h3>Next Steps</h3>
+    <p>
+        Follow-ups to this posting include:
+
+        <ul>
+        <li>Looking at B18 &alpha; estimates with and without matrix purification</li>
+        <li>Running pseudosims through the angle estimator explore how EB and TB are related</li>
+        </ul>
+    </p>
+    <p>In parallel, we are also going to start fitting &alpha; to sims in which different polarization angles are used during the TOD-making and mapmaking phases which should provide insight to any systematics that might enter through the polarization angles.</p>
+
+</section>
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+    <h3>Footnotes</h3>
+    <p>Click on the number to return to the main text.</p>
+    <div class="footnote">
+        <p>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+        A more recent global rotation posting for BK18 exists, but to remain blind in this analysis I have not looked at it and do not link it here.
+    </p>
+    </div>
+<!--    <h3>Code</h3>-->
+<!--    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>-->
+<!--    <p id="code"></p>-->
+
+<!--    <h3>Data</h3>-->
+<!--    <p id="data"></p>-->
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "rps_fit_mirror_from_moon.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Derives mirror parameters from observations of the moon.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "moonsch.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Metadata of Moon observations",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "Carroll1990",
+            "Harari1992",
+            "JBW2016",
+            "EWB2016",
+            "BKIX",
+            "BKXII",
+            "BKXIV",
+            "BKXVII",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which it lies if you can.
+        // This ensures that we can view the linked postings at Pole without the internet.
+        var hrefs = [
+            "papers/carroll1990.pdf",
+            "papers/harari1992.pdf",
+            "bkcmb/analysis_logbook/analysis/20160907_polrot/",
+            "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
+            "https://arxiv.org/pdf/1705.02523.pdf",
+            "https://arxiv.org/pdf/2011.03483.pdf",
+            "https://arxiv.org/pdf/2108.03316.pdf",
+            "https://arxiv.org/pdf/2210.08038.pdf",
+
+
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Limits on a Lorentz- and parity-violating modification of electrodynamics",
+            "Effects of a Nambu-Goldstone boson on the polarization of radio galaxies and the cosmic microwave background",
+            "Birefringence/Polarization rotation in K2015 and BK15",
+            "Polarization Rotation Sims Global Rotation",
+            "New Bounds on Anisotropies of CMB Polarization Rotation and Implications for Axion-Like Particles and Primordial Magnetic Fields",
+            "Constraints on axion-like polarization oscillations in the cosmic microwave background",
+            "Improved Constraints on axion-like polarization oscillations in the Cosmic Microwave Background",
+            "Line of Sight Distortion Analysis: Estimates of Gravitational Lensing, Anisotropic Cosmic Birefringence, Patchy Reionization, and Systematic Errors",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
