@@ -248,6 +248,33 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
 
         <p>With these two points in mind, we can establish a relationship between BB-band powers and &alpha; and then make predictions on &alpha; given some change in BB. I'll first re-fit &alpha; for B18, B2018 and B2018-rerun, but only using &ell;-bins</p>
 
+        <figure>
+            <img alt="Name pager" id="histpager2" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+            <figcaption>
+                Histograms of &alpha; estimates for B2018 and my B2018-rerun for each EB/TB fit type; per signal type; and with and without matrix purification.
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#histpager2",
+                    {
+                        'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
+                        //'Purification Method|pure2': ['None|','Matrix|matrix_'],
+                        'Simset|sernum2': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
+                        //'cmb x noise/dust|c': ['Off|','On|_cross'],
+                        'Bins|bins': ['2-10|_bins_2_10','2-5|_bins_2_5','1-17|_bins_1_17'],
+                    },
+                    function(params) {
+                        return 'figs/alpha_hist_'+params.sernum2+'matrix_'+params.sig+'_corr_cross'+params.bins+'.png';
+                    });
+                pager.setparams({
+                    'sig': '2',
+                    'bins': '_bins_2_5',
+                    'sernum2': '6600h',
+                    //'c': '',
+                });
+            </script>
+        </figure>
+
+
 
 </section>
 <section><h2>Conclusions</h2>
