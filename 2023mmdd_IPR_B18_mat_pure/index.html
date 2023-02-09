@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims</h1>
+    <h1>Isotropic Polarization Rotation Analysis: Angle Estimates on Matrix-Purified B18</h1>
 
     <time datetime="2022-12-13" class="published updated">
         2023 Feb 7
@@ -40,22 +40,16 @@
 <hr>
 
 <p>
-
+In a previous posting <a href="JAC2023"></a>, I characterized the uncertainty in global polarization estimates for BICEP3 B2018 sims which are expected to have a mean angle of 0&deg;. This is a follow-up to that posting which now includes fits to the B18 3-year dataset and explores a bit more how the variance on our angle estimates and BB-power relate to each other.
 </p>
 
 <hr>
 
-<section><h2>Introduction</h2>
-</section>
-
-
-<section><h2>Recreation of B2018 Sims</h2>
+<section><h2>Matrix purifying B18 Sims</h2>
     <p>
-I've now included B18 into these pagers. I am also now crossing CMB T&E with B for Dust-only and Noise-only signal types.
+I've now included B18 into these pagers. I see virtually no difference in the B18 and B2018 matrix-purified BB spectra. I am also now crossing Unlensed CMB T&E with B for Dust-only and Noise-only signal types so that our angle estimates for these signal types are comparable to the ones with CMB already in them. These spectra can be seen in the "cmb x noise/dust" option where EB, TB, and BB are all now E<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> , T<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> , B<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> respectively.
     </p>
-    <p>
-        The pager below shows EB/TB angular power spectra (APS) for both B2018 (sernum 3553) and my sims (B2018-rerun, sernum 6600) where I visually compare the means. To see if it can improve the fits to EB/TB spectra, I also apply the B18 purification matrix -- which was created from the combined B2016, B2017, and B2018 -- to both sets of sims.
-</p>
+
 <!--    <p>-->
 <!--        Sim types:-->
 <!--        <ol start="2">-->
@@ -104,24 +98,10 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             });
         </script>
     </figure>
-<p>
-    Switching between the two simsets for any signal-type, we can see that my reproduction was successful. We can also see qualitatively that the purification matrix does a great job of reducing E-to-B leakage which should reduce the variance on &alpha; estimates.
-</p>
-</section>
-    <section><h2>Global Polarization Rotation fits to B2018 Sims</h2>
-    <p>
-        Now I perform the global rotation fits on each of the sims.
-    </p>
-    <p>
-        I estimate &alpha; for each individual sim following the procedure outlined by Eric Bullock in <a href="EWB2016"></a>:
-        <ol>
-        <li>Load in a real final file and sim APS.</li>
-        <li>Apply the suppression factor from the real data to the sim APS.</li>
-        <li>Swap the real APS for the sim APS in the final file.</li>
-        <li>Pass the final file through <tt>reduc_global_rotation</tt> to fit for the angle.</li>
-    </ol>
-        This method ensures that each simmed APS has the same suppression factor and bandpower window function (BPWF) applied as the real data and also that the fit is properly normalized by the bandpower covariance matrix (BPCM).
-    </p>
+
+
+
+
     <p>
 
     </p>
@@ -150,52 +130,9 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
         </script>
     </figure>
 
-    <p>
-
-    </p>
-        <figure class="table">
-            <table class="results">
-                <tr>
-                    <th>Signal Type</th>
-                    <th>Variance [sq-deg]</th>
-                </tr>
-                <tr>
-                    <td>Lensed-LCDM</td>
-                    <td>0.0036</td>
-                </tr>
-                <tr>
-                    <td>Noise</td>
-                    <td>0.0104</td>
-                </tr>
-                <tr>
-                    <td>Dust</td>
-                    <td>0.0003</td>
-                </tr>
-                <tr>
-                    <td>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub></td>
-                    <td>0.0140</td>
-                </tr>
-                <tr>
-                    <td>&sigma;<sup>2</sup><sub>L+N</sub></td>
-                    <td>0.0135</td>
-                </tr>
-                <tr>
-                    <td>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub>+&sigma;<sup>2</sup><sub>D</sub></td>
-                    <td>0.0143</td>
-                </tr>
-                <tr>
-                    <td>&sigma;<sup>2</sup><sub>L+N+D</sub></td>
-                    <td>0.0139</td>
-                </tr>
-            </table>
-            <figcaption>
-                Table of B2018 variance on alpha from EB fits
-            </figcaption>
-        </figure>
-
-        <p>The sum of the variances between Lensed-LCDM, Noise and Dust correspond to the variance on the coadded spectra to within 4%.</p>
-        
-        <h3>Estimator Transfer Function?</h3>
+</section>
+<section>
+        <h2>Estimator Transfer Function</h2>
         <p>
             Now we need to get an idea of which bandpowers matter most in our angle estimator.
         </p>
@@ -220,7 +157,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             </figcaption>
         </figure>
 <p>
-    In Figure 3.3, a higher angle implies that a given &ell;-bin is more sensitive to perturbations and thus we can expect that those &ell;-bins will contribute the same amount to &sigma;<sub>&alpha;</sub> at a lower sample variance compared to another &ell;-bin with a smaller angle.
+    In Figure 2.3, a higher angle implies that a given &ell;-bin is more sensitive to perturbations and thus we can expect that those &ell;-bins will contribute the same amount to &sigma;<sub>&alpha;</sub> at a lower sample variance compared to another &ell;-bin with a smaller angle.
     We can see that the EB fit favors the higher Ell's while TB favors Ell's around around 50, 200, and 400. And we can see why in the figure below which shows the the our matrix-purified simulations along with the functional form of our estimator at for different &alpha;s taken from figure 1 of <a href="Kaufman2013"></a>.
     </p>
       <p>      For EB, since the EB power at high-&ell; grows faster, one can expect the estimator to have more constraining power at those higher &ell;-bins. While the sample variance is lower at low-&ell;, it's not low enough to compensate for the high-&ell; sensitivity.
@@ -247,13 +184,13 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             </figcaption>
         </figure>
 
-        <p>Up to this point, I have been fitting angles using &ell;-bins 2 to 10 (&ell;=37.5 to 317.5) to match what bins I expect the real data to be most reliable.
+        <p>Up to this point, I have been fitting angles using the default &ell;-bins 2 to 10 (&ell;=37.5 to 317.5) to match what bins I expect the real data to be most reliable.
             However, the above suggests I should be more sensitive at higher &ell;. Below, I re-fit the angles but using different &ell;-ranges. Clicking between Bins: 6-10 and Bins: 2-10, we can see that most of our constraining power in the ranges of interest is in the higher bins as expect, but &sigma;<sub>&alpha;</sub> still drops by about 0.01&deg; if we include Bins 2-5, so I think I'll keep using bins 2-10. Lastly, I include an option to use all of our bins to give us a best-case scenario to show that including the &ell;'s up to 560 in our spectra can improve &sigma;<sub>&alpha;</sub> by ~30%.</p>
 
         <figure>
             <img alt="Name pager" id="histpager2" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
             <figcaption>
-                Histograms of &alpha; estimates for B2018 and my B2018-rerun for each EB/TB fit type; per signal type; and with and without matrix purification.
+                Histograms of &alpha; estimates for B18, B2018 and my B2018-rerun for each EB/TB fit type; per signal type; and for fitting over different &ell;-bin ranges
             </figcaption>
             <script type="text/javascript">
                 pager.link("#histpager2",
@@ -282,7 +219,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
         <figure>
             <img alt="Name pager" id="apspager2" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />
             <figcaption>
-                A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell.
+                A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018 and B18 with all 17 bandpowers. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell.
             </figcaption>
             <script type="text/javascript">
                 pager.link("#apspager2",
@@ -300,9 +237,157 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             </script>
         </figure>
 
-        <p>We can also see in Fig 3.3, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle. This means that we can confidently predict changes in &alpha; based on relative differences in EB and TB spectra.</p>
+        <p>We can also see in Fig 2.3, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle.</p>
+
+        <h3>Relation between &sigma;<sub>&alpha;</sub><sup>2</sup> and BB-power</h3>
+        <p>In the tables below, I record the variance on alpha for signals CMB, Noise and Dust along with BB-power. I compare the sum of these variances to the variance on the summed signal spectra. I do the same for BB-power, summing the bandpower-averaged BB of each signal and comparing to the bandpower-averaged BB of the summed signal spectra.</p>
+        <figure class="table">
+            <table class="results">
+                <tr>
+                    <th colspan="5">B2018 &sigma;<sub>&alpha;</sub><sup>2</sup> and BB-power</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>EB-fit</th>
+                    <th>TB-fit</th>
+                    <th>EB+TB-fit</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>Signal Type</th>
+                    <th colspan="3">Angle Variance [sq-deg]</th>
+                    <th>Avg BB-Power</th>
+                </tr>
+                <tr>
+                    <td>Lensed-LCDM</td>
+                    <td>0.0035</td>
+                    <td>0.0126</td>
+                    <td>0.0040</td>
+                    <td>0.0109</td>
+                </tr>
+                <tr>
+                    <td>Noise</td>
+                    <td>0.0104</td>
+                    <td>0.0416</td>
+                    <td>0.0127</td>
+                    <td>0.0426</td>
+                </tr>
+                <tr>
+                    <td>Dust</td>
+                    <td>0.0003</td>
+                    <td>0.0010</td>
+                    <td>0.0003</td>
+                    <td>0.0007</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub></td>
+                    <td>0.0140</td>
+                    <td>0.0541</td>
+                    <td>0.0167</td>
+                    <td>0.0536</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L+N</sub></td>
+                    <td>0.0136</td>
+                    <td>0.0528</td>
+                    <td>0.0164</td>
+                    <td>0.0535</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub>+&sigma;<sup>2</sup><sub>D</sub></td>
+                    <td>0.0143</td>
+                    <td>0.0551</td>
+                    <td>0.0170</td>
+                    <td>0.0543</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L+N+D</sub></td>
+                    <td>0.0139</td>
+                    <td>0.0537</td>
+                    <td>0.0167</td>
+                    <td>0.0543</td>
+                </tr>
+
+            </table>
+            <figcaption>
+                Table of B2018 variance on alpha EB-only, TB-only, and EB+TB fits compared to BB power averaged over &ell;-bins 2 through 10.
+            </figcaption>
+        </figure>
+
+        <figure class="table">
+            <table class="results">
+                <tr>
+                    <th colspan="5">B18 &sigma;<sub>&alpha;</sub><sup>2</sup> and BB-power</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>EB-fit</th>
+                    <th>TB-fit</th>
+                    <th>EB+TB-fit</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>Signal Type</th>
+                    <th colspan="3">Angle Variance [sq-deg]</th>
+                    <th>Avg BB-Power</th>
+                </tr>
+                <tr>
+                    <td>Lensed-LCDM</td>
+                    <td>0.0036</td>
+                    <td>0.0126</td>
+                    <td>0.0042</td>
+                    <td>0.0109</td>
+                </tr>
+                <tr>
+                    <td>Noise</td>
+                    <td>0.0038</td>
+                    <td>0.0159</td>
+                    <td>0.0049</td>
+                    <td>0.0167</td>
+                </tr>
+                <tr>
+                    <td>Dust</td>
+                    <td>0.0003</td>
+                    <td>0.0008</td>
+                    <td>0.0003</td>
+                    <td>0.0007</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub></td>
+                    <td>0.0074</td>
+                    <td>0.0285</td>
+                    <td>0.0090</td>
+                    <td>0.0276</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L+N</sub></td>
+                    <td>0.0075</td>
+                    <td>0.0276</td>
+                    <td>0.0088</td>
+                    <td>0.0275</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub>+&sigma;<sup>2</sup><sub>D</sub></td>
+                    <td>0.0077</td>
+                    <td>0.0293</td>
+                    <td>0.0093</td>
+                    <td>0.0283</td>
+                </tr>
+                <tr>
+                    <td>&sigma;<sup>2</sup><sub>L+N+D</sub></td>
+                    <td>0.0078</td>
+                    <td>0.0280</td>
+                    <td>0.0090</td>
+                    <td>0.0283</td>
+                </tr>
 
 
+            </table>
+            <figcaption>
+                Table of B18 variance on alpha EB-only, TB-only, and EB+TB fits compared to BB power averaged over &ell;-bins 2 through 10.
+            </figcaption>
+        </figure>
+        <p>The sum of the variances between Lensed-LCDM, Noise and Dust correspond to the variance on the coadded spectra to within 4%. Likewise, the sum of BB-power matches the BB-power of the summed signals to within 1%.</p>
     </section>
 <section><h2>Conclusions</h2>
     <p>
@@ -438,6 +523,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             "BKXII",
             "BKXIV",
             "BKXVII",
+            "JAC2023",
         ];
 
         // Links
@@ -453,6 +539,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             "https://arxiv.org/pdf/2011.03483.pdf",
             "https://arxiv.org/pdf/2108.03316.pdf",
             "https://arxiv.org/pdf/2210.08038.pdf",
+            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
 
 
         ];
@@ -469,6 +556,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             "Constraints on axion-like polarization oscillations in the cosmic microwave background",
             "Improved Constraints on axion-like polarization oscillations in the Cosmic Microwave Background",
             "Line of Sight Distortion Analysis: Estimates of Gravitational Lensing, Anisotropic Cosmic Birefringence, Patchy Reionization, and Systematic Errors",
+            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
         ];
         // Debug
         var posty = document.getElementById("testp");
