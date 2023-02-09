@@ -197,10 +197,10 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
         
         <h3>Estimator Transfer Function?</h3>
         <p>
-            Now we need to get an idea of which bandpowers matter most in our alpha estimations.
+            Now we need to get an idea of which bandpowers matter most in our angle estimator.
         </p>
         <p>
-            I do this by injecting a dummy signal into an EB or TB spectra bandpower-by-bandpower whilst keeping all other bandpowers at zero and then estimating alpha (see below figure).
+            I do this by injecting a quasi-delta function -- i.e. setting a bandpower to some fixed amplitude whilst keeping all other bandpowers at zero -- into an EB or TB spectra &ell;bin-by-&ell;bin, recording the resulting alpha estimates (see below figure for example).
         </p>
         <figure>
             <img src="figs/estimator_xfer_example.gif">
@@ -208,51 +208,55 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
 
             </figcaption>
         </figure>
-
+        <p>
+            The figure below shows resulting alphas for four different amplitudes of our quasi-delta function.
+        </p>
         <figure>
 
             <img src="figs/estimator_xfer_func.png">
             <figcaption>
-                
+                Exploring the effect on &alpha; for input delta functions for EB <b>(Top Row)</b> and TB <b>(Bottom
+                Row)</b>. <b>Left Column</b> Resulting &alpha; estimate per bandpower as a function of Ell, the lines are color coded by the amplitude of the quasi-delta function used in the given spectra. <b>(Right Column)</b> The angle at each bandpower is divided by the angle Dl=1 (Dl=0.1 for EB) at that bandpower to confirm linearity -- an increase in the bandpower corresponds to a linear increase in angle for these amplitudes.
             </figcaption>
         </figure>
-        
+<p>
+    We can see that the EB fit favors the lowest Ell's while TB favors Ell's around 150. And we can see why in the figure below which shows the the our matrix-purified simulations along with the functional form of our estimator at for different &alpha;s taken from figure 1 of <a href="Kaufman2013"></a>.
+    For EB, since the EB power at high-&ell; grows faster, one could naively expect the estimator to be more sensitive at those higher &ell;-bins, but it looks like that's beat out by the lower sample variance at low-&ell;.
+    This is because EB has lowest sample variance at low &ell;'s and while TB also has lower sample variance at low &ell;s, the TB spectra pivots about &ell;s of 50 and 200 in our model of global polarization rotation. See the figure below as an example
+</p>
+
+        <figure>
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <img src="figs/tb_eb_spectra_example.png">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="figs/polrot_example_kaufman2013.png">
+                    </td>
+                </tr>
+            </table>
+
+            <figcaption>
+
+            </figcaption>
+        </figure>
+
+        <p>We can also see that, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle. This means that we can confidently predict changes in &alpha; based on relative differences in EB and TB spectra.</p>
+
+        <p>With these two points in mind, we can establish a relationship between BB-band powers and &alpha; and then make predictions on &alpha; given some change in BB. I'll first re-fit &alpha; for B18, B2018 and B2018-rerun, but only using &ell;-bins</p>
+
+
 </section>
 <section><h2>Conclusions</h2>
     <p>
-        By fitting rotation angles to our standard suite of sims, we now have answers to the questions we asked in &sect;1:
-    <ol type="A">
-        <li>Are estimates of &alpha; for these sims zero as expected?</li>
-        <ul>
-            <li>Estimates are all consistent with zero within the standard deviation, but not within the error-on-the-mean.</li>
-            <li>Given that matrix purification improves this, it's possible that this inconsistency can be attributed to imperfect cleaning of the E&rightarrow;B leakage due to mode-mixing, perhaps from using a purification matrix that was intended for the 3-year dataset on a single year's data.</li>
-            <li>Follow-ups to this are: seeing if non-zero means are still present when using toy models of uncorrelated sample variance in EB & TB spectra; and seeing if the mean &alpha; in the three-year dataset exhibits the same symptoms.</li>
-        </ul>
-        <li>What is the expected statistical uncertainty on &alpha;? What are we limited by?</li>
-        <ul>
-            <li>We can see from Figure 3.1 that, in the absence of dust and noise, our absolute minimum uncertainty is &sigma;<sub>&alpha;</sub>~0.05&deg; from lensing. If we want to go lower, we'd need to delense.</li>
-            <li>In the B2018, we are dominated by in BB power by noise by a factor of ~3 at &ell;=200. A rough estimate tells me that we'll still be dominated by noise using using the three-year dataset by a factor of ~2 assuming BB power drops as 1/&radic;N.</li>
-        </ul>
-        <li>How do the uncertainties from Signal/Noise/Dust contribute to our overall uncertainty on &alpha;?</li>
-        <ul>
-             <li>
-                &sect;3.1 shows that, for cases with CMB signal, &sigma;<sub>&alpha;</sub> scales with BB-amplitude.
-            </li>
 
-        </ul>
-        <!--        <li>What happens when we use our B18 Purification matrix on smaller subsets of data?</li>-->
-    </ol>
     </p>
+
+
     <h3>Next Steps</h3>
-    <p>
-        Follow-ups to this posting include:
-
-        <ul>
-        <li>Looking at B18 &alpha; estimates with and without matrix purification</li>
-        <li>Running pseudosims through the angle estimator explore how EB and TB are related</li>
-        </ul>
-    </p>
-    <p>In parallel, we are also going to start fitting &alpha; to sims in which different polarization angles are used during the TOD-making and mapmaking phases which should provide insight to any systematics that might enter through the polarization angles.</p>
 
 </section>
 
@@ -373,6 +377,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
         var tags = [
             "Carroll1990",
             "Harari1992",
+            "Kaufman2013",
             "JBW2016",
             "EWB2016",
             "BKIX",
@@ -387,6 +392,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
         var hrefs = [
             "papers/carroll1990.pdf",
             "papers/harari1992.pdf",
+            "https://arxiv.org/pdf/1312.7877.pdf",
             "bkcmb/analysis_logbook/analysis/20160907_polrot/",
             "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
             "https://arxiv.org/pdf/1705.02523.pdf",
@@ -402,6 +408,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
         var desc = [
             "Limits on a Lorentz- and parity-violating modification of electrodynamics",
             "Effects of a Nambu-Goldstone boson on the polarization of radio galaxies and the cosmic microwave background",
+            "Self-Calibration of BICEP1 Three-Year Data and Constraints on Astrophysical Polarization Rotation",
             "Birefringence/Polarization rotation in K2015 and BK15",
             "Polarization Rotation Sims Global Rotation",
             "New Bounds on Anisotropies of CMB Polarization Rotation and Implications for Axion-Like Particles and Primordial Magnetic Fields",
