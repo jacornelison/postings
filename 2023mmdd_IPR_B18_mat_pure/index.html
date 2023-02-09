@@ -220,9 +220,12 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             </figcaption>
         </figure>
 <p>
-    We can see that the EB fit favors the lowest Ell's while TB favors Ell's around 150. And we can see why in the figure below which shows the the our matrix-purified simulations along with the functional form of our estimator at for different &alpha;s taken from figure 1 of <a href="Kaufman2013"></a>.
-    For EB, since the EB power at high-&ell; grows faster, one could naively expect the estimator to be more sensitive at those higher &ell;-bins, but it looks like that's beat out by the lower sample variance at low-&ell;.
-    This is because EB has lowest sample variance at low &ell;'s and while TB also has lower sample variance at low &ell;s, the TB spectra pivots about &ell;s of 50 and 200 in our model of global polarization rotation. See the figure below as an example
+    In Figure 3.3, a higher angle implies that a given &ell;-bin is more sensitive to perturbations and thus we can expect that those &ell;-bins will contribute the same amount to &sigma;<sub>&alpha;</sub> at a lower sample variance compared to another &ell;-bin with a smaller angle.
+    We can see that the EB fit favors the higher Ell's while TB favors Ell's around around 50, 200, and 400. And we can see why in the figure below which shows the the our matrix-purified simulations along with the functional form of our estimator at for different &alpha;s taken from figure 1 of <a href="Kaufman2013"></a>.
+    </p>
+      <p>      For EB, since the EB power at high-&ell; grows faster, one can expect the estimator to have more constraining power at those higher &ell;-bins. While the sample variance is lower at low-&ell;, it's not low enough to compensate for the high-&ell; sensitivity.
+    </p>
+        <p>For TB, while it also has lower sample variance at low &ell;s, the TB spectra pivots about &ell;s of 50 and 200 and 400 in our model of global polarization rotation and so will be less sensitive to pertubations around those points.
 </p>
 
         <figure>
@@ -244,9 +247,8 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
             </figcaption>
         </figure>
 
-        <p>We can also see that, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle. This means that we can confidently predict changes in &alpha; based on relative differences in EB and TB spectra.</p>
-
-        <p>With these two points in mind, we can establish a relationship between BB-band powers and &alpha; and then make predictions on &alpha; given some change in BB. I'll first re-fit &alpha; for B18, B2018 and B2018-rerun, but only using &ell;-bins</p>
+        <p>Up to this point, I have been fitting angles using &ell;-bins 2 to 10 (&ell;=37.5 to 317.5) to match what bins I expect the real data to be most reliable.
+            However, the above suggests I should be more sensitive at higher &ell;. Below, I re-fit the angles but using different &ell;-ranges. Clicking between Bins: 6-10 and Bins: 2-10, we can see that most of our constraining power in the ranges of interest is in the higher bins as expect, but &sigma;<sub>&alpha;</sub> still drops by about 0.01&deg; if we include Bins 2-5, so I think I'll keep using bins 2-10. Lastly, I include an option to use all of our bins to give us a best-case scenario to show that including the &ell;'s up to 560 in our spectra can improve &sigma;<sub>&alpha;</sub> by ~30%.</p>
 
         <figure>
             <img alt="Name pager" id="histpager2" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
@@ -260,7 +262,7 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
                         //'Purification Method|pure2': ['None|','Matrix|matrix_'],
                         'Simset|sernum2': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
                         //'cmb x noise/dust|c': ['Off|','On|_cross'],
-                        'Bins|bins': ['2-10|_bins_2_10','2-5|_bins_2_5','1-17|_bins_1_17'],
+                        'Bins|bins': ['2-5|_bins_2_5','6-10|_bins_6_10','2-10|_bins_2_10','1-17|_bins_1_17'],
                     },
                     function(params) {
                         return 'figs/alpha_hist_'+params.sernum2+'matrix_'+params.sig+'_corr_cross'+params.bins+'.png';
@@ -273,10 +275,35 @@ I've now included B18 into these pagers. I am also now crossing CMB T&E with B f
                 });
             </script>
         </figure>
+    <p>
+        For reference, the pager below shows B2018 499 sims with all 17 bandpowers for EB, TB, and BB:
+    </p>
+
+        <figure>
+            <img alt="Name pager" id="apspager2" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />
+            <figcaption>
+                A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell.
+            </figcaption>
+            <script type="text/javascript">
+                pager.link("#apspager2",
+                    {
+                        'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
+                        'y-axes|axes': ['Fixed|_fixed','Free|_free']
+                    },
+                    function(params) {
+                        return 'figs/aps_6614_h_matrix_'+params.sig+params.axes+'_cross_bins_1_17.png';
+                    });
+                pager.setparams({
+                    'sig': '2',
+                    'axes': '_fixed',
+                });
+            </script>
+        </figure>
+
+        <p>We can also see in Fig 3.3, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle. This means that we can confidently predict changes in &alpha; based on relative differences in EB and TB spectra.</p>
 
 
-
-</section>
+    </section>
 <section><h2>Conclusions</h2>
     <p>
 
