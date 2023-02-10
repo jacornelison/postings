@@ -31,8 +31,8 @@
 <header>
     <h1>Isotropic Polarization Rotation Analysis: Global Polarization Rotation Angles in B2018 sims</h1>
 
-    <time datetime="2020-xx-xx" class="published updated">
-        2022 Dec 13
+    <time datetime="2020-02-23" class="published updated">
+        2023 Feb 13
     </time> —
     J. Cornelison
 </header>
@@ -129,7 +129,9 @@ The goal of this posting is to probe for potential pathologies in fitting angles
     <h3>RPS-derived Pol-angles</h3>
 
     <p>
-        In the pager below, I show the global rotation fits for sims created with the above procedure but with preliminary RPS-derived angles input into the TOD's and 'obs' angles used during mapmaking. The mean of this distribution is going to be representative of the <i>difference</i> between the RPS-derived angles and the 'obs' angles (which are derived from the CMB and based on pointing only). To estimate what we should expect the mean of alpha to be, I had originally assumed that the mean would depend greatly on the individual weighting of each detector pair in much the same way each pair contributes signal to coadded maps. I found however that this isn't necessarily the case: The uniformly-weighted mean of the difference between RPS-derived and CMB-derived angles for all pairs used in B2018 is $\bar{\phi}_{pair}=-0.778&deg;$. As we can see from the pager below, the mean of the scaling corrected distributions matches this exactly. But why?
+        In the pager below, I show the global rotation fits for sims created with the above procedure but with preliminary RPS-derived angles input into the TOD's and 'obs' angles (which are derived from the CMB and based on pointing only) used during mapmaking. This is the configuration that we believe the current B18 data to be in since we used 'obs' angles to make our maps but we believe the RPS angles to be the correct angles.
+    </p>
+        <p>These sims are created through the minimum tag list and so the pairmaps are created with zero-weighting and so the expected angle is just going to be the uniformly weighted mean of <i>difference</i> between the RPS-derived angles used in TOD-making and the 'obs' angles used in mapmaking. This comes out to $\bar{\phi}_{pair}=-0.778&deg;$, which matches the mean in the scale-corrected EB-only, TB-only, and EB+TB fits to within <1%.
     </p>
 
     <figure>
@@ -157,11 +159,27 @@ The goal of this posting is to probe for potential pathologies in fitting angles
         </script>
     </figure>
 
+    <p>
+        I think realistically, the actual angle in the real data is going trace the weighting that goes into coadding the real maps which is the inverse of the timestream variance after filtering. When I compute the expected angle by taking the weighted mean over the whole year<sup><a name=sup1 href="#ftn1">[1]</a></sup> I get $\bar{\phi}_{pair}=-0.733&deg;$ which is more than 1-&sigma; away from the uniformly weighted mean. I think this means that I might have to account for the weighting, perhaps by creating sims with the full tag list if there's not a more reasonable solution.
+    </p>
 
 </section>
 
 <section><h2>Conclusions</h2>
-
+<p>
+    <ul>
+        <li>I need to apply scaling corrections to my angle estimates due to my choice of BPWF.</li>
+        <li>Creation of sims using the minimum tag list might not be properly accounting for the weighting of the per-pair polarization angles, so I need to come up with a solution for that.</li>
+    </ul>
+</p>
+    <p>
+        Lastly, I wanted to note that the angle scaling corrections were already known about and were applied to my two previous CMB analysis postings [<a href="JAC2023a"></a> and <a href="JAC2023b"></a>] when I showed them. None of the values shown in those postings changed as a result of the findings in this posting.
+    </p>
+    <h3>Future Steps</h3>
+    <ul>
+        <li>Because we plan on rerunning our real data through the analysis pipeline using the RPS angles instead, I will need to create sims with RPS angles in TOD-making and mapmaking to properly reflect that.</li>
+        <li>These sims so far have been only for the B2018 1-year dataset. I am currently looking into creating 3-year coadded simsets.</li>
+    </ul>
 </section>
 
 <hr>
@@ -175,16 +193,17 @@ The goal of this posting is to probe for potential pathologies in fitting angles
     <p>Click on the number to return to the main text.</p>
     <div class="footnote">
         <p>
-        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>I computed the weights as the inverse of the square of <tt>cut.cpa.scanset_std</tt> from <tt>data/real/2018_cutparams</tt>, making sure to properly cut channels using <tt>cut.c2a.overall</tt>
 
     </p>
     </div>
-    <h3>Code</h3>
-    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
-    <p id="code"></p>
+<!--    <h3>Code</h3>-->
+<!--    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>-->
+<!--    <p id="code"></p>-->
 
-    <h3>Data</h3>
-    <p id="data"></p>
+<!--    <h3>Data</h3>-->
+<!--    <p id="data"></p>-->
+<!--    -->
     <h3>References</h3>
 
     <p id="references"></p>
@@ -286,7 +305,8 @@ The goal of this posting is to probe for potential pathologies in fitting angles
             "EWB2016a",
             "EWB2016b",
             "JBW2017",
-            "JAC2022",
+            "JAC2023a",
+            "JAC2023b",
         ];
 
         // Links
@@ -297,8 +317,8 @@ The goal of this posting is to probe for potential pathologies in fitting angles
             "bkcmb/analysis_logbook/analysis/20161103_polrotsims_pager/",
             "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
             "bkcmb/analysis_logbook/analysis/20170421_global_rotation_bias/",
-            "bkcmb/analysis_logbook/analysis/20221213_birefringence_fits_to_B2018/index.html",
-
+            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018",
+            "jcornelison/postings/2023mmdd_IPR_B18_mat_pure/",
         ];
 
 
@@ -308,7 +328,8 @@ The goal of this posting is to probe for potential pathologies in fitting angles
             "Polarization Rotation Sims Pager",
             "Polarization Rotation Sims Global Rotation",
             "Investigating apparent bias in recovered polarization rotation angles in rotated sims",
-            "Uniform Birefringence Analysis I: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis: Angle Estimates on Matrix-Purified B18",
         ];
         // Debug
         var posty = document.getElementById("testp");
