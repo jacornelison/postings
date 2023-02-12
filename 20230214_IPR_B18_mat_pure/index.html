@@ -100,11 +100,6 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
     </figure>
 
 
-
-
-    <p>
-
-    </p>
     <figure>
         <img alt="Name pager" id="histpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
         <figcaption>
@@ -129,6 +124,71 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
             });
         </script>
     </figure>
+
+    <p>
+        Switching between B18 and B2018 for any signal type which has noise, we can qualitatively see that integrating over three years versus one reduces the &sigma;<sub>&alpha;</sub> as expected. Quantitatively though, we can calculate the effective number of additional years we integrated over by taking the ratio of the variances on &alpha; as tabulated below:
+    </p>
+
+    <figure>
+        <table>
+            <tr>
+                <th>Signal Type</th>
+                <th colspan="3">N<sub>eff</sub></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>EB-only</th>
+                <th>TB-only</th>
+                <th>EB+TB</th>
+            </tr>
+
+            <tr>
+                <td class=''>Noise-only</td>
+                <td class=''>2.7368</td>
+                <td class=''>2.6164</td>
+                <td class=''>2.5918</td>
+            </tr>
+            <tr>
+                <td class=''>L-LCDM + Noise</td>
+                <td class=''>1.8133</td>
+                <td class=''>1.9130</td>
+                <td class=''>1.8636</td>
+            </tr>
+            <tr>
+                <td class=''>L-LCDM+N+Dust</td>
+                <td class=''>1.7821</td>
+                <td class=''>1.9179</td>
+                <td class=''>1.8556</td>
+            </tr>
+
+        </table>
+    </figure>
+
+    <p>The N<sub>eff</sub> for Noise-only is close to 3 as expected and the other signal types are closer to 2 because, while we're still noise-dominated in B18, the contributions from noise and lensing are becoming comparable.</p>
+
+    <p>We can also see that for B18, the means of the angles are still large compared to the error-on-the-mean, which disfavors the hypothesis in which the deviations were due to systematics resulting from using the B18 matrix on the B2018 subset. Instead, we can now try to test the other hypothesis where these deviations are due to the fact that we're using constrained T-maps.</p>
+    <figure>
+        <img alt="Name pager" id="eompager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+        <figcaption>
+            Plots of the Mean divided the error on the mean as a function of each signal for cases with and without matrix purification.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#eompager",
+                {
+                    'Fit Type|fit' : ['EB Only|1','TB Only|2','EB+TB|3'],
+
+                },
+                function(params) {
+                    return 'figs/m_over_eom_vs_sig_'+params.fit+'.png';
+                });
+            pager.setparams({
+                'fit': '1',
+
+            });
+        </script>
+    </figure>
+
+
 
 </section>
 <section>
@@ -413,11 +473,27 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
     </section>
 <section><h2>Conclusions</h2>
     <p>
+        In my previous posting, we saw deviations in the means of &alpha; that were large WRT their error-on-the-means. By fitting angles to B18, I was able to rule out systematics involving the purification matrix as the source which drives us to look into ways of testing the hypothesis that these deviations are a result from using constrained T-maps.
+    </p>
 
+    <p>
+        By fitting angles to EB/TB with CMB crossed Noise/Dust, the angles that I fit to these signal types are now comparable to the other signal types with CMB in them. I find that the Noise &sigma;<sub>&alpha;</sub> between B2018 and B18 drops by ~&radic;3 as expected. This is not true, however, for L-LCDM+Noise or L-LCDM+N+Dust because we're now in the regime where the contributions to &sigma;<sub>&alpha;</sub> from lensing and noise are comparable.
+    </p>
+
+    <p>
+        I also examined how each bandpower contributes to our angle estimates and find that most of our constraining power is in the higher-&ell;'s. Because the BB-power in our real data is less understood, I'm thinking of sticking to bandpowers between 2 and 10 (&ell;=37.5 to 317.5). According to the sims, most of our constraining power in this region is between &ell;-bins of 6 to 10, but we do see a non-trivial improvement of &sigma;<sub>&alpha;</sub> of ~0.01&deg; including bands 2 through 5, so I'm electing to keep using those.
+    </p>
+
+    <p>
+        Lastly, I was able to show that the linear combination of BB-power and the variance on &alpha; are equal to the BB-power and &sigma;<sub>&alpha;</sub><sup>2</sup> of coadded maps of the signal types. This relationship should prove useful both when looking at fits of other simulations further on in the analysis and when forcasting the performance of future analyses.
     </p>
 
 
     <h3>Next Steps</h3>
+<ul>
+    <li>Running pseudosims through the angle estimator explore how EB and TB are related</li>
+    <li>Fitting angles to sims with non-zero angles injected into them.</li>
+</ul>
 
 </section>
 
@@ -430,7 +506,7 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
     <div class="footnote">
         <p>
         <sup><a name="ftn1" href="#sup1">[1]</a></sup>
-        A more recent global rotation posting for BK18 exists, but to remain blind in this analysis I have not looked at it and do not link it here.
+
     </p>
     </div>
 <!--    <h3>Code</h3>-->
