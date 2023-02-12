@@ -180,6 +180,7 @@ figure table {
     margin-left: auto;
     margin-right: auto;
 }
+
 figure figcaption {
     max-width: 800px;
     margin: 8px auto;
@@ -190,22 +191,39 @@ figure figcaption {
 table {
     /*border-spacing: 0.5em;*/
     border-collapse: collapse;
+
 }
 
-.results tr {
+/*.results tr {*/
+/*    vertical-align: top;*/
+/*}*/
+
+/*.results tr:hover {background-color:#f5f5f5;}*/
+
+/*.results th {*/
+/*    border-bottom: 3px solid #000000;*/
+/*}*/
+
+/*.results td {*/
+/*    padding-top: 0.25em;*/
+/*    padding-left: .75em;*/
+/*    padding-right: .75em;*/
+/*    padding-bottom: 0.25em;*/
+/*    border-bottom: 1px solid #ddd;*/
+/*}*/
+
+
+figure tr {
     vertical-align: top;
 }
 
-.results tr:hover {background-color:#f5f5f5;}
+figure tr:hover {background-color:#f5f5f5;}
 
-
-
-.results th {
+figure th {
     border-bottom: 3px solid #000000;
 }
 
-
-.results td {
+figure td {
     padding-top: 0.25em;
     padding-left: .75em;
     padding-right: .75em;
@@ -217,10 +235,14 @@ table {
     padding: 0.25em;
 }
 
-
 .cstart {
     border-left: 1px solid #000000
 }
+
+figure td.rend {
+    border-bottom: 1px solid #000000
+}
+
 
 .cend {
     border-right: 1px solid #000000
