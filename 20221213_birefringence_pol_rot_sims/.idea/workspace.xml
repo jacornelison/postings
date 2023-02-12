@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c9ca7a77-ad14-4731-9df2-c25b92a1023b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66002_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66002_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66003_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66003_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66005_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66005_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66006_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66006_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66007_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66007_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66008_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66008_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_2_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_2_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_3_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_3_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_5_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_5_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_6_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_6_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_7_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_7_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_8_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6600matrix_8_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66032_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66032_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66033_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66033_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66035_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66035_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66036_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66036_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66037_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66037_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66038_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66038_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_2_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_2_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_3_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_3_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_5_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_5_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_6_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_6_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_7_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_7_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_8_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6603matrix_8_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66042_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66042_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66043_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66043_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66045_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66045_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66046_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66046_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66047_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66047_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66048_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66048_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_2_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_2_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_3_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_3_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_5_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_5_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_6_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_6_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_7_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_7_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_8_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6604matrix_8_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66052_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66052_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66053_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66053_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66055_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66055_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66056_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66056_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66057_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66057_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66058_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66058_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_2_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_2_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_3_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_3_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_5_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_5_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_6_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_6_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_7_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_7_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_8_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6605matrix_8_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66062_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66062_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66063_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66063_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66065_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66065_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66066_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66066_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66067_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66067_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66068_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66068_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_2_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_2_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_3_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_3_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_5_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_5_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_6_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_6_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_7_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_7_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_8_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6606matrix_8_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66142_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66142_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66143_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66143_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66145_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66145_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66146_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66146_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66147_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66147_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66148_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_66148_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_2_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_2_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_3_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_3_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_5_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_5_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_6_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_6_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_7_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_7_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_8_corr.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/alpha_hist_6614matrix_8_corr.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_3_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_3_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_5_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_5_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_6_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_6_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_7_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_7_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_8_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_8_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_matrix_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_matrix_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_3_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_3_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_5_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_5_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_6_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_6_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_7_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_7_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_8_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_8_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_3_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_3_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_5_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_5_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_6_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_6_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_7_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_7_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_8_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6600_pureB_matrix_8_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6610_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6610_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6610_matrix_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6610_matrix_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6611_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6611_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6611_matrix_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6611_matrix_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6612_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6612_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6612_matrix_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6612_matrix_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6613_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6613_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6613_matrix_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6613_matrix_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_3_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_3_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_5_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_5_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_6_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_6_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_7_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_7_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_8_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_8_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_matrix_2_fixed.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_matrix_2_fixed.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_matrix_2_free.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_matrix_2_free.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_3_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_3_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_5_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_5_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_6_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_6_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_7_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_7_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_8_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_8_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_2_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_2_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_3_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_3_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_5_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_5_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_6_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_6_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_7_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_7_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_8_fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/aps_6614_pureB_matrix_8_free.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/blank_6x4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/blank_6x4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/blank_6x6.png" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/figs/blank_6x6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../20221213_birefringence_data_subset_fits/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2022mmdd_rps_angles_xpol/scripts/posting_plots_rps_analysis_2.m" beforeDir="false" afterPath="$PROJECT_DIR$/../2022mmdd_rps_angles_xpol/scripts/posting_plots_rps_analysis_2.m" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="2KHcDMNQMS3uQKtzT7VMj6PyIrZ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c9ca7a77-ad14-4731-9df2-c25b92a1023b" name="Default Changelist" comment="" />
+      <created>1673634827449</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1673634827449</updated>
+      <workItem from="1673634828703" duration="6230000" />
+      <workItem from="1674940621786" duration="71000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+</project>

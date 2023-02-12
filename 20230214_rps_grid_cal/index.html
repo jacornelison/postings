@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>RPS Grid Cal — J. Cornelison</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+            // src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>RPS Analysis: Polarizing Wire Grid Angle Calibration</h1>
+
+    <time datetime="2023-02-14" class="published updated">
+        2023 Feb 14
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+    We observe a Rotating Polarized Source (RPS) to determine the polarization angle of our detectors referenced to gravity. In essence, we do so by measuring the co-polar axis of the RPS and the &theta;=0 axis of the focal plane both WRT gravity and then deriving polarization angles of detectors WRT the focal plane and RPS and thus gravity.
+</p>
+<!--    <ol>-->
+<!--    <li>Determine the angle to the RPS's polarizing wire grid with respect to gravity.</li>-->
+<!--    <li>Relate the polarization angle of the telescope WRT to gravity via a pointing model.</li>-->
+<!--    <li>Relate the polarization angle of the CMB WRT the telescope.</li>-->
+<!--</ol>-->
+<p>
+    In January 2022, we observed the RPS with BICEP3 and in July 2022 we published a summary of our characterization of the RPS and estimation of BICEP3's polarization angles <a href="JAC2022"></a>. However, I wanted to create some postings that covers the contents of the SPIE paper in more detail.
+</p>
+<p>
+    This posting covers the characterization of the RPS's co-polar axis WRT gravity, addresses uncertainties and identifies any necessary follow-ups.
+</p>
+
+<hr>
+<section>
+<h2>Introduction</h2>
+    <p>
+        The RPS used for BICEP3 is constructed of a quasi-thermal noise source that transmits a broad and instantaneous band 10 GHz wide and centered at 95 GHz, called a Broad Spectrum Noise Source or BSNS (see Figure 1.1). The BSNS uses rectangular waveguide and so is linearly polarized. The output of the BSNS is polarized further by a polarizing wire grid. We reference the RPS to gravity using a high-precision tilt meter.
+    </p>
+    <figure>
+        <img src="figs/rps_annotated.png"/>
+        <figcaption>
+            Typical setup of the Rotating Polarized Source for polarization calibration. A. 95GHz Broad Spectrum Noise Source. B. Thorlabs rotation stage. C. Polarizing Wire Grid. D. Tuff Tilt precision tilt meter.
+        </figcaption>
+    </figure>
+
+    <p>Relating the co-polar axis of the wire grid to gravity occurs in two steps:
+    <ol type="I">
+        <li>Measuring the angle of the polarizing wire grid WRT to a reference surface.</li>
+        <li>Measuring the angle of the reference surface with respect to gravity.</li>
+    </ol>
+    </p>
+    <p>The first part is accomplished by using a microscope installed in a Bridgeport (AKA knee mill) to measure the mechanical orientation of the grid's wires with respect to the top flat surface of the rotation stage as the reference plane -- the arrow from B points to this surface in figure 1.1. The second part is accomplished using the RPS's tilt meter: with the RPS completely assembled, we place a precision machinist level on the reference surface of the rotation stage and record the number given by the tilt meter when the level is perfectly centered. In addition, I monitor the output of the tilt meter during the entire campaign and correct for tilt fluctuations in the analysis of RPS data.</p>
+
+    <p>When we're observing the RPS on-mast we calculate the angle of the wire grid WRT gravity, $\zeta_{grav}$, using our knowledge of the stage's command angle, $\zeta_{stage}$, grid-horizontal, $\zeta_{grid}$, tilt meter output, $\zeta_{tilt}$, and tilt meter calibration $\zeta_{tilt,0}$<sup><a name="sup1" href="#ftn1">[1]</a></sup>:
+    </p>
+    \begin{equation}
+    \zeta_{grav} = \zeta_{stage}-\zeta_{grid}+\zeta_{tilt}-\zeta_{tilt,0}
+    \label{eq:zeta}
+    \end{equation}
+    <p>
+        The following sections describe how we accomplish parts I and II in detail.
+    </p>
+</section>
+<section><h2>Calibrating the Wire Grid Angle WRT Reference Surface</h2>
+    <p>
+        During the 2021/2022 RPS campaign, the wire grid calibration followed a similar procedure outlined in <a href="http://bicep3.bicepkeck.org/calibration/calibration_hardware_logbook.html#20131108">JMK's 08-Nov-2013 Entry</a> in the Calibration HW Logbook:
+    </p>
+    <ol>
+        <li>Install RPS rotation stage into Bridgeport vise</li>
+        <li>Use a dial indicator to square the reference surface on the rotation stage (typically to <0.02&deg;)</li>
+        <li>Install a centering scope in the bridgeport spindle to locate wires</li>
+        <li>Home the rotation stage</li>
+        <li>Determine the angle of the wire grid WRT to the reference surface</li>
+        <ul>
+            <li>Command the stage to an angle such that there is zero apparent travel in the wires when driving the linear stage of the bridgeport.</li>
+        </ul>
+
+    </ol>
+
+    <p>Before the RPS went on the mast in late December, I zeroed the RPS grid to the homing position and measured the grid angle to be 5.4545&deg; which was repeatable to less than half the width of one of the tungsten wires over the span of the grid (&sigma;<sub>&zeta;,grid</sub><0.005&deg;).
+        I also confirmed a bidirectional repeatability on the command angle of the stage of &sigma;<sub>&zeta;,stage</sub>=0.003&deg; given from the <a href="data/NR360S_M.pdf" target="_blank">spec sheet</a> by commanding the stage to various angles while approaching both directions.
+    </p>
+
+    <h3>Rotation Stage Backlash</h3>
+
+        <p>When we brought the RPS down from the mast in late January, I had less that 24 hours before I was supposed to leave Pole and was unable to repeat the measurement of the wires on the Bridgeport before leaving. I disassembled and packed the RPS in such a way that I could repeat the bridgeport measurements when I returned to the states.
+    </p>
+    <p>In early March, I measured the wire grid angle on the bridgeport at Harvard in the Smithsonian's RX Lab. This time there was a small amount of backlash in the rotation stage:
+    </p>
+    <ul>
+        <li>Putting slight pressure on the shroud in the clockwise direction, the wire grid angle was at exactly the same value: 5.4545&deg;.</li>
+        <li>With slight pressure in the counter-clockwise direction, the wire grid was at an angle of 5.4545+0.062&deg;</li>
+    </ul>
+
+    <figure>
+        <img src="figs/grid_cal.png"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>In my next posting, I'll look at the polarization angle fits from the RPS observations to try to determine whether this backlash developed during the observing campaign or during transport on the way back from Pole was more likely.</p>
+
+</section>
+
+<section>
+    <h2>Calibrating the Reference Surface Angle WRT Gravity</h2>
+<p>
+We determine the orientation of the reference surface to gravity using a high-precision tilt meter. The tilt meter and the rotation stage are fixed to the same aluminum base plate such that any rotation of the reference surface along the rotation axis of the wire grid is accurately captured in the tilt readout. We calibrate the gain and tilt-zero of the tilt meter using a machinist's bubble level before installing the RPS on the mast. We record the tilt meter output throughout the observation campaign so that was can correct for fluctuations in tilt during the analysis.
+</p>
+
+    <h3>Tilt Meter Calibration</h3>
+    <p>
+        We calibrate the tilt meter using a Starrett No.98 bubble level which has a precision of ~0.001&deg;. The bubble level is placed on the reference surface (see figure below) and the RPS is tilted by placing shims under the aluminum baseplate on one side.
+    </p>
+    <figure>
+        <img src="figs/tilt_cal_outside_cropped.jpg" width="80%"/>
+        <figcaption>
+            Example photo of calibrating the tilt meter using a Starrett No. 98.
+        </figcaption>
+    </figure>
+
+        <p>
+    The tick marks on the level and the voltage reading from the tilt meter are recorded for a number of angles in either direction. The width of the bubble in the level is smaller than the width of the tick marks, so I account errors in the calibration by reading out the tilt meter with the bubble at both tick marks. In the figure below, we can see that the calibration error of of 0.01&deg;/V and 0.001&deg; for the gain and tilt-zero respectively which are in agreement with the specifications given by the
+        <a href="data/Tiltmeter-801-manual.pdf" target="_blank">Tilt Meter Manual</a>.
+    </p>
+
+    <figure>
+        <img src="figs/tilt_cal.png" width="60%"/>
+        <figcaption>
+            Machinist level angle vs. tilt meter output which establishes the conversion parameters for the tilt meter.
+        </figcaption>
+    </figure>
+
+    <h3>Real-Time Tilt Monitoring</h3>
+    <p>
+        During the RPS observations, I recorded the output of the tilt meter at a sample rate of 0.5 Hz using a Labjack in order to monitor and correct for any changes in the orientation of the RPS as detected by the tilt meter. In the figure below, I show the output of the tilt meter during RPS observations with two very different weather conditions:
+    </p>
+
+        <figure>
+            <img alt="Name pager" id="monitorpager" src="#" width="100%"/>
+            <figcaption>
+                RPS tilt meter monitor plots for some select days to demonstrate the effect of weather on the RPS wire grid angle. The gray boundary represents the error due to uncertainties in the tilt meter calibration.
+            </figcaption>
+            <script type="text/javascript">
+
+                pager.link("#monitorpager",
+                    {
+                        //'Measurement|meas': ['No Homing, No fine sw.|009','With homing, No fine sw.|011','Added Fine Homing sw|022','Post RPS obs|023'],
+                        'Day|day':  ['Sunny1|59583','Sunny2|59584','Cloudy1|59587','Cloudy2|59590'],
+
+                 },
+                    function(params) {
+                        return 'figs/tilt_monitor_plot_day_'+params.day+'.png';
+                    });
+                pager.setparams({
+                    'day': '59583',
+                });
+            </script>
+        </figure>
+<p>
+    We can seeO(0.1&deg;) fluctuations in the tilt on Sunny days due to the uneven diurnal heating of the guy wires holding the calibration mast in place. On cloudier days, the diurnal heating isn't as prevalent but the tilt meter does settle at some non-zero value. On the first example cloudy day, "Cloudy1", it was also bit more windy and we can see that result in an increase of the short-timescale variance.
+</p>
+
+    <p>In previous years, the approach was to periodically zero out the tilt meter by manually adjusting the mast lines. Considering how numerous affects can change the tilt at relatively large levels on such short timescales, I chose to leave the mast as-is for the duration of the campaign and opted instead to correct the RPS angle using the live monitoring data I recorded.
+    </p>
+
+    <p>In a follow-up posting where I look at the polarization angles in detail, I'll look at how the polarization estimates are improved when we apply a correction using the tilt meter live monitoring data.</p>
+
+    <h3>Tilt Uncertainties</h3>
+    <p>&zeta;<sub>tilt,0</sub> is given as 0.001&deg; directly from the calibration above, but I calculate the error bars on &zeta;<sub>tilt</sub> by converting the tilt output from the live monitor data in volts to degrees using combinations of the tilt slope+&sigma;<sub>slope</sub>, slope-&sigma;<sub>slope</sub>, zero+&sigma;<sub>zero</sub>, and zero-&sigma;<sub>zero</sub> and then finding the maximum and minimum resulting tilt angles between the different combinations for a given sample which are shown as the gray regions in Figure 3.2. For my final uncertainty on &zeta;<sub>tilt</sub>, I use the maximum difference of the error bars among these four exemplary days which comes out to be &sigma;<sub>tilt</sub>=0.013&deg;</p>
+
+</section>
+<section>
+<h2>Summary</h2>
+
+    <p>In this posting, I have described the characterization of the RPS's co-polar axis as the referencing of the orientation of the polarizing wire grid WRT to gravity &zeta;<sub>grav</sub> which comprises the stage command angle, angle of the wires at a command angle of 0&deg;, the readout of the tilt meter, and the angle of the tilt meter when the stage is at 0&deg; and the grid is horizontal WRT gravity:</p>
+    \begin{equation}
+    \zeta_{grav} = \zeta_{stage}-\zeta_{grid}+\zeta_{tilt}-\zeta_{tilt,0}
+    \label{eq:zeta2}
+    \end{equation}
+
+    <p>I have also characterized the uncertainty of all of these terms which I summarize in the table below:</p>
+
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th>Name</th>
+                <th>Symbol</th>
+                <th>Uncertainty [Deg]</th>
+            </tr>
+            <tr>
+                <td>Stage cmd angle</td>
+                <td>&zeta;<sub>stage</sub></td>
+                <td>0.002</td>
+            </tr>
+            <tr>
+                <td>Grid-Zero</td>
+                <td>&zeta;<sub>grid</sub></td>
+                <td><0.005</td>
+            </tr>
+            <tr>
+                <td>Tilt Conversion</td>
+                <td>&zeta;<sub>tilt</sub></td>
+                <td>0.013</td>
+            </tr>
+            <tr>
+                <td>Tilt Zero</td>
+                <td>&zeta;<sub>tilt,0</sub></td>
+                <td>0.001</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>&zeta;<sub>grav</sub></th>
+                <th>0.014</th>
+            </tr>
+        </table>
+        <figcaption>
+            Table of uncertainties that contribute to the total uncertainty in the angle of the polarizing wire grid WRT gravity.
+        </figcaption>
+    </figure>
+
+    <p>
+        Before putting the RPS on the mast, we established a reference of the wire grid WRT gravity with combined precision of 0.014&deg; between the Bridgeport and tiltmeter calibrations. When the RPS observations were complete I didn't have enough time before I had to leave Pole to check the calibration on the bridgeport again. Upon returning to the U.S., I found the rotation stage had developed some play in the gears resulting in 0.06&deg; of movement in the wire grid. In a follow-up posting, I'll take a look at the polarization angle estimates from the RPS campaign to discern if the backlash developed during the observations or during shipment back home.
+    </p>
+
+
+
+</section>
+
+
+
+<hr>
+
+<section class="appendix">
+    <h2 class="appendix">Appendix</h2>
+
+    <h3>Footnotes</h3>
+    <p>Click on the number to return to the main text.</p>
+    <div class="footnote">
+        <p>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+        We used to refer to this term using &theta; but have changed it to &zeta; to avoid confusion with the polar instrument-fixed detector centers which are also defined by &theta;.
+    </p>
+    </div>
+<!--    <h3>Code</h3>-->
+<!--    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>-->
+<!--    <p id="code"></p>-->
+
+<!--    <h3>Data</h3>-->
+<!--    <p id="data"></p>-->
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+<!--    <script type="text/javascript">-->
+
+<!--        // Shorthand tags-->
+<!--        var codes = [-->
+<!--            "rps_fit_mirror_from_moon.m",-->
+<!--            ];-->
+
+<!--        // Posting titles-->
+<!--        var desc = [-->
+<!--            "Derives mirror parameters from observations of the moon.",-->
+<!--        ];-->
+
+<!--        // Make a list of references-->
+<!--        var post = document.getElementById("code");-->
+<!--        var msg = "<table class=\"code\">";-->
+<!--        for (var code in codes){-->
+<!--            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";-->
+<!--        };-->
+<!--        msg = msg+ "</table>";-->
+<!--        post.innerHTML = msg;-->
+
+<!--    </script>-->
+
+<!--    <script type="text/javascript">-->
+
+<!--        // Shorthand tags-->
+<!--        var data = [-->
+<!--            "moonsch.mat",-->
+<!--            ];-->
+
+<!--        // Posting titles-->
+<!--        var desc = [-->
+<!--            "Metadata of Moon observations",-->
+<!--            ];-->
+
+<!--        // Make a list of references-->
+<!--        var post = document.getElementById("data");-->
+<!--        var msg = "<table class=\"code\">";-->
+<!--        for (var datum in data) {-->
+<!--            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";-->
+<!--        }-->
+<!--        ;-->
+<!--        msg = msg + "</table>";-->
+<!--        post.innerHTML = msg;-->
+
+<!--    </script>-->
+
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "JAC2022",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which it lies if you can.
+        // This ensures that we can view the linked postings at Pole without the internet.
+        var hrefs = [
+            "https://arxiv.org/pdf/2207.14796.pdf",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Improved Polarization Calibration of the BICEP3 CMB Polarimeter at the South Pole",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
