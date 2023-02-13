@@ -131,7 +131,14 @@ The goal of this posting is to probe for potential pathologies in fitting angles
     <p>
         In the pager below, I show the global rotation fits for sims created with the above procedure but with preliminary RPS-derived angles input into the TOD's and 'obs' angles (which are derived from the CMB and based on pointing only) used during mapmaking. This is the configuration that we believe the current B18 data to be in since we used 'obs' angles to make our maps but we believe the RPS angles to be the correct angles.
     </p>
-        <p>These sims are created through the minimum tag list and so the pairmaps are created with zero-weighting and so the expected angle is just going to be the uniformly weighted mean of <i>difference</i> between the RPS-derived angles used in TOD-making and the 'obs' angles used in mapmaking. This comes out to $\bar{\phi}_{pair}=-0.778&deg;$, which matches the mean in the scale-corrected EB-only, TB-only, and EB+TB fits to within <1%.
+
+    <p>The mean &alpha; is representative of the <i>difference</i> between the RPS-derived angles used in TOD-making and the 'obs' angles used in mapmaking. I should be able to double check this angle by just averaging the per-pair angles as the pairmaps would be over the entire season.</p>
+
+    <p>These sims are created through the "reweight coadd" process <a href="CLP2013"></a> so
+        the expected angle should be the angle averaged over the detectors weighted by the inverse-variance from the real pairmaps for the whole year. When I compute the expected angle by taking the weighted mean over the whole year<sup><a name=sup1 href="#ftn1">[1]</a></sup> I get $\bar{\phi}_{pair}=-0.736&deg;$ which is more than 1-&sigma; away from the mean given in the histograms.
+    </p>
+    <p>
+        If I take the uniformly weighted mean of RPS-'obs', I get $\bar{\phi}_{pair}=-0.778&deg;$, which matches the mean in the scale-corrected EB-only, TB-only, and EB+TB fits to within <1%. It's currently unclear why this is -- it's possible the coverage of the maps plays a more significant role than I anticipated, but I'm looking more into pairmap weighting just in case I missed something important.
     </p>
 
     <figure>
@@ -159,9 +166,6 @@ The goal of this posting is to probe for potential pathologies in fitting angles
         </script>
     </figure>
 
-    <p>
-        I think realistically, the actual angle in the real data is going trace the weighting that goes into coadding the real maps which is the inverse of the timestream variance after filtering. When I compute the expected angle by taking the weighted mean over the whole year<sup><a name=sup1 href="#ftn1">[1]</a></sup> I get $\bar{\phi}_{pair}=-0.733&deg;$ which is more than 1-&sigma; away from the uniformly weighted mean. I think this means that I might have to account for the weighting, perhaps by creating sims with the full tag list if there's not a more reasonable solution.
-    </p>
 
 </section>
 
@@ -301,6 +305,7 @@ The goal of this posting is to probe for potential pathologies in fitting angles
 
         // Shorthand tags
         var tags = [
+            "CLP2013",
             "JBW2016",
             "EWB2016a",
             "EWB2016b",
@@ -313,6 +318,7 @@ The goal of this posting is to probe for potential pathologies in fitting angles
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
+            "bkcmb/analysis_logbook/analysis/20130705_tagsublist2/",
             "bkcmb/analysis_logbook/analysis/20160907_polrot/",
             "bkcmb/analysis_logbook/analysis/20161103_polrotsims_pager/",
             "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
@@ -324,6 +330,7 @@ The goal of this posting is to probe for potential pathologies in fitting angles
 
         // Posting titles
         var desc = [
+            "How to make tag subset signal only sims better II",
             "Birefringence/Polarization rotation in K2015 and BK15",
             "Polarization Rotation Sims Pager",
             "Polarization Rotation Sims Global Rotation",
