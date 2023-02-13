@@ -40,7 +40,7 @@
 <hr>
 
 <p>
-In a previous posting <a href="JAC2023"></a>, I characterized the uncertainty in global polarization estimates for BICEP3 B2018 sims which are expected to have a mean angle of 0&deg;. This is a follow-up to that posting which now includes fits to the B18 3-year dataset and explores a bit more how the variance on our angle estimates and BB-power relate to each other.
+In a previous posting <a href="JAC2023"></a>, I characterized the uncertainty in global polarization estimates for BICEP3 B2018 sims which are expected to have a mean angle of 0&deg;. This is a follow-up to that posting which now includes fits to the B18 3-year dataset and I compare angle fits to B18 to B2018. I then investigate how each bandpower is weighted by the angle estimator. Lastly, I explore a bit more how the variance on our angle estimates and BB-power relate to each other.
 </p>
 
 <hr>
@@ -126,14 +126,28 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
     </figure>
 
     <p>
-        Switching between B18 and B2018 for any signal type which has noise, we can qualitatively see that integrating over three years versus one reduces the &sigma;<sub>&alpha;</sub> as expected. Quantitatively though, we can calculate the effective number of additional years we integrated over by taking the ratio of the variances on &alpha; as tabulated below:
+        Switching between B18 and B2018 for any signal type which has noise, we can qualitatively see that integrating over three years versus one reduces the &sigma;<sub>&alpha;</sub> as expected. Quantitatively though, we can calculate the effective number of additional years we integrated over by taking the ratio of the variances on &alpha;:
     </p>
+
+    \begin{equation}
+    \begin{split}
+    &\sigma_{\alpha,B18}^2 = \frac{\sigma_{\alpha,B2018}^2}{N_{years}}\\
+    & \\
+    &N_{years} = \frac{\sigma_{\alpha,B2018}^2}{\sigma_{\alpha,B18}^2}\\
+    \end{split}
+    \end{equation}
+
+        <p>
+        and is tabluated below for each fit type:
+    </p>
+
+
 
     <figure>
         <table>
             <tr>
                 <th>Signal Type</th>
-                <th colspan="3">N<sub>eff</sub></th>
+                <th colspan="3">Effective N<sub>years</sub></th>
             </tr>
             <tr>
                 <th></th>
@@ -164,7 +178,7 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
         </table>
     </figure>
 
-    <p>The N<sub>eff</sub> for Noise-only is close to 3 as expected and the other signal types are closer to 2 because, while we're still noise-dominated in B18, the contributions from noise and lensing are becoming comparable.</p>
+    <p>The N<sub>years</sub> for Noise-only is close to 3 as expected and the other signal types are closer to 2 because, while we're still noise-dominated in B18, the contributions from noise and lensing are becoming comparable.</p>
 
     <p>We can also see that for B18, the means of the angles are still large compared to the error-on-the-mean, which disfavors the hypothesis in which the deviations were due to systematics resulting from using the B18 matrix on the B2018 subset. Instead, we can now try to test the other hypothesis where these deviations are due to the fact that we're using constrained T-maps.</p>
     <figure>
