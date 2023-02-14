@@ -47,7 +47,8 @@ In a previous posting <a href="JAC2023"></a>, I characterized the uncertainty in
 
 <section><h2>Matrix purifying B18 Sims</h2>
     <p>
-I've now included B18 into these pagers. I see virtually no difference in the B18 and B2018 matrix-purified BB spectra. I am also now crossing Unlensed CMB T&E with B for Dust-only and Noise-only signal types so that our angle estimates for these signal types are comparable to the ones with CMB already in them. These spectra can be seen in the "cmb x noise/dust" option where EB, TB, and BB are all now E<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> , T<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> , B<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> respectively.
+I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&E with B of Dust-only and Noise-only signal types so that our angle estimates for these signal types are comparable to the ones with CMB already in them.
+        These spectra can be seen in the "cmb x noise/dust" option where EB, TB, and BB are all now E<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> , T<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> , B<sub>CMB</sub>&times;B<sub>Noise/Dust</sub> respectively.
     </p>
 
 <!--    <p>-->
@@ -91,14 +92,15 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
                 });
             pager.setparams({
                 'sig': '2',
-                'pure': '',
-                'sernum': '6600_h',
-                'cross': '',
-                'axes': '_fixed',
+                'pure': 'matrix_',
+                'sernum': '6614_fgh',
+                'c': '_cross',
+                'axes': '_free',
             });
         </script>
     </figure>
 
+    <p>I see a ~20% reduction in the B18 and B2018 matrix-purified Unlensed-LCDM BB spectra. Below I show the angle estimates now including crosses of CMB with Dust/Noise. As in my previous posting, I fit angles using only our standard &ell;-bins of 2 through 10 (out of 17).</p>
 
     <figure>
         <img alt="Name pager" id="histpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
@@ -118,9 +120,9 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
                 });
             pager.setparams({
                 'sig': '2',
-                'pure2': '',
-                'sernum2': '6600h',
-                'c': '',
+                'pure2': 'matrix_',
+                'sernum2': '6614fgh',
+                'c': '_cross',
             });
         </script>
     </figure>
@@ -162,25 +164,13 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
                 <td class=''>2.6164</td>
                 <td class=''>2.5918</td>
             </tr>
-            <tr>
-                <td class=''>L-LCDM + Noise</td>
-                <td class=''>1.8133</td>
-                <td class=''>1.9130</td>
-                <td class=''>1.8636</td>
-            </tr>
-            <tr>
-                <td class=''>L-LCDM+N+Dust</td>
-                <td class=''>1.7821</td>
-                <td class=''>1.9179</td>
-                <td class=''>1.8556</td>
-            </tr>
 
         </table>
     </figure>
 
-    <p>The N<sub>years</sub> for Noise-only is close to 3 as expected and the other signal types are closer to 2 because, while we're still noise-dominated in B18, the contributions from noise and lensing are becoming comparable.</p>
+    <p>The N<sub>years</sub>~2.6 for Noise-only which is close to what I get when I compare the B2018 survey weight to B18 according to the <a href="https://docs.google.com/spreadsheets/d/1k0uw5trXj5N3v-jLQMe3Z-CW_Q16NRae6zwKBb0Pxtg/view#gid=0">CMB Pol Expt Comparison Sheet</a> which is 552836/219441 = 2.52.</p>
 
-    <p>We can also see that for B18, the means of the angles are still large compared to the error-on-the-mean, which disfavors the hypothesis in which the deviations were due to systematics resulting from using the B18 matrix on the B2018 subset. Instead, we can now try to test the other hypothesis where these deviations are due to the fact that we're using constrained T-maps.</p>
+    <p>We can also see that for B18, the means of the angles are still large compared to the error-on-the-mean, which disfavors the hypothesis in which the deviations were due to systematics resulting from using the B18 matrix on the B2018 subset. The next step is to test the other hypothesis where these deviations are due to the fact that we're using constrained T-maps.</p>
     <figure>
         <img alt="Name pager" id="eompager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
         <figcaption>
@@ -211,7 +201,7 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
             Now we need to get an idea of which bandpowers matter most in our angle estimator.
         </p>
         <p>
-            I do this by injecting a quasi-delta function -- i.e. setting a bandpower to some fixed amplitude whilst keeping all other bandpowers at zero -- into an EB or TB spectra &ell;bin-by-&ell;bin, recording the resulting alpha estimates (see below figure for example).
+            I do this by injecting a quasi-delta function -- i.e. setting a bandpower to some fixed amplitude whilst keeping all other bandpowers at zero -- into an EB or TB spectra &ell;bin-by-&ell;bin, recording the resulting alpha estimates (see below figure for example). I fit angles to these fake spectra using the same proceedure outlined in <a href="JAC2023"></a> where, I substitute the real data in B2018's final file for these fake spectra and then pass that final file through <tt>reduc_global_rotation.m</tt>. This means that I'm also using B2018's BPCM.
         </p>
         <figure>
             <img src="figs/estimator_xfer_example.gif">
@@ -220,18 +210,31 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
             </figcaption>
         </figure>
         <p>
-            The figure below shows resulting alphas for four different amplitudes of our quasi-delta function.
+            The figure below shows resulting alphas for four different amplitudes of our quasi-delta function. Through my analysis so far, I have been using our standard &ell;-bins 2-10 but I now also include a case for using &ell;-bins 2-17.
         </p>
-        <figure>
 
-            <img src="figs/estimator_xfer_func.png">
-            <figcaption>
-                Exploring the effect on &alpha; for input delta functions for EB <b>(Top Row)</b> and TB <b>(Bottom
-                Row)</b>. <b>Left Column</b> Resulting &alpha; estimate per bandpower as a function of Ell, the lines are color coded by the amplitude of the quasi-delta function used in the given spectra. <b>(Right Column)</b> The angle at each bandpower is divided by the angle Dl=1 (Dl=0.1 for EB) at that bandpower to confirm linearity -- an increase in the bandpower corresponds to a linear increase in angle for these amplitudes.
-            </figcaption>
-        </figure>
+    <figure>
+        <img alt="Name pager" id="xferpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+        <figcaption>
+            Exploring the effect on &alpha; for input delta functions for EB <b>(Top Row)</b> and TB <b>(Bottom
+            Row)</b>. <b>Left Column</b> Resulting &alpha; estimate per bandpower as a function of Ell, the lines are color coded by the amplitude of the quasi-delta function used in the given spectra. <b>(Right Column)</b> The angle at each bandpower is divided by the angle Dl=1 (Dl=0.1 for EB) at that bandpower to confirm linearity -- an increase in the bandpower corresponds to a linear increase in angle for these amplitudes.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#xferpager",
+                {
+                    'Bins|bins2': ['2-10|2_10','2-17|2_17'],
+                },
+                function(params) {
+                    return 'figs/estimator_xfer_func_bins_'+params.bins2+'.png';
+                });
+            pager.setparams({
+                'bins2': '2_10',
+            });
+        </script>
+    </figure>
+
 <p>
-    In Figure 2.3, a higher angle implies that a given &ell;-bin is more sensitive to perturbations and thus we can expect that those &ell;-bins will contribute the same amount to &sigma;<sub>&alpha;</sub> at a lower sample variance compared to another &ell;-bin with a smaller angle.
+    In Figure 2.3, a higher angle at a given &ell;-bin is more sensitive to perturbations and thus we can expect that those &ell;-bins will contribute the same amount to &sigma;<sub>&alpha;</sub> at a lower sample variance compared to another &ell;-bin with a smaller angle.
     We can see that the EB fit favors the higher Ell's while TB favors Ell's around around 50, 200, and 400. And we can see why in the figure below which shows the the our matrix-purified simulations along with the functional form of our estimator at for different &alpha;s taken from figure 1 of <a href="Kaufman2013"></a>.
     </p>
       <p>      For EB, since the EB power at high-&ell; grows faster, one can expect the estimator to have more constraining power at those higher &ell;-bins. While the sample variance is lower at low-&ell;, it's not low enough to compensate for the high-&ell; sensitivity.
@@ -273,7 +276,7 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
                         //'Purification Method|pure2': ['None|','Matrix|matrix_'],
                         'Simset|sernum2': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
                         //'cmb x noise/dust|c': ['Off|','On|_cross'],
-                        'Bins|bins': ['2-5|_bins_2_5','6-10|_bins_6_10','2-10|_bins_2_10','1-17|_bins_1_17'],
+                        'Bins|bins': ['2-5|_bins_2_5','6-10|_bins_6_10','2-10|_bins_2_10','2-17|_bins_2_17','11-17|_bins_11_17'],
                     },
                     function(params) {
                         return 'figs/alpha_hist_'+params.sernum2+'matrix_'+params.sig+'_corr_cross'+params.bins+'.png';
@@ -306,7 +309,7 @@ I've now included B18 into these pagers. I see virtually no difference in the B1
                     });
                 pager.setparams({
                     'sig': '2',
-                    'axes': '_fixed',
+                    'axes': '_free',
                 });
             </script>
         </figure>
