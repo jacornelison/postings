@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>Birefringence Analysis: B2018 PolRotSims</title>
+    <title>IPR Analysis 3: B2018 PolRotSims</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis: B2018 Polarization Rotation sims</h1>
+    <h1>Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims</h1>
 
     <time datetime="2023-02-14" class="published updated">
         2023 Feb 14
@@ -144,23 +144,17 @@ The goal of this posting is to probe for potential pathologies in fitting angles
     <figure>
         <img alt="Name pager" id="polrothistpager2" src="#" onerror=this.src="figs/blank_6x4" width="85%"/>
         <figcaption>
-
+            Estimated angles on Pol Rot Sims which use RPS-derived angles in TOD-making and 'obs'-angles in mapmaking.
         </figcaption>
         <script type="text/javascript">
             pager.link("#polrothistpager2",
                 {
-                    //'Sim Type|sig2': ['2'],//,'3','5','6','7','8'],
-                    //'Purification Method|pure': ['None|','Matrix|matrix_'],
-                    //'Simset|sernum2': ['B2018|6614','B2018+RPS|6606','B2018+0.5deg|6610','B2018-0.5deg|6611','B2018+0.25deg|6612','B2018+1deg|6613'],
                     'Correction|corr': ['Off|','On|_corr'],
                 },
                 function(params) {
                     return 'figs/alpha_hist_6606matrix_2'+params.corr+'.png';
                 });
             pager.setparams({
-                //'sig': '2',
-                //'pure': 'matrix_',
-                //'sernum2': '6606',
                 'corr':'_corr',
             });
         </script>
