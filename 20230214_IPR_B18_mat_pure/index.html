@@ -233,9 +233,12 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         </script>
     </figure>
 
-<p>
-    In Figure 2.3, a higher angle at a given &ell;-bin is more sensitive to perturbations and thus we can expect that those &ell;-bins will contribute the same amount to &sigma;<sub>&alpha;</sub> at a lower sample variance compared to another &ell;-bin with a smaller angle.
-    We can see that the EB fit favors the higher Ell's while TB favors Ell's around around 50, 200, and 400. And we can see why in the figure below which shows the the our matrix-purified simulations along with the functional form of our estimator at for different &alpha;s taken from figure 1 of <a href="Kaufman2013"></a>.
+
+
+
+    <p>
+    In Figure 2.2, a higher angle at a given &ell;-bin is more sensitive to perturbations and thus we can expect that those &ell;-bins will contribute the same amount to &sigma;<sub>&alpha;</sub> at a lower sample variance compared to another &ell;-bin with a smaller angle.
+    We can see that the EB fit favors the higher Ell's while TB favors Ell's around around 50, 200, and 400. And we can see why in the figure below which shows the our B18, matrix-purified, L-LCDM+N+D simulations along with the functional form of our estimator at for different &alpha;s taken from figure 1 of <a href="Kaufman2013"></a>.
     </p>
       <p>      For EB, since the EB power at high-&ell; grows faster, one can expect the estimator to have more constraining power at those higher &ell;-bins. While the sample variance is lower at low-&ell;, it's not low enough to compensate for the high-&ell; sensitivity.
     </p>
@@ -257,7 +260,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
             </table>
 
             <figcaption>
-
+                <b>Top:</b> B18, matrix-purified, L-LCDM+N+D simulations <b>Bottom:</b> LCDM power spectra with applied polarization rotation of -3&deg; to 3&deg; from <a href="Kaufman2013"></a>.
             </figcaption>
         </figure>
 
@@ -314,7 +317,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
             </script>
         </figure>
 
-        <p>We can also see in Fig 2.3, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle.</p>
+        <p>We can also see in Fig 2.2, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle.</p>
 
         <h3>Relation between &sigma;<sub>&alpha;</sub><sup>2</sup> and BB-power</h3>
         <p>In the tables below, I record the variance on alpha for signals CMB, Noise and Dust along with BB-power. I compare the sum of these variances to the variance on the summed signal spectra. I do the same for BB-power, summing the bandpower-averaged BB of each signal and comparing to the bandpower-averaged BB of the summed signal spectra.</p>
@@ -489,7 +492,35 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
     <p>Lastly, we can see by comparing the Avg BB-power between Lensed-LCDM and Noise that we're still noise dominated in B18. According to the survey weights, going from B2018 to B18 was an effective 2.5 years of averaging down and that reflects in the Noise BB-power shown in Tables 2.1 and 2.2 (i.e. BB<sub>N,B2018</sub>/BB<sub>N,B18</sub>~2.5). If we want to average down such that the contributions from Noise and Lensing are equal, we'd have to include another 1.5 years worth of data. This means that we could feasibly include B2019 and B2020 and enter the regime where our constraint is dominated by lensing instead of noise. The obvious issue with this is that we haven't published BICEP3 data beyond 2018, so we'll have to think more about this.</p>
 
-    </section>
+
+<h4>Linear estimator stuff</h4>
+
+    <figure>
+        <img alt="Name pager" id="linestpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#linestpager",
+                {
+                    'Bins|bins2': ['2-10|2_10','2-17|2_17'],
+                },
+                function(params) {
+                    return 'figs/alpha_chi_vs_linear_bins_'+params.bins2+'.png';
+                });
+            pager.setparams({
+                'bins2': '2_10',
+            });
+        </script>
+    </figure>
+
+
+
+</section>
+
+
+
+
 <section><h2>Conclusions</h2>
     <p>
         In my previous posting, we saw deviations in the means of &alpha; that were large WRT their error-on-the-means. By fitting angles to B18, I was able to rule out systematics involving the purification matrix as the source which drives us to look into ways of testing the hypothesis that these deviations are a result from using constrained T-maps.
