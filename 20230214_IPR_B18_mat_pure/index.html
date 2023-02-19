@@ -88,7 +88,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
                     'y-axes|axes': ['Fixed|_fixed','Free|_free']
                 },
                 function(params) {
-                    return 'figs/aps_'+params.sernum+'_'+params.pure+params.sig+params.axes+params.c+'.png';
+                    return 'figs/aps_'+params.sernum+'_'+params.pure+params.sig+params.axes+params.c+'_bins_2_10.png';
                 });
             pager.setparams({
                 'sig': '2',
@@ -116,7 +116,37 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
                     'cmb x noise/dust|c': ['Off|','On|_cross'],
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.sernum2+params.pure2+params.sig+'_corr'+params.c+'.png';
+                    return 'figs/alpha_hist_'+params.sernum2+params.pure2+params.sig+'_corr'+params.c+'_bins_2_10.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                'pure2': 'matrix_',
+                'sernum2': '6614fgh',
+                'c': '_cross',
+            });
+        </script>
+    </figure>
+
+
+<p>
+
+</p>
+
+    <figure>
+        <img alt="Name pager" id="ebvtbpager" src="#" onerror=this.src="figs/blank_6x4.png" width="75%"/>
+        <figcaption>
+            Histograms of &alpha; estimates for B2018 and my B2018-rerun for each EB/TB fit type; per signal type; and with and without matrix purification.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#ebvtbpager",
+                {
+                    'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
+                    'Purification Method|pure2': ['None|','Matrix|matrix_'],
+                    'Simset|sernum2': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
+                    //'cmb x noise/dust|c': ['Off|','On|_cross'],
+                },
+                function(params) {
+                    return 'figs/alpha_eb_vs_tb_'+params.sernum2+params.pure2+params.sig+'_corr'+params.c+'_bins_2_10.png';
                 });
             pager.setparams({
                 'sig': '2',
@@ -222,7 +252,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         <script type="text/javascript">
             pager.link("#xferpager",
                 {
-                    'Bins|bins2': ['2-10|2_10','2-17|2_17'],
+                    'Bins|bins2': ['2-10|2_10','2-15|2_15'],
                 },
                 function(params) {
                     return 'figs/estimator_xfer_func_bins_'+params.bins2+'.png';
@@ -233,17 +263,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         </script>
     </figure>
 
-
-
-
-    <p>
-    In Figure 2.2, a higher angle at a given &ell;-bin is more sensitive to perturbations and thus we can expect that those &ell;-bins will contribute the same amount to &sigma;<sub>&alpha;</sub> at a lower sample variance compared to another &ell;-bin with a smaller angle.
-    We can see that the EB fit favors the higher Ell's while TB favors Ell's around around 50, 200, and 400. And we can see why in the figure below which shows the our B18, matrix-purified, L-LCDM+N+D simulations along with the functional form of our estimator at for different &alpha;s taken from figure 1 of <a href="Kaufman2013"></a>.
-    </p>
-      <p>      For EB, since the EB power at high-&ell; grows faster, one can expect the estimator to have more constraining power at those higher &ell;-bins. While the sample variance is lower at low-&ell;, it's not low enough to compensate for the high-&ell; sensitivity.
-    </p>
-        <p>For TB, while it also has lower sample variance at low &ell;s, the TB spectra pivots about &ell;s of 50 and 200 and 400 in our model of global polarization rotation and so will be less sensitive to pertubations around those points.
-</p>
+<p></p>
 
         <figure>
             <table cellpadding="0" cellspacing="0">
@@ -296,26 +316,26 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         For reference, the pager below shows B2018 499 sims with all 17 bandpowers for EB, TB, and BB:
     </p>
 
-        <figure>
-            <img alt="Name pager" id="apspager2" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />
-            <figcaption>
-                A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018 and B18 with all 17 bandpowers. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell.
-            </figcaption>
-            <script type="text/javascript">
-                pager.link("#apspager2",
-                    {
-                        'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
-                        'y-axes|axes': ['Fixed|_fixed','Free|_free']
-                    },
-                    function(params) {
-                        return 'figs/aps_6614_h_matrix_'+params.sig+params.axes+'_cross_bins_1_17.png';
-                    });
-                pager.setparams({
-                    'sig': '2',
-                    'axes': '_free',
-                });
-            </script>
-        </figure>
+<!--        <figure>-->
+<!--            <img alt="Name pager" id="apspager2" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />-->
+<!--            <figcaption>-->
+<!--                A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018 and B18 with all 17 bandpowers. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell.-->
+<!--            </figcaption>-->
+<!--            <script type="text/javascript">-->
+<!--                pager.link("#apspager2",-->
+<!--                    {-->
+<!--                        'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],-->
+<!--                        'y-axes|axes': ['Fixed|_fixed','Free|_free']-->
+<!--                    },-->
+<!--                    function(params) {-->
+<!--                        return 'figs/aps_6614_h_matrix_'+params.sig+params.axes+'_cross_bins_1_17.png';-->
+<!--                    });-->
+<!--                pager.setparams({-->
+<!--                    'sig': '2',-->
+<!--                    'axes': '_free',-->
+<!--                });-->
+<!--            </script>-->
+<!--        </figure>-->
 
         <p>We can also see in Fig 2.2, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle.</p>
 
@@ -329,7 +349,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
                 <tr>
                 <tr>
                     <th>Signal Type</th>
-                    <th class="cstart"colspan="3">Angle Variance [sq-deg]</th>
+                    <th class="cstart"colspan="3">Angle Variance [deg<sup>2</sup>]</th>
                     <th class="cstart"colspan="2">Avg BB-Power</th>
                 </tr>
                 <tr>
@@ -413,7 +433,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
                 <tr>
                     <th>Signal Type</th>
-                    <th class="cstart"colspan="3">Angle Variance [sq-deg]</th>
+                    <th class="cstart"colspan="3">Angle Variance [deg<sup>2</sup>]</th>
                     <th class="cstart"colspan="2">Avg BB-Power</th>
                 </tr>
                 <tr>
@@ -494,19 +514,78 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
 
 <h4>Linear estimator stuff</h4>
+    \(
+    \newcommand{\Cl}{\mathcal{C}_\ell}
+    \newcommand{\Cb}{\mathcal{C}_b}
+    \newcommand{\oCb}{\mathcal{\hat C}_b}
+    \newcommand{\rCb}{\mathcal{C'}_b}
+    \newcommand{\Ccov}{\mathrm{\mathbf{C}}}
+    \)
+
+    Quoted from Justin's posting:
+    <ul>
+    <li>We can then difference model expectation values \(\rCb^{XY}\) from the
+        real bandpowers \(\oCb^{XY}\) (where the subscript \(b\) denotes binned
+        bandpowers over a range in \(\ell\)) and calculate the \(χ^2\) values
+        making use of the bandpower covariance matrix \(\Ccov^{XY}\) for a
+        given cross-spectrum \(XY\):</li>
+    </ul>
+    \begin{equation}
+    χ^2 = \left( \oCb^{XY} - \rCb^{XY} \right)^\top \left( \Ccov^{XY}
+    \right)^{-1} \left( \oCb^{XY} - \rCb^{XY} \right)
+
+    \end{equation}
+
+
+    <p>Constraining power vs. &ell;</p>
 
     <figure>
-        <img alt="Name pager" id="linestpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+        <img alt="Name pager" id="constrainpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
         <figcaption>
-            Each dot represents a single realization from B18. &alpha; along the y-axis is calculated by taking the dot product of d&alpha;/dD<sub>&ell;</sub> in the right plots of Fig 2.2 with their respective band powers.
+
         </figcaption>
         <script type="text/javascript">
-            pager.link("#linestpager",
+            pager.link("#constrainpager",
                 {
-                    'Bins|bins2': ['2-10|2_10','2-17|2_17'],
+                    'Serial Number|ser': ['B18|6614_fgh','B2018|6614_h','B2018-rerun|6600_h'],
                 },
                 function(params) {
-                    return 'figs/alpha_chi_vs_linear_bins_'+params.bins2+'.png';
+                    return 'figs/constraining_power_'+params.ser+'.png';
+                });
+            pager.setparams({
+                'ser': '6614_fgh',
+            });
+        </script>
+    </figure>
+
+
+
+    <p>$\hat{\alpha}_{\chi}$ is the &chi;<sup>2</sup>-estimator:</p>
+        
+    \begin{equation}
+    \hat{\alpha}_\chi = \chi^2 \;\text{when}\;\;\;\frac{d\chi^2}{d\alpha}=0
+    \end{equation}
+
+    <p>$\hat{\alpha}_{lin}$ is the linear estimator:</p>
+    
+    \begin{equation}
+    \hat{\alpha}_{lin} = \frac{\partial\alpha}{\partial D_{\ell}^{XY}}\,\cdot\,D_{\ell}^{XY}
+    \end{equation}
+
+    <p></p>
+
+    <figure>
+        <img alt="Name pager" id="estsigpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#estsigpager",
+                {
+                    'Bins|bins2': ['2-10|2_10','2-15|2_15'],
+                },
+                function(params) {
+                    return 'figs/sigalpha_lin_vs_chi_bins_'+params.bins2+'.png';
                 });
             pager.setparams({
                 'bins2': '2_10',
@@ -515,10 +594,111 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     </figure>
 
 
+    <figure>
+        <img alt="Name pager" id="linestpager" src="#" onerror=this.src="figs/blank_6x4.png" width="75%"/>
+        <figcaption>
+            Each dot represents a single realization from B18. &alpha; along the y-axis is calculated by taking the dot product of d&alpha;/dD<sub>&ell;</sub> in the right plots of Fig 2.2 with their respective band powers.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#linestpager",
+                {
+                    'Signal Type|sig31': ['Unlensed-LCDM|1','G. Dust|2','Lensed-LCDM|3','Noise|4','L-LCDM+Noise|5','L-LCDM+Noise+Dust|6'],
+                    'Bins|bins2': ['2-10|2_10','2-15|2_15'],
+                },
+                function(params) {
+                    return 'figs/alpha_chi_vs_linear_type_'+params.sig31+'_bins_'+params.bins2+'.png';
+                });
+            pager.setparams({
+                'sig31': '2',
+                'bins2': '2_10',
+            });
+        </script>
+    </figure>
+
+
+
+
 
 </section>
 
+<section>
+    <h2>Looking into the $\hat{\alpha}_\chi$ Covariance Matrix</h2>
 
+    <p>As mentioned before <tt>reduc_global_rotation</tt> estimates an angle by minimizing the equation below</p>
+
+    \begin{equation}
+    χ^2 = \left( \oCb^{XY} - \rCb^{XY} \right)^\top \left( \Ccov^{XY}
+    \right)^{-1} \left( \oCb^{XY} - \rCb^{XY} \right)
+
+    \end{equation}
+
+    <p>Where $\Ccov^{XY}$ in this case is the EBEB or the TBTB covariance matrix. </p>
+
+    <p>First, since the code also allows for estimating &alpha; with EB+TB, I had assumed the above equation would be extended in such a way which considers the TBEB and TBEB cross-covariance in the full bandpower covariance matrix.
+    </p>
+    <p>
+        If we use $\Ccov$ to describe the full bandpower covariance matrix between EB and TB with submatrices $\Ccov^{XY}$, I expected the covariance in the estimator to look like
+
+    </p>
+
+    \begin{equation}
+    \Ccov =
+    \begin{bmatrix}
+    \Ccov^{TBTB} & \Ccov^{TBEB} \\
+    \Ccov^{EBTB} & \Ccov^{EBEB} \\
+    \end{bmatrix}
+    \end{equation}
+
+<p>
+    which would be taken directly from the final file's given bandpower covariance matrix. Instead, the the code recalculates the bandpower covariance for just TBTB and EBEB doesn't actually include the cross-covariance between the two:
+</p>
+    \begin{equation}
+    \Ccov =
+    \begin{bmatrix}
+    \Ccov^{TBTB} & O \\
+    O & \Ccov^{EBEB} \\
+    \end{bmatrix}
+    \end{equation}
+
+<p>
+    Second, like our actual BPCM, the coavriance matrix above is calculated from the final file's <tt>final.r.sim</tt> variable which are the 499 noise-debiased Type-7 sims (i.e. Lensed-LCDM+Noise-mean(Noise)) -- <tt>reduc_final.m</tt> states that this debiasing is done for <i>all</i> spectra, not just BB.
+</p>
+
+    <p>
+        I re-fit alpha to the B18, B2018, and B2018-rerun sims now using the full bandpower covariance matrix calculated from Lensed-LCDM+Noise+Dust. To show the effects of only changing one thing at a time, in the pager below, the first "Full Cov." option uses the full, original covariance matrix (Noise-debiased L-LCDM+Noise). The "Full Cov. from Type 8" option uses the full covariance matrix recalculated from L-LDCM+Noise+Dust without debiasing.
+    </p>
+
+    <figure>
+        <img alt="Name pager" id="hist123pager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+        <figcaption>
+            Histograms of &alpha; estimates for B2018 and my B2018-rerun for each EB/TB fit type; per signal type; and with and without matrix purification.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#hist123pager",
+                {
+                    'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
+                    //'Purification Method|pure2': ['None|','Matrix|matrix_'],
+                    'Simset|sernum10': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
+                    //'cmb x noise/dust|c': ['Off|','On|_cross'],
+                    'bins|b':['2-10|_2_10', '2-15|_2_15'],
+                    'Cov. Mat.|cov' : ['Original|','Full Cov.|_fullcov','Full Cov. from Type 8|_fullcov_repsim'],
+                },
+                function(params) {
+                    return 'figs/alpha_hist_'+params.sernum10+'matrix_'+params.sig+'_corr_cross_bins'+params.b+params.cov+'.png';
+                });
+            pager.setparams({
+                'sig': '8',
+                //'pure2': 'matrix_',
+                'sernum10': '6614fgh',
+                //'c': '_cross',
+                'b':'_2_10',
+                'cov': '',
+            });
+        </script>
+    </figure>
+
+
+</section>
 
 
 <section><h2>Conclusions</h2>
