@@ -226,13 +226,46 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
 </section>
 <section>
-        <h2>Estimator Transfer Function</h2>
+        <h2>Angle Linear Estimator</h2>
+    \(
+    \newcommand{\Cl}{\mathcal{C}_\ell}
+    \newcommand{\Cb}{\mathcal{C}_b}
+    \newcommand{\oCb}{\mathcal{\hat C}_b}
+    \newcommand{\rCb}{\mathcal{C'}_b}
+    \newcommand{\Ccov}{\mathrm{\mathbf{C}}}
+    \)
+
+    Quoted from Justin's posting:
+    <ul>
+        <li>We can then difference model expectation values \(\rCb^{XY}\) from the
+            real bandpowers \(\oCb^{XY}\) (where the subscript \(b\) denotes binned
+            bandpowers over a range in \(\ell\)) and calculate the \(χ^2\) values
+            making use of the bandpower covariance matrix \(\Ccov^{XY}\) for a
+            given cross-spectrum \(XY\):</li>
+    </ul>
+    \begin{equation}
+    χ^2 = \left( \oCb^{XY} - \rCb^{XY} \right)^\top \left( \Ccov^{XY}
+    \right)^{-1} \left( \oCb^{XY} - \rCb^{XY} \right)
+
+    \end{equation}
+
+
+    <p>$\hat{\alpha}_{\chi}$ is the &chi;<sup>2</sup>-estimator:</p>
+
+    \begin{equation}
+    \hat{\alpha}_\chi = \chi^2 \;\text{when}\;\;\;\frac{d\chi^2}{d\alpha}=0
+    \end{equation}
+
+    <p>Assuming the above is linear for small values of &alpha; (which should be true given the small-angle approximation), we can create a linear estimator, $\hat{\alpha}_{lin}$, in which &alpha; is the dot product between the our array of bandpowers $C_{b}^{XY}$ and some vector that contains the information how each bandpower contributes to &alpha;</p>
+
+    \begin{equation}
+    \hat{\alpha}_{lin} = \frac{\partial\alpha}{\partial C_{b}^{XY}}\,\cdot\,\hat{C}_{b}^{XY}
+    \end{equation}
+
+    <p></p>
+
         <p>
-            Now we need to get an idea of which bandpowers matter most in our angle estimator.
-        </p>
-        <p>
-            I do this by injecting a quasi-delta function -- i.e. setting a bandpower to some fixed amplitude whilst keeping all other bandpowers at zero -- into an EB or TB spectra &ell;bin-by-&ell;bin, recording the resulting alpha estimates (see below figure for example). I fit angles to these fake spectra using the same proceedure outlined in <a href="JAC2023"></a> where, I substitute the real data in B2018's final file for these fake spectra and then pass that final file through <tt>reduc_global_rotation.m</tt>. This means that I'm also using B2018's BPCM.
-        </p>
+            I calculate $\partial\alpha\,/\,\partial C_{b}^{XY}$ by injecting a quasi-delta function -- i.e. setting a bandpower to some fixed amplitude whilst keeping all other bandpowers at zero -- into an EB or TB spectra &ell;bin-by-&ell;bin, recording the resulting alpha estimates from the &chi;<sup>2</sup>-estimator (see below figure for example). I fit angles to these fake spectra using the same procedure outlined in <a href="JAC2023"></a> where, I substitute the real data in B2018's final file for these fake spectra and then pass that final file through <tt>reduc_global_rotation.m</tt>. This means that I'm also using B2018's BPCM.</p>
         <figure>
             <img src="figs/estimator_xfer_example.gif">
             <figcaption>
@@ -240,14 +273,14 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
             </figcaption>
         </figure>
         <p>
-            The figure below shows resulting alphas for four different amplitudes of our quasi-delta function. Through my analysis so far, I have been using our standard &ell;-bins 2-10 but I now also include a case for using &ell;-bins 2-17.
+            The figure below shows resulting alphas for four different amplitudes of our quasi-delta function. Through my analysis so far, I have been using our standard &ell;-bins 2-10 but I now also include a case for using &ell;-bins 2-15.
         </p>
 
     <figure>
         <img alt="Name pager" id="xferpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
         <figcaption>
             Exploring the effect on &alpha; for input delta functions for EB <b>(Top Row)</b> and TB <b>(Bottom
-            Row)</b>. <b>Left Column</b> Resulting &alpha; estimate per bandpower as a function of Ell, the lines are color coded by the amplitude of the quasi-delta function used in the given spectra. <b>(Right Column)</b> The angle at each bandpower is divided by the angle Dl=1 (Dl=0.1 for EB) at that bandpower to confirm linearity -- an increase in the bandpower corresponds to a linear increase in angle for these amplitudes.
+            Row)</b>. <b>Left Column</b> Resulting &alpha; estimate per bandpower as a function of Ell, the lines are color coded by the amplitude of the quasi-delta function used in the given spectra. <b>(Right Column)</b> The angle at each bandpower is divided by the bandpower itself which creates the linear estimator. Since all four cases overlap, this is also a proof of linearity for this range of bandpowers.
         </figcaption>
         <script type="text/javascript">
             pager.link("#xferpager",
@@ -265,280 +298,11 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
 <p></p>
 
-        <figure>
-            <table cellpadding="0" cellspacing="0">
-                <tr>
-                    <td>
-                        <img src="figs/tb_eb_spectra_example.png">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="figs/polrot_example_kaufman2013.png">
-                    </td>
-                </tr>
-            </table>
 
-            <figcaption>
-                <b>Top:</b> B18, matrix-purified, L-LCDM+N+D simulations <b>Bottom:</b> LCDM power spectra with applied polarization rotation of -3&deg; to 3&deg; from <a href="Kaufman2013"></a>.
-            </figcaption>
-        </figure>
-
-        <p>Up to this point, I have been fitting angles using the default &ell;-bins 2 to 10 (&ell;=37.5 to 317.5) to match what bins I expect the real data to be most reliable.
-            However, the above suggests I should be more sensitive at higher &ell;. Below, I re-fit the angles but using different &ell;-ranges. Clicking between Bins: 6-10 and Bins: 2-10, we can see that most of our constraining power in the ranges of interest is in the higher bins as expect, but &sigma;<sub>&alpha;</sub> still drops by about 0.01&deg; if we include Bins 2-5, so I think I'll keep using bins 2-10. Lastly, I include an option to use all of our bins to give us a best-case scenario to show that including the &ell;'s up to 560 in our spectra can improve &sigma;<sub>&alpha;</sub> by ~30%</p>
-
-        <figure>
-            <img alt="Name pager" id="histpager2" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
-            <figcaption>
-                Histograms of &alpha; estimates for B18, B2018 and my B2018-rerun for each EB/TB fit type; per signal type; and for fitting over different &ell;-bin ranges
-            </figcaption>
-            <script type="text/javascript">
-                pager.link("#histpager2",
-                    {
-                        'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
-                        //'Purification Method|pure2': ['None|','Matrix|matrix_'],
-                        'Simset|sernum2': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
-                        //'cmb x noise/dust|c': ['Off|','On|_cross'],
-                        'Bins|bins': ['2-5|_bins_2_5','6-10|_bins_6_10','2-10|_bins_2_10','2-17|_bins_2_17','11-17|_bins_11_17'],
-                    },
-                    function(params) {
-                        return 'figs/alpha_hist_'+params.sernum2+'matrix_'+params.sig+'_corr_cross'+params.bins+'.png';
-                    });
-                pager.setparams({
-                    'sig': '2',
-                    'bins': '_bins_2_5',
-                    'sernum2': '6614fgh',
-                    //'c': '',
-                });
-            </script>
-        </figure>
+    <h3>Constraining power vs. &ell;</h3>
     <p>
-        For reference, the pager below shows B2018 499 sims with all 17 bandpowers for EB, TB, and BB:
+        This shows the constraining power of the spectra as a function of &ell;-bin. Smaller values indicate higher constraining power. As such, we can expect our highest constraining power for EB to be around bins 10-12, while TB is around bins 4-6 and 8-11.
     </p>
-
-<!--        <figure>-->
-<!--            <img alt="Name pager" id="apspager2" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" />-->
-<!--            <figcaption>-->
-<!--                A pager of EB/TB APS of my 10 sims compared to the 499 sims generated for B2018 and B18 with all 17 bandpowers. The gray lines indicate one realization and the black line indicates the mean of all realizations per-ell.-->
-<!--            </figcaption>-->
-<!--            <script type="text/javascript">-->
-<!--                pager.link("#apspager2",-->
-<!--                    {-->
-<!--                        'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],-->
-<!--                        'y-axes|axes': ['Fixed|_fixed','Free|_free']-->
-<!--                    },-->
-<!--                    function(params) {-->
-<!--                        return 'figs/aps_6614_h_matrix_'+params.sig+params.axes+'_cross_bins_1_17.png';-->
-<!--                    });-->
-<!--                pager.setparams({-->
-<!--                    'sig': '2',-->
-<!--                    'axes': '_free',-->
-<!--                });-->
-<!--            </script>-->
-<!--        </figure>-->
-
-        <p>We can also see in Fig 2.2, at small angles, the linearity of our estimator has been confirmed -- as I increase the amplitude of the bandpower, we see a linear increase in the resulting angle.</p>
-
-        <h3>Relation between &sigma;<sub>&alpha;</sub><sup>2</sup> and BB-power</h3>
-        <p>In the tables below, I record the variance on alpha for signals CMB, Noise and Dust along with BB-power. I compare the sum of these variances to the variance on the summed signal spectra. I do the same for BB-power, summing the bandpower-averaged BB of each signal and comparing to the bandpower-averaged BB of the summed signal spectra.</p>
-        <figure class="table">
-            <table class="results">
-                <tr>
-                    <th colspan="6">B2018 &sigma;<sub>&alpha;</sub><sup>2</sup> and BB-power</th>
-                </tr>
-                <tr>
-                <tr>
-                    <th>Signal Type</th>
-                    <th class="cstart"colspan="3">Angle Variance [deg<sup>2</sup>]</th>
-                    <th class="cstart"colspan="2">Avg BB-Power</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th class="cstart">EB-fit</th>
-                    <th>TB-fit</th>
-                    <th>EB+TB-fit</th>
-                    <th class="cstart">Uniform Wt.</th>
-                    <th>Derived Wt.</th>
-                </tr>
-
-
-                <tr>
-                    <td class=''>Lensed-LCDM</td>
-                    <td class='cstart'>0.0035</td>
-                    <td class=''>0.0126</td>
-                    <td class=''>0.0040</td>
-                    <td class='cstart'>0.0109</td>
-                    <td class=''>0.0153</td>
-                </tr>
-                <tr>
-                    <td class=''>Noise</td>
-                    <td class='cstart'>0.0104</td>
-                    <td class=''>0.0416</td>
-                    <td class=''>0.0127</td>
-                    <td class='cstart'>0.0426</td>
-                    <td class=''>0.0636</td>
-                </tr>
-                <tr>
-                    <td class=' rend'>Dust</td>
-                    <td class='cstart rend'>0.0003</td>
-                    <td class=' rend'>0.0010</td>
-                    <td class=' rend'>0.0003</td>
-                    <td class='cstart rend'>0.0007</td>
-                    <td class=' rend'>0.0007</td>
-                </tr>
-                <tr>
-                    <td class=''>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub></td>
-                    <td class='cstart'>0.0140</td>
-                    <td class=''>0.0541</td>
-                    <td class=''>0.0167</td>
-                    <td class='cstart'>0.0536</td>
-                    <td class=''>0.0789</td>
-                </tr>
-                <tr>
-                    <td class=' rend'>&sigma;<sup>2</sup><sub>L+N</sub></td>
-                    <td class='cstart rend'>0.0136</td>
-                    <td class=' rend'>0.0528</td>
-                    <td class=' rend'>0.0164</td>
-                    <td class='cstart rend'>0.0535</td>
-                    <td class=' rend'>0.0789</td>
-                </tr>
-                <tr>
-                    <td class=''>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub>+&sigma;<sup>2</sup><sub>D</sub></td>
-                    <td class='cstart'>0.0143</td>
-                    <td class=''>0.0551</td>
-                    <td class=''>0.0170</td>
-                    <td class='cstart'>0.0543</td>
-                    <td class=''>0.0796</td>
-                </tr>
-                <tr>
-                    <td class=' rend'>&sigma;<sup>2</sup><sub>L+N+D</sub></td>
-                    <td class='cstart rend'>0.0139</td>
-                    <td class=' rend'>0.0537</td>
-                    <td class=' rend'>0.0167</td>
-                    <td class='cstart rend'>0.0543</td>
-                    <td class=' rend'>0.0796</td>
-                </tr>
-
-            </table>
-            <figcaption>
-                Table of B2018 variance on alpha EB-only, TB-only, and EB+TB fits compared to BB power averaged over &ell;-bins 2 through 10 either weighted uniformly or by the weighting derived in Figure 2.2.
-            </figcaption>
-        </figure>
-
-        <figure class="table">
-            <table class="results">
-                <tr>
-                    <th colspan="6">B18 &sigma;<sub>&alpha;</sub><sup>2</sup> and BB-power</th>
-                </tr>
-
-                <tr>
-                    <th>Signal Type</th>
-                    <th class="cstart"colspan="3">Angle Variance [deg<sup>2</sup>]</th>
-                    <th class="cstart"colspan="2">Avg BB-Power</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th class="cstart">EB-fit</th>
-                    <th>TB-fit</th>
-                    <th>EB+TB-fit</th>
-                    <th class="cstart">Uniform Wt.</th>
-                    <th>Derived Wt.</th>
-                </tr>
-
-
-                <tr>
-                    <td class=''>Lensed-LCDM</td>
-                    <td class='cstart'>0.0036</td>
-                    <td class=''>0.0126</td>
-                    <td class=''>0.0042</td>
-                    <td class='cstart'>0.0109</td>
-                    <td class=''>0.0153</td>
-                </tr>
-                <tr>
-                    <td class=''>Noise</td>
-                    <td class='cstart'>0.0038</td>
-                    <td class=''>0.0159</td>
-                    <td class=''>0.0049</td>
-                    <td class='cstart'>0.0167</td>
-                    <td class=''>0.0249</td>
-                </tr>
-                <tr>
-                    <td class=' rend'>Dust</td>
-                    <td class='cstart rend'>0.0003</td>
-                    <td class=' rend'>0.0008</td>
-                    <td class=' rend'>0.0003</td>
-                    <td class='cstart rend'>0.0007</td>
-                    <td class=' rend'>0.0007</td>
-                </tr>
-                <tr>
-                    <td class=''>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub></td>
-                    <td class='cstart'>0.0074</td>
-                    <td class=''>0.0285</td>
-                    <td class=''>0.0090</td>
-                    <td class='cstart'>0.0276</td>
-                    <td class=''>0.0401</td>
-                </tr>
-                <tr>
-                    <td class=' rend'>&sigma;<sup>2</sup><sub>L+N</sub></td>
-                    <td class='cstart rend'>0.0075</td>
-                    <td class=' rend'>0.0276</td>
-                    <td class=' rend'>0.0088</td>
-                    <td class='cstart rend'>0.0275</td>
-                    <td class=' rend'>0.0401</td>
-                </tr>
-                <tr>
-                    <td class=''>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub>+&sigma;<sup>2</sup><sub>D</sub></td>
-                    <td class='cstart'>0.0077</td>
-                    <td class=''>0.0293</td>
-                    <td class=''>0.0093</td>
-                    <td class='cstart'>0.0283</td>
-                    <td class=''>0.0408</td>
-                </tr>
-                <tr>
-                    <td class=' rend'>&sigma;<sup>2</sup><sub>L+N+D</sub></td>
-                    <td class='cstart rend'>0.0078</td>
-                    <td class=' rend'>0.0280</td>
-                    <td class=' rend'>0.0090</td>
-                    <td class='cstart rend'>0.0283</td>
-                    <td class=' rend'>0.0408</td>
-                </tr>
-
-            </table>
-            <figcaption>
-                Table of B18 variance on alpha EB-only, TB-only, and EB+TB fits compared to BB power averaged over &ell;-bins 2 through 10 either weighted uniformly or by the weighting derived in Figure 2.2.
-            </figcaption>
-        </figure>
-        <p>The sum of the variances between Lensed-LCDM, Noise and Dust correspond to the variance on the coadded spectra to within 4%. Likewise, the sum of BB-power matches the BB-power of the summed signals to within 1% of either case of uniformly weighted or weighing derived from Figure 2.2.</p>
-
-    <p>Lastly, we can see by comparing the Avg BB-power between Lensed-LCDM and Noise that we're still noise dominated in B18. According to the survey weights, going from B2018 to B18 was an effective 2.5 years of averaging down and that reflects in the Noise BB-power shown in Tables 2.1 and 2.2 (i.e. BB<sub>N,B2018</sub>/BB<sub>N,B18</sub>~2.5). If we want to average down such that the contributions from Noise and Lensing are equal, we'd have to include another 1.5 years worth of data. This means that we could feasibly include B2019 and B2020 and enter the regime where our constraint is dominated by lensing instead of noise. The obvious issue with this is that we haven't published BICEP3 data beyond 2018, so we'll have to think more about this.</p>
-
-
-<h4>Linear estimator stuff</h4>
-    \(
-    \newcommand{\Cl}{\mathcal{C}_\ell}
-    \newcommand{\Cb}{\mathcal{C}_b}
-    \newcommand{\oCb}{\mathcal{\hat C}_b}
-    \newcommand{\rCb}{\mathcal{C'}_b}
-    \newcommand{\Ccov}{\mathrm{\mathbf{C}}}
-    \)
-
-    Quoted from Justin's posting:
-    <ul>
-    <li>We can then difference model expectation values \(\rCb^{XY}\) from the
-        real bandpowers \(\oCb^{XY}\) (where the subscript \(b\) denotes binned
-        bandpowers over a range in \(\ell\)) and calculate the \(χ^2\) values
-        making use of the bandpower covariance matrix \(\Ccov^{XY}\) for a
-        given cross-spectrum \(XY\):</li>
-    </ul>
-    \begin{equation}
-    χ^2 = \left( \oCb^{XY} - \rCb^{XY} \right)^\top \left( \Ccov^{XY}
-    \right)^{-1} \left( \oCb^{XY} - \rCb^{XY} \right)
-
-    \end{equation}
-
-
-    <p>Constraining power vs. &ell;</p>
-
     <figure>
         <img alt="Name pager" id="constrainpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
         <figcaption>
@@ -560,24 +324,14 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
 
 
-    <p>$\hat{\alpha}_{\chi}$ is the &chi;<sup>2</sup>-estimator:</p>
-        
-    \begin{equation}
-    \hat{\alpha}_\chi = \chi^2 \;\text{when}\;\;\;\frac{d\chi^2}{d\alpha}=0
-    \end{equation}
 
-    <p>$\hat{\alpha}_{lin}$ is the linear estimator:</p>
-    
-    \begin{equation}
-    \hat{\alpha}_{lin} = \frac{\partial\alpha}{\partial D_{\ell}^{XY}}\,\cdot\,D_{\ell}^{XY}
-    \end{equation}
 
-    <p></p>
-
+    <h3>Comparing uncertainty estimates</h3>
+    <p>I determine &sigma;<sub>&alpha;</sub> by taking the dot product of $\partial\alpha\,/\,\partial C_{b}^{XY}$ and the standard deviation per-bandpower across all sims in the B18 simset.</p>
     <figure>
         <img alt="Name pager" id="estsigpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
         <figcaption>
-
+            Left plots show the contribution of &sigma;<sub>&alpha;</sub> per-bandpower for EB and TB from the linear estimator. The right plot compares the &sigma;<sub>&alpha;</sub> between the linear and chi-squared estimator.
         </figcaption>
         <script type="text/javascript">
             pager.link("#estsigpager",
@@ -593,7 +347,10 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         </script>
     </figure>
 
+    <h3>Comparing &alpha; estimates</h3>
+    <p>
 
+    </p>
     <figure>
         <img alt="Name pager" id="linestpager" src="#" onerror=this.src="figs/blank_6x4.png" width="75%"/>
         <figcaption>
@@ -614,6 +371,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
             });
         </script>
     </figure>
+
 
 
 
@@ -668,6 +426,8 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         I re-fit alpha to the B18, B2018, and B2018-rerun sims now using the full bandpower covariance matrix calculated from Lensed-LCDM+Noise+Dust. To show the effects of only changing one thing at a time, in the pager below, the first "Full Cov." option uses the full, original covariance matrix (Noise-debiased L-LCDM+Noise). The "Full Cov. from Type 8" option uses the full covariance matrix recalculated from L-LDCM+Noise+Dust without debiasing.
     </p>
 
+    <p>Lastly, Justin points out in this posting that he truncates the covariance matrix to keep only up to the 2nd off-diagonal terms which is the default choice in the code. While not stated explicitly, I assume this choice is made because he didn't trust the covariance matrix to be a 100% match of the covariance on the real data. Because I have been using this default choice, I include an option to choose between using all off-diagonal terms or just the default of 2.</p>
+
     <figure>
         <img alt="Name pager" id="hist123pager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
         <figcaption>
@@ -682,9 +442,10 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
                     //'cmb x noise/dust|c': ['Off|','On|_cross'],
                     'bins|b':['2-10|_2_10', '2-15|_2_15'],
                     'Cov. Mat.|cov' : ['Original|','Full Cov.|_fullcov','Full Cov. from Type 8|_fullcov_repsim'],
+                    'Off-diag|off' : ['2|','All|_alloff'],
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.sernum10+'matrix_'+params.sig+'_corr_cross_bins'+params.b+params.cov+'.png';
+                    return 'figs/alpha_hist_'+params.sernum10+'matrix_'+params.sig+'_corr_cross_bins'+params.b+params.cov+params.off+'.png';
                 });
             pager.setparams({
                 'sig': '8',
@@ -692,11 +453,15 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
                 'sernum10': '6614fgh',
                 //'c': '_cross',
                 'b':'_2_10',
-                'cov': '',
+                'cov': '_fullcov_repsim',
+                'off': '_alloff',
             });
         </script>
     </figure>
 
+    <p>
+        Including the covariance information between EB and TB, the fit to EB+TB does appear to being EB+TB closer to EB-only, but it's still higher than EB-only.
+    </p>
 
 </section>
 
@@ -947,4 +712,8 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
     </script>
 </section>
+
+
+
+
 </body>
