@@ -278,7 +278,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
     <figure>
         <img alt="Name pager" id="xferpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
-        <figcaption>
+        <figcaption id="dAdD">
             Exploring the effect on &alpha; for input delta functions for EB <b>(Top Row)</b> and TB <b>(Bottom
             Row)</b>. <b>Left Column</b> Resulting &alpha; estimate per bandpower as a function of Ell, the lines are color coded by the amplitude of the quasi-delta function used in the given spectra. <b>(Right Column)</b> The angle at each bandpower is divided by the bandpower itself which creates the linear estimator. Since all four cases overlap, this is also a proof of linearity for this range of bandpowers.
         </figcaption>
@@ -323,9 +323,6 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     </figure>
 
 
-
-
-
     <h3>Comparing uncertainty estimates</h3>
     <p>I determine &sigma;<sub>&alpha;</sub> by taking the dot product of $\partial\alpha\,/\,\partial C_{b}^{XY}$ and the standard deviation per-bandpower across all sims in the B18 simset.</p>
     <figure>
@@ -354,7 +351,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     <figure>
         <img alt="Name pager" id="linestpager" src="#" onerror=this.src="figs/blank_6x4.png" width="75%"/>
         <figcaption>
-            Each dot represents a single realization from B18. &alpha; along the y-axis is calculated by taking the dot product of d&alpha;/dD<sub>&ell;</sub> in the right plots of Fig 2.2 with their respective band powers.
+            Each dot represents a single realization from B18. &alpha; along the y-axis is calculated by taking the dot product of d&alpha;/dD<sub>&ell;</sub> with their respective band powers for each realization.
         </figcaption>
         <script type="text/javascript">
             pager.link("#linestpager",
@@ -372,9 +369,10 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         </script>
     </figure>
 
-
-
-
+    <h3>Forecasting with $\hat{\alpha}_{lin}$</h3>
+<p>
+    We can use the linear estimator to easily predict the uncertainty on &alpha; for various scenarios...
+</p>
 
 
 </section>
@@ -467,29 +465,30 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
 
 <section><h2>Conclusions</h2>
-    <p>
-        In my previous posting, we saw deviations in the means of &alpha; that were large WRT their error-on-the-means. By fitting angles to B18, I was able to rule out systematics involving the purification matrix as the source which drives us to look into ways of testing the hypothesis that these deviations are a result from using constrained T-maps.
-    </p>
+<!--    -->
+<!--    <p>-->
+<!--        In my previous posting, we saw deviations in the means of &alpha; that were large WRT their error-on-the-means. By fitting angles to B18, I was able to rule out systematics involving the purification matrix as the source which drives us to look into ways of testing the hypothesis that these deviations are a result from using constrained T-maps.-->
+<!--    </p>-->
 
-    <p>
-        By fitting angles to EB/TB with CMB crossed Noise/Dust, the angles that I fit to these signal types are now comparable to the other signal types with CMB in them. I find that the Noise &sigma;<sub>&alpha;</sub> between B2018 and B18 drops by ~&radic;3 as expected. This is not true, however, for L-LCDM+Noise or L-LCDM+N+Dust because we're now in the regime where the contributions to &sigma;<sub>&alpha;</sub> from lensing and noise are comparable.
-    </p>
+<!--    <p>-->
+<!--        By fitting angles to EB/TB with CMB crossed Noise/Dust, the angles that I fit to these signal types are now comparable to the other signal types with CMB in them. I find that the Noise &sigma;<sub>&alpha;</sub> between B2018 and B18 drops by ~&radic;3 as expected. This is not true, however, for L-LCDM+Noise or L-LCDM+N+Dust because we're now in the regime where the contributions to &sigma;<sub>&alpha;</sub> from lensing and noise are comparable.-->
+<!--    </p>-->
 
-    <p>
-        I also examined how each bandpower contributes to our angle estimates and find that most of our constraining power is in the higher-&ell;'s. For all of my angle fits up through now I have been only using &ell;-bins between 2 and 10 (&ell;=37.5 to 317.5), but because the BB-power in our real data is less understood at higher &ell;'s, I'm thinking of sticking to this &ell;-bin range. According to the fits in Fig 2.4, most of our constraining power in this region is between &ell;-bins of 6 to 10, but we do see a non-trivial improvement of &sigma;<sub>&alpha;</sub> of ~0.01&deg; by including bands 2 through 5, so I'm electing to keep using those as well.
-    </p>
+<!--    <p>-->
+<!--        I also examined how each bandpower contributes to our angle estimates and find that most of our constraining power is in the higher-&ell;'s. For all of my angle fits up through now I have been only using &ell;-bins between 2 and 10 (&ell;=37.5 to 317.5), but because the BB-power in our real data is less understood at higher &ell;'s, I'm thinking of sticking to this &ell;-bin range. According to the fits in Fig 2.4, most of our constraining power in this region is between &ell;-bins of 6 to 10, but we do see a non-trivial improvement of &sigma;<sub>&alpha;</sub> of ~0.01&deg; by including bands 2 through 5, so I'm electing to keep using those as well.-->
+<!--    </p>-->
 
-    <p>
-        I was able to show that the sum of the BB-power and the variance on &alpha; of the L-LCDM, Noise and Dust signal types are equal to the BB-power and &sigma;<sub>&alpha;</sub><sup>2</sup> of coadded maps of the signal types. This relationship should prove useful both when looking at fits of other simulations further on in the analysis and when forcasting the performance of future analyses.
-    </p>
-    <p>Lastly, I was able to show that if we include two more years of data, our constraint would start to be dominated by the lensing signal instead of noise.</p>
+<!--    <p>-->
+<!--        I was able to show that the sum of the BB-power and the variance on &alpha; of the L-LCDM, Noise and Dust signal types are equal to the BB-power and &sigma;<sub>&alpha;</sub><sup>2</sup> of coadded maps of the signal types. This relationship should prove useful both when looking at fits of other simulations further on in the analysis and when forcasting the performance of future analyses.-->
+<!--    </p>-->
+<!--    <p>Lastly, I was able to show that if we include two more years of data, our constraint would start to be dominated by the lensing signal instead of noise.</p>-->
 
 
-    <h3>Next Steps</h3>
-<ul>
-    <li>Running pseudosims through the angle estimator explore how EB and TB are related</li>
-    <li>Fitting angles to sims with non-zero angles injected into them.</li>
-</ul>
+<!--    <h3>Next Steps</h3>-->
+<!--<ul>-->
+<!--    <li>Running pseudosims through the angle estimator explore how EB and TB are related</li>-->
+<!--    <li>Fitting angles to sims with non-zero angles injected into them.</li>-->
+<!--</ul>-->
 
 </section>
 
@@ -517,6 +516,9 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
 
     <p id="testp"></p>
+
+
+
 
     <script type="text/javascript">
 
