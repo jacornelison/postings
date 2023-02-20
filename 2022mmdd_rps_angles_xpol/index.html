@@ -31,40 +31,16 @@
     <h1>RPS Analysis: Polarization Angles and Cross-polar responses</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
-        yyyy Mmm dd
+        2023 Feb 20
     </time> —
     J. Cornelison
 </header>
 
 <hr>
 
-<p>
-    Outline:
-</p>
-<ol>
-    <li>Intro</li>
-    <ol type="A">
-        <li>Recap of definitions and parameter estimation</li>
-        <li>Schedule types</li>
-    </ol>
-    <li>Results</li>
-    <ol type="A">
-        <li>phi/eps vs. channel</li>
-        <li>Focal plane averages</li>
-    </ol>
-    <li>Uncertainties & Systematics</li>
-    <ol type="A">
-        <li>Consistency checks</li>
-        <ul>
-            <li>2018 Vs. 2022</li>
-            <li>2022 self-consistency</li>
-        </ul>
-        <li>Cross-checks with Type-9's</li>
-        <ul>
-            <li>Type-9 phi/eps vs. time, DK, N-Rotations, etc</li>
-        </ul>
-    </ol>
-</ol>
+To-Do:
+Talk about Collimation uncert
+Diff ref pointing
 
 
 
@@ -121,7 +97,7 @@
     </p>
     <p>
         The polarization angle $\psi$ in Equation \ref{eq:modcurve} is a relative measurement and is agnostic to the orientation of the focal plane.
-        We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the &theta;=0 axis -- this gives us a set of parameters in cartesian coordinates $(x,\,y,\,\phi_{d})$ which is analogous to the polar set of $(r,\,\theta,\,\chi)$ [See <a href="JAC2019"></a>]. This is done by combining $\psi$ with the angle measured from the telescope's &theta;=0 axis and the RPS's &phi;=0 axis, called $\phi_s$, which is computed through the pointing model.
+        We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the &theta;=0 axis -- this gives us a set of parameters in cartesian coordinates $(x,\,y,\,\phi_{d})$ which is analogous to the polar set of $(r,\,\theta,\,\chi)$ [See <a href="JAC2019"></a>]. This is done by combining $\psi$ with the angle measured from the telescope's &theta;=0 axis and the RPS's &zeta;=0 axis, called $\phi_s$, which is computed through the pointing model.
     </p>
     \begin{equation}
     \phi_d = \psi + \phi_s
@@ -136,6 +112,14 @@
 
     <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
 
+    <p>
+        From Eq. \ref{eq:modcurve2}, we can see that the uncertainty on the $\phi_d$ is sourced by the three terms $\zeta_{grav}$, $\psi$, and $\phi_s$.
+        $\sigma_{\zeta}$ describes mechanical or calibration uncertainties arising from the rotation stage;
+        $\sigma_{\psi}$ is driven by both sample variance in the detector timestreams and systematics involved with the coupling efficiency between the telescope and the source;
+        and $\sigma_{\phi s}$ summarizes any errors propagated through the parameters input to the pointing model.
+    </p>
+
+
     <p><b>Note:</b> Our mainline CMB analysis uses detector polarization angles in terms of &chi; for inputs; I present angles in terms of $\phi_d$ here because these angles are easier to interpret since detectors line up with ~0/90&deg; as opposed to &chi; which has an additional dependence on &theta;.
         Before committing these to the pipeline, these angles will converted to their final &chi;-angle values via:
     </p>
@@ -144,15 +128,16 @@
     \chi = \phi-\theta
     \end{equation}
 
+
     <h4>Pair-Difference Polarization Angles</h4>
 
     <p>
-        It is also useful to calculate the "pair-difference" polarization angle.
-        In practice, the contribution of the cross-polar response to this angle is very small so the per-pair polarization angle can be approximated by:
-    </p>
-    \begin{equation}
-    \phi_{pair}\sim\frac{\phi_A+\phi_B-90}{2}
-    \end{equation}
+        It is also useful to calculate the "pair-difference" polarization angle and polarization efficiency:
+<!--        In practice, the contribution of the cross-polar response to this angle is very small so the per-pair polarization angle can be approximated by:-->
+<!--    </p>-->
+<!--    \begin{equation}-->
+<!--    \phi_{pair}\sim\frac{\phi_A+\phi_B-90}{2}-->
+<!--    \end{equation}-->
 
 
     <p>We start with a Stokes vector aligned with +Q:</p>
@@ -420,36 +405,7 @@
 
     </p>
 
-    <p>For 2022 vs. B18, we see an offset of -0.778 degrees. In another posting where I create Pol Rot sims of B2018 CMB data <a href="JAC2023"></a>, we can see that this matches the angle that we'd naively expect given a mismatch between the actual angles and the angles we use to create our CMB maps<sup><a name="sup3" href="#ftn3">[3]</a></sup>.</p>
-
-<h3>Self-consistency</h3>
-    <p>I compare the 2022 data with itself by splitting the observations into two different subsets and comparing them to each other. I choose two different subsets to compare to. The first set, "Min", I find the permutation set which minimizes the mean in the difference distribution which checks for systematics between the observations -- if the mean of the difference histogram never goes to zero, then the this indicates that the observations have some systematic affecting some of the data in some way. The second set, "Max", which is the permutation that maximizes the mean in the difference histogram tells you about the scatter on the mean angle of the observations.</p>
-
-    <figure>
-        <img alt="Name pager" id="consistpager2" src="#" />
-        <figcaption>
-
-        </figcaption>
-        <script type="text/javascript">
-            function fcn(params){
-                return 'figs/consistplot_'+params.val+'_2022_vs_'+params.subs+'.png';
-            }
-
-            pager.link("#consistpager2",
-                {
-                    'Comparison|val' : ['phi','xpol'],
-                    'Subsets|subs' : ['min|2022_min','max|2022_max'],
-                },
-                fcn);
-            pager.setparams({
-                'val' : 'phi',
-                'subs': '2022_min',
-            });
-        </script>
-    </figure>
-
-
-    <p>We can see that the mean of the distribution in "Min" is consistent with zero which indicates that statistical fluctuations are dominating the sample variance. The mean and standard deviation of the distribution in "Max" can be seen as best-estimates of the statistical uncertainty.</p>
+    <p>For 2022 vs. B18 'Obs', we see an offset of -0.778 degrees -- this is the angle we would expect if we fit a global rotation angle to B18 right now, assuming map coverage, detector weighting, and galactic foregrounds were negligible. That said, all of these factors may affect the actual angle we see in the real data to some degree (pun intended), so it's not useful to focus too much on it.</p>
 
 </section>
 
@@ -541,8 +497,7 @@
         <p>
             <a name="ftn2" href="#sup2">[2]</a>This is strictly speaking in the geometrical sense. I plan to discuss differential reflection of polarization due to the fact that the mirror is aluminum in another posting.
     </p>
-        <p><a name="ftn3" href="#sup3">[3]</a>Other factors such as coverage, pair weighting and galactic dust in the maps might affect the actual difference we see in the real data.
-        </p>
+
     </div>
     <h3>Code</h3>
     <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
@@ -661,6 +616,7 @@
             "JAC2022c",
             "BS2022",
             "JAC2023",
+            "JAC2023b"
         ];
 
         // Links
@@ -678,7 +634,8 @@
             "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
             "bicep3/analysis_logbook/20220816_mirror_analysis_3/",
             "bkcmb/analysis_logbook/analysis/20220922_B2021_beamcens/",
-            "jcornelison/postings/20221213_birefringence_pol_rot_sims/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "bkcmb/analysis_logbook/analysis/20230214_rps_grid_cal/",
         ];
 
 
@@ -697,6 +654,7 @@
             "2022 Moon Analysis III: Moon Phase Correction and Mirror Systematics",
             "B2021 Beam Centers",
             "Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sims",
+            "RPS Analysis: Polarizing Wire Grid Angle Calibration",
         ];
         // Debug
         var posty = document.getElementById("testp");

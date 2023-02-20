@@ -1,12 +1,25 @@
 function posting_plots_mirror_diff_pol()
 
+%%
+set(groot,'defaulttextinterpreter','latex');
+set(groot, 'defaultAxesTickLabelInterpreter','latex');
+set(groot, 'defaultLegendInterpreter','latex');
+set(groot,'defaultAxesFontSize',12)
+
+
+%%
+
+clc
 clear all
 close all
-postdir = fullfile('C:','Users','James','Documents','GitHub','postings','20230127_diff_reflection_polarization','');
+postdir = fullfile('C:','Users','James','Documents','GitHub','postings','20230220_diff_reflection_polarization','');
 datadir = fullfile(postdir,'data','');
 figdir = fullfile(postdir,'figs','');
 %load(fullfile(datadir,'b3rpsfiles.mat'))
 load('z:/dev/rps/fpu_data_obs.mat')
+addpath('z:/dev/')
+addpath('z:/dev/rps/')
+addpath('z:/dev/diff_polarization/')
 n = 2200;
 k = 2200;
 dk = -180:45:180;
@@ -112,17 +125,18 @@ saveas(fig,fullfile(figdir,fname),'png')
 
 %% Plot mirror diff pol
 fig = figure(1);
+fig.Position(3:4) = [900, 700*2/3];
 clf; hold on;
-
+set(groot,'defaultAxesFontSize',14)
 clc
 rs = [0 7 14];
 DK = -180:5:180;
 phi_rot = NaN(length(DK),2);
 phi0 = {0 90};
-ylabs = {'\phi','\phi','\phi_{pair}'};
+ylabs = {'$\phi$','$\phi$','$\phi_{pair}$'};
 ttls = {'Input of 0 degrees','Input of 90 Degrees','Pair-Diff Angle'};
-for phiind = 1:(length(phi0)+1)
-    subplot(3,1,phiind)
+for phiind = 1:length(phi0)
+    subplot(2,1,phiind)
     hold on
 for rind = rs
     if phiind ~=3
@@ -154,17 +168,18 @@ saveas(fig,fullfile(figdir,fname),'png')
 
 %% Plot Correction
 fig = figure(1);
+fig.Position(3:4) = [900, 700*2/3];
 clf; hold on;
-
+set(groot,'defaultAxesFontSize',14)
 clc
 rs = [0 7 14];
 DK = -180:5:180;
 phi_rot = NaN(length(DK),2);
 phi0 = {0 90};
-ylabs = {'\phi','\phi','\phi_{pair}'};
+ylabs = {'$\phi$','$\phi$','$\phi_{pair}$'};
 ttls = {'Input of 0 degrees','Input of 90 Degrees','Pair-Diff Angle'};
-for phiind = 1:(length(phi0)+1)
-    subplot(3,1,phiind)
+for phiind = 1:length(phi0)
+    subplot(2,1,phiind)
     hold on
 for rind = rs
     if phiind ~=3
@@ -195,90 +210,42 @@ saveas(fig,fullfile(figdir,fname),'png')
 
 
 
-%% Plot angle at a large r/theta for various angles
-fig = figure(2);
-clf; hold on;
-
-clc
-rs = [0 7 14];
-zeta = -180:5:180;
-phi_rot = NaN(length(zeta),2);
-phi0 = {0 90};
-ylabs = {'\phi','\phi','\phi_{pair}'};
-ttls = {'Input of 0 degrees','Input of 90 Degrees','Pair-Diff Angle'};
-for phiind = 1:(length(phi0)+1)
-    subplot(3,1,phiind)
-    hold on
-for rind = rs
-
-    if phiind ~=3
-    phi_in = zeta+phi0{phiind};
-    r = zeros(size(zeta))+rind;
-    DK = zeros(size(zeta));
-    theta = zeros(size(zeta));
-    mtilt = zeros(size(zeta))+45;
-    mroll = zeros(size(zeta));
-    
-    V = mirror_diff_pol_calc(phi_in,r,theta,2200,2200,DK,mtilt,mroll);
-    %V = mirror_diff_pol_correction(V,r,theta,2400,2400,DK,mtilt,mroll);
-    phi_rot(:,phiind) = wrapTo180(V-zeta');
-    plot(zeta,wrapTo180(V-zeta'))
-    else
-        V = wrapTo180((phi_rot(:,1)+phi_rot(:,2)-90)/2);
-        plot(zeta,wrapTo180(V))
-    end
-    
-    
-end
-legend({'r = 0deg' 'r = 7deg' 'r = 14deg'})
-grid on
-title(ttls{phiind})
-    ylabel([ylabs{phiind} ' [Degrees]'])
-
-end
-xlabel('Zeta [Degrees]')
-%fname = 'phi_bias.png';
-%saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot mirror diff pol at opposite ends of the FP
+%% Check for bias in fits
 fig = figure(1);
+fig.Position(3:4) = [900, 700*2/3];
 clf; hold on;
+set(groot,'defaultAxesFontSize',14)
 
 clc
-rs = [12 12];
-ths = [25 -155];
 DK = -180:5:180;
-phi_rot = NaN(length(DK),2);
-phi0 = {0 90};
-ylabs = {'\phi','\phi','\phi_{pair}'};
-ttls = {'Input of 0 degrees','Input of 90 Degrees','Pair-Diff Angle'};
-for phiind = 1:(length(phi0)+1)
-    subplot(3,1,phiind)
-    hold on
-for rind = 1:length(rs)
-    if phiind ~=3
-    phi_in = zeros(size(DK))+phi0{phiind};
-    r = zeros(size(DK))+rs(rind);
-    theta = zeros(size(DK))+ths(rind);
-    mtilt = zeros(size(DK))+45;
-    mroll = zeros(size(DK));
-    
-    V = mirror_diff_pol_calc(phi_in,r,theta,2200,2200,DK,mtilt,mroll);
-    %V = mirror_diff_pol_correction(V,r,theta,2400,2400,DK,mtilt,mroll);
-    phi_rot(:,phiind) = V;
-    else
-        V = (phi_rot(:,1)+phi_rot(:,2)-90)/2;
-    end
-    plot(DK,V)
-    
-end
-legend({'r = 0deg' 'r = 7deg' 'r = 14deg'})
-grid on
-title(ttls{phiind})
-    ylabel([ylabs{phiind} ' [Degrees]'])
+parmout_a = NaN(size(DK,1),5);
+for dkind = 1:length(DK)
+rot = -180:30:180;
+Z = zeros(size(rot));
+r = Z+14;
+theta = Z;
+k = Z-DK(dkind);
+mtilt = Z+45;
+mroll = Z+0;
+V = mirror_diff_pol_calc(rot,r,theta,2200,2200,k,mtilt,mroll);
+V = reshape(V,size(rot));
+rot_biased = V;
+
+parmin = [0, 0, 0, 0, 1];
+A = rps_get_mod_model(parmin,rot_biased);
+
+mxfev = 100000;
+mxiter = 100000;
+options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
+lb = [-20 -0.5 0 -10 -10];
+ub = [20 0.5 10 10 10];
+guess = [0 0 0 0 1];
+parmout_a(dkind,:) = lsqcurvefit(@rps_get_mod_model,guess,rot,A,lb,ub,options);
 
 end
-xlabel('DK [Degrees]')
-% fname = 'phi_bias.png';
-% saveas(fig,fullfile(figdir,fname),'png')
+
+fig = figure(1);
+clf;
+
+plot(DK,parmout_a(:,1))
 

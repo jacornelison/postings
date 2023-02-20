@@ -29,8 +29,8 @@
 <header>
     <h1>Effect of Polarization Angle Estimates due to Differential Polarization Reflection of Aluminum</h1>
 
-    <time datetime="2023-01-27" class="published updated">
-        2023 Jan 27
+    <time datetime="2023-02-21" class="published updated">
+        2023 Feb 21
     </time> —
     J. Cornelison
 </header>
@@ -38,7 +38,7 @@
 <hr>
 
 <p>
-    In this posting, I calculate the effect of differential polarization rotation on polarization angles due to reflecting off of a surface of aluminum and develop a method for correcting for it.
+    In this posting, I calculate the effect of differential polarization rotation on polarization angles due to reflecting off of a surface of aluminum. This could be a particularly important effect since we perform most of our calibrations with a large flat aluminum mirror (AKA the FFFlat). I find that for BICEP3, we could experience biases in the polarization angle of up to 0.02&deg; across the focal plane. Fortunately, for cases like the RPS analysis we average over a sufficient number of samples over a full 360&deg; of rotation that this effect is negligible. However, for cases where it might not be, I show a method for correcting for it.
 </p>
 
 <hr>
@@ -263,14 +263,9 @@ Incident angle as a function of pixel location on the focal plane per DK-angle.
     \tilde{\phi}_P = \tan^{-1}\left(\frac{\tilde{D}_P\cdot-\hat{D}_2}{\tilde{D}_P\cdot\hat{D}_1}\right)
     \end{equation}
 
-    <p>It's useful to calculate the "pair-diff" polarization angle between an A and B detector pair which, when we have no cross-polar response, is simplified to</p>
-
-    \begin{equation}
-    \phi_{pair} \sim \frac{\phi_A+\left(\phi_B-90^\circ\right)}{2}
-    \end{equation}
 
     <p>The figure below shows the level of bias for input angles of 0&deg; and 90&deg; and for different distances away from the focal plane as a function of DK angle. As we can see, the level of bias on the polarization angle can get quite high depending on the deck angle and is more severe for pixels farther away from the boresight.
-        Additionally, the effect is equal and opposite for the orthogonal polarization state. So while it is significant when just looking at pol A or Pol B, the effect cancels out in the pair-difference signal.</p>
+        Additionally, the effect is equal and opposite for the orthogonal polarization state.</p>
 
     <figure>
         <img src="figs/phi_bias.png" width="60%"/>
@@ -280,8 +275,18 @@ Incident angle as a function of pixel location on the focal plane per DK-angle.
         </figcaption>
     </figure>
 
-    <h3>Correcting for Differential Reflection</h3>
-    <p>Given that this effect is physical, we should correct for it. Given a knowledge of the pointing model and given some measured polarization angle $\tilde{D}_P$ that involves reflecting off of the FFFlat (from measurements with the RPS, say) we can start at Eq. \ref{newangle} and work backwards to solve for $\hat{D}_P$ and convert into an angle.</p>
+    <h3>Impact on RPS-derived Pol Angle Fits</h3>
+
+    <p>
+        Fortunately, when we measure our angles by sampling the amplitude of our beams at multiple angles of the Rotating Polarized Source this effect is expected to wash out significantly over the full 360 degrees of samples. Thinking about the above problem in the time-forward sense with the RPS projecting its polarization onto a detector, the actual angle of the RPS's wire grid WRT to gravity is biased somewhat due to the differential reflection but the bias changes for at each command angle, so we can imagine an averaging over the curve shown in the above figure.
+    </p>
+
+    <p>
+        I estimate the impact on angles derived by the RPS by recreating a typical modulation curve of 13 amplitudes at 13 different RPS angles from -180&deg; to 180&deg; in 30&deg; increments. The angles input into this fiducial mod curve are biased based the pointing of a detector at the edge of the focal plane to maximize the effect. I then fit an angle assuming no bias and compare the two. I find that the maximum difference between the input and output angle of O(10<sup>-9</sup>&deg;).
+    </p>
+
+    <h3>Correcting Angle Bias</h3>
+    <p>If we really want to, we can correct for this angle fairly easily. Given a knowledge of the pointing model and given some measured polarization angle $\tilde{D}_P$ that involves reflecting off of the FFFlat (from measurements with the RPS, say) we can start at Eq. \ref{newangle} and work backwards to solve for $\hat{D}_P$ and convert into an angle.</p>
 
     <p>We can write the projections of $\tilde{D}_P$ onto the plane of incidence</p>
     \begin{equation}
@@ -313,7 +318,7 @@ Incident angle as a function of pixel location on the focal plane per DK-angle.
         </figcaption>
     </figure>
 
-    <p>In another posting, I'll compare pol angles acquired from the RPS with and without this correction.</p>
+    <p>While not particularly needed for RPS analysis, we may need to account for it for cases where knowing the polarization angle is important, but the samples are low.</p>
 
 </section>
 <hr>
@@ -364,55 +369,54 @@ Incident angle as a function of pixel location on the focal plane per DK-angle.
 
     // Shorthand tags
     var tags = [
-        "KWY2007",
-        "CAB2012",
-        "RWO2013",
-        "JBW2018a",
-        "JBW2018b",
+        //"KWY2007",
+        //"CAB2012",
+        //"RWO2013",
+        //"JBW2018a",
+        //"JBW2018b",
         "JAC2019",
-        "JAC2021",
-        "CV2021",
-        "JAC2022a",
-        "JAC2022b",
-        "JAC2022c",
-        "BS2022",
-        "JAC2023",
+        //"JAC2021",
+        //"CV2021",
+        //"JAC2022a",
+        //"JAC2022b",
+        //"JAC2022c",
+        //"BS2022",
+
     ];
 
     // Links
     // Truncate the link down to the www directory in which is lies if you can.
     var hrefs = [
-        "general_projects/rps/pointing_article.pdf",
-        "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
-        "bkcmb/analysis_logbook/analysis/20130205_polofs_model/",
-        "bkcmb/analysis_logbook/analysis/20181129_B2016_beamcen_yrquarters/",
-        "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
+        //"general_projects/rps/pointing_article.pdf",
+        //"keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+        //"bkcmb/analysis_logbook/analysis/20130205_polofs_model/",
+        //"bkcmb/analysis_logbook/analysis/20181129_B2016_beamcen_yrquarters/",
+        //"bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
         "bkcmb/analysis_logbook/analysis/20190516_rps_pointing_defs/",
-        "bkcmb/analysis_logbook/analysis/20210518_bmpm/",
-        "bicep3/analysis_logbook/20210916_rps_calibration_plan/",
-        "bicep3/analysis_logbook/20220428_mirror_analysis/",
-        "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
-        "bicep3/analysis_logbook/20220816_mirror_analysis_3/",
-        "bkcmb/analysis_logbook/analysis/20220922_B2021_beamcens/",
-        "jcornelison/postings/20221213_birefringence_pol_rot_sims/",
+        //"bkcmb/analysis_logbook/analysis/20210518_bmpm/",
+        //"bicep3/analysis_logbook/20210916_rps_calibration_plan/",
+        //"bicep3/analysis_logbook/20220428_mirror_analysis/",
+        //"bicep3/analysis_logbook/20220505_mirror_analysis_2/",
+        //"bicep3/analysis_logbook/20220816_mirror_analysis_3/",
+        //"bkcmb/analysis_logbook/analysis/20220922_B2021_beamcens/",
+
     ];
 
 
     // Posting titles
     var desc = [
-        "BICEP Pointing Supplement",
-        "Pointing Model for Keck Beam Maps",
-        "Modeling Polarization-Dependent Beam Offsets",
-        "B2016 per-deck, per-scan direction beam centers for quarter-season data sets",
-        "B2016, B2017, and B2018 CMB-derived beam center correlations",
+        //"BICEP Pointing Supplement",
+        //"Pointing Model for Keck Beam Maps",
+        //"Modeling Polarization-Dependent Beam Offsets",
+        //"B2016 per-deck, per-scan direction beam centers for quarter-season data sets",
+        //"B2016, B2017, and B2018 CMB-derived beam center correlations",
         "Pointing Model Definitions for Polarized Beam Mapping",
-        "A New Pointing Model for Beam Mapping",
-        "RPS Summary and Austral Summer 2021/2022 Calibration Plan",
-        "Deriving Mirror Properties from the Moon",
-        "2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
-        "2022 Moon Analysis III: Moon Phase Correction and Mirror Systematics",
-        "B2021 Beam Centers",
-        "Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sims",
+        //"A New Pointing Model for Beam Mapping",
+        //"RPS Summary and Austral Summer 2021/2022 Calibration Plan",
+        //"Deriving Mirror Properties from the Moon",
+        //"2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
+        //"2022 Moon Analysis III: Moon Phase Correction and Mirror Systematics",
+        //"B2021 Beam Centers",
     ];
     // Debug
     var posty = document.getElementById("testp");
