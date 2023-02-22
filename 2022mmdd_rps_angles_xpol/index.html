@@ -112,6 +112,14 @@ Diff ref pointing
 
     <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
 
+    <figure>
+        <img src="figs/angle_coords_1.png" width="100%"/>
+        <figcaption>
+            
+        </figcaption>
+    </figure>
+    
+    
     <p>
         From Eq. \ref{eq:modcurve2}, we can see that the uncertainty on the $\phi_d$ is sourced by the three terms $\zeta_{grav}$, $\psi$, and $\phi_s$.
         $\sigma_{\zeta}$ describes mechanical or calibration uncertainties arising from the rotation stage;
@@ -119,7 +127,8 @@ Diff ref pointing
         and $\sigma_{\phi s}$ summarizes any errors propagated through the parameters input to the pointing model.
     </p>
 
-
+   
+    
     <p><b>Note:</b> Our mainline CMB analysis uses detector polarization angles in terms of &chi; for inputs; I present angles in terms of $\phi_d$ here because these angles are easier to interpret since detectors line up with ~0/90&deg; as opposed to &chi; which has an additional dependence on &theta;.
         Before committing these to the pipeline, these angles will converted to their final &chi;-angle values via:
     </p>
@@ -192,9 +201,20 @@ Diff ref pointing
     \end{split}
     \end{equation}
 
+<h3>RPS Observations</h3>
 
+    <p>
+        We acquire beam maps of a given detector by scanning over the RPS in 9&deg;Az&times;2&deg;El rasters at 1.5&deg;/s in Az and 0.1&deg; steps in El -- all with the RPS fixed at a given angle WRT gravity.
+        We get modulation curves by completing multiple rasters over the same part of the focal plane with the RPS commanded to a different angle for each raster, which we call a rasterset.
+        Each rasterset includes 13 rasters with the RPS rotated from -180&deg; to 180&deg; in 30&deg; increments and takes about 40 minutes to complete -- compare to a full Moon schedule which takes a roughly an hour.
+        A typical RPS schedule run by GCP consists of 19 rastersets where the first rasterset starts with an El offset of -12.5&deg; and steps in 1.5&deg; between each rasterset to ensure there are no gaps in coverage over the focal plane [see Fig. 1.1 of <a href="JAC2022a"></a> for an example].
+        In this posting, I'll typically refer to the Moon and RPS data in terms of rasters, rastersets, or observations. Each observation typically consists of 3 schedules and generally maps beams across the entire focal plane at a single DK angle.
+    </p>
 
-    <h3>Schedule Types</h3>
+    <p>
+        Aside from the main suite of science-grade RPS schedules, we also completed a number of cross check schedules. These schedules are mostly identical to the our main schedules except we adjust one or two parameters depending on the particular systematics we want to probe. We categorize the schedules by their schedule number where the most recent RPS science schedule is Type-5 and proceeding schedule types denote cross-check schedules<sup><a name="sup1" href="#ftn1">[1]</a></sup>. A list of the observations we collected in Jan 2022, their schedule types and their uses is shown in Table 1.1.
+    </p>
+
 
     <figure class="table">
         <table class="center results">
@@ -281,7 +301,6 @@ Diff ref pointing
 
         </figcaption>
     </figure>
-    <p>Type-5 are our standard observations from which pol angles and efficiencies are derived. In previous postings, we used Type-7's and Type-11's to check for systematics in the pointing model. In this posting, we'll be using type-9's to check for systematics in our polarization angle estimates.</p>
 </section>
 
 <section><h2>Estimates of Polarization Angles and Cross-Polar Efficiency</h2>
@@ -391,7 +410,7 @@ Diff ref pointing
             pager.link("#consistpager",
                 {
                     'Comparison|val' : ['phi','xpol'],
-                    'Year|year2' : ['RPS 2018|2018','RPS 2022|2022','B18 FPU Data|fpu'],
+                    'Year|year2' : ['RPS 2018|2018','RPS 2022|2022_min','B18 FPU Data|fpu'],
                 },
                 fcn);
             pager.setparams({
@@ -405,7 +424,7 @@ Diff ref pointing
 
     </p>
 
-    <p>For 2022 vs. B18 'Obs', we see an offset of -0.778 degrees -- this is the angle we would expect if we fit a global rotation angle to B18 right now, assuming map coverage, detector weighting, and galactic foregrounds were negligible. That said, all of these factors may affect the actual angle we see in the real data to some degree (pun intended), so it's not useful to focus too much on it.</p>
+    <p>For 2022 vs. B18 'Obs', we see an offset of -0.730 degrees -- this is the angle we would expect if we fit a global rotation angle to B18 right now, assuming map coverage, detector weighting, and galactic foregrounds were negligible. That said, all of these factors may affect the actual angle we see in the real data to some degree (pun intended), so it's not useful to focus too much on it.</p>
 
 </section>
 
@@ -413,7 +432,7 @@ Diff ref pointing
     <h2>Systematics</h2>
     <h3>Tilt Correction</h3>
     <p>
-        When computing the polarization angles, we account for the tilt by subtracting it from the rotation stage angle at every command angle. In the image below, I show histograms of the per-pair polarization angles with the per-pair median angle subtracted so that only the scatter on the angles is presented. We can see that the tilt correction improves the standard deviation of the distribution by ~0.014&deg;.
+        When computing the polarization angles, we account for the tilt by subtracting it from the rotation stage angle at every command angle. In the image below, I show histograms of the per-pair polarization angles with the per-pair median angle subtracted so that only the scatter on the angles is presented. We can see that the tilt correction improves the standard deviation of the distribution by ~0.022&deg;.
     </p>
     <figure>
         <img src="figs/tilt_corr_hist.png" />
@@ -425,58 +444,79 @@ Diff ref pointing
 
 
 
-    <h3></h3>
+    <h3>Pol Params Vs. Stuff plots</h3>
 <p>Below are plots of polarization angles <b>with the per-detector median subtracted</b>.</p>
     <figure>
-        <img alt="Name pager" id="scatterpager" src="#" />
+        <img alt="Name pager" id="yvxpager" src="#" />
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
             function fcn(params){
-                return 'figs/scatter_'+params.val+'_'+params.y+'_vs_'+params.x+params.corr+params.medsub+'.png';
+                return 'figs/scatter_'+params.y+'_'+params.subset+'_vs_'+params.x+params.medsub+'.png';
             }
 
-            pager.link("#scatterpager",
+            pager.link("#yvxpager",
                 {
-                    'Comparison|val' : ['phi','xpol'],
-                    'Y|y': ['$\\phi_0$|0','$\\phi_{90}$|90','Diff|p'],
-                    'X|x' : ['MJD|t','Obs. Number|obsnum','Az|az_cen','El|el_cen','DK|dk_cen',
-                        'Sun Az|az_cen_sun','Sun El|el_cen_sun','x','y',],
-                        //'xm','ym','r','theta','thetam','tilt_out','tilt_out_std','tilt_temp','tod'],
-                    'Corr|corr' : ['None|_notilt','Tilt Only|','Diff Pol|_corr'],
+                    'Y|y' : ['phi','xpol','n1','n2'],
+                    '0/90/Pair|subset' : ['0','90','Pair|p'],
+                    'X|x' : ['Time|t','DK|dk_cen',],
                     'Median-Subtraction|medsub' : ['Off|','On|_medsub'],
                 },
                 fcn);
             pager.setparams({
-                'val' : 'phi',
-                'y': '0',
+                'y' : 'phi',
+                'subset': '0',
                 'x': 't',
-                'corr':'',
                 'medsub':'_medsub',
             });
         </script>
     </figure>
 
-<h3></h3>
+
+    <h3>Detector Pair Anti-Correlations</h3>
+    <p>If we plot the detector pairs against each other within a given rasterset, we can see some hints of anticorrelation between them.</p>
     <figure>
-        <img alt="Name pager" id="phivphipager" src="#" />
+        <img alt="Name pager" id="avbpager" src="#" />
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
             function fcn(params){
-                return 'figs/pol90_vs_pol0'+params.corr+'.png';
+                return 'figs/pol90_vs_pol0_type'+params.type+'.png';
             }
 
-            pager.link("#phivphipager",
+            pager.link("#avbpager",
                 {
-                    'Corr|corr' : ['None|_notilt','Tilt Only|','Diff Pol|_corr'],
-
+                    'Obs Type|type': ['Type 5|5','Type 9|9'],
                 },
                 fcn);
             pager.setparams({
-                'corr':'',
+                'type' : '5',
+
+            });
+        </script>
+    </figure>
+
+    <p>In the pager below, I show the covariance and correlations as a function of DK angle.</p>
+
+    <figure>
+        <img alt="Name pager" id="covcorrpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/'+params.cov+'_vs_dk.png';
+            }
+
+            pager.link("#covcorrpager",
+                {
+                    'Cov / Corr|cov': ['Covariance|cov','Correlation|corr'],
+                },
+                fcn);
+            pager.setparams({
+                'cov' : 'cov',
 
             });
         </script>
@@ -489,6 +529,62 @@ Diff ref pointing
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
     <h3>Channel Cuts</h3>
+
+
+
+    <h3>Full Y Vs. X pager</h3>
+    <figure>
+        <img alt="Name pager" id="yvxpager2" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/scatter_'+params.y2+'_'+params.subset2+'_vs_'+params.x2+params.medsub2+'.png';
+            }
+
+            pager.link("#yvxpager2",
+                {
+                    'Y|y2' : ['phi','xpol','n1','n2'],
+                    '0/90/Pair|subset2' : ['0','90','Pair|p'],
+                    'X|x2' : ['Time|t','Obs. Number|obsnum','Az|az_cen','El|el_cen','DK|dk_cen',
+                        'Sun Az|az_cen_sun','Sun El|el_cen_sun','x','y',
+                    'xm','ym','r','theta','thetam','tilt_out','tilt_out_std','tilt_temp','tod'],
+                    'Median-Subtraction|medsub2' : ['Off|','On|_medsub'],
+                },
+                fcn);
+            pager.setparams({
+                'y2' : 'phi',
+                'subset2': '0',
+                'x2': 't',
+                'medsub2':'_medsub',
+            });
+        </script>
+    </figure>
+
+    <h3>Modulation Curve Residuals</h3>
+    <figure>
+        <img alt="Name pager" id="modcurvepager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/modcurveres_dk'+params.dk+'.png';
+            }
+
+            pager.link("#modcurvepager",
+                {
+                    'DK|dk' : [
+                        '0', '-61|61','23','174','68_1', '-81','90','45','135','68_2',
+                    ],
+                },
+                fcn);
+            pager.setparams({
+                'dk' : '0',
+            });
+        </script>
+    </figure>
 
     <h3>Footnotes</h3>
     <p>Click on the number to return to the main text.</p>

@@ -145,7 +145,7 @@ rps_tilt_ticks = [0 1 2 1 0 -1 -2 -2 -1 0 0 -2 -2 -1 -1 1 1 2 2];
 rps_tilt_meter = [0.0278 0.119 0.2049 0.1208 0.051 -0.039 -0.118 -0.153 -0.035 0.068 0.026 -0.0987 -0.132 -0.051 -0.019 0.109 0.141 0.1875 0.216];
 rps_inc_readout = [-0.02 -0.01 +0.02 -0.02 -0.05 -0.06 -0.09 -0.09 -0.07 -0.02 -0.02 -0.1 -0.1 -0.06 -0.07];
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
-fprintf('RPS 25 Jun 2022: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
+fprintf('RPS 25 Jun 2022: %f deg/V %+0.4fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
 
 
 plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'.')

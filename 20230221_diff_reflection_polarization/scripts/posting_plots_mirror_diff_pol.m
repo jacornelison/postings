@@ -237,8 +237,8 @@ A = rps_get_mod_model(parmin,rot_biased);
 mxfev = 100000;
 mxiter = 100000;
 options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
-lb = [-20 -0.5 0 -10 -10];
-ub = [20 0.5 10 10 10];
+lb = [-20 -0.5 -10 -10 1e6];
+ub = [20 0.5 10 10 1e6];
 guess = [0 0 0 0 1];
 parmout_a(dkind,:) = lsqcurvefit(@rps_get_mod_model,guess,rot,A,lb,ub,options);
 
