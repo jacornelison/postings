@@ -398,6 +398,8 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     \end{bmatrix}
     \end{equation}
 
+ <p>which would be taken directly from the final file's given bandpower covariance matrix (see the figure below for the EB, TB and EBTB blocks of the BPCM).</p>
+
     <figure>
         <img src="figs/EBTB_cov_plot.png">
         <figcaption>
@@ -406,7 +408,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     </figure>
 
 <p>
-    which would be taken directly from the final file's given bandpower covariance matrix. Instead, the the code recalculates the bandpower covariance for just TBTB and EBEB doesn't actually include the cross-covariance between the two:
+     Instead, the the code recalculates the bandpower covariance for just TBTB and EBEB doesn't actually include the cross-covariance between the two:
 </p>
     \begin{equation}
     \Ccov =
