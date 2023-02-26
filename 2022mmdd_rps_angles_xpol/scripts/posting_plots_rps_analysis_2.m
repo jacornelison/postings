@@ -478,8 +478,9 @@ lims2 = {[-1 1]*0.4,[-1 1]*0.4, [-1 1]*0.4, [-1 1]*2;
 ttls = {'2022','2022','2018','B18 FPU Data'};
 pltnames = {'2022_min','2022_max','2018','fpu'};
 valnames = {'phi','xpol'};
+valunits = {'\phi_{pair} [Degrees]','1-Poleff'};
 
-for valind = 1%1:size(V,1)
+for valind = 1:size(V,1)
 
 for pltind = 1:size(V,2)
     V1ttl = ttls{1};
@@ -516,6 +517,8 @@ for pltind = 1:size(V,2)
     xlim(lims1{valind,pltind})
     ylim(lims1{valind,pltind})
     grid on
+    xlabel(sprintf('%s %s',V1ttl,valunits{valind}))
+    ylabel(sprintf('%s %s',V2ttl,valunits{valind}))
 
     subplot(1,2,2)
     hold on
