@@ -208,11 +208,11 @@ Diff ref pointing
         We get modulation curves by completing multiple rasters over the same part of the focal plane with the RPS commanded to a different angle for each raster, which we call a rasterset.
         Each rasterset includes 13 rasters with the RPS rotated from -180&deg; to 180&deg; in 30&deg; increments and takes about 40 minutes to complete -- compare to a full Moon schedule which takes a roughly an hour.
         A typical RPS schedule run by GCP consists of 19 rastersets where the first rasterset starts with an El offset of -12.5&deg; and steps in 1.5&deg; between each rasterset to ensure there are no gaps in coverage over the focal plane [see Fig. 1.1 of <a href="JAC2022a"></a> for an example].
-        In this posting, I'll typically refer to the Moon and RPS data in terms of rasters, rastersets, or observations. Each observation typically consists of 3 schedules and generally maps beams across the entire focal plane at a single DK angle.
+        In this posting, I'll typically refer to the RPS data in terms of rasters, rastersets, or observations. Each observation typically consists of 3 schedules and generally maps beams across the entire focal plane at a single DK angle.
     </p>
 
     <p>
-        Aside from the main suite of science-grade RPS schedules, we also completed a number of cross check schedules. These schedules are mostly identical to the our main schedules except we adjust one or two parameters depending on the particular systematics we want to probe. We categorize the schedules by their schedule number where the most recent RPS science schedule is Type-5 and proceeding schedule types denote cross-check schedules<sup><a name="sup1" href="#ftn1">[1]</a></sup>. A list of the observations we collected in Jan 2022, their schedule types and their uses is shown in Table 1.1.
+        Aside from the main suite of science-grade RPS schedules, we also completed a number of cross check schedules. These schedules are mostly identical to the our main schedules except we adjust one or two parameters depending on the particular systematics we want to probe. We categorize the schedules by their schedule number where the most recent RPS science schedule is Type-5 and proceeding schedule types denote cross-check schedules<sup><a name="sup1" href="#ftn1">[1]</a></sup>. A list of the observations we collected in Jan 2022, their schedule types and their uses is shown in Table 1.1. For the 2022 observing season, we acquired 10 science-grade observations at 9 different DK angles along with ~1 full week of diagnostic observations. You can find more information on the data collected at the <a href="http://bicep.rc.fas.harvard.edu/general_projects/rps/#rps_schedule_2022">RPS Landing Page</a>.
     </p>
 
 
@@ -301,10 +301,15 @@ Diff ref pointing
 
         </figcaption>
     </figure>
+
+    <p>
+        For this posting, we'll be focusing on polarization parameters derived from the standard Type-5 datasets which cover the entire focal plane.
+        In section 4, we'll also look at data from Type-9 schedules which mapped only a single pair at the center of the focal plane for diagnostic purposes.
+    </p>
 </section>
 
 <section><h2>Estimates of Polarization Angles and Cross-Polar Efficiency</h2>
-    <p>In the pager below, I show this year's polarization angles (in terms of $\phi$, not &chi;) and cross-polar efficiency per channel and per-observation. I include the data I took in 2018 for comparison.</p>
+    <p>In the pager below, I show this year's polarization angles (in terms of $\phi$, not &chi;) and cross-polar efficiency per channel and per-observation. Because modules on MCE0 are clocked 90&deg; WRT the rest of the focal plane, I differentiate detectors based on their orientation aligning with 0&deg; or 90&deg; instead of A vs. B. Lastly, these plots only include detector pairs used in BK18.</p>
 
     <figure>
         <img alt="Name pager" id="channelpager" src="#" />
@@ -331,12 +336,18 @@ Diff ref pointing
         </script>
     </figure>
 
+    <p>
+        We can see that the angles are mostly the same with the largest variation being between different tiles. A particularly interesting thing to note is that we see a consistent non-orthogonality between detectors in a given pair of 0.7&deg;&pm;0.32&deg; (MCE0 is at -0.7 in Fig 2.1 because of the 90&deg; clocking of the modules).
+    </p>
 
+    <p>The pager below shows the per-pair estimates averaged over all 10 observations (9 Dk angles + 1 repeat). We can see that MCE3 has only a few detectors pass cuts
+
+    </p>
 
     <figure>
         <img alt="Name pager" id="tileplotpager" src="#" />
         <figcaption>
-            Scatter plot of polarization params as a function of GCP Channel number. <b>Top/Middle:</b> Detectors are separated by their orientation along the theta=0 axis. <b>Bottom:</b> subtracted to show orthogonality in the case of $\phi$.
+            Scatter plot of polarization params as a function of GCP Channel number. <b>Top/Middle-Top:</b> Detectors are separated by their orientation along the theta=0 axis. <b>Middle-Bottom:</b> subtracted to show orthogonality in the case of $\phi$. <b>Bottom:</b> "pair-difference" estimates.
             The black dashed lines indicate the MCE's.
             The colors differentiate observations.
         </figcaption>
@@ -347,7 +358,7 @@ Diff ref pointing
 
             pager.link("#tileplotpager",
                 {
-                    'Y-Axis|val' : ['phi','xpol'],
+                    'Y-Axis|val' : ['$\\phi_{pair}$','$1-\\epsilon_{pair}$'],
                     'Med-Sub|ms' : ['Off|','On|_medsub'],
                 },
                 fcn);
@@ -549,7 +560,7 @@ Diff ref pointing
                     '0/90/Pair|subset2' : ['0','90','Pair|p'],
                     'X|x2' : ['Time|t','Obs. Number|obsnum','Az|az_cen','El|el_cen','DK|dk_cen',
                         'Sun Az|az_cen_sun','Sun El|el_cen_sun','x','y',
-                    'xm','ym','r','theta','thetam','tilt_out','tilt_out_std','tilt_temp','tod'],
+                    'xm','ym','r','theta','thetam','tilt_out','tilt_out_std','tilt_temp','tod','peak_diff'],
                     'Median-Subtraction|medsub2' : ['Off|','On|_medsub'],
                 },
                 fcn);
@@ -590,6 +601,10 @@ Diff ref pointing
     <p>Click on the number to return to the main text.</p>
     <div class="footnote">
         <p>
+        </p>
+        <p>
+            <a name="ftn1" href="#sup1">[1]</a></sup>Example: a standard RPS schedule (type-5) at DK=0 is <tt>8_ffflat_rps_05_dk000_XXX.sch</tt> and a stability checking Type-9 schedule at DK=45 would be <tt>8_ffflat_rps_09_dk045_XXX.sch</tt> where <tt>XXX</tt> is the iteration number.
+        </p>
         <p>
             <a name="ftn2" href="#sup2">[2]</a>This is strictly speaking in the geometrical sense. I plan to discuss differential reflection of polarization due to the fact that the mirror is aluminum in another posting.
     </p>
@@ -612,12 +627,12 @@ Diff ref pointing
 
         // Shorthand tags
         var codes = [
-            "rps_fit_mirror_from_moon.m",
+            //"rps_fit_mirror_from_moon.m",
             ];
 
         // Posting titles
         var desc = [
-            "Derives mirror parameters from observations of the moon.",
+            //"Derives mirror parameters from observations of the moon.",
         ];
 
         // Make a list of references
@@ -635,12 +650,12 @@ Diff ref pointing
 
         // Shorthand tags
         var data = [
-            "moonsch.mat",
+            //"moonsch.mat",
             ];
 
         // Posting titles
         var desc = [
-            "Metadata of Moon observations",
+            //"Metadata of Moon observations",
             ];
 
         // Make a list of references
