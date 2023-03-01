@@ -46,6 +46,7 @@
 \newcommand{\rCb}{\mathcal{C'}_b}
 \newcommand{\Ccov}{\mathrm{\mathbf{C}}}
 \newcommand{\siga}{\sigma_\alpha}
+\newcommand{\sigasq}{\sigma_\alpha^2}
 \)
 
 
@@ -516,6 +517,110 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     <h2>Forecasting Angles from BB power</h2>
 
     <p>Create a Table showing that sig-alpha and BB power both add linearly. Then use that relation to forecast Nyears until we're no longer noise limited and what sig-alpha will look like with no noise and 50% delensing.</p>
+
+
+    <figure class="table">
+        <table>
+            <tr>
+                <th>Signal</th>
+                <th class="cstart">EB</th>
+                <th>TB</th>
+                <th>EB+TB</th>
+                <th class="cstart">BBmean</th>
+            </tr>
+
+            <tr>
+                <th></th>
+                <th class="cstart" colspan="3">&sigma;<sub>&alpha;</sub><sup>2</sup> [Deg<sup>2</sup>]</th>
+                <th class="cstart">[&mu;K<sup>2</sup>]</th>
+            </tr>
+
+            <tr>
+                <td class=''>Lensed-LCDM</td>
+                <td class='cstart'>0.0026</td>
+                <td class=''>0.0094</td>
+                <td class=''>0.0026</td>
+                <td class='cstart'>0.0109</td>
+            </tr>
+            <tr>
+                <td class=''>Noise</td>
+                <td class='cstart'>0.0027</td>
+                <td class=''>0.0110</td>
+                <td class=''>0.0027</td>
+                <td class='cstart'>0.0167</td>
+            </tr>
+            <tr>
+                <td class=' rend'>Dust</td>
+                <td class='cstart rend'>0.0003</td>
+                <td class=' rend'>0.0009</td>
+                <td class=' rend'>0.0003</td>
+                <td class='cstart rend'>0.0007</td>
+            </tr>
+            <tr>
+                <td class=''>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub></td>
+                <td class='cstart'>0.0053</td>
+                <td class=''>0.0204</td>
+                <td class=''>0.0053</td>
+                <td class='cstart'>0.0276</td>
+            </tr>
+            <tr>
+                <td class=' rend'>&sigma;<sup>2</sup><sub>L+N</sub></td>
+                <td class='cstart rend'>0.0053</td>
+                <td class=' rend'>0.0194</td>
+                <td class=' rend'>0.0053</td>
+                <td class='cstart rend'>0.0276</td>
+            </tr>
+            <tr>
+                <td class=''>&sigma;<sup>2</sup><sub>L</sub>+&sigma;<sup>2</sup><sub>N</sub>+&sigma;<sup>2</sup><sub>D</sub></td>
+                <td class='cstart'>0.0056</td>
+                <td class=''>0.0213</td>
+                <td class=''>0.0056</td>
+                <td class='cstart'>0.0284</td>
+            </tr>
+            <tr>
+                <td class=' rend'>&sigma;<sup>2</sup><sub>L+N+D</sub></td>
+                <td class='cstart rend'>0.0056</td>
+                <td class=' rend'>0.0199</td>
+                <td class=' rend'>0.0056</td>
+                <td class='cstart rend'>0.0283</td>
+            </tr>
+
+
+        </table>
+    </figure>
+
+    <p>
+        Because both add linearly, we can derive a simple scaling relation between $\sigasq$ and mean BB power which can then be used to forecast our uncertainty for different scenarios. The first scenario we consider is delensing, where we are able to reduce the BB power from the BB lensing signal by 50%. The second is simply finding how many years we would need to include before the BB contributions from noise are equal to those of lensing (which comes out to roughly 3 more years or 5.8 years total).
+    </p>
+
+    <figure class="table">
+        <table>
+            <tr>
+                <th>Signal</th>
+                <th class="cstart">EB</th>
+                <th class="cstart">BBmean</th>
+            </tr>
+
+            <tr>
+                <th></th>
+                <th class="cstart" colspan="1">&sigma;<sub>&alpha;</sub><sup>2</sup> [Deg<sup>2</sup>]</th>
+                <th class="cstart">[&mu;K<sup>2</sup>]</th>
+            </tr>
+
+            <tr>
+                <td class=''>B18+50% Delensing</td>
+                <td class='cstart'>0.0044</td>
+                <td class='cstart'>0.0229</td>
+            </tr>
+            <tr>
+                <td class=''>BB Noise=BB lensing (5.8-years)</td>
+                <td class='cstart'>0.0044</td>
+                <td class='cstart'>0.0226</td>
+            </tr>
+
+
+        </table>
+    </figure>
 
 </section>
 
