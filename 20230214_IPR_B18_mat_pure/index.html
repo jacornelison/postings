@@ -45,8 +45,9 @@
 \newcommand{\oCb}{\mathcal{\hat C}_b}
 \newcommand{\rCb}{\mathcal{C'}_b}
 \newcommand{\Ccov}{\mathrm{\mathbf{C}}}
-\newcommand{\siga}{\sigma_\alpha}}
+\newcommand{\siga}{\sigma_\alpha}
 \)
+
 
 <p>
 In a previous posting <a href="JAC2023"></a>, I characterized the uncertainty in global polarization estimates for BICEP3 B2018 sims which are expected to have a mean angle of 0&deg;. This is a follow-up to that posting which now includes fits to the B18 3-year dataset and I compare angle fits to B18 to B2018.
@@ -225,21 +226,15 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     <h2>Looking into the Covariance Matrix</h2>
 
     <p>
-        In Fig. 1.2 above, we see that the  EB+TB fit is
+        In Fig. 1.2 above, we see that the $\siga$ in the EB+TB fit is greater than $\siga$ from just EB-only. In the best case, EB and TB are perfectly uncorrelated and $\siga$ from from EB+TB is $\left(1/\siga{}^{EB}+1/\siga^{TB}\right)^{-1}$. Even if EB and TB exactly correlated and TB contributed no additional information then $\siga$ in the EB+TB fit would be equal to EB-only in the worst case and never greater than EB-only. So something must be wrong with the fitter when fitting EB and TB together.
     </p>
 
-    \(
-    \newcommand{\Cl}{\mathcal{C}_\ell}
-    \newcommand{\Cb}{\mathcal{C}_b}
-    \newcommand{\oCb}{\mathcal{\hat C}_b}
-    \newcommand{\rCb}{\mathcal{C'}_b}
-    \newcommand{\Ccov}{\mathrm{\mathbf{C}}}
-    \)
-
     Quoted from Justin's posting <a href="JBW2016"></a>:
-    <p>As summarized in <a href="https://arxiv.org/abs/1312.7877">Kaufman et.
+    <i>
+    <ul>
+        As summarized in <a href="https://arxiv.org/abs/1312.7877">Kaufman et.
         al. (2013)</a>, we can modify a given input spectrum to include a
-        uniform rotation of the CMB signal:</p>
+        uniform rotation of the CMB signal:</ul>
 
     \begin{align*}
     C'^{TB}_\ell &= C^{TE}_\ell \sin(2\alpha) \\
@@ -250,17 +245,17 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 
 
     <ul>
-        <li>We can then difference model expectation values \(\rCb^{XY}\) from the
+        We can then difference model expectation values \(\rCb^{XY}\) from the
             real bandpowers \(\oCb^{XY}\) (where the subscript \(b\) denotes binned
             bandpowers over a range in \(\ell\)) and calculate the \(χ^2\) values
             making use of the bandpower covariance matrix \(\Ccov^{XY}\) for a
-            given cross-spectrum \(XY\):</li>
+            given cross-spectrum \(XY\):
     </ul>
     \begin{equation}
     χ^2 = \left( \oCb^{XY} - \rCb^{XY} \right)^\top \left( \Ccov^{XY}
     \right)^{-1} \left( \oCb^{XY} - \rCb^{XY} \right)
     \end{equation}
-
+    </i>
     <p>First, since the code also allows for estimating &alpha; with EB+TB, I had assumed the above equation would be extended in such a way which considers the TBEB and TBEB cross-covariance in the full bandpower covariance matrix.
     </p>
     <p>
@@ -520,7 +515,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 <section>
     <h2>Forecasting Angles from BB power</h2>
 
-    <p>Table showing that sig-alpha and BB power both add linearly. Then use that relation to forecast Nyears until we're no longer noise limited and what sig-alpha will look like with no noise and 50% delensing.</p>
+    <p>Create a Table showing that sig-alpha and BB power both add linearly. Then use that relation to forecast Nyears until we're no longer noise limited and what sig-alpha will look like with no noise and 50% delensing.</p>
 
 </section>
 
