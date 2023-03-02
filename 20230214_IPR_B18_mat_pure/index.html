@@ -47,6 +47,11 @@
 \newcommand{\Ccov}{\mathrm{\mathbf{C}}}
 \newcommand{\siga}{\sigma_\alpha}
 \newcommand{\sigasq}{\sigma_\alpha^2}
+\newcommand{\choll}{\mathbf{L}}
+\newcommand{\BX}{\textbf{X}}
+\newcommand{\BY}{\textbf{Y}}
+\newcommand{\BI}{\textbf{I}}
+\newcommand{\BBE}{\mathbb{E}}
 \)
 
 
@@ -335,6 +340,156 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         This really drives home the importance of using the correct bandpower covariance matrix...
     </p>
 
+    <h3>Angles from Pseudosims</h3>
+    <h4>Pseudosims from Cholesky Decomposition</h4>
+    <p>
+        While no longer larger than EB-only, the $\siga$ of the EB+TB fits still aren't better than EB as we'd naively expect -- it seems weird that TB contains exactly zero additional information as these fits seem to suggest. The next thing I wanted to do was to try to determine if $\siga$ on EB+TB remain the same for simulations with covariances different from the ones in our current simsets. However, creating new sims from the pipeline is tedious, so I opted to create "pseudosims" of EB/TB bandpowers with arbitrary sample variance via Cholesky decomposition.
+    </p>
+    <p>
+        Cholesky Decomposition is the decomposition of a matrix into the product of another matrix with itself (i.e. a sort of analog to taking the square-root of a matrix):
+
+        \begin{equation}
+        \text{Chol}\left(\mathbf{M}\right) = \choll\choll^T
+        \end{equation}
+    </p>
+
+    <p>
+        For given covariance matrix $\Ccov$, we can show that multiplying the Cholesky matrix $\choll$ by a set of uncorrelated random variables $\BX$ creates correlated random variables that also have a covariance matrix of $\Ccov$.
+    </p>
+    <p>
+        We create a Cholesky matrix from our covariance matrix $\text{Chol}\left(\Ccov\right) = \choll\choll^T$ and we can define our newly generated correlated random numbers $\BY$ as
+    </p>
+
+    \begin{equation}
+    \BY=\choll\BX
+    \end{equation}
+    <p>Where $\BX$ is uncorrelated random variables with a covariance matrix equal to the identity matrix $\BI$. The covariance matrix of $\BY$ is given by the expectation value $\BBE$ of $\BY\BY^T$ (assuming mean-zero for simplicity):</p>
+
+    \begin{equation}
+    \begin{split}
+    \text{cov}\left(\BY\right) &= \BBE\left(\BY\BY^T\right)\\
+    &= \BBE\left(\left(\choll\BX\right)\left(\choll\BX\right)^T\right)\\
+    &= \BBE\left(\choll\BX\BX^T\choll^T\right)\\
+    &= \choll\,\BBE\left(\BX\BX^T\right)\choll^T\\
+    &= \choll\BI\choll^T\\
+    &= \choll\choll^T\\
+    &\\
+    \text{cov}\left(\BY\right) &= \Ccov\\
+
+    \end{split}
+    \end{equation}
+<p>
+    For non-mean-zero distributions, we carry around some extra terms, but the answer is still the same.
+</p>
+    <p>
+        For the purpose of this posting, I create Cholesky matrices using Matlab's built-in <tt>chol.m</tt> function which makes creating millions of psuedosims with whatever covariance matrix I want within seconds.
+        The figure below shows the EB/TB BPCM calculated from B18's 499 Type 8 Lensed-Signal+Noise+Dust sims and compares it to the covariance matrix calculated from 10 million pseudosims created from the B18 Type 8 BPCM.
+    </p>
+
+    <figure>
+        <img src="figs/B18_vs_pseudo_cov_compare.png" width="100%">
+        <figcaption>
+            <p><b>Left:</b> EB/TB blocks of the bandpower covariance matrix of the 499 B18 Lensed-LCDM+Noise+Dust sims.</p>
+            <p><b>Middle:</b> BPCM calculated from 10 million pseudosims which were constructed from the B18 BPCM.</p>
+            <p><b>Right:</b> The fractional difference of the two matrices,
+                $(\Ccov_{B18}-\Ccov{pseudo})/\Ccov_{B18}$</p>
+            <p><b>Note:</b> Some "pixels" of the BPCM are negative, so to show the plots in logspace, I plotted the absolute value of the BPCM (and fractional difference) instead.</p>
+        </figcaption>
+    </figure>
+
+<p>
+    The covariances of the reconstructed BPCM have a fractional difference of <1% for most bins within one or two bins next to the diagonals.
+</p>
+<h4>Fitting Angles to Pseudosims</h4>
+
+    <p>
+        Next, I fit angles to psuedosims of mean-zero EB and TB spectra for different cases of covariance matrices. Each case includes 499 sims in order to be directly comparable to the distributions from our standard 499 sims (included in the pager below).
+
+    <p>Cases:</p>
+    <ul>
+        <li><b>B18 Pseudosims:</b> pseudosims from the B18 L-LCDM+Noise+Dust for a direct comparison.</li>
+        <li><b>No EBTB Cov:</b> Given that including the EBTB and TBEB blocks seemed to improve things in the first section, I also create sims where the EBTB and TBEB blocks are zeroed out but the EBEB and TBTB covariances are the same as the B18 covariance matrix.</li>
+        <li><b>Abs B18 Cov:</b> Pseudosims constructed from the absolute value of the entire B18 BPCM (the EBTB/TBEB blocks are not zeroed).</li>
+    </ul>
+
+    <figure>
+        <img alt="Name pager" id="pseudohistpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
+        <figcaption id="psh">
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#pseudohistpager",
+                {
+                    'Case|mat': ['B18 Standard Sims|standard','B18 Pseudosims|pseudo','No EBTB Cov|noebtbcov', 'Abs B18 Cov|abscov'],
+                },
+                function(params) {
+                    return 'figs/pseudo_alpha_hist_B18_'+params.mat+'.png';
+                });
+            pager.setparams({
+                'mat': 'standard',
+            });
+        </script>
+    </figure>
+
+<p>
+The pager above is mostly to show that the distributions look nominal compared to the B18 Type-8 distribution. Because we're only using 499 sims, we expect the uncertainty on $\siga$ to be around 3% of the parent distribution and the $\siga$ of the B18 pseudosims match that of the B18 standard within that threshold. The table below compares $\siga$ of the EB, TB and EB+TB fits among the various cases with the <b>Naive EB</b> column showing what we would expect is EB and TB were perfectly uncorrelated.
+</p>
+
+    <figure class="table">
+        <table>
+
+
+            <tr>
+                <th></th>
+                <th class="cstart" colspan="3">&sigma;<sub>&alpha;</sub> [Deg]</th>
+                <th class="cstart"></th>
+            </tr>
+            <tr>
+                <th>Case</th>
+                <th class="cstart">EB</th>
+                <th>TB</th>
+                <th>EB+TB</th>
+                <th class="cstart">Naive EB+TB</th>
+            </tr>
+            <tr>
+                <td class=''>B18 Standard</td>
+                <td class='cstart'>0.0747</td>
+                <td class=''>0.1412</td>
+                <td class=''>0.0746</td>
+                <td class='cstart'>0.0660</td>
+            </tr>
+            <tr>
+                <td class=''>B18 Pseudo</td>
+                <td class='cstart'>0.0752</td>
+                <td class=''>0.1423</td>
+                <td class=''>0.0744</td>
+                <td class='cstart'>0.0665</td>
+            </tr>
+            <tr>
+                <td class=''>No EBTB Cov</td>
+                <td class='cstart'>0.0729</td>
+                <td class=''>0.1422</td>
+                <td class=''>0.0645</td>
+                <td class='cstart'>0.0648</td>
+            </tr>
+            <tr>
+                <td class=''>Abs B18 Cov</td>
+                <td class='cstart'>0.0743</td>
+                <td class=''>0.1386</td>
+                <td class=''>0.0644</td>
+                <td class='cstart'>0.0655</td>
+            </tr>
+
+        </table>
+    </figure>
+
+    <p>What I <i>think</i> this is telling us is that </p>
+    <ol type="A">
+        <li><b>B18 Pseudo:</b>EB+TB being equal to EB is a result from the information in the BPCM and not an issue intrinsic to the estimator.</li>
+        <li><b>No EBTB Cov:</b> The covariance in the EBTB/TBEB blocks is such that any additional information from TB is effectively negated.</li>
+        <li><b>Abs B18 Cov:</b> Specifically, the negative covariances are to blame for this, since we see an improvement on EB+TB $\siga$ with the same amplitude of covariances that are positive.</li>
+    </ol>
+
 </section>
 
 
@@ -514,10 +669,12 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 </section>
 
 <section>
-    <h2>Forecasting Angles from BB power</h2>
-
+    <h2>Forecasting Angle Uncertainty from BB power</h2>
+<p>Keeping that fixed for the time-being, </p>
     <p>We can show that the variance on &alpha; of the individual signal types add linearly to the variance of angles of the coadded signals. The same can be shown for that of BB power.</p>
-
+<p>
+    Explain what each thing here means.
+</p>
 
     <figure class="table">
         <table>
