@@ -138,17 +138,17 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
             pager.link("#histpager",
                 {
                     'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
-                    'Purification Method|pure2': ['None|','Matrix|matrix_'],
-                    'Simset|sernum2': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
+                    'Purification Method|pure2': ['None|','Matrix|_matrix'],
+                    'Simset|sernum2': ['B18|6614_fgh','B2018|6614_h','B2018-rerun|6600_h'],
                     'cmb x noise/dust|c': ['Off|','On|_cross'],
                 },
                 function(params) {
-                    return 'figs/alpha_hist_'+params.sernum2+params.pure2+params.sig+'_corr'+params.c+'_bins_2_10.png';
+                    return 'figs/'+params.sernum2+'_sig_'+params.sig+'_alpha_hist_bins_2_10_offdiag_2'+params.pure2+params.c+'_legacy.png';
                 });
             pager.setparams({
                 'sig': '2',
-                'pure2': 'matrix_',
-                'sernum2': '6614fgh',
+                'pure2': '_matrix',
+                'sernum2': '6614_fgh',
                 'c': '_cross',
             });
         </script>
@@ -806,17 +806,17 @@ The pager above is mostly to show that the distributions look nominal compared t
             pager.link("#ebvtbpager",
                 {
                     'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
-                    'Purification Method|pure2': ['None|','Matrix|matrix_'],
-                    'Simset|sernum2': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
+                    'Purification Method|pureA': ['None|','Matrix|matrix_'],
+                    'Simset|sernumA': ['B18|6614fgh','B2018|6614h','B2018-rerun|6600h'],
                     'cmb x noise/dust|c': ['Off|','On|_cross'],
                 },
                 function(params) {
-                    return 'figs/alpha_eb_vs_tb_'+params.sernum2+params.pure2+params.sig+'_corr'+params.c+'_bins_2_10.png';
+                    return 'figs/alpha_eb_vs_tb_'+params.sernumA+params.pureA+params.sig+'_corr'+params.c+'_bins_2_10.png';
                 });
             pager.setparams({
                 'sig': '2',
-                'pure2': 'matrix_',
-                'sernum2': '6614fgh',
+                'pureA': 'matrix_',
+                'sernumA': '6614fgh',
                 'c': '_cross',
             });
         </script>
