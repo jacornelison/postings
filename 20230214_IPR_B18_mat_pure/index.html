@@ -493,19 +493,17 @@ The pager above is mostly to show that the distributions look nominal compared t
 
 </section>
 
-
 <section>
-        <h2>Angle Linear Estimator</h2>
-
-    <h3>Constraining power vs. &ell;</h3>
+    <h2>Constraining power vs. &ell;</h2>
     <p>We want to look at the constraining power per-&ell; between the EB and TB spectra (i.e. determine which bandpowers contribute most to &alpha; considering both the model and our bandpower uncertainties).
+        We currently only use our canonical science bins (bins 2 through 10) and this exercise will be useful in determining if we might want to include higher bins in the analysis as well.
         This is represented by the expectation values of our model given some input angle, normalized by that input angle and weighted by the inverse of the sample variance of the individual bandpowers.
     </p>
     <p>
         For some arbitrarily small input angle &epsilon;<sub>&alpha;</sub>, we get some spectra out of our model, C<sub>b</sub>. Because &epsilon;<sub>&alpha;</sub> is small and the small angle approximation applies, the shape of C<sub>b</sub> should be constant and only linearly scale by &alpha;. Thus we normalize the shape of the model spectra by dividing C<sub>b</sub> by &epsilon;<sub>alpha</sub> -- in the case of uniform weighting, this alone would tell us how which bandpowers contribute most to the contraints on &alpha; with the higher values of C<sub>b</sub>/&epsilon;<sub>alpha</sub> possessing higher constraining power. However, this doesn't consider the uncertainties on the bandpowers themselves, so we weight the C<sub>b</sub>/&epsilon;<sub>alpha</sub> by the inverse of the bandpower sample variance which we get from sims.
     </p>
 
-        <p>In application, I calculate the EB and TB expectation values using <tt>reduc_global_rotation</tt>'s subfunction <tt>pol_rot_theory_model</tt> using our fiducial input model from B18's final file with an input angle of 0.001&deg; -- this angle is arbitrary as it could be any value as long as it satisfies the small-angle approximation. I divide the expectation values by the input angle and then divide the model spectra by the per-bandpower standard deviation of B18's 499 Lensed-LCDM+Noise+Dust EB and TB sims . In the plot below, take the absolute value since TB can be negative and I peak normalize to show the relative constraining power in EB and TB.</p>
+    <p>In application, I calculate the EB and TB expectation values using <tt>reduc_global_rotation</tt>'s subfunction <tt>pol_rot_theory_model</tt> using our fiducial input model from B18's final file with an input angle of 0.001&deg; -- this angle is arbitrary as it could be any value as long as it satisfies the small-angle approximation. I divide the expectation values by the input angle and then divide the model spectra by the per-bandpower standard deviation of B18's 499 Lensed-LCDM+Noise+Dust EB and TB sims . In the plot below, take the absolute value since TB can be negative and I peak normalize to show the relative constraining power in EB and TB.</p>
 
     <figure>
         <img src="figs/constraining_power_6614_fgh.png" width="100%"/>
@@ -517,22 +515,28 @@ The pager above is mostly to show that the distributions look nominal compared t
     <p>
         There are a couple of points to note from the plot above:
     </p>
-        <ul>
-    <li>We can see that in the top plot that TB would have more constraining power in EB, but this is countered by the fact that TB has much higher sample variance compared to EB.</li>
-    <li>
-        Most of our constraining power for EB is in the &ell;-range of ~270 to 450, only two bins of which we are actually using.
-    </li>
-    <li>
-        For TB, most constraining power comes from the &ell;-range of ~250 to 350, bracketed by the &ell; values where the TB signal pivots around zero, but it still less than half as good as EB.
-    </li>
+    <ul>
+        <li>We can see that in the top plot that TB would have more constraining power in EB, but this is countered by the fact that TB has much higher sample variance compared to EB.</li>
+        <li>
+            Most of our constraining power for EB is in the &ell;-range of ~270 to 450, only two bins of which we are actually using.
+        </li>
+        <li>
+            For TB, most constraining power comes from the &ell;-range of ~250 to 350, bracketed by the &ell; values where the TB signal pivots around zero, but it still less than half as good as EB.
+        </li>
 
-</ul>
+    </ul>
 
-<p>
-    In his posting, Justin explored the benefits of including higher &ell;-ranges and the plot above provides a good argument for looking into doing that again for this analysis. Further, I think this also provides a good argument for <i>not</i> including TB data in our fits in in this analysis.
+    <p>
+        In his posting, Justin explored the benefits of including higher &ell;-ranges and the plot above provides a good argument for looking into doing that again for this analysis.
+    </p>
 
-</p>
 
+</section>
+
+
+<section>
+        <h2>Angle Linear Estimator</h2>
+<p>We want to create a linear estimator that we can compare throughout the analysis which would provide a nice (and fast) consistency check between the two estimators.</p>
 
     <h3>Creating a Linear Estimator</h3>
 
