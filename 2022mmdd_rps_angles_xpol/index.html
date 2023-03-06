@@ -55,7 +55,11 @@ Diff ref pointing
 - This section attempts to understand the uncertainties
 -->
 <section><h2>Introduction</h2>
-
+\(
+    \newcommand{\xpol}{\epsilon}
+    \newcommand{\phis}{\phi_s}
+    \newcommand{\phid}{\phi_d}
+    \)
 <h3>RPS Analysis in a nutshell</h3>
 
     <p>
@@ -73,6 +77,7 @@ Diff ref pointing
     <p>The Gaussian we fit is done at the timestream level in raw mount coordinates <a href="KWY2007"></a> and is of the form:</p>
 
     \begin{equation}
+    \label{eq:beam}
     B(\mathbf{x}) = A e^{(\mathbf{x}-\mathbf{\mu})^T\Sigma^{-1}(\mathbf{x}-\mathbf{\mu})}
     \end{equation}
     Where $A$ is the amplitude, $\mathbf{\mu} = (Az_0\,\,El_0)$ is the beam centroid, and
@@ -103,23 +108,41 @@ Diff ref pointing
     \phi_d = \psi + \phi_s
     \end{equation}
 
-    <p>In application, $\phi_s$ is computed for at every RPS angle to account for any polarization projection effects from the mirror<sup><a name="sup2" href="#ftn2">[2]</a></sup>:</p>
+    <p>The figure below shows a simple diagram of how the $\phis$, $\psi$, and $\phid$ all relate the focal plane orientation and to each other.</p>
+
+    <figure>
+        <img src="figs/angle_coords_1.png" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
 
 
-    \begin{equation}\label{eq:modcurve2}
+
+
+    <p>In application, $\phi_s$ is computed at every RPS command angle to account for any polarization projection effects from the mirror<sup><a name="sup2" href="#ftn2">[2]</a></sup>:</p>
+
+
+    \begin{equation}
+    \label{eq:modcurve2}
     A(\zeta) = G\left(\cos\left(2\left(\zeta+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\zeta)+n_2\sin(\zeta)+1\right)
     \end{equation}
 
     <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
 
-    <figure>
-        <img src="figs/angle_coords_1.png" width="100%"/>
-        <figcaption>
-            
-        </figcaption>
-    </figure>
-    
-    
+    <p>
+        We estimate these parameters by minimizing the chi-squared:
+    </p>
+
+    \begin{equation}
+        \chi^2 = \sum_\zeta \frac{\left(\hat{A}_\zeta-A_\zeta'\right)^2}{\sigma_\zeta^2}
+    \end{equation}
+
+    <p>
+        Where for a given command angle $\zeta$, $\hat{A}$ is the amplitude of the beam fit from Eq. \ref{eq:beam}, $A'$ is the amplitude from the model given some parameters, and $\sigma$ is the uncertainty on the fit beam amplitude $\hat{A}$ given from the <tt>matmin</tt> fitting function. The priors on all five parameters are flat.
+    </p>
+
+
     <p>
         From Eq. \ref{eq:modcurve2}, we can see that the uncertainty on the $\phi_d$ is sourced by the three terms $\zeta_{grav}$, $\psi$, and $\phi_s$.
         $\sigma_{\zeta}$ describes mechanical or calibration uncertainties arising from the rotation stage;
@@ -309,6 +332,20 @@ Diff ref pointing
 </section>
 
 <section><h2>Estimates of Polarization Angles and Cross-Polar Efficiency</h2>
+    <p>In this sections, I show the per-detector and per-pair polarization angles angles and cross-polar efficiencies.
+        <ul>
+        <li>The angles are shown as $\phi_d$ which include corrections for the tilt meter and per-rasterset mirror
+            tilt/roll fits but which also include the uncertainties that propagate through the rotation stage and
+            pointing model as well as the modulation curve fits as discussed in the previous section.</li>
+
+        <li>For cross-polar response estimates, I allow the parameters to go negative.
+        While negative $\xpol$ isn't physical, doing so prevents the mean from being biased away from zero in the
+            event that we don't have sufficient constraining power to measure it (which is the case for some
+            detectors).</li>
+
+        <li>I perform a series of statistical cuts on the data to exclude poor fits. Further, only detector pairs that are included in B18 were allowed to pass. See &sect;A.1 for more details.</li>
+    </ul>
+        
     <p>In the pager below, I show this year's polarization angles (in terms of $\phi$, not &chi;) and cross-polar efficiency per channel and per-observation. Because modules on MCE0 are clocked 90&deg; WRT the rest of the focal plane, I differentiate detectors based on their orientation aligning with 0&deg; or 90&deg; instead of A vs. B. Lastly, these plots only include detector pairs used in BK18.</p>
 
     <figure>
@@ -325,7 +362,7 @@ Diff ref pointing
 
             pager.link("#channelpager",
                 {
-                    'Y-Axis|val' : ['phi','xpol'],
+                    'Y-Axis|val' : ['phi','xpol','N1','N2','amp'],
                     //'Year|year' : ['2018','2022'],
                 },
                 fcn);
@@ -340,8 +377,31 @@ Diff ref pointing
         We can see that the angles are mostly the same with the largest variation being between different tiles. A particularly interesting thing to note is that we see a consistent non-orthogonality between detectors in a given pair of 0.7&deg;&pm;0.32&deg; (MCE0 is at -0.7 in Fig 2.1 because of the 90&deg; clocking of the modules).
     </p>
 
-    <p>The pager below shows the per-pair estimates averaged over all 10 observations (9 Dk angles + 1 repeat). We can see that MCE3 has only a few detectors pass cuts
+    <figure>
+        <img alt="Name pager" id="cornerplotpager" src="#" width=80%/>
+        <figcaption>
+            Corner plots of parameters estimated from Eq: \ref{eq:modcurve2}. Each dot represents an estimate per-detector which has had its median over all 10 observations subtracted. The data are colored to differentiate observations where dark blue indicates observations in early January and yellow being observations taken in late January.
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/pol_param_corner_plots_'+params.ang+'.png';
+            }
 
+            pager.link("#cornerplotpager",
+                {
+                    'Det Angle|ang' : ['0','90'],
+
+                },
+                fcn);
+            pager.setparams({
+                'ang' : '0',
+
+            });
+        </script>
+    </figure>
+
+    <p>
+        The pager below shows the per-pair estimates averaged over all 10 observations (9 Dk angles + 1 repeat).
     </p>
 
     <figure>
@@ -358,7 +418,7 @@ Diff ref pointing
 
             pager.link("#tileplotpager",
                 {
-                    'Y-Axis|val' : ['$\\phi_{pair}$','$1-\\epsilon_{pair}$'],
+                    'Y-Axis|val' : ['$\\phi_{pair}$|phi','$1-\\epsilon_{pair}$|xpol'],//,'n1','n2','amp'],
                     'Med-Sub|ms' : ['Off|','On|_medsub'],
                 },
                 fcn);
@@ -369,6 +429,10 @@ Diff ref pointing
         </script>
     </figure>
 
+    <p>
+        Another thing to note is that we can see that MCE3 has only a few detectors pass cuts.
+
+    </p>
 
 </section>
 
@@ -443,7 +507,7 @@ Diff ref pointing
     <h2>Systematics</h2>
     <h3>Tilt Correction</h3>
     <p>
-        When computing the polarization angles, we account for the tilt by subtracting it from the rotation stage angle at every command angle. In the image below, I show histograms of the per-pair polarization angles with the per-pair median angle subtracted so that only the scatter on the angles is presented. We can see that the tilt correction improves the standard deviation of the distribution by ~0.022&deg;.
+        When computing the polarization angles, we account for the tilt by subtracting it from the rotation stage angle at every command angle. In the image below, I show histograms of the per-pair polarization angles with the per-pair median angle subtracted so that only the scatter on the angles is presented. We can see that the tilt correction improves the standard deviation of the distribution by 0.023&deg; or ~30%.
     </p>
     <figure>
         <img src="figs/tilt_corr_hist.png" />
@@ -460,7 +524,7 @@ Diff ref pointing
     <figure>
         <img alt="Name pager" id="yvxpager" src="#" />
         <figcaption>
-
+            Each dot represents a single detector aligned with either 0&deg; or 90&deg; unless the 'pair' option is selected which shows the pair-diff angle for $\phid$, 1-efficiency for $\xpol$ and the pair-average for N1, N2, and Amp. Data are colored by observation number with dark blue being the first and yellow being the last.
         </figcaption>
         <script type="text/javascript">
             function fcn(params){
@@ -469,9 +533,9 @@ Diff ref pointing
 
             pager.link("#yvxpager",
                 {
-                    'Y|y' : ['phi','xpol','n1','n2'],
+                    'Y|y' : ['phi','xpol','n1','n2','amp'],
                     '0/90/Pair|subset' : ['0','90','Pair|p'],
-                    'X|x' : ['Time|t','DK|dk_cen',],
+                    'X|x' : ['Time|t','peak_diff','el_cen_sun'],
                     'Median-Subtraction|medsub' : ['Off|','On|_medsub'],
                 },
                 fcn);
@@ -483,6 +547,30 @@ Diff ref pointing
             });
         </script>
     </figure>
+
+    <p>Interesting Clicks:
+        <ul>
+    <li>
+        <a href="javascript:pager.setparams({'y':'phi','subset':'0','x':'t','medsub':'_medsub'})">phi 0</a>
+        vs
+        <a href="javascript:pager.setparams({'y':'phi','subset':'90','x':'t','medsub':'_medsub'})">phi 90</a>, median-subtracted:
+        There appears to be some anti-correlation in the angle estimates between detectors of a given pair. This is particularly obvious in the very first dataset collected in late December.
+    </li>
+    <li>
+        <a href="javascript:pager.setparams({'y':'n1','subset':'0','x':'peak_diff'})">N1,0</a>
+        and
+        <a href="javascript:pager.setparams({'y':'n2','subset':'90','x':'peak_diff'})">N2,90</a> vs mod curve pk-pk fractional difference:
+
+    </li>
+    <li>
+        <a href="javascript:pager.setparams({'y':'amp','subset':'p','x':'el_cen_sun'})">Amp,Pair</a>
+        Vs, Sun Elevation
+
+
+
+    </li>
+</ul>
+    </p>
 
 
     <h3>Detector Pair Anti-Correlations</h3>
@@ -556,7 +644,7 @@ Diff ref pointing
 
             pager.link("#yvxpager2",
                 {
-                    'Y|y2' : ['phi','xpol','n1','n2'],
+                    'Y|y2' : ['phi','xpol','n1','n2','amp'],
                     '0/90/Pair|subset2' : ['0','90','Pair|p'],
                     'X|x2' : ['Time|t','Obs. Number|obsnum','Az|az_cen','El|el_cen','DK|dk_cen',
                         'Sun Az|az_cen_sun','Sun El|el_cen_sun','x','y',

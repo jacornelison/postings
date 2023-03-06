@@ -483,12 +483,13 @@ The pager above is mostly to show that the distributions look nominal compared t
         </table>
     </figure>
 
-    <p>What I <i>think</i> this is telling us is that </p>
+    <p>This is telling us is that </p>
     <ol type="A">
-        <li><b>B18 Pseudo:</b>EB+TB being equal to EB is a result from the information in the BPCM and not an issue intrinsic to the estimator.</li>
-        <li><b>No EBTB Cov:</b> The covariance in the EBTB/TBEB blocks is such that any additional information from TB is effectively negated.</li>
-        <li><b>Abs B18 Cov:</b> Specifically, the negative covariances are to blame for this, since we see an improvement on EB+TB $\siga$ with the same amplitude of covariances that are positive.</li>
+        <li><b>B18 Pseudo:</b> The issue with EB+TB fits is reproducible with pseudosims.</li>
+        <li><b>No EBTB Cov:</b> That we now see such a large improvement in the EB+TB fit, this confirms that the covariance in the EBTB/TBEB blocks is such that any additional information from TB is effectively being ignored.</li>
+        <li><b>Abs B18 Cov:</b> Specifically, the fact that we have negative covariances are to blame for this, since we see an improvement on EB+TB $\siga$ when we use covariances of the same amplitude that are made positive.</li>
     </ol>
+    <p>It's not clear to me why having negative EBTB covariance would have such an impact on the fit. Intuitively, I think $\siga$ should be the same regardless of the sign of the covariance, shouldn't it?</p>
 
 </section>
 
@@ -783,7 +784,6 @@ The pager above is mostly to show that the distributions look nominal compared t
 </section>
 
 <section><h2>Conclusions</h2>
-
     <p>
 
     </p>
