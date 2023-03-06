@@ -675,10 +675,14 @@ The pager above is mostly to show that the distributions look nominal compared t
 
 <section>
     <h2>Forecasting Angle Uncertainty from BB power</h2>
-<p>Keeping that fixed for the time-being, </p>
-    <p>We can show that the variance on &alpha; of the individual signal types add linearly to the variance of angles of the coadded signals. The same can be shown for that of BB power.</p>
 <p>
-    Explain what each thing here means.
+    In this section, we look into a simple forecasting technique that we can use to provide an educated guess on our limits on an IPR constraint in future analysis.
+    i.e. predicting a $\siga$ givin some reduction in BB power in either lensing signal, noise, or dust.
+    For context, this exercise is mostly to provide the foundation on a discussion of future analyses in our paper.
+    In &sect; 3, we found that including higher &ell;-bins might be in our best interest. For the exercise below, I'm keeping the bin range at our default 2 through 10 and we can revisit this if we change our minds later.
+
+</p>
+    <p>We can show that the variance on &alpha; of the individual signal types add linearly to the variance of angles of the coadded signals. The same can be shown for that of BB power. The table below shows the variance from each fit-type and BB power for each signal type. In the middle and bottom sets of rows (i.e. the &sigma;<sup>2</sup>-rows), I compare the sum of the variances of the individual signal types to the variance of the coadded spectra of those signal types. We can see pretty clearly that the sum of the variances is equal to the variance of the coadded spectra to <5% for TB and <1% for EB, EB+TB, and BB-power.
 </p>
 
     <figure class="table">
@@ -752,38 +756,55 @@ The pager above is mostly to show that the distributions look nominal compared t
     </figure>
 
     <p>
-        Because both add linearly, we can derive a simple scaling relation between $\sigasq$ and mean BB power which can then be used to forecast our uncertainty for different scenarios. The first scenario we consider is delensing, where we are able to reduce the BB power from the BB lensing signal by 50%. The second is simply finding how many years we would need to include before the BB contributions from noise are equal to those of lensing (which comes out to roughly 3 more years or 5.8 years total).
+        Because both add linearly, we can derive a simple scaling relation between $\sigasq$ and mean BB power which can then be used to estimate a $sigasq$ for changes in BB power of a given signal type. The first scenario we consider is delensing, where we are able to reduce the BB power from the lensing signal by a flat 50% across all &ell;-bins. The second is the reduction in noise by incorporating data through 2022 -- B18 has effectively 2.5 years of data and I assume that B2019 through B2022 are just as good as B2018. The last I consider is just combining both B22 with a 50% delensing.
     </p>
+
+    <p>The table below shows these scenarios for L-LCDM+N+D, EB-only fits again assuming we use only bins 2 through 10. For easy comparison, I include the &sigma;<sup>2</sup><sub>L+N+D</sub> from the table above along with a column showing $\siga$.</p>
 
     <figure class="table">
         <table>
             <tr>
                 <th>Signal</th>
-                <th class="cstart">EB</th>
+                <th colspan="2" class="cstart">EB</th>
                 <th class="cstart">BBmean</th>
             </tr>
 
             <tr>
                 <th></th>
+                <th class="cstart">&sigma;<sub>&alpha;</sub></th>
                 <th class="cstart" colspan="1">&sigma;<sub>&alpha;</sub><sup>2</sup> [Deg<sup>2</sup>]</th>
                 <th class="cstart">[&mu;K<sup>2</sup>]</th>
             </tr>
 
             <tr>
+                <td class=''>B18 No Delensing</td>
+                <td class='cstart'>0.0747</td>
+                <td class='cstart'>0.0056</td>
+                <td class='cstart'>0.0283</td>
+            </tr>
+            <tr>
                 <td class=''>B18+50% Delensing</td>
+                <td class='cstart'>0.0666</td>
                 <td class='cstart'>0.0044</td>
                 <td class='cstart'>0.0229</td>
             </tr>
             <tr>
-                <td class=''>BB Noise=BB lensing (5.8-years)</td>
-                <td class='cstart'>0.0044</td>
-                <td class='cstart'>0.0226</td>
+                <td class=''>B22+No Delensing</td>
+                <td class='cstart'>0.0653</td>
+                <td class='cstart'>0.0043</td>
+                <td class='cstart'>0.0220</td>
+            </tr>
+            <tr>
+                <td class=''>B22+50% Delensing</td>
+                <td class='cstart'>0.0568</td>
+                <td class='cstart'>0.0032</td>
+                <td class='cstart'>0.0166</td>
             </tr>
 
         </table>
     </figure>
 
-    <p>We can expect a ~10% reduction in $\siga$ in either case.</p>
+    <p>We can expect a ~20% reduction in $\siga$ in either case of only delensing or only including more years and a ~25% reduction if we do both.</p>
 
 </section>
 
