@@ -262,7 +262,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     \right)^{-1} \left( \oCb^{XY} - \rCb^{XY} \right)
     \end{equation}
     </i>
-    <p>First, since the code also allows for estimating &alpha; with EB+TB, I had assumed the above equation would be extended in such a way which considers the TBEB and TBEB cross-covariance in the full bandpower covariance matrix.
+    <p>First, since the code also allows for estimating &alpha; with EB+TB, I had assumed the above equation would be extended in such a way which considers the TBEB and EBTB cross-covariance in the full bandpower covariance matrix.
     </p>
     <p>
         If we use $\Ccov$ to describe the full bandpower covariance matrix between EB and TB with submatrices $\Ccov^{XY}$, I expected the covariance in the estimator to look like
@@ -298,7 +298,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     \end{equation}
 
     <p>
-        Second, like our actual BPCM, the coavriance matrix above is calculated from the final file's <tt>final.r.sim</tt> variable which are the 499 noise-debiased Type-7 sims (i.e. Lensed-LCDM+Noise-mean(Noise)).
+        Second, like our actual BPCM, the covariance matrix above is calculated from the final file's <tt>final.r.sim</tt> variable which are the 499 noise-debiased Type-7 sims (i.e. Lensed-LCDM+Noise-mean(Noise)).
     </p>
 
     <p>
@@ -382,8 +382,8 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     For non-mean-zero distributions, we carry around some extra terms, but the answer is still the same.
 </p>
     <p>
-        For the purpose of this posting, I create Cholesky matrices using Matlab's built-in <tt>chol.m</tt> function which makes creating millions of psuedosims with whatever covariance matrix I want within seconds.
-        The figure below shows the EB/TB BPCM calculated from B18's 499 Type 8 Lensed-Signal+Noise+Dust sims and compares it to the covariance matrix calculated from 10 million pseudosims created from the B18 Type 8 BPCM.
+        For the purpose of this posting, I create Cholesky matrices using Matlab's built-in <tt>chol.m</tt> function which makes creating millions of pseudosims with whatever covariance matrix I want within seconds.
+        The figure below shows the EB/TB BPCM calculated from B18's 499 Type 8 Lensed-Signal+Noise+Dust sims and compares it to the covariance matrix calculated from 10 million pseudosims created from the B18 Type 8 BPCM (i.e. Comparing $\Ccov$ to $\text{cov}(\BY)$).
     </p>
 
     <figure>
@@ -403,11 +403,11 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
 <h4>Fitting Angles to Pseudosims</h4>
 
     <p>
-        Next, I fit angles to psuedosims of mean-zero EB and TB spectra for different cases of covariance matrices. Each case includes 499 sims in order to be directly comparable to the distributions from our standard 499 sims (included in the pager below).
+        Next, I fit angles to pseudosims of mean-zero EB and TB spectra for different cases of covariance matrices. Each case includes 499 sims in order to be directly comparable to the distributions from our standard 499 sims (included in the pager below). The estimator includes the fix described above where we use the full BPCM's.
 
     <p>Cases:</p>
     <ul>
-        <li><b>B18 Pseudosims:</b> pseudosims from the B18 L-LCDM+Noise+Dust for a direct comparison.</li>
+        <li><b>B18 Pseudosims:</b> pseudosims from the B18 L-LCDM+Noise+Dust BPCM for a direct comparison.</li>
         <li><b>No EBTB Cov:</b> Given that including the EBTB and TBEB blocks seemed to improve things in the first section, I also create sims where the EBTB and TBEB blocks are zeroed out but the EBEB and TBTB covariances are the same as the B18 covariance matrix.</li>
         <li><b>Abs B18 Cov:</b> Pseudosims constructed from the absolute value of the entire B18 BPCM (the EBTB/TBEB blocks are not zeroed).</li>
     </ul>
