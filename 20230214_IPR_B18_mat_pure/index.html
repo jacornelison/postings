@@ -127,7 +127,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         </script>
     </figure>
 
-    <p>I see a ~20% reduction in the B18 and B2018 matrix-purified Unlensed-LCDM BB spectra. Below I show the angle estimates now including crosses of CMB with Dust/Noise. As in my previous posting, I fit angles using only our standard &ell;-bins of 2 through 10 (out of 17).</p>
+    <p>I see a ~20% reduction in the B18 and B2018 matrix-purified Unlensed-LCDM BB spectra. Below I show the angle estimates now including crosses of Type-8 (L-LCDM+N+D) T and E with each signal type's B. As in my previous posting, I fit angles using only our standard &ell;-bins of 2 through 10 (out of 17).</p>
 
     <figure>
         <img alt="Name pager" id="histpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>
@@ -232,7 +232,7 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     <h2>Looking into the Covariance Matrix</h2>
 
     <p>
-        In Fig. 1.2 above, we see that the $\siga$ in the EB+TB fit is greater than $\siga$ from just EB-only. In the best case, EB and TB are perfectly uncorrelated and $\siga$ from from EB+TB is $\left(1/\siga{}^{EB}+1/\siga^{TB}\right)^{-1}$. Even if EB and TB exactly correlated and TB contributed no additional information then $\siga$ in the EB+TB fit would be equal to EB-only in the worst case and never greater than EB-only. So something must be wrong with the fitter when fitting EB and TB together.
+        In Fig. 1.2 above, we see that the $\siga$ in the EB+TB fit is greater than $\siga$ from just EB-only. In the best case, EB and TB are perfectly uncorrelated and $\siga$ from from EB+TB is $\left(1/\sigasq {}^{EB}+1/\sigasq {}^{TB}\right)^{-\frac{1}{2}}$. Even if EB and TB exactly correlated and TB contributed no additional information then $\siga$ in the EB+TB fit would be equal to EB-only in the worst case and never greater than EB-only. So something must be wrong with the fitter when fitting EB and TB together.
     </p>
 
     Quoted from Justin's posting <a href="JBW2016"></a>:
@@ -298,11 +298,11 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     \end{equation}
 
     <p>
-        Second, like our actual BPCM, the coavriance matrix above is calculated from the final file's <tt>final.r.sim</tt> variable which are the 499 noise-debiased Type-7 sims (i.e. Lensed-LCDM+Noise-mean(Noise)) -- <tt>reduc_final.m</tt> states that this debiasing is done for <i>all</i> spectra, not just BB.
+        Second, like our actual BPCM, the coavriance matrix above is calculated from the final file's <tt>final.r.sim</tt> variable which are the 499 noise-debiased Type-7 sims (i.e. Lensed-LCDM+Noise-mean(Noise)).
     </p>
 
     <p>
-        I re-fit alpha to the B18 Lensed-LCDM+Noise+Dust sims now using the full bandpower covariance matrix calculated from the 499 Lensed-LCDM+Noise+Dust realizations. To show the effects of only changing one thing at a time, in the pager below, the first "Full Cov." option uses the full, original covariance matrix (Noise-debiased L-LCDM+Noise). The "Full Cov. from Type 8" option uses the full covariance matrix recalculated from L-LDCM+Noise+Dust without debiasing.
+        I re-fit alpha to the B18 Lensed-LCDM+Noise+Dust sims now using the full bandpower covariance matrix calculated from the 499 Lensed-LCDM+Noise+Dust realizations. To show the effects of only changing one thing at a time, in the pager below, the first "Full Cov." option uses the full, original covariance matrix (Noise-debiased L-LCDM+Noise). The "Full Cov. from Type 8" option uses the full covariance matrix recalculated from L-LDCM+Noise+Dust.
     </p>
 
     <figure>
