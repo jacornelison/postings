@@ -810,7 +810,12 @@ The pager above is mostly to show that the distributions look nominal compared t
 
 <section><h2>Conclusions</h2>
     <p>
-
+        <ul>
+        <li>The issues where $\siga$ in the EB+TB fits were worse than just using EB-only appear to come from a bug where we weren't using the EBTB and TBEB cross-covariance of the BPCM. Further, I find that the EB+TB $\siga$ are still nearly equal to EB-only when we have negative covariances but see an improvement in EB+TB fits when I substitute the absolute value of the BPCM instead.</li>
+        <li>Plots of the contraining power vs &ell;-bin suggests that most of our constraining power for &alpha; is actually in the upper half of our &ell;-range and that we can improve $\siga$ by up to 30% by including &ell;-bins from 11 to 15.</li>
+        <li>I have created a created a linear estimator derived from our &chi;-squared estimator that is capable of producing nearly identical fits on &alpha;. This estimator will be used as a cross-check throughout the rest of the analysis.</li>
+        <li>I also find that, because both $\sigasq$ and BB-power both add linearly, we can establish a simple scaling relationship between the two which can provide rudimentary estimates on the sample variance of future analyses where we've reduced the BB power by e.g. delensing, including more years, etc...</li>
+    </ul>
     </p>
 
 </section>
