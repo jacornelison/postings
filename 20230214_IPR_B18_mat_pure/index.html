@@ -336,9 +336,6 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
     <p>
         Going from 'Original' to 'Full Cov.' we can see that EB-Only and TB-Only distributions stay the same as expected. The scatter on EB+TB does seem to improve, but it is still worse than EB-only, implying that something is still wrong here. Going from 'Full Cov.' to 'Full Cov. from Type 8', we can see the EB+TB drop to just below the EB-Only fit. This could imply that the covariances are being properly accounted for but perhaps that TB doesn't contribute any additional constraining power when included.
     </p>
-    <p>
-        This really drives home the importance of using the correct bandpower covariance matrix...
-    </p>
 
     <h3>Angles from Pseudosims</h3>
     <h4>Pseudosims from Cholesky Decomposition</h4>
@@ -489,7 +486,77 @@ The pager above is mostly to show that the distributions look nominal compared t
         <li><b>No EBTB Cov:</b> That we now see such a large improvement in the EB+TB fit, this confirms that the covariance in the EBTB/TBEB blocks is such that any additional information from TB is effectively being ignored.</li>
         <li><b>Abs B18 Cov:</b> Specifically, the fact that we have negative covariances are to blame for this, since we see an improvement on EB+TB $\siga$ when we use covariances of the same amplitude that are made positive.</li>
     </ol>
-    <p>It's not clear to me why having negative EBTB covariance would have such an impact on the fit. Intuitively, I think $\siga$ should be the same regardless of the sign of the covariance, shouldn't it?</p>
+
+    <!------------------------------------------------------------------->
+    <!------------------------------------------------------------------->
+    <!------------------------------------------------------------------->
+    <!------------------------------------------------------------------->
+
+    <h3>Does TB really contain no additonal information?</h3>
+    <p>In the figure below, I plot the TB-only angle estimates vs EB-only from Type 8 Lensed signal+Noise+Dust sims. We can see that there is some correlation between the EB and TB fits, but they aren't perfectly correlated either. So one would naively expect that TB should contribute <i>something</i>.</p>
+
+    <figure>
+        <img src="figs/alpha_eb_vs_tb_6614fghmatrix_8_corr_cross_bins_2_10.png" width="60%"/>
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>Let's look at this analytically. The uncertainty on the EB+TB fit comes from the weighted variance. The weighted variance of sets of estimates with unequal (and uncorrelated) errors is:</p>
+
+    \begin{equation}
+    \sigma^2_{w} = \frac{1}{\sum_i 1/\sigma_i^2}
+    \end{equation}
+
+    <p>If the errors are correlated as is our case, this becomes:</p>
+
+    \begin{equation}
+    \sigma^2_{w} = \frac{1}{\sum\limits_{ij} \Ccov^{-1}_{ij}}
+    \end{equation}
+
+    <p>Where we're now summing over every element of the covariance matrix between the sets of estimates.</p>
+
+    <p>In our case we have only two sets of estimates and we can rewrite the covariance matrix as a function of the variances of our two sets of estimates, and the correlation coefficient $\rho$.</p>
+
+    \begin{equation}
+    \Ccov =
+    \begin{bmatrix}
+    \sigma_{EB}^2 & \rho\sigma_{EB}\sigma_{TB}\\
+    \rho\sigma_{EB}\sigma_{TB} & \sigma_{TB}^2 \\
+    \end{bmatrix}
+    \end{equation}
+
+    <p>
+        Then, we can rewrite the weighted variance as a function of the diagonals and correlation coefficient.
+    </p>
+
+    \begin{equation}
+
+    \begin{split}
+    \sigma^2_{EB+TB}
+    &= \left[\sum\limits_{ij} \Ccov^{-1}_{ij}\right]^{-1}\\
+    &= \left[\frac{1}{\sigma^2_{EB}\sigma^2_{TB}-\rho\sigma^2_{EB}\sigma^2_{TB}}\left({\sigma^2_{EB}}+{\sigma^2_{TB}}-{2\rho\sigma_{EB}\sigma_{TB}}\right)\right]^{-1}\\
+    &= \left[\frac{1}{1-\rho^2}\left(\frac{1}{\sigma^2_{EB}}+\frac{1}{\sigma^2_{TB}}-\frac{2\rho}{\sigma_{EB}\sigma_{TB}}\right)\right]^{-1}\\
+    \end{split}
+    \label{eq:sigvsrho}
+    \end{equation}
+
+
+    <p>
+        In the figure below, I plot the $\siga$ of EB+TB as a function of correlation coefficient between EB-only and TB-only estimates using the variance from the estimates in Figure 2.5. I also show the $\sigma$ assuming the same correlation from Figure 2.5 ($\rho = 0.512$). We can see that the correlation between EB and TB is such that the contribution from TB effectively zero -- the difference between $\sigma_{EB}$ and $\sigma_{EB+TB}(\rho = 0.512)$ is ~2&times;10<sup>-5</sup>.
+    </p>
+    <figure>
+        <img src="figs/EBTB_error_vs_rho.png" width="60%"/>
+        <figcaption>
+            The blue line traces the $\sigma_{EB+TB}$ calculated from Eq: \ref{eq:sigvsrho} using the variances for EB and TB derived from the estimates shown in Figure 2.5.
+            The orange line denotes the $\siga$ of EB-only.
+            The black <b>x</b> marks the $\sigma_{EB+TB}$ for the input correlation coefficient in the EB vs TB plot in Figure 2.5 above.
+        </figcaption>
+    </figure>
+
+    <p>
+        So it seems that TB, in fact, does not contribute any new information when including it with EB.
+    </p>
 
 </section>
 

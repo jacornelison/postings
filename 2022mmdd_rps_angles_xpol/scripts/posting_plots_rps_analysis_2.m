@@ -6,6 +6,8 @@ addpath('z:/pipeline/beammap')
 addpath('z:/pipeline/util')
 addpath('z:/dev/diff_polarization/')
 addpath('z:/dev')
+figdir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_angles_xpol','figs','');
+
 %% Then this
 %clear all
 close all
@@ -47,28 +49,19 @@ fd_2018 = fd;
 fd_2018 = get_pair_params(fd_2018,ind0,ind90);
 [fd_2018, phis_2018, phi_pair_2018, xpols_2018, poleff_pair_2018,~,~,~] = get_pol_params_per_obs(fd_2018,p);
 
-%
+%%
+clc
 load('z:/dev/rps/rps_obs_info.mat')
 %load('z:/dev/rps/rps_beam_fits_type5_withbparam.mat')
 load('z:/dev/rps/rps_beam_fits_type5_21feb_rerun.mat');
-% p22 = load('z:/dev/rps/fpu_data_obs_old.mat');
-% fd_norglcut = rps_cut_fitdata(fd,p22.p,[],0);
-%
-% ind0_22 = [p22.p_ind.rgl100a(ismember(p22.p_ind.rgl100a,find(p.mce~=0))) ...
-%     p22.p_ind.rgl100b(ismember(p22.p_ind.rgl100b,find(p.mce==0)))];
-% ind90_22 = [p22.p_ind.rgl100b(ismember(p22.p_ind.rgl100b,find(p.mce~=0))) ...
-%     p22.p_ind.rgl100a(ismember(p22.p_ind.rgl100a,find(p.mce==0)))];
-%
-% fd_norglcut = get_pair_params(fd_norglcut,ind0_22,ind90_22);
-% [fd_norglcut, phis_nrc, phi_pair_nrc, xpols_nrc, poleff_pair_nrc] = get_pol_params_per_obs(fd_norglcut,p22.p,scheds);
-fd = rps_cut_fitdata(fd,p,p_ind,0);
+fd = rps_cut_fitdata(fd,p,p_ind);%,1,figdir);
+%%
 fd = get_pair_params(fd,ind0,ind90);
 [fd, phis, phi_pair, xpols, poleff_pair,n1s,n2s,amps] = get_pol_params_per_obs(fd,p,scheds);
 
 load('z:/pipeline/beammap/viridis_cm.mat')
 load('z:/dev/rps/sch_type5.mat')
 load('z:/dev/rps/pm.mat')
-figdir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_angles_xpol','figs','');
 
 
 % Load no tilt data
@@ -1154,12 +1147,7 @@ if ~exist('obscell','var')
     obscell = num2cell(unique(fd.schnum));
 end
 
-checkflds = {'n1','n2','Amp'};
-for fldind = 1:length(checkflds)
-    if ~isfield(fd,checkflds{fldind})
-        fd.(checkflds{fldind}) = NaN(size(fd.ch));
-    end
-end
+
 len = length(obscell);
 fd.obsnum = NaN(size(fd.ch));
 for chind = 1:length(fd.ch)
@@ -1191,6 +1179,13 @@ end
 
 
 function fd = get_pair_params(fd,ind0,ind90)
+
+checkflds = {'n1','n2','Amp'};
+for fldind = 1:length(checkflds)
+    if ~isfield(fd,checkflds{fldind})
+        fd.(checkflds{fldind}) = NaN(size(fd.ch));
+    end
+end
 
 [fd.phi_pair, fd.poleff, fd.pair_idx] = deal(NaN(size(fd.ch)));
 for chind = 1:length(fd.ch)
