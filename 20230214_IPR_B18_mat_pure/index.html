@@ -558,6 +558,25 @@ The pager above is mostly to show that the distributions look nominal compared t
         As we can see, the correlation between TB and EB is at the exact point at which the contribution from TB is zero which is interesting.
     </p>
 
+    <h3></h3>
+    <p>
+        We can get an alpha estimate per-bandpower by multiplying the d&alpha;dC per bandpower by the bandpowers of the sims.
+    </p>
+    \begin{equation}
+    \hat{\alpha}_b = \frac{\partial\alpha}{\partial C_b^{XY}}\hat{C}_b^{XY}
+    \end{equation}
+
+    <p>
+        If we calculate the covariance matrix on the 499 sets of $\hat{\alpha}_b$'s for EB and TB, we can see that the per-ellbin EBTB block diagonals is about equal to the diagonals in the EBEB block.
+    </p>
+    
+    <figure>
+        <img src="figs/cov_ahat_b.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
 </section>
 
 <section>
