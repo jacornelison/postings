@@ -49,13 +49,13 @@ fd_2018 = fd;
 fd_2018 = get_pair_params(fd_2018,ind0,ind90);
 [fd_2018, phis_2018, phi_pair_2018, xpols_2018, poleff_pair_2018,~,~,~] = get_pol_params_per_obs(fd_2018,p);
 
-%%
+%
 clc
 load('z:/dev/rps/rps_obs_info.mat')
 %load('z:/dev/rps/rps_beam_fits_type5_withbparam.mat')
 load('z:/dev/rps/rps_beam_fits_type5_21feb_rerun.mat');
 fd = rps_cut_fitdata(fd,p,p_ind);%,1,figdir);
-%%
+%
 fd = get_pair_params(fd,ind0,ind90);
 [fd, phis, phi_pair, xpols, poleff_pair,n1s,n2s,amps] = get_pol_params_per_obs(fd,p,scheds);
 
@@ -441,7 +441,7 @@ fd0 = fd;
 %idx = fd.obsnum~=1;
 %fd = structcut(fd,idx);
 Niter = 1000;
-nobs = length(unique(fd.obsnum));
+nobs = length(find(~isnan(unique(fd.obsnum))));
 [M, S, N] = deal(NaN(Niter,1));
 idx = NaN(Niter,ceil(nobs/2));
 for iterind = 1:Niter
@@ -476,7 +476,7 @@ valunits = {'\phi_{pair} [Degrees]','1-Poleff'};
 
 for valind = 1%1:size(V,1)
 
-    for pltind = 1%1:size(V,2)
+    for pltind = 4%1:size(V,2)
         V1ttl = ttls{1};
         V2ttl = ttls{pltind};
         if pltind == 1
