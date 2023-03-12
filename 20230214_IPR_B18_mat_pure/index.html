@@ -241,12 +241,14 @@ I've now included B18 into these pagers. I am also now crossing Unlensed LCDM T&
         As summarized in <a href="https://arxiv.org/abs/1312.7877">Kaufman et.
         al. (2013)</a>, we can modify a given input spectrum to include a
         uniform rotation of the CMB signal:</ul>
-
-    \begin{align*}
+\begin{equation}
+    \begin{split}
     C'^{TB}_\ell &= C^{TE}_\ell \sin(2\alpha) \\
     C'^{EB}_\ell &= \frac 12 \left( C^{EE}_\ell - C^{BB}_\ell \right)
     \sin(4\alpha) \\
-    \end{align*}
+    \end{split}
+        \label{eq:alphamodel}
+\end{equation}
 
 
 
@@ -558,24 +560,66 @@ The pager above is mostly to show that the distributions look nominal compared t
         As we can see, the correlation between TB and EB is at the exact point at which the contribution from TB is zero which is interesting.
     </p>
 
-    <h3></h3>
+    <h3>Analytic Approach</h3>
     <p>
-        We can get an alpha estimate per-bandpower by multiplying the d&alpha;dC per bandpower by the bandpowers of the sims.
+    In the small angle limit, the model from Eq. \ref{eq:alphamodel} becomes:
     </p>
+
     \begin{equation}
-    \hat{\alpha}_b = \frac{\partial\alpha}{\partial C_b^{XY}}\hat{C}_b^{XY}
+    \begin{split}
+    &C_b^{TB} = 2\alpha C_b^{TE}\\
+    &C_b^{EB} = 4\alpha \left(C_b^{EE}-C_b^{BB}\right)\\
+    \end{split}
     \end{equation}
 
-    <p>
-        If we calculate the covariance matrix on the 499 sets of $\hat{\alpha}_b$'s for EB and TB, we can see that the per-ellbin EBTB block diagonals is about equal to the diagonals in the EBEB block.
-    </p>
-    
-    <figure>
-        <img src="figs/cov_ahat_b.png">
-        <figcaption>
+<p>the derivatives are:</p>
 
-        </figcaption>
-    </figure>
+    \begin{equation}
+    \begin{split}
+    &\frac{dC_b^{TB}}{d\alpha} = 2C_b^{TE} \\
+    &\frac{dC_b^{EB}}{d\alpha} = 2(C_b^{EE}-C_b^{BB}) \\
+    \end{split}
+    \end{equation}
+
+    <p>And our estimator is:</p>
+    \begin{equation}
+    \begin{split}
+    &\hat{\alpha}_{b,XY} = \frac{d\alpha}{dC_b^{XY}}\hat{C}_b^{XY}\\
+    \end{split}
+    \end{equation}
+
+    <p>Combining the equations above, we can calculate the variance-covariance matrix of $\hat{\alpha}$ EB, TB and between EB and TB.</p>
+
+    <p>First, for EB-only:</p>
+
+    \begin{equation}
+    \begin{split}
+    \left<{\hat{\alpha}_b^{EBEB}}\right> &= \frac{\left<\hat{C}_b^{EB}{}^2\right>}{4\left(C_b^{EE}-C_b^{BB}\right)^2}\\
+    &=\frac{C_b^{EB}C_b^{EB}}{4\left(C_b^{EE}-C_b^{BB}\right)^2}\\
+    \end{split}
+    \end{equation}
+
+    <p>Exploiting the communative property of multiplying power spectra and assuming the contribution from $C_b^{BB}$ is negligible, we get</p>
+
+    \begin{equation}
+    \begin{split}
+    \left<{\hat{\alpha}_b^{EB}}^2\right> &= \frac{C_b^{EE}C_b^{BB}}{4C_b^{EE}{}^2}\\
+    &\\
+    &= \frac{C_b^{BB}}{4C_b^{EE}}\\
+    \end{split}
+    \end{equation}
+
+    <p>Now we can show that EBTB is equal to the variance of EB-only</p>
+
+    \begin{equation}
+    \begin{split}
+    \left<{\hat{\alpha}_b^{EBTB}}^2\right> &= \frac{\left<\hat{C}_b^{TB}\hat{C}_b^{EB}\right>}{4C_b^{TE}\left(C_b^{EE}-C_b^{BB}\right)}\\
+    &\\
+    &= \frac{C_b^{TE}C_b^{BB}}{4C_b^{TE}C_b^{EE}}\\
+    &\\
+    &= \frac{C_b^{BB}}{4C_b^{EE}}\,\,\checkmark
+    \end{split}
+    \end{equation}
 
 </section>
 
