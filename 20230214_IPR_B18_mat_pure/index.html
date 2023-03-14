@@ -493,7 +493,7 @@ The pager above is mostly to show that the distributions look nominal compared t
     <!------------------------------------------------------------------->
     <!------------------------------------------------------------------->
     <!------------------------------------------------------------------->
-
+<!--
     <h3>Does TB really contain no additonal information?</h3>
     <p>In the figure below, I plot the TB-only angle estimates vs EB-only from Type 8 Lensed signal+Noise+Dust sims. We can see that there is some correlation between the EB and TB fits, but they aren't perfectly correlated either. So one would naively expect that TB should contribute <i>something</i>.</p>
 
@@ -559,7 +559,7 @@ The pager above is mostly to show that the distributions look nominal compared t
     <p>
         As we can see, the correlation between TB and EB is at the exact point at which the contribution from TB is zero which is interesting.
     </p>
-
+-->
     <h3>Analytic Approach</h3>
     <p>
     In the small angle limit, the model from Eq. \ref{eq:alphamodel} becomes:
@@ -568,7 +568,7 @@ The pager above is mostly to show that the distributions look nominal compared t
     \begin{equation}
     \begin{split}
     &C_b^{TB} = 2\alpha C_b^{TE}\\
-    &C_b^{EB} = 4\alpha \left(C_b^{EE}-C_b^{BB}\right)\\
+    &C_b^{EB} = 2\alpha \left(C_b^{EE}-C_b^{BB}\right)\\
     \end{split}
     \end{equation}
 
@@ -577,6 +577,7 @@ The pager above is mostly to show that the distributions look nominal compared t
     \begin{equation}
     \begin{split}
     &\frac{dC_b^{TB}}{d\alpha} = 2C_b^{TE} \\
+    &\\
     &\frac{dC_b^{EB}}{d\alpha} = 2(C_b^{EE}-C_b^{BB}) \\
     \end{split}
     \end{equation}
