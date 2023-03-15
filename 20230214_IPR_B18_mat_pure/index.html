@@ -52,6 +52,10 @@
 \newcommand{\BY}{\textbf{Y}}
 \newcommand{\BI}{\textbf{I}}
 \newcommand{\BBE}{\mathbb{E}}
+\newcommand{\cov}{\text{Cov}}
+\require{cancel}
+\require{color}
+\newcommand{\tozero}[1]{\color{red}{\bcancel{\color{black}{#1}}}\color{black}}
 \)
 
 
@@ -562,23 +566,25 @@ The pager above is mostly to show that the distributions look nominal compared t
 -->
     <h3>Analytic Approach</h3>
     <p>
-    In the small angle limit, the model from Eq. \ref{eq:alphamodel} becomes:
+    In the small angle limit, the expectation values from Eq. \ref{eq:alphamodel} becomes:
     </p>
 
     \begin{equation}
     \begin{split}
     &C_b^{TB} = 2\alpha C_b^{TE}\\
-    &C_b^{EB} = 2\alpha \left(C_b^{EE}-C_b^{BB}\right)\\
+    &C_b^{EB} = 2\alpha \left(C_b^{EE}-\tozero{C_b^{BB}}\right)\\
     \end{split}
+    \label{eq:alphamodelsimple}
     \end{equation}
 
+    <p>Where I'm assuming the $C_b^{BB} << C_b^{EE}$</p>
 <p>the derivatives are:</p>
 
     \begin{equation}
     \begin{split}
     &\frac{dC_b^{TB}}{d\alpha} = 2C_b^{TE} \\
     &\\
-    &\frac{dC_b^{EB}}{d\alpha} = 2(C_b^{EE}-C_b^{BB}) \\
+    &\frac{dC_b^{EB}}{d\alpha} = 2C_b^{EE} \\
     \end{split}
     \end{equation}
 
@@ -589,47 +595,76 @@ The pager above is mostly to show that the distributions look nominal compared t
     \end{split}
     \end{equation}
 
-    <p>Combining the equations above, we can calculate the variance-covariance matrix of $\hat{\alpha}$ EB, TB and between EB and TB.</p>
+    <p>Combining the equations above, we can calculate the covariance of $\hat{\alpha}$ EB, TB and between EB and TB.</p>
 
     <p>First, for EB-only:</p>
 
     \begin{equation}
     \begin{split}
-    \left<{\hat{\alpha}_b^{EB}}^2\right> &= \frac{\left<\hat{C}_b^{EB}{}^2\right>}{4\left(C_b^{EE}-C_b^{BB}\right)^2}\\
-    &=\frac{C_b^{EB}C_b^{EB}}{4\left(C_b^{EE}-C_b^{BB}\right)^2}\\
+    \cov\left(\hat{\alpha}_b^{EB},\,\hat{\alpha}_b^{EB}\right) &=
+    \frac{\cov\left(\hat{C}_b^{EB},\,\hat{C}_b^{EB}\right)}{4C_b^{EE}{}^2}\\
     \end{split}
+    \label{eq:ebcov1}
     \end{equation}
 
-    <p>Exploiting the communative property of multiplying power spectra and assuming the contribution from $C_b^{BB}$ is negligible, we get</p>
+    <p>The covariance of two spectra can be rewritten as:</p>
+
+    \begin{equation}
+    \cov \left(C_b^{AB},\,C_b^{CD}\right) = \frac{1}{k}\left(C_b^{AC}C_b^{BD}+C_b^{AD}C_b^{BC}\right)
+    \end{equation}
+
+    <p>Where $k$ is the number of modes averaged per band. The Eq. \ref{eq:ebcov1} above then becomes</p>
 
     \begin{equation}
     \begin{split}
-    \left<{\hat{\alpha}_b^{EB}}^2\right> &= \frac{C_b^{EE}C_b^{BB}}{4C_b^{EE}{}^2}\\
-    &\\
-    &= \frac{C_b^{BB}}{4C_b^{EE}}\\
+    \cov\left(\hat{\alpha}_b^{EB},\,\hat{\alpha}_b^{EB}\right)
+    &= \frac{C_b^{EE}C_b^{BB}+C_b^{EB}{}^2}{4kC_b^{EE}{}^2}\\
     \end{split}
     \end{equation}
 
-    <p>Now we can show that EBTB is equal to the variance of EB-only</p>
+    <p>And if we substitute $C_b^{EB} = 2\alpha C_b^{EE}$ from Eq. \ref{eq:alphamodelsimple} we inadvertantly find that $\siga$ is dependent on $\alpha$ itself.</p>
 
     \begin{equation}
     \begin{split}
-    \left<{\hat{\alpha}_b^{EB}}{\hat{\alpha}_b^{TB}}\right> &= \frac{\left<\hat{C}_b^{TB}\hat{C}_b^{EB}\right>}{4C_b^{TE}\left(C_b^{EE}-C_b^{BB}\right)}\\
+    \cov\left(\hat{\alpha}_b^{EB},\,\hat{\alpha}_b^{EB}\right)
+    &= \frac{C_b^{EE}C_b^{BB}+4\alpha^2 C_b^{EE}{}^2}{4kC_b^{EE}{}^2}\\
     &\\
-    &= \frac{C_b^{TE}C_b^{BB}}{4C_b^{TE}C_b^{EE}}\\
-    &\\
-    &= \frac{C_b^{BB}}{4C_b^{EE}}\,\,\checkmark
+    &= \frac{C_b^{BB}}{4kC_b^{EE}}+\frac{\alpha^2}{k}\\
     \end{split}
     \end{equation}
+
+
+    <p>For EB+TB, all of the modes from T cancel out through TE and we're left with the same value as the variance on EB:</p>
+
+    \begin{equation}
+    \begin{split}
+    \cov\left(\hat{\alpha}_b^{TB},\,\hat{\alpha}_b^{EB}\right)
+    &= \frac{C_b^{TE}C_b^{BB}+C_b^{TB}C_b^{EB}}{4kC_b^{TE}C_b^{EE}}\\
+    &\\
+    &= \frac{C_b^{TE}C_b^{BB}+4\alpha^2 C_b^{TE}C_b^{EE}}{4kC_b^{TE}C_b^{EE}}\\
+    &\\
+    &= \frac{C_b^{BB}}{4kC_b^{EE}}+\frac{\alpha^2}{k}\,\,\checkmark
+    \end{split}
+    \end{equation}
+
+    <p>and for TB-Only</p>
+    \begin{equation}
+    \begin{split}
+    \cov\left(\hat{\alpha}_b^{TB},\,\hat{\alpha}_b^{TB}\right)
+    &= \frac{C_b^{TT}C_b^{BB}}{4kC_b^{TE}{}^2}+\frac{\alpha^2}{k}\\
+    \end{split}
+    \end{equation}
+
+    <p>In summary, I've shown analytically that TB contributes no new information if we already have EB, though it will continue to serve as a useful cross-check. Incidentally, I've also shown that $\sigasq$ both scales linearly with BB power and increases for non-zero angles. The former fact will be useful in forecasting uncertainties on $\alpha$ given some change to BB (via e.g. delensing, coadding more CMB data) and the latter tells us that we want to re-analyze the CMB data with RPS-corrected angles such that the null hypothesis angle, and thus our uncertainty, is minimized.</p>
 
 </section>
-
+<!---
 <section>
     <h2>Constraining power vs. &ell;</h2>
     <p>We want to look at the constraining power per-&ell; between the EB and TB spectra (i.e. determine which bandpowers contribute most to &alpha; considering both the model and our bandpower uncertainties).
         We currently only use our canonical science bins (bins 2 through 10) and this exercise will be useful in determining if we might want to include higher bins in the analysis as well.
-<!--        This is represented by the expectation values of our model given some input angle, normalized by that input angle and weighted by the inverse of the sample variance of the individual bandpowers.-->
     </p>
+
     <p>
         For some arbitrarily small input angle &epsilon;<sub>&alpha;</sub>, we get some spectra out of our model, C<sub>b</sub>. Because &epsilon;<sub>&alpha;</sub> is small and the small angle approximation applies, the shape of C<sub>b</sub> should be constant and only linearly scale by &alpha;. Thus we normalize the shape of the model spectra by dividing C<sub>b</sub> by &epsilon;<sub>alpha</sub> -- in the case of uniform weighting, this alone would tell us which bandpowers contribute most to the contraints on &alpha; with the higher values of C<sub>b</sub>/&epsilon;<sub>alpha</sub> possessing higher constraining power. However, this doesn't consider the uncertainties on the bandpowers themselves, so we weight the C<sub>b</sub>/&epsilon;<sub>alpha</sub> by the inverse of the bandpower sample variance which we get from sims.
     </p>
@@ -950,7 +985,7 @@ The pager above is mostly to show that the distributions look nominal compared t
     </p>
 
 </section>
-
+-->
 <hr>
 
 <section class="appendix">
