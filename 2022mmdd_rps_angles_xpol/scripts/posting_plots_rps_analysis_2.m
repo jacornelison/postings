@@ -917,7 +917,7 @@ sigN1 = 0.01*0;
 sigN2 = 0.01*0;
 sigA = 0.1*0;
 sigB = 0.1*0;
-sigAmp = 0.013;
+sigAmp = 0.005;
 sigE = 0.001*0;
 dk = 0;
 
@@ -982,7 +982,7 @@ text(0.1,0.4,{sprintf('0/90 Cov: %1.3f [Deg^2]',C(1,2))...
     sprintf('0/90 Corr: %1.3f',D(1,2))})
 
 fname = 'pol90_vs_pol0_sim.png';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
 
 
 %% Grab the mod curves for A/B dets 

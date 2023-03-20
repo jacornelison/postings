@@ -629,8 +629,10 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
         </figcaption>
     </figure>
     
-    <p>In an old posting, I showed that RPS beam maps and modulation curves were dominated by noise that scaled with the amplitude -- likely a result from some systematic in the demodulation routine.
-        Below, I show that fitting sims of mod curves with only correlated, amplitude-scaling noise produces anticorrelations in detector pairs at a similar level as seen in the real data. I create modulation curves with known input parameters and add some white noise $N$ that is scaled by the modulation curves for both a detector with an angle of 0&deg;, $A_0$, and one with an input angle of 90&deg;, $A_{90}$.</p>
+    <p>In an old posting <a href="JAC2018"></a>, I showed that RPS beam maps and modulation curves were dominated by noise that scaled with the amplitude -- likely a result from some systematic in the demodulation routine.
+        Below, I show that fitting sims of mod curves with only correlated amplitude-scaling noise produces anticorrelations in detector pairs at a similar level as seen in the real data.
+    </p>
+    <p>I create modulation curves with known input parameters and add some white noise $N$ that is scaled by the modulation curves for both a detector with an angle of 0&deg;, $A_0$, and one with an input angle of 90&deg;, $A_{90}$.</p>
 
     \begin{equation}
     \begin{split}
@@ -640,7 +642,7 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
     \end{equation}
 
     <p>
-        Because I want the noise to be correlated, I use the same N for both mod curves for a given realization. I use a noise amplitude of 1.3% which I calculated from real modulation curves.
+        Because I want the noise to be correlated, I use the same N for both mod curves for a given realization. I use a noise amplitude of 1.3% which I calculated from real modulation curves, though I find that changing the noise amplitude only changes the covariance while the correlation remains the same.
     </p>
     <p>I then fit my angle and 4 other parameters to each realization. Below, I plot $\phi_0$ vs $\phi_{90}$ for these sims and find a correlation of ~-0.6 which is consistent with the real data within 10%.</p>
     
@@ -946,6 +948,7 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
             "KWY2007",
             "CAB2012",
             "RWO2013",
+            "JAC2018",
             "JBW2018a",
             "JBW2018b",
             "JAC2019",
@@ -965,6 +968,7 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
             "general_projects/rps/pointing_article.pdf",
             "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
             "bkcmb/analysis_logbook/analysis/20130205_polofs_model/",
+            "bkcmb/analysis_logbook/analysis/20180717_rps_sims/",
             "bkcmb/analysis_logbook/analysis/20181129_B2016_beamcen_yrquarters/",
             "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
             "bkcmb/analysis_logbook/analysis/20190516_rps_pointing_defs/",
@@ -984,6 +988,7 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
             "BICEP Pointing Supplement",
             "Pointing Model for Keck Beam Maps",
             "Modeling Polarization-Dependent Beam Offsets",
+            "Simulating RPS Data",
             "B2016 per-deck, per-scan direction beam centers for quarter-season data sets",
             "B2016, B2017, and B2018 CMB-derived beam center correlations",
             "Pointing Model Definitions for Polarized Beam Mapping",
