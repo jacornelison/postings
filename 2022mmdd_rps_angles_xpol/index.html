@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Pol Angles — J. Cornelison</title>
+    <title>RPS Results Summary — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -28,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Analysis: Polarization Angles and Cross-polar responses</h1>
+    <h1>RPS Analysis: Summary of RPS-derived Polarization Parameters (WIP)</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         2023 Feb 20
@@ -618,7 +618,19 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
         </script>
     </figure>
 
-    <p>I'm still working out the math, but I believe I can show through sims that the anticorrelation originates from correlated amplitude-scaling noise. I create modulation curves with known input parameters and add some white noise $N$ that is scaled by the modulation curves for both a detector with an angle of 0&deg;, $A_0$, and one with an input angle of 90&deg;, $A_{90}$.</p>
+    <p>By definition, the slopes of the modulation curves for a Pol0 and Pol90 detector are 90&deg; out of phase which means that, for a change in angle in the mod curve, the change in amplitude for one detector would be positive and the other would be negative. Thus, we can imagine that if the signals of Pol0 and Pol90 detectors were correlated in some way, we would expect the effect on the angles to be anticorrelated.</p>
+
+    <p>Below is a plot of the Pol 90 vs. Pol 0 mod curve fractional residuals (i.e. $\left(A_{model}-A_{data}\right)/A_{model}$) which shows that some fraction of the noise in the modulation curves is correlated. Each point is the fractional residual for one detector pair at one of 13 data points in the modulation curve. In the plot, I only show data where the amplitudes along the mod curve are equal between Pol 0 and Pol 90 -- this ensures that the uncorrelated noise in Pol0 and Pol90 are roughly equal and makes correlations easier to see.</p>
+
+    <figure>
+        <img src="figs/pol90_vs_pol0_mod_curve_res.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+    
+    <p>In an old posting, I showed that RPS beam maps and modulation curves were dominated by noise that scaled with the amplitude -- likely a result from some systematic in the demodulation routine.
+        Below, I show that fitting sims of mod curves with only correlated, amplitude-scaling noise produces anticorrelations in detector pairs at a similar level as seen in the real data. I create modulation curves with known input parameters and add some white noise $N$ that is scaled by the modulation curves for both a detector with an angle of 0&deg;, $A_0$, and one with an input angle of 90&deg;, $A_{90}$.</p>
 
     \begin{equation}
     \begin{split}
@@ -630,7 +642,7 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
     <p>
         Because I want the noise to be correlated, I use the same N for both mod curves for a given realization. I use a noise amplitude of 1.3% which I calculated from real modulation curves.
     </p>
-    <p>I then fit my angle and 4 other parameters to each realization. Below, I plot $\phi_0$ vs $\phi_{90}$ for these sims and find a correlation of ~-0.6 which is consistent with the real data within 10%. The covariance is consistent within a factor of 3.</p>
+    <p>I then fit my angle and 4 other parameters to each realization. Below, I plot $\phi_0$ vs $\phi_{90}$ for these sims and find a correlation of ~-0.6 which is consistent with the real data within 10%.</p>
     
     <figure>
         <img src="figs/pol90_vs_pol0_sim.png">
@@ -638,10 +650,6 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
 
         </figcaption>
     </figure>
-
-    <p>
-        For the figure above, I set the inputs for $epsilon$ and the collimation parameters to zero but I found that the correlation is independent of these parameters.
-    </p>
 
 </section>
 

@@ -904,10 +904,6 @@ end
 
 grid on
 
-%%
-S = std(B,[],1);
-N = S(setdiff(1:13,[4 10]))-S(4);
-N = N./mean(B(:,setdiff(1:13,[4 10])),1)
 
 %% Fits to mock data with correlated amp-scaling noise.
 
@@ -989,9 +985,65 @@ fname = 'pol90_vs_pol0_sim.png';
 saveas(fig,fullfile(figdir,fname),'png')
 
 
+%% Grab the mod curves for A/B dets 
+
+[Amodel Adata] = deal({});
+fig = figure(1);
+fig.Position(3:4) = [600 500];
+clf; hold on;
+
+for obsind = 8:9%1:length(dks)
+idx = find(ismember(fd.ch,ind0) & fd.obsnum == obsind);
+
+[B, B90, R, Bmod,Bmod90] = deal([]);
+% fig = figure(2);
+% clf; hold on;
+
+isused = false(size(idx));
+for idxind = 1:length(idx)
+    fdi = idx(idxind);
+    fdi90 = fd.pair_idx(fdi);
+    if fd.nrots(fdi) == 13 && ~isnan(fdi90)
+        b = fd.bparam{fdi}(6:end)./fd.Amp(fdi);
+        b90 = fd.bparam{fdi90}(6:end)./fd.Amp(fdi90);
+        if ~isnan(sum(b+b90))
+        B(end+1,:) = b;
+        B90(end+1,:) = b90;
+        R(end+1,:) = fd.rot{fdi}; 
+        Bmod(end+1,:) = rps_get_mod_model([fd.phi(fdi),fd.xpol(fdi),fd.n1(fdi),fd.n2(fdi),fd.Amp(fdi)],fd.rot{fdi}+fd.phi_s(fdi))./fd.Amp(fdi);
+        Bmod90(end+1,:) = rps_get_mod_model([fd.phi(fdi90),fd.xpol(fdi90),fd.n1(fdi90),fd.n2(fdi90),fd.Amp(fdi90)],fd.rot{fdi90}+fd.phi_s(fdi90))./fd.Amp(fdi90);
+        %plot(R(end,:),B(end,:))
+        %grid on
+        isused(idxind) = true;
+        end
+    end
+end
+
+% Plot fracdiff residuals A vs. B per zeta
+Bres = (Bmod-B)./Bmod;
+Bres90 = (Bmod90-B90)./Bmod90;
+
+idx = [2 3 5 6 8 9 11 12];
+idx = [1 4 7 10];
+%idx = 1:13;
+lims = [-1 1]*0.06;
+plot(lims,lims,'--','Color',[1 1 1]*0.75,'LineWidth',1)
+plot(Bres(:,idx),Bres90(:,idx),'.','MarkerSize',14,'Color',cmlines(1,:));
+xlim(lims)
+ylim(lims)
+grid on
+end
+
+pbaspect([1 1 1])
+xlabel({'Pol0',''})
+ylabel({'','Pol90'})
+title('Mod Curve fractional residuals')
+
+fname = 'pol90_vs_pol0_mod_curve_res.png';
+saveas(fig,fullfile(figdir,fname),'png')
 
 
-%% Plot modecurve residuals!?
+%% Plot modcurve residuals!?
 
 if ~exist('modcurvefig','var') | ~ishandle(modcurvefig)
     count = 1;
