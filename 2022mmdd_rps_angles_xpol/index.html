@@ -377,7 +377,7 @@ Diff ref pointing
         We can see that the angles are mostly the same with the largest variation being between different tiles. A particularly interesting thing to note is that we see a consistent non-orthogonality between detectors in a given pair of 0.7&deg;&pm;0.32&deg; (MCE0 is at -0.7 in Fig 2.1 because of the 90&deg; clocking of the modules).
     </p>
     <p>
-        The plots below
+        The corner plots below show the fit parameters plotted against each other to look for any strong correlations between parameters.
     </p>
 
     <figure>
@@ -433,8 +433,7 @@ Diff ref pointing
     </figure>
 
     <p>
-        Another thing to note is that we can see that MCE3 has only a few detectors pass cuts.
-
+        Another thing to note is that we can see that MCE3 has only a few detectors pass cuts. For BK18, less than 100 pairs from MCE3 (compared to ~200 for the others) and only ~30% of these pass my cuts on aluminum.
     </p>
 
 </section>
@@ -487,7 +486,7 @@ Diff ref pointing
 
             pager.link("#consistpager",
                 {
-                    'Comparison|val' : ['phi','xpol'],
+                    'Comparison|val' : ['$\\phi_{pair}$|phi','1-Poleff|xpol'],
                     'Year|year2' : ['RPS 2018|2018','B18 FPU Data|fpu','RPS 2022|2022_min'],
                 },
                 fcn);
@@ -504,7 +503,7 @@ Diff ref pointing
 
     <p>For 2022 vs. B18 'Obs', we see an offset of -0.730 degrees -- this is the angle we would expect if we fit a global rotation angle to B18 right now, assuming map coverage, detector weighting, and galactic foregrounds were negligible. That said, all of these factors may affect the actual angle we see in the real data to some degree (pun intended), so it's not useful to focus too much on it.</p>
 
-    <p>Finally for the two +</p>
+    <p>Finally for the two RPS2022 subsets of data, we can see that the data is self-consistent to within 0.027&deg;. I take this value as the upper limit of the combination of systematic and statistical uncertainty on the angle.</p>
 
 </section>
 
