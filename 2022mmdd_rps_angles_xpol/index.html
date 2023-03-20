@@ -522,62 +522,63 @@ Diff ref pointing
     </figure>
 
 
-    <h3>Pol Params Vs. Stuff plots</h3>
-<p>Below are plots of polarization angles <b>with the per-detector median subtracted</b>.</p>
-    <figure>
-        <img alt="Name pager" id="yvxpager" src="#" />
-        <figcaption>
-            Each dot represents a single detector aligned with either 0&deg; or 90&deg; unless the 'pair' option is selected which shows the pair-diff angle for $\phid$, 1-efficiency for $\xpol$ and the pair-average for N1, N2, and Amp. Data are colored by observation number with dark blue being the first and yellow being the last.
-        </figcaption>
-        <script type="text/javascript">
-            function fcn(params){
-                return 'figs/scatter_'+params.y+'_'+params.subset+'_vs_'+params.x+params.medsub+'.png';
-            }
+<!--    <h3>Pol Params Vs. Stuff plots</h3>-->
+<!--<p>Below are plots of polarization angles <b>with the per-detector median subtracted</b>.</p>-->
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="yvxpager" src="#" />-->
+<!--        <figcaption>-->
+<!--            Each dot represents a single detector aligned with either 0&deg; or 90&deg; unless the 'pair' option is selected which shows the pair-diff angle for $\phid$, 1-efficiency for $\xpol$ and the pair-average for N1, N2, and Amp. Data are colored by observation number with dark blue being the first and yellow being the last.-->
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            function fcn(params){-->
+<!--                return 'figs/scatter_'+params.y+'_'+params.subset+'_vs_'+params.x+params.medsub+'.png';-->
+<!--            }-->
 
-            pager.link("#yvxpager",
-                {
-                    'Y|y' : ['phi','xpol','n1','n2','amp'],
-                    '0/90/Pair|subset' : ['0','90','Pair|p'],
-                    'X|x' : ['Time|t','peak_diff','el_cen_sun'],
-                    'Median-Subtraction|medsub' : ['Off|','On|_medsub'],
-                },
-                fcn);
-            pager.setparams({
-                'y' : 'phi',
-                'subset': '0',
-                'x': 't',
-                'medsub':'_medsub',
-            });
-        </script>
-    </figure>
+<!--            pager.link("#yvxpager",-->
+<!--                {-->
+<!--                    'Y|y' : ['phi','xpol','n1','n2','amp'],-->
+<!--                    '0/90/Pair|subset' : ['0','90','Pair|p'],-->
+<!--                    'X|x' : ['Time|t','peak_diff','el_cen_sun'],-->
+<!--                    'Median-Subtraction|medsub' : ['Off|','On|_medsub'],-->
+<!--                },-->
+<!--                fcn);-->
+<!--            pager.setparams({-->
+<!--                'y' : 'phi',-->
+<!--                'subset': '0',-->
+<!--                'x': 't',-->
+<!--                'medsub':'_medsub',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
-    <p>Interesting Clicks:
-        <ul>
-    <li>
-        <a href="javascript:pager.setparams({'y':'phi','subset':'0','x':'t','medsub':'_medsub'})">phi 0</a>
-        vs
-        <a href="javascript:pager.setparams({'y':'phi','subset':'90','x':'t','medsub':'_medsub'})">phi 90</a>, median-subtracted:
-        There appears to be some anti-correlation in the angle estimates between detectors of a given pair. This is particularly obvious in the very first dataset collected in late December.
-    </li>
-    <li>
-        <a href="javascript:pager.setparams({'y':'n1','subset':'0','x':'peak_diff'})">N1,0</a>
-        and
-        <a href="javascript:pager.setparams({'y':'n2','subset':'90','x':'peak_diff'})">N2,90</a> vs mod curve pk-pk fractional difference:
+<!--    <p>Interesting Clicks:-->
+<!--        <ul>-->
+<!--    <li>-->
+<!--        <a href="javascript:pager.setparams({'y':'phi','subset':'0','x':'t','medsub':'_medsub'})">phi 0</a>-->
+<!--        vs-->
+<!--        <a href="javascript:pager.setparams({'y':'phi','subset':'90','x':'t','medsub':'_medsub'})">phi 90</a>, median-subtracted:-->
+<!--        There appears to be some anti-correlation in the angle estimates between detectors of a given pair. This is particularly obvious in the very first dataset collected in late December.-->
+<!--    </li>-->
+<!--    <li>-->
+<!--        <a href="javascript:pager.setparams({'y':'n1','subset':'0','x':'peak_diff'})">N1,0</a>-->
+<!--        and-->
+<!--        <a href="javascript:pager.setparams({'y':'n2','subset':'90','x':'peak_diff'})">N2,90</a> vs mod curve pk-pk fractional difference:-->
 
-    </li>
-    <li>
-        <a href="javascript:pager.setparams({'y':'amp','subset':'p','x':'el_cen_sun'})">Amp,Pair</a>
-        Vs, Sun Elevation
+<!--    </li>-->
+<!--    <li>-->
+<!--        <a href="javascript:pager.setparams({'y':'amp','subset':'p','x':'el_cen_sun'})">Amp,Pair</a>-->
+<!--        Vs, Sun Elevation-->
 
 
 
-    </li>
-</ul>
-    </p>
+<!--    </li>-->
+<!--    -->
+<!--</ul>-->
+<!--    </p>-->
 
 
     <h3>Detector Pair Anti-Correlations</h3>
-    <p>If we plot the detector pairs against each other within a given rasterset, we can see some hints of anticorrelation between them.</p>
+    <p>If we plot the detector pairs against each other within a given rasterset, we can see some hints of anticorrelation between them which is consisten between the Standard Type 5 data and the Type 9 data across the whole campaign.</p>
     <figure>
         <img alt="Name pager" id="avbpager" src="#" />
         <figcaption>
@@ -600,7 +601,7 @@ Diff ref pointing
         </script>
     </figure>
 
-    <p>In the pager below, I show the covariance and correlations as a function of DK angle.</p>
+    <p>In the pager below, I show the covariance and correlations as a function of DK angle. With the exception of DK=0 in the type 5's, I get a covaraince of ~-0.005&deg;<sup>2</sup> and a correlation of ~-0.6.</p>
 
     <figure>
         <img alt="Name pager" id="covcorrpager" src="#" />
@@ -623,6 +624,28 @@ Diff ref pointing
             });
         </script>
     </figure>
+
+    <p>I'm still working out the math, but I believe I can show through sims that the anticorrelation originates from correlated amplitude-scaling noise. I create modulation curves with known input parameters and add some white noise $N$ that is scaled by the modulation curves for both a detector with an angle of 0&deg;, $A_0$, and one with an input angle of 90&deg;, $A_{90}$.</p>
+
+    \begin{equation}
+    \begin{split}
+    &\hat{A}_0 = A_0+A_0\,N\\
+    &\hat{A}_{90} = A_{90}+A_{90}\,N\\
+    \end{split}
+    \end{equation}
+
+    <p>
+        Because I want the noise to be correlated, I use the same N for both mod curves for a given realization. I use a noise amplitude of 1.3% which I calculated from real modulation curves.
+    </p>
+    <p>I then fit my angle and 4 other parameters to each realization. Below, I plot $\phi_0$ vs $\phi_{90}$ for these sims and find a correlation of ~-0.6 which is consistent with the real data within 10%. The covariance is consistent within a factor of 3.</p>
+    
+    <figure>
+        <img src="figs/pol90_vs_pol0_sim.png">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
 
 </section>
 

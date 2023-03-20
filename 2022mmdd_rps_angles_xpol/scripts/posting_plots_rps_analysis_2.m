@@ -876,24 +876,120 @@ title('A/B Correlation vs. DK')
 saveas(fig,fullfile(figdir,fname),'png')
 
 
-%% Plot phis vs n1 & n2
+%% Create sims for correlated amp-scaling noise
 
+% Grab the mod curves for A dets
+idx = find(ismember(fd.ch,ind0) & fd.obsnum == 7);
 
+[B, B90, R] = deal([]);
+fig = figure(2);
+clf; hold on;
+
+isused = false(size(idx));
+for idxind = 1:length(idx)
+    fdi = idx(idxind);
+    fdi90 = fd.pair_idx(fdi);
+    if fd.nrots(fdi) == 13 & ~isnan(fdi90)
+        b = fd.bparam{fdi}(6:end)./fd.Amp(fdi);
+        b90 = fd.bparam{fdi90}(6:end)./fd.Amp(fdi90);
+        if ~isnan(sum(b+b90))
+        B(end+1,:) = b;
+        B90(end+1,:) = b90;
+        R(end+1,:) = fd.rot{fdi}; 
+        plot(R(end,:),B(end,:))
+        isused(idxind) = true;
+        end
+    end
+end
+
+grid on
+
+%%
+S = std(B,[],1);
+N = S(setdiff(1:13,[4 10]))-S(4);
+N = N./mean(B(:,setdiff(1:13,[4 10])),1)
+
+%% Fits to mock data with correlated amp-scaling noise.
+
+clc
+mxfev = 100000;
+mxiter = 100000;
+options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
+
+Niter = 2000;
+sigN1 = 0.01*0;
+sigN2 = 0.01*0;
+sigA = 0.1*0;
+sigB = 0.1*0;
+sigAmp = 0.013;
+sigE = 0.001*0;
+dk = 0;
+
+tic;
+clear Pa Pb Ras
+fig = figure(3);
+clf; hold on;
+for iterind = 1:Niter
+    rot0 = (-180:15:180)+dk;
+    rot = rot0+0*normrnd(0,0.001,size(rot0));
+    phia = normrnd(0,sigA,1,1);
+    phib = normrnd(90,sigB,1,1);
+    N1 = normrnd(0,sigN1,1,1);
+    N2 = normrnd(0,sigN2,1,1);
+    epsa = normrnd(0.01,sigE,1,1);
+    epsb = normrnd(0.01,sigE,1,1);
+    Anoise = normrnd(0,sigAmp,size(rot));
+
+    parm = [phia epsa N1 N2 1];
+    Ra = rps_get_mod_model(parm,rot);
+    Ra = Ra+(Ra).*Anoise;
+    Ras(iterind,:) = Ra;
+    parm = [phib epsb N1 N2 1];
+    Rb = rps_get_mod_model(parm,rot);
+    Rb = Rb+(Rb).*Anoise;
+
+    lb = [-10 -0.5 -10 -10 0];
+    ub = [169 0.5 10 10 1e3];
+    guess = [0 0 0 0 max(Ra)/2];
+    parm_a = lsqcurvefit(@rps_get_mod_model,guess,rot0,Ra,lb,ub,options);
+    Pa(iterind) = parm_a(1);
+
+    %lb = [-20+90 -0.5 -10 -10 0];
+    %ub = [20+90 0.5 10 10 1e3];
+    guess = [90 0 0 0 max(Rb)/2];
+    parm_b = lsqcurvefit(@rps_get_mod_model,guess,rot0,Rb,lb,ub,options);
+    Pb(iterind) = parm_b(1);
+
+    plot(rot0,Ra)
+
+end
+toc;
+
+%
 fig = figure(1);
 fig.Position(3:4) = [600 500];
 clf; hold on;
 
-idx = ismember(fd.ch,ind90) & fd.obsnum==10;
-scatter(fd.peak_diff(idx),fd.n2(idx),14,fd.obsnum(idx),'filled')
+plot(Pa,Pb-90,'.','MarkerSize',14);
+lims = [-1 1]*0.6;
+plot(lims,-lims,'--','Color',[1 1 1]*0.75,'LineWidth',1)
+xlim(lims)
+ylim(lims)
 grid on
-colorbar()
-%xlabel('n2')
-%ylabel('\phi_{90}-Md(\phi_{90}) [Degrees]')
-%xlim([-1 1]*0.05)
-%ylim([-1 1]*1)
-% leg = legend(z,legttls);
-% title(leg,'DK''s:')
-% title(corrttls{corrind})
+pbaspect([1 1 1])
+xlabel({'\phi_{d,0} [Degrees]',''})
+ylabel({'','\phi_{d,90}-90^\circ [Degrees]'})
+title(sprintf('\\phi 0 Vs. 90 of N=%i noise-correlated sims',Niter))
+C = (cov(Pa,Pb));
+D = corrcov(C);
+text(0.1,0.4,{sprintf('0/90 Cov: %1.3f [Deg^2]',C(1,2))...
+    sprintf('0/90 Corr: %1.3f',D(1,2))})
+
+fname = 'pol90_vs_pol0_sim.png';
+saveas(fig,fullfile(figdir,fname),'png')
+
+
+
 
 %% Plot modecurve residuals!?
 
@@ -1136,8 +1232,54 @@ idx = find(inrange(fd_type9.t,starttime,endtime));
 std(fd_type9.phi_pair(idx(1:2:end)))
 
 
+%% Check N chans used per year vs how many we have from the RPS.
+% Run on odyssey.
+Nchans = NaN(3,2);
+yrs = {'2016','2017','2018'};
+k = ParameterRead('aux_data/chi/phi_dummy_bicep3_20150101.csv');
+usedchans = zeros(2,2640);
+
+for yrind = 1:3
+% load the channel flags used by B2018
+clear chflags
+chflags = get_default_chflags([],yrs{yrind});
+
+clear get_array_info
+[p1, p1_ind] = get_array_info(20160505+10000*(yrind-1),'obs','obs','obs','obs',chflags);
+
+flags = struct();
+flags.filebase{1} = 'chi/phi_dummy';
+flags.par_name = {'hasmeas'};
+flags.low = [0.5];
+flags.high = [1.5];
+
+chflags = structcat(chflags,flags);
+
+clear get_array_info
+[p2, p2_ind] = get_array_info(20160505+10000*(yrind-1),'obs','obs','obs','obs',chflags);
+
+Nchans(yrind,:) = [length(p1_ind.rgl100a), length(p2_ind.rgl100a)];
+usedchans(1,p1_ind.rgl100) = 1;
+usedchans(2,p2_ind.rgl100) = 1;
+
+end
 
 
+
+if 1
+    clc
+    fprintf('\tNchans\t\n')
+    fprintf('Year\tCMB\tRPS\t%%\n')
+    for yrind = 1:3
+
+        fprintf('%s\t%03i\t%03i\t%1.0f\n',yrs{yrind},Nchans(yrind,1),Nchans(yrind,2),Nchans(yrind,2)./Nchans(yrind,1)*100)
+    end
+
+
+    fprintf('\n\nTotal unique pairs used\n')
+    fprintf('CMB\tRPS\t%%\n')
+    fprintf('%i\t%i\t%1.0f\n',sum(usedchans(1,:),2)/2,sum(usedchans(2,:),2)/2,(sum(usedchans(2,:),2)./sum(usedchans(1,:),2))*100)
+end
 
 
 %% End of main function
