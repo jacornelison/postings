@@ -568,22 +568,6 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
 <!--</ul>-->
 <!--    </p>-->
 
-    <h3 id="phivsobs">Overall Pair Angle fluctuation per-Obs</h3>
-
-    <p>We see fluctuations on the per-pair angle averaged over all pairs in a given observation of ~0.04&deg;.
-        Because we have a ~1.5 degree spread in angle across the focal plane, a shift of O(0.04&deg;) is easy to miss unless you subtract the median angle for that pair across all observations before averaging across pairs within a single observation.</p>
-
-    <p>The plot below shows the $\phi_{pair}$ median-subtracted per-pair and then averaged per-observation. The error bars are the 1&sigma; standard deviations of the median-subtracted distributions. </p>
-
-    <figure>
-        <img src="figs/phi_pair_vs_obs_medsub.png" width="70%">
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-    <p>The major question that needs to be answered is whether we are confident that the value these angles average down to is the right one. Perhaps it would be best to include this 0.04&deg; fluctuation in our systematic uncertainty just to be safe?</p>
-    <p>So far, I have not been able to find any correlations with these offsets that would point to a particular systematic (correlating with DK angle, for instance).</p>
 
     <h3 id="abanticorr">Detector Pair Anticorrelations</h3>
     <p>If we plot the detector pairs against each other within a given rasterset, we can see anticorrelation between them which is consistent between the Standard Type 5 data and the Type 9 data across the whole campaign.</p>
@@ -668,6 +652,25 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
 
         </figcaption>
     </figure>
+
+    <h3 id="phivsobs">Overall Pair Angle fluctuation per-Obs</h3>
+
+    <p>We see fluctuations on the per-pair angle averaged over all pairs in a given observation of ~0.04&deg;.
+        Because we have a ~1.5 degree spread in angle across the focal plane, a shift of O(0.04&deg;) is easy to miss unless you subtract the median angle for that pair across all observations before averaging across pairs within a single observation.</p>
+
+    <p>The plot below shows the $\phi_{pair}$ median-subtracted per-pair and then averaged per-observation. The error bars are the 1&sigma; standard deviations of the median-subtracted distributions. </p>
+
+    <figure>
+        <img src="figs/phi_pair_vs_obs_medsub.png" width="70%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>The major question that needs to be answered is whether we are confident that the value these angles average down to is the right one. Perhaps it would be best to include this 0.04&deg; fluctuation in our systematic uncertainty just to be safe?</p>
+    <p>So far, I have not been able to find any correlations with these offsets that would point to a particular systematic (correlating with DK angle, for instance).</p>
+
+
 
 </section>
 
