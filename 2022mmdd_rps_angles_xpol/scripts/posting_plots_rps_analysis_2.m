@@ -19,14 +19,13 @@ p = p22.p;
 p_ind = p18.p_ind;
 
 % shortcuts for 0/90 orientiations
-inda = p_ind.rgla;
-indb = p_ind.rglb;
+inda = p_ind.a;
+indb = p_ind.b;
 
-ind0 = [p_ind.rgl100a(ismember(p_ind.rgl100a,find(p.mce~=0))) ...
-    p_ind.rgl100b(ismember(p_ind.rgl100b,find(p.mce==0)))];
-ind90 = [p_ind.rgl100b(ismember(p_ind.rgl100b,find(p.mce~=0))) ...
-    p_ind.rgl100a(ismember(p_ind.rgl100a,find(p.mce==0)))];
-
+ind0 = [inda(ismember(inda,find(p.mce~=0))) ...
+    indb(ismember(indb,find(p.mce==0)))];
+ind90 = [indb(ismember(indb,find(p.mce~=0))) ...
+    inda(ismember(inda,find(p.mce==0)))];
 
 % Load type 9 data
 %load('z:/dev/rps/type9_fit_dat_mirrorfitted_cut.mat')
@@ -55,6 +54,7 @@ load('z:/dev/rps/rps_obs_info.mat')
 %load('z:/dev/rps/rps_beam_fits_type5_withbparam.mat')
 load('z:/dev/rps/rps_beam_fits_type5_21feb_rerun.mat');
 fd = rps_cut_fitdata(fd,p,p_ind);%,1,figdir);
+%fd = rps_cut_fitdata(fd,p,[]);%,1,figdir);
 %
 fd = get_pair_params(fd,ind0,ind90);
 [fd, phis, phi_pair, xpols, poleff_pair,n1s,n2s,amps] = get_pol_params_per_obs(fd,p,scheds);
@@ -319,9 +319,99 @@ for yearind = 1:length(V)
     saveas(fig,fullfile(figdir,fname))
 end
 
+%% Angle VS. DK per tile
 
 
+trow = [2 3 4 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 2 3 4];
+tcol = [5 5 5 4 4 4 4 4 3 3 3 3 3 2 2 2 2 2 1 1 1];
+rc2idx = reshape(1:25,5,5)';
+fig = figure(1);
+fig.Position(3:4) = [750 650];
+clf;
+t = tiledlayout(5,5);
+t.Padding = 'tight';
+t.TileSpacing = 'tight';
+P = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
+[b bi] = sort(dks);
+for tind = 1:20
+    idx = p.tile==tind;
+    nexttile(rc2idx(trow(tind),tcol(tind)))
+    hold on
+    plot(dks(bi),nanmean(P(bi,idx),2),'.')
+    errorbar(dks(bi),nanmean(P(bi,idx),2),nanstd(P(bi,idx),[],2),'CapSize',0)
+    grid on
+    lims = [-1 1]*0.11;
+    ylim(lims)
+    xlim([-180 180])
+    pbaspect([1 1 1])
+    ttl = title(sprintf('Tile %i',tind));
+    ttl.Position(2) = 0.075;
+    if tind == 18
+        xb = xlabel('DK [Deg]');
+        xb.Position(2) = -0.075;
+        ylabel({'\phi_{pair}-md(\phi) [Deg]'})
+    end
+end
 
+%% Angle VS. obs
+%load('z:/dev/rps/rps_phi_final_2022.mat')
+P = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
+fig = figure(2);
+fig.Position(3:4) = [450 420];
+clf; hold on
+errorbar(1:10,nanmean(P,2),nanstd(P,[],2),'.','CapSize',0,'LineWidth',1.25)
+plot(1:10,nanmean(P,2),'.','MarkerSize',14)
+%plot([-180 180],polyval(C,[-180 180]),'k--')
+
+grid on
+lims = [-1 1]*0.085;
+ylim(lims)
+xlim([0 10])
+xlabel('Obs')
+ylabel({'\phi_{pair}-md(\phi) [Deg]'})
+title({'\phi_{pair} Vs. Obs','Median-subtracted per pair, avg''d per obs'})
+pbaspect([1 1 1])
+fname = 'phi_pair_vs_obs_medsub';
+saveas(fig,fullfile(figdir,fname),'png')
+
+%% Angle VS. DK overall
+%load('z:/dev/rps/rps_phi_final_2022.mat')
+P = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
+fig = figure(2);
+fig.Position(3:4) = [450 420];
+clf; hold on
+C = polyfitweighted(dks,nanmean(P,2)',1,nanstd(P,[],2)');
+errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:),[],2),'CapSize',0)
+plot(dks(bi),nanmean(P(bi,:),2),'.','MarkerSize',14)
+%plot([-180 180],polyval(C,[-180 180]),'k--')
+
+grid on
+lims = [-1 1]*0.085;
+ylim(lims)
+xlim([-180 180])
+xlabel('Dk [Deg]')
+ylabel({'\phi_{pair}-md(\phi) [Deg]'})
+title({'\phi_{pair} Vs. Dk','Median-subtracted per pair, avg''d per obs'})
+pbaspect([1 1 1])
+fname = 'phi_pair_vs_dk_medsub';
+saveas(fig,fullfile(figdir,fname),'png')
+
+
+%%
+
+fig = figure(2);
+fig.Position(3:4) = [450 420];
+clf; hold on
+edges = (-1:1/8:1)*0.06;
+N = histc(nanmean(P,2),edges);
+bar(edges,N,'histc')
+grid on
+title('Mean Med-Sub \phi_{pair} per-obs')
+xlabel({'\phi_{pair}-md(\phi) [Deg]'})
+ylabel('N')
+pbaspect([1 1 1])
+fname = 'phi_pair_avg_perobs_medsub';
+saveas(fig,fullfile(figdir,fname),'png')
 
 %% Fig. 2.1.3 Averaged tile plots
 
@@ -747,15 +837,15 @@ plot(lims,-lims,'--','Color',[1 1 1]*0.75,'LineWidth',1)
 clear z
 for obsind = 1:length(dks)
     idx = V1(obsind,:)~=0 & V2(obsind,:)~=0;
-    z(obsind) = plot(V1(obsind,idx)',V2(obsind,idx)','.','MarkerSize',14);
+    z(obsind) = plot(V1(obsind,idx)',V2(obsind,idx)','.','MarkerSize',14,'Color',cmlines(1,:));
 end
 xlim(lims)
 ylim(lims)
 grid on
 xlabel({'\phi_{d,0}-Md(\phi_{d,0}) [Degrees]',''})
 ylabel({'','\phi_{d,90}-Md(\phi_{d,90}) [Degrees]'})
-leg = legend(z,legttls);
-title(leg,'DK''s:')
+%leg = legend(z,legttls);
+%title(leg,'DK''s:')
 title('Pol 90 Vs Pol 0')
 pbaspect([1 1 1])
 
@@ -917,7 +1007,7 @@ sigN1 = 0.01*0;
 sigN2 = 0.01*0;
 sigA = 0.1*0;
 sigB = 0.1*0;
-sigAmp = 0.005;
+sigAmp = 0.013;
 sigE = 0.001*0;
 dk = 0;
 
@@ -966,9 +1056,9 @@ fig = figure(1);
 fig.Position(3:4) = [600 500];
 clf; hold on;
 
-plot(Pa,Pb-90,'.','MarkerSize',14);
 lims = [-1 1]*0.6;
 plot(lims,-lims,'--','Color',[1 1 1]*0.75,'LineWidth',1)
+plot(Pa,Pb-90,'.','MarkerSize',14,'Color',cmlines(1,:));
 xlim(lims)
 ylim(lims)
 grid on
@@ -982,7 +1072,7 @@ text(0.1,0.4,{sprintf('0/90 Cov: %1.3f [Deg^2]',C(1,2))...
     sprintf('0/90 Corr: %1.3f',D(1,2))})
 
 fname = 'pol90_vs_pol0_sim.png';
-%saveas(fig,fullfile(figdir,fname),'png')
+saveas(fig,fullfile(figdir,fname),'png')
 
 
 %% Grab the mod curves for A/B dets 

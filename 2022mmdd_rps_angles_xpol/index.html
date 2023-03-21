@@ -496,7 +496,7 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
 
     <p>For 2022 vs. B18 'Obs', we see an offset of -0.730 degrees -- this is the angle we would expect if we fit a global rotation angle to B18 right now, assuming map coverage, detector weighting, and galactic foregrounds were negligible. That said, all of these factors may affect the actual angle we see in the real data to some degree (pun intended), so it's not useful to focus too much on it.</p>
 
-    <p>Finally for the two RPS2022 subsets of data, we can see that the data is self-consistent to within 0.027&deg;. I take this value as the upper limit of the combination of systematic and statistical uncertainty on the angle.</p>
+    <p>Finally for the two RPS2022 subsets of data, we can see that the data is self-consistent to within 0.027&deg;. I take this value as the upper limit of the statistical uncertainty on the angle.</p>
 
 </section>
 
@@ -567,6 +567,21 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
 <!--    -->
 <!--</ul>-->
 <!--    </p>-->
+
+    <h3 id="phivsdk">Overall Pair Angle fluctuation per-Obs</h3>
+
+    <p>We see fluctuations on the per-pair angle averaged over all pairs in a given observation of ~0.04&deg;.
+        Because we have a ~1.5 degree spread in angle across the focal plane, a shift of O(0.04&deg;) is easy to miss unless you subtract the median angle for that pair across all observations before averaging across pairs within a single observation.</p>
+
+    <p>The plot below shows the $\phi_{pair}$ median-subtracted per-pair and then averaged per-observation. The error bars are the 1&sigma; standard deviations of the median-subtracted distributions.</p>
+
+    <figure>
+        <img src="figs/phi_pair_vs_obs_medsub.png" width="70%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
 
 
     <h3 id="abanticorr">Detector Pair Anticorrelations</h3>
