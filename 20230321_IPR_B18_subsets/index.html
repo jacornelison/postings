@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>IPR Analysis 2: B18 Sims</title>
+    <title>IPR Analysis #: B18 Subset Angles</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -29,10 +29,10 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis 2: B18 sims, Angle Estimators, and Forecasting</h1>
+    <h1>Isotropic Polarization Rotation Analysis #: Effect on &alpha; of reduced coverage in B18 sims</h1>
 
     <time datetime="2022-02-14" class="published updated">
-        2023 Feb 14
+        2023 Feb 28
     </time> —
     J. Cornelison
 </header>
@@ -58,9 +58,11 @@
 \newcommand{\tozero}[1]{\color{red}{\bcancel{\color{black}{#1}}}\color{black}}
 \)
 
-
 <p>
-In this posting, ...
+    This posting is part of a series which comprises the IPR analysis, see <a href="#references">previous postings</a> for more on this.
+</p>
+<p>
+In this posting, I examine the effect on &alpha; and $\siga$ due to the fact that we didn't measure the pol angles for all detector pairs used in B18. In addition to increased noise from simply having fewer detectors on-sky, we are also worried about how well the standard B18 purification matrix will work on a map with reduced coverage. Fortunately, I find that the matrix purification shows an increase in $\siga$ by only 3-5% for maps with reduced coverages. We do, however, see the expected increase in $\siga$ of 30% resulting from increased noise due to having less detectors. I find that if we include higher &ell;-bins, we might be able to counter this effect though.
 </p>
 
 
@@ -123,38 +125,181 @@ In this posting, ...
 
     <p>
         I check the impact on the purification efficiency by comparing two B18 simsets of 10 realizations, one with maps comprising all detectors used in B18 (sernum 6600, B18-rerun) and another with only detectors that also have RPS-derived angles (sernum 6622, B18-rerun-subset).
-        The plot below compares the spectra of the two simsets. As with previous postings,
+        The plot below compares the spectra of the two simsets.</p>
+    <p>Some notes:
+        <ul>
+    <li>Each bandpower in the plot is the average over the 10 realizations. Both simsets use realization indices of 1-10 so, because we use seeded realizations, the spectra would be identical if using less detectors had no effect.</li>
+    <li>I show both the spectra themselves and the fractional difference between the two. For the frac-diff plots, I limit the y-axis &pm;1 where needed as large deviations beyond 1 are due to a small number being divided by another small number.</li>
+    <li>As with my recent previous postings, I cross Type 8 (Lensed Signal+Noise+Dust) T/E/B with a given signal's T/E/B.
+        This is useful because it gives meaning to EB/TB angle fits for noise and dust signal types. For instance, we know that $\sigasq$ scales linearly with BB-power with signals crossed with CMB so we can predict a priori through the spectra how $\siga$ will be affected by this reduction in coverage or any inefficiencies in purification. All other signals are crossed with type 8 to make the spectra comparable in an absolute sense.</li>
+</ul>
     </p>
 
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="histpager" src="#" onerror=this.src="figs/blank_6x4.png" width="100%"/>-->
-<!--        <figcaption>-->
+    <figure>
+        <img alt="Name pager" id="apspager" src="#" width="65%" onerror=this.src="figs/blank_6x6.png" width="100%"/>
+        <figcaption>
+        Each dot represents the average bandpower over 10 realizations. For the fractional difference, the mean is calculated before the fractional difference is calculated.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#apspager",
+                {
+                    'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],
+                    //'Signal Type|sig': ['Unlensed-LCDM|2','L-LCDM+Noise+Dust|8'],
+                    'Purification Method|pure': ['None|','Matrix|_matrix'],
+                },
+                function(params) {
+                    return 'figs/specplot_sig'+params.sig+params.pure+'.png';
+                });
+            pager.setparams({
+                'sig': '2',
+                'pure': '',
 
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-<!--            pager.link("#histpager",-->
-<!--                {-->
-<!--                    'Signal Type|sig': ['Unlensed-LCDM|2','G. Dust|3','Lensed-LCDM|5','Noise|6','L-LCDM+Noise|7','L-LCDM+Noise+Dust|8'],-->
-<!--                    'Purification Method|pure2': ['None|','Matrix|_matrix'],-->
-<!--                    'Simset|sernum2': ['B18|6614_fgh','B18-rerun|6600_fgh','B18-rerun-subset|6622_fgh'],-->
-<!--                    'cmb x noise/dust|c': ['Off|','On|_cross'],-->
-<!--                },-->
-<!--                function(params) {-->
-<!--                    return 'figs/'+params.sernum2+'_sig_'+params.sig+'_alpha_hist_bins_2_10_offdiag_0'+params.pure2+params.c+'_normal_repsim_6614xxx8.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                'sig': '2',-->
-<!--                'pure2': '_matrix',-->
-<!--                'sernum2': '6614_fgh',-->
-<!--                'c': '_cross',-->
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
+            });
+        </script>
+    </figure>
+    <p>
+    Differences in TT, TE, and EE due to coverage are on the percent level for the most part -- perhaps not too surprising. When we matrix purify, we don't see any change to TE, or EE because we don't bother adding E lost to E&rightarrow;B leakage back into E, I think. </p>
+    <p>
+        Focusing primarily on BB then:
 
-
-<p>
-
+    <ul>
+    <li><b>Unlensed-LCDM:</b>Differences in coverage mostly affect the three lowest &ell;-bins, which I think makes intuitive sense. Lower coverage translates into a higher sample variance and the lower &ell;'s are most affected by that. When we matrix-purify, matrix purification is qualitatively still effective and most of the large deviations in the frac-diff are due to dividing a small number by another small number.</li>
+    <li><b>Lensed-LCDM:</b> The comment about coverage is the same as before. However, now that we have a high-SNR measurement of lensing, the difference between purified spectra is only 3% or so, which tells us that the purification matrix isn't running into any issues with the reduced detectors or coverage.</li>
+    <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 30%. No surprise there -- we've dropped the number of detectors we're using by 30% and the noise BB power is going to reflect that.</li>
+    <li><b>L-LCDM+Noise(+Dust):</b> we're noise-dominated in BB at high-&ell;, so we see that 30% increase in BB-power where noise is dominant. At lower &ell;, the noise isn't as dominant over the lensing signal and the contribution to dust is more profound as well, so while we see an increase in BB, it's only 10-20% at those lower &ell; for both type 7 and 8.
+    </li>
+</ul>
 </p>
+
+    <p>In summary, we can see through Lensed-signal only that the purification efficiency for maps with our reduced coverage is around 97%, so we should be good to continue using the B18 purification matrix so long as the angles aren't biased in any way.</p>
+
+    <h3>How does this affect our angle fits?</h3>
+    <p>
+        In the table below, I compare the mean &alpha; and $\siga$ of L-LCDM+Noise+Dust between the two simsets. In one of my previous postings, I showed that we could decrease $\siga$ by ~30% by increasing bandpowers over which we fit from 2-10 to 2-15, so I include a column for both fits over bins 2-10 and 2-15. In either case, we don't see a bias in the means which is great, but we do see a ~50% increase in $\siga$. As such, the effect of including more bandpowers roughly cancels-out the effect of using less detectors, providing an even stronger motivation to look into this.
+    </p>
+
+
+    <figure class="table">
+        <table>
+            <tr>
+                <th colspan="7">Alpha Uncertainty Comparison</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th colspan="3">Bins 2-10</th>
+                <th colspan="3">Bins 2-15</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th class="cstart">B18 &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">B18-sub &sigma;<sub>&alpha;</sub>  </th>
+                <th class="cstart">frac-diff</th>
+                <th class="cstart">B18 &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">B18-sub &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">frac-diff</th>
+            </tr>
+<!--            <tr>-->
+<!--                <td>LCDM</td>-->
+<!--                <td class="cstart">0.0027</td>-->
+<!--                <td>0.0040</td>-->
+<!--                <td>0.51</td>-->
+<!--                <td class="cstart">0.0023</td>-->
+<!--                <td>0.0029</td>-->
+<!--                <td>0.27</td>-->
+<!--            </tr>-->
+            <tr>
+                <td>L-LCDM</td>
+                <td class="cstart">0.0603</td>
+                <td>0.0622</td>
+                <td>0.03</td>
+                <td class="cstart">0.0293</td>
+                <td>0.0309</td>
+                <td>0.05</td>
+            </tr>
+            <tr>
+                <td>Noise</td>
+                <td class="cstart">0.0389</td>
+                <td>0.0644</td>
+                <td>0.66</td>
+                <td class="cstart">0.0431</td>
+                <td>0.0526</td>
+                <td>0.22</td>
+            </tr>
+<!--            <tr>-->
+<!--                <td>Dust</td>-->
+<!--                <td class="cstart">0.0171</td>-->
+<!--                <td>0.0177</td>-->
+<!--                <td>0.03</td>-->
+<!--                <td class="cstart">0.0064</td>-->
+<!--                <td>0.0065</td>-->
+<!--                <td>0.02</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>L-LCDM+Noise</td>-->
+<!--                <td class="cstart">0.0461</td>-->
+<!--                <td>0.0742</td>-->
+<!--                <td>0.61</td>-->
+<!--                <td class="cstart">0.0383</td>-->
+<!--                <td>0.0541</td>-->
+<!--                <td>0.41</td>-->
+<!--            </tr>-->
+            <tr>
+                <td>L-LCDM+N+Dust</td>
+                <td class="cstart">0.0581</td>
+                <td>0.0848</td>
+                <td>0.46</td>
+                <td class="cstart">0.0357</td>
+                <td>0.0528</td>
+                <td>0.48</td>
+            </tr>
+
+        </table>
+        <figcaption>
+            A comparison of $\siga$ between B18 and B18-subset.
+        </figcaption>
+    </figure>
+
+
+    <figure class="table">
+        <table>
+            <tr>
+                <th></th>
+                <th colspan="2">Bins 2-10</th>
+                <th colspan="2">Bins 2-15</th>
+            </tr>
+            <tr>
+                <th>Simset</th>
+                <th>&alpha; [Deg]</th>
+                <th>&sigma;<sub>&alpha;</sub> [Deg]</th>
+                <th>&alpha; [Deg]</th>
+                <th>&sigma;<sub>&alpha;</sub> [Deg]</th>
+            </tr>
+            <tr>
+                <td>B18</td>
+                <td class="cstart">0.0058</td>
+                <td>0.0587</td>
+                <td class="cstart">-0.0031</td>
+                <td>0.0357</td>
+            </tr>
+            <tr>
+                <td>B18-Subset</td>
+                <td class="cstart">-0.0017</td>
+                <td>0.0848</td>
+                <td class="cstart">-0.0148</td>
+                <td>0.0528</td>
+            </tr>
+            <tr>
+                <th>frac-diff</th>
+                <th class="cstart">-</th>
+                <th>+0.46</th>
+                <th class="cstart">-</th>
+                <th>+0.48</th>
+            </tr>
+        </table>
+        <figcaption>
+            A comparison of Lensed-LCDM+Noise+Dust between B18 and B18 with a reduced number of detector pairs.
+        </figcaption>
+    </figure>
 
 
 
@@ -280,32 +425,22 @@ In this posting, ...
 
         // Shorthand tags
         var tags = [
-            "Carroll1990",
-            "Harari1992",
-            "Kaufman2013",
-            "JBW2016",
-            "EWB2016",
-            "BKIX",
-            "BKXII",
-            "BKXIV",
-            "BKXVII",
+            "KKL2020",
             "JAC2023",
+            "JAC2023b",
+            "JAC2023c",
+            "JAC2023d",
         ];
 
         // Links
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
-            "papers/carroll1990.pdf",
-            "papers/harari1992.pdf",
-            "https://arxiv.org/pdf/1312.7877.pdf",
-            "bkcmb/analysis_logbook/analysis/20160907_polrot/",
-            "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
-            "https://arxiv.org/pdf/1705.02523.pdf",
-            "https://arxiv.org/pdf/2011.03483.pdf",
-            "https://arxiv.org/pdf/2108.03316.pdf",
-            "https://arxiv.org/pdf/2210.08038.pdf",
+            "bkcmb/analysis_logbook/analysis/20201218_BK18_purification_diagnostics/",
             "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "http://bicep.rc.fas.harvard.edu/jcornelison/postings/20230321_IPR_high_ell/",
 
 
         ];
@@ -313,16 +448,11 @@ In this posting, ...
 
         // Posting titles
         var desc = [
-            "Limits on a Lorentz- and parity-violating modification of electrodynamics",
-            "Effects of a Nambu-Goldstone boson on the polarization of radio galaxies and the cosmic microwave background",
-            "Self-Calibration of BICEP1 Three-Year Data and Constraints on Astrophysical Polarization Rotation",
-            "Birefringence/Polarization rotation in K2015 and BK15",
-            "Polarization Rotation Sims Global Rotation",
-            "New Bounds on Anisotropies of CMB Polarization Rotation and Implications for Axion-Like Particles and Primordial Magnetic Fields",
-            "Constraints on axion-like polarization oscillations in the cosmic microwave background",
-            "Improved Constraints on axion-like polarization oscillations in the Cosmic Microwave Background",
-            "Line of Sight Distortion Analysis: Estimates of Gravitational Lensing, Anisotropic Cosmic Birefringence, Patchy Reionization, and Systematic Errors",
+            "BK18 Purification Eigensystem Matrix Diagnostics",
             "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+            "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+            "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
         ];
         // Debug
 
