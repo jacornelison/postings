@@ -165,7 +165,7 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
     <ul>
     <li><b>Unlensed-LCDM:</b>Differences in coverage mostly affect the three lowest &ell;-bins, which I think makes intuitive sense. Lower coverage translates into a higher sample variance and the lower &ell;'s are most affected by that. When we matrix-purify, matrix purification is qualitatively still effective and most of the large deviations in the frac-diff are due to dividing a small number by another small number.</li>
     <li><b>Lensed-LCDM:</b> The comment about coverage is the same as before. However, now that we have a high-SNR measurement of lensing, the difference between purified spectra is only 3% or so, which tells us that the purification matrix isn't running into any issues with the reduced detectors or coverage.</li>
-    <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 30%. No surprise there -- we've dropped the number of detectors we're using by 30% and the noise BB power is going to reflect that.</li>
+    <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 30%. No surprise there -- we've dropped the number of detectors we're using by 30% and the noise BB power is going to reflect that. I don't know that BB-power and N-detectors are known to be strongly linked -- I'd expect pair coverages/weights to obfuscate that relationship a bit -- so the fact that both are ~30% is interesting.</li>
     <li><b>L-LCDM+Noise(+Dust):</b> we're noise-dominated in BB at high-&ell;, so we see that 30% increase in BB-power where noise is dominant. At lower &ell;, the noise isn't as dominant over the lensing signal and the contribution to dust is more profound as well, so while we see an increase in BB, it's only 10-20% at those lower &ell; for both type 7 and 8.
     </li>
 </ul>
@@ -175,9 +175,13 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
 
     <h3>How does this affect our angle fits?</h3>
     <p>
-        In the table below, I compare the mean &alpha; and $\siga$ of L-LCDM+Noise+Dust between the two simsets. In one of my previous postings, I showed that we could decrease $\siga$ by ~30% by increasing bandpowers over which we fit from 2-10 to 2-15, so I include a column for both fits over bins 2-10 and 2-15. In either case, we don't see a bias in the means which is great, but we do see a ~50% increase in $\siga$. As such, the effect of including more bandpowers roughly cancels-out the effect of using less detectors, providing an even stronger motivation to look into this.
+        The table below shows a comparison of the angle uncertainties between our two simsets.
+        In one of my previous postings, I showed that we could decrease $\siga$ by ~30% by increasing bandpowers over which we fit from 2-10 to 2-15, so I include a column for both fits over bins 2-10 and 2-15. In either case, we do see a ~50% increase in $\siga$. Incidentally, the effect of including more bandpowers roughly cancels-out the effect of using less detectors, providing an even stronger motivation to look into this.
     </p>
 
+<p>
+
+</p>
 
     <figure class="table">
         <table>
@@ -259,6 +263,9 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
         </figcaption>
     </figure>
 
+    <p>
+        To show we're not getting any bias, I also show a table of the mean &alpha; and $\siga$ of L-LCDM+Noise+Dust between the two simsets.
+    </p>
 
     <figure class="table">
         <table>
