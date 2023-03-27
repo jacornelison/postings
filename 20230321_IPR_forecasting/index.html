@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>IPR Analysis 2: B18 Sims</title>
+    <title>IPR Analysis 5: sig-alpha forecasting</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -29,10 +29,10 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis 2: B18 sims, Angle Estimators, and Forecasting</h1>
+    <h1>Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims</h1>
 
-    <time datetime="2022-02-14" class="published updated">
-        2023 Feb 14
+    <time datetime="2022-03-28" class="published updated">
+        2023 Mar 28
     </time> —
     J. Cornelison
 </header>
@@ -61,6 +61,10 @@
 <p>
     This posting is part of a series which comprises the IPR analysis, see <a href="#references">previous postings</a> for more on this.
 </p>
+<p>
+    This posting goes over some rudimentary forecasting of uncertainty on &alpha; given some reduction in BB power due to e.g. delensing or including more CMB data.
+</p>
+
 
 <hr>
 
@@ -70,9 +74,8 @@
     In this section, we look into a simple forecasting technique that we can use to provide an educated guess on our limits on an IPR constraint in future analysis.
     i.e. predicting a $\siga$ givin some reduction in BB power in either lensing signal, noise, or dust.
     For context, this exercise is mostly to provide the foundation on a discussion of future analyses in our paper.
-    In my previous posting, we found that including higher &ell;-bins could improve our $\siga$ by up to 30%. For the exercise below, I include both cases where we use bins 2-10 and also bins 2-15.
 </p>
-    <p>We can show that the variance on &alpha; of the individual signal types add linearly to the variance of angles of the coadded signals. The same can be shown for that of BB power. The table below shows the variance from each fit-type and BB power for each signal type. In the middle and bottom sets of rows (i.e. the &sigma;<sup>2</sup>-rows), I compare the sum of the variances of the individual signal types to the variance of the coadded spectra of those signal types. We can see pretty clearly that the sum of the variances is equal to the variance of the coadded spectra to <5% for TB and <1% for EB, EB+TB, and BB-power.
+    <p>We can show that the variance on &alpha; of the individual signal types add linearly to the variance of angles of the coadded signals. The same can be shown for that of BB power. The table below shows the angle variance from each fit-type (fit to bins 2-10) of B18's 499 matrix-purified sims (sernum 6614) and BB power for each signal type. In the middle and bottom sets of rows (i.e. the &sigma;<sup>2</sup>-rows), I compare the sum of the variances of the individual signal types to the variance of the coadded spectra of those signal types. We can see pretty clearly that the sum of the variances is equal to the variance of the coadded spectra to <5% for TB and <1% for EB, EB+TB, and BB-power.
 </p>
 
     <figure class="table">
@@ -146,6 +149,8 @@
         </figcaption>
     </figure>
 
+
+
     <p>
         Because both add linearly, we can derive a simple scaling relation between $\sigasq$ and mean BB power which can then be used to estimate a $\sigasq$ for changes in BB power of a given signal type. The first scenario we consider is delensing, where we are able to reduce the BB power from the lensing signal by a flat 50% across all &ell;-bins. The second is the reduction in noise by incorporating data through 2022 -- B18 has effectively 2.5 years of data and I assume that B2019 through B2022 are just as good as B2018. The last I consider is just combining both B22 with a 50% delensing.
     </p>
@@ -193,18 +198,61 @@
             </tr>
 
         </table>
+        <figcaption>
+            Table comparing improvement on $\siga$ for different cases of delensing/including more observing years. Angle was fit over &ell;-bins 2 to 10.
+        </figcaption>
     </figure>
 
     <p>We can expect a ~20% reduction in $\siga$ in either case of only delensing or only including more years and a ~25% reduction if we do both.</p>
+    <p>In my previous posting <a href="JAC2023d"></a>, we found that including higher &ell;-bins could improve our $\siga$ by up to 30%. In the next table, I show the same table as above, but fitting to bins 2-15 instead of 2-10. </p>
 
-</section>
+    <figure class="table">
+        <table>
+            <tr>
+                <th>Signal</th>
+                <th colspan="2" class="cstart">EB</th>
+                <th class="cstart">BBmean</th>
+            </tr>
 
-<section><h2>Conclusions</h2>
-    <p>
-        <ul>
-        <li>I also find that, because both $\sigasq$ and BB-power both add linearly, we can establish a simple scaling relationship between the two which can provide rudimentary estimates on the sample variance of future analyses where we've reduced the BB power by e.g. delensing, including more years, etc...</li>
-    </ul>
-    </p>
+            <tr>
+                <th></th>
+                <th class="cstart">&sigma;<sub>&alpha;</sub></th>
+                <th class="cstart" colspan="1">&sigma;<sub>&alpha;</sub><sup>2</sup> [Deg<sup>2</sup>]</th>
+                <th class="cstart">[&mu;K<sup>2</sup>]</th>
+            </tr>
+
+            <tr>
+                <td class=''>B18 No Delensing</td>
+                <td class='cstart'>0.0497</td>
+                <td class='cstart'>0.0025</td>
+                <td class='cstart'>0.0958</td>
+            </tr>
+            <tr>
+                <td class=''>B18+50% Delensing</td>
+                <td class='cstart'>0.0458</td>
+                <td class='cstart'>0.0021</td>
+                <td class='cstart'>0.0854</td>
+            </tr>
+            <tr>
+                <td class=''>B22+No Delensing</td>
+                <td class='cstart'>0.0409</td>
+                <td class='cstart'>0.0017</td>
+                <td class='cstart'>0.0676</td>
+            </tr>
+            <tr>
+                <td class=''>B22+50% Delensing</td>
+                <td class='cstart'>0.0378</td>
+                <td class='cstart'>0.0014</td>
+                <td class='cstart'>0.0572</td>
+            </tr>
+
+        </table>
+        <figcaption>
+            Table comparing improvement on $\siga$ for different cases of delensing/including more observing years. Angle was fit over &ell;-bins 2 to 15.
+        </figcaption>
+    </figure>
+
+    <p>We find we can reduce $\siga$ by up to 50% for the case where we do all three (include up to &ell; bin 15 + 50% delensing + obs years up to B22) compared to our B18, No-Delensing, Fit-bins 2 to 10. Even if we choose not to include those higher &ell;-bins for this analysis, future efforts will probably want to make doing so a priority.</p>
 
 </section>
 
@@ -328,32 +376,20 @@
 
         // Shorthand tags
         var tags = [
-            "Carroll1990",
-            "Harari1992",
-            "Kaufman2013",
-            "JBW2016",
-            "EWB2016",
-            "BKIX",
-            "BKXII",
-            "BKXIV",
-            "BKXVII",
             "JAC2023",
+            "JAC2023b",
+            "JAC2023c",
+            "JAC2023d",
         ];
 
         // Links
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
-            "papers/carroll1990.pdf",
-            "papers/harari1992.pdf",
-            "https://arxiv.org/pdf/1312.7877.pdf",
-            "bkcmb/analysis_logbook/analysis/20160907_polrot/",
-            "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
-            "https://arxiv.org/pdf/1705.02523.pdf",
-            "https://arxiv.org/pdf/2011.03483.pdf",
-            "https://arxiv.org/pdf/2108.03316.pdf",
-            "https://arxiv.org/pdf/2210.08038.pdf",
             "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "jcornelison/postings/20230321_IPR_high_ell/",
 
 
         ];
@@ -361,16 +397,10 @@
 
         // Posting titles
         var desc = [
-            "Limits on a Lorentz- and parity-violating modification of electrodynamics",
-            "Effects of a Nambu-Goldstone boson on the polarization of radio galaxies and the cosmic microwave background",
-            "Self-Calibration of BICEP1 Three-Year Data and Constraints on Astrophysical Polarization Rotation",
-            "Birefringence/Polarization rotation in K2015 and BK15",
-            "Polarization Rotation Sims Global Rotation",
-            "New Bounds on Anisotropies of CMB Polarization Rotation and Implications for Axion-Like Particles and Primordial Magnetic Fields",
-            "Constraints on axion-like polarization oscillations in the cosmic microwave background",
-            "Improved Constraints on axion-like polarization oscillations in the Cosmic Microwave Background",
-            "Line of Sight Distortion Analysis: Estimates of Gravitational Lensing, Anisotropic Cosmic Birefringence, Patchy Reionization, and Systematic Errors",
             "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+            "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+            "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
         ];
         // Debug
 
