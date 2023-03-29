@@ -33,7 +33,7 @@ load('z:/pipeline/beammap/viridis_cm.mat')
 [fa, nchans] = deal([]);
 [prx, pry] = pol2cart(p.theta*pi/180,p.r);
 fpparms = {};
-for targind = 1:3
+for targind = 2%1:3
     % Load Moon or RPS data
     switch targnames{targind}
         case 'moon'
@@ -183,7 +183,7 @@ for targind = 1:3
     fpparms{targind} = [parms{1} parms{2}, parms{3}, parms{4}];
     C_real = cov(fpparms{targind});
     
-    if 1
+    if 0
         for valind = 1:length(vals)
             for parmind = 1:length(parms)
                 axlimnames = {'','_fixed'};
@@ -758,7 +758,7 @@ load('z:/pipeline/beammap/viridis_cm.mat')
 [fa, nchans] = deal([]);
 [prx, pry] = pol2cart(p.theta*pi/180,p.r);
 fpparms = {};
-for targind = 1:3
+for targind = 2%1:3
 
     % Load Moon or RPS data
     switch targnames{targind}
@@ -916,7 +916,7 @@ for targind = 1:3
     fpparms{targind} = [parms{1} parms{2}, parms{3}, parms{4}];
     C_real = cov(fpparms{targind});
     
-    if 1
+    if 0
         for valind = 1:length(vals)
             for parmind = 1:length(parms)
                 axlimnames = {'','_fixed'};
@@ -957,4 +957,20 @@ for targind = 1:3
     end
 end
 toc
+
+%% Make a histogram of the fpu angle over all obs
+
+fig = figure(2);
+fig.Position(3:4) = [460 400];
+clf; hold on;
+
+edges = (-1:0.1:1)*0.03;
+N = histc(fpparms{2}(:,1),edges);
+bar(edges,N,'histc')
+grid on;
+xlim([edges(1) edges(end)])
+xlabel('\deltaK [Deg]')
+title({'Per-rasterset FPU Angle fits',sprintf('M: %1.3f | STD: %1.3f',nanmean(fpparms{2}(:,1)),nanstd(fpparms{2}(:,1)))})
+figname = 'fpu_angle_hist_type5';
+saveas(fig,fullfile(figdir,figname),'png')
 

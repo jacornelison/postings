@@ -1,4 +1,6 @@
 %% Tilt Cals
+
+
 clc
 close all
 figure(5)
@@ -78,7 +80,7 @@ isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 
 %%
 clc
-addpath('z:pipeline/beammap/')
+addpath('z:/pipeline/beammap/')
 gitdir = fullfile('C:','Users','James','Documents','');
 %figdir = fullfile(gitdir,'GitHub','postings','2021mmdd_isaac_test','figs');
 figdir = fullfile(gitdir,'GitHub','postings','2023mmdd_isaac_data','figs');
@@ -175,9 +177,9 @@ if ~exist('meanguess','var')
 end
 
 fd = struct();
-flds = {'schnum','rownum','phi','eps','N1','N2','A','time','tilt','istilt','temp','istemp','istilttemp','wgt','fitind'};
+flds = {'schnum','rownum','phi','eps','N1','N2','A','time','tilt','istilt','temp','istemp','istilttemp','wgt','fitind','phi_isaac'};
 vals = {'prefind','di','parm(1)','parm(2)','parm(3)','parm(4)','parm(5)','nanmean(TIME)',...
-    'nanmean(T)','nanmean(T2)','nanmean(TEMP)','nanmean(ISTEMP)','nanmean(ISTILTTEMP)','wgtind','fitind'};
+    'nanmean(T)','nanmean(T2)','nanmean(TEMP)','nanmean(ISTEMP)','nanmean(ISTILTTEMP)','wgtind','fitind','nanmean(a_isaac)'};
 for fldind = 1:length(flds)
     fd.(flds{fldind}) = [];
 end
@@ -190,10 +192,10 @@ weighttitles = {'Uniform',sprintf('Amp<%0.1f',thresh),'1/Amp'};
 weightnames = {'uniform','threshold','one_on_r'};
 
 fitnames = {'fmin','lsq','complex'};
-plotmodcurve = 1;
+plotmodcurve = 0;
 
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,5)*37*0.0254];
-for prefind = 27:41
+for prefind = 21:41
 
 
     if ismember(prefind,[1:20 23:25])
@@ -222,7 +224,8 @@ for prefind = 27:41
         end
     end
     for fitind = 2%1:length(fitnames)
-        fittype=fitnames{fitind};
+        %fittype=fitnames{fitind};
+        fittype = 'lsq0';
         for wgtind = 1%1:3
 
             lock_cal = 50/10; %mV per V
@@ -276,9 +279,9 @@ for prefind = 27:41
                 itempstd(di) = nanstd(ISTILTTEMP);
                 itempmn(di) = nanmean(ISTILTTEMP);
                 if ismember(prefind, [6:18])
-                    homeangle = -0.77;
+                    homeangle = 0.77;
                 elseif ismember(prefind,[12,20,22:length(prefix)])
-                    homeangle = -5.454545;
+                    homeangle = 5.454545;
                 else
                     homeangle = 0;
                 end
@@ -287,13 +290,13 @@ for prefind = 27:41
                 % We're measuring the angle of the ISAAC WRT gravity:
                 % Clockwise looking at ISAAC is positive
                 % RPS has opposite parity
-                % Angle_out = -RPS_angle - RPS tilt - RPS grid horz. + ISAAC Tilt + ISAAC grid horz.
+                % Angle_out = RPS_angle - RPS tilt - RPS grid horz. + ISAAC Tilt + ISAAC grid horz.
                 rps_tilt = T;
                 rps_grid = homeangle;
                 isaac_tilt = T2;
-                isaac_grid = 0;
-                a = a + rps_tilt + rps_grid + isaac_tilt + isaac_grid;
-
+                isaac_grid = 0.17;
+                a = a + rps_tilt - rps_grid;% + isaac_tilt + isaac_grid;
+                a_isaac = mean(isaac_grid - isaac_tilt);
                 mod_curve(:,di) = R;
 
                 mxfev = 100000;
@@ -451,7 +454,7 @@ for prefind = 27:41
             end
         end
     end
-    fprintf('Angle: %0.3f +/- %0.3f\n',nanmean(parms(:,1)),nanstd(parms(:,1)))
+    fprintf('Angle: %0.3f +/- %0.3f\n',nanmean(parms(:,1))-a_isaac,nanstd(parms(:,1)))
     fprintf('Eff: %0.4f +/- %0.4f\n',nanmean(parms(:,2)),nanstd(parms(:,2)))
 end
 
@@ -466,7 +469,7 @@ for wgtind = 1%1:3
     % ind = ~ismember(fd.schnum,[28:31 37:39]) & fd.wgt == wgtind;
     % plot(fd.schnum(ind),fd.phi(ind)+1*5.454545-1*fd.tilt(ind)-1*fd.istilt(ind),'.')
     ind = true(size(fd.schnum)) & fd.wgt == wgtind;
-    plot(fd.schnum(ind),fd.phi(ind),'.');
+    plot(fd.schnum(ind),fd.phi(ind)-fd.phi_isaac,'.');
     plot(fd.schnum(ind),fd.istilt(ind),'.')
     plot(fd.schnum(ind),fd.tilt(ind),'.')
     ylim([-1 1])
@@ -476,8 +479,9 @@ end
 %% Look the jig data
 
 vals = {fd.temp*1000, fd.istemp*1000, fd.istilttemp*100+273.15};
+vals = {fd.N1,fd.N2}
 %vals = {fd.A};
-fig = figure(2+wgtind);
+%fig = figure(2+wgtind);
 clf; hold on;
 for valind = 1:length(vals)
     ind = true(size(fd.schnum)) & fd.wgt == wgtind;

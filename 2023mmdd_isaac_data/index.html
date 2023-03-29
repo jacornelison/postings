@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS absolute angle cross checks</h1>
+    <h1>In-Lab Angle Measurements using the RPS and ISAAC</h1>
 
     <time datetime="2022-02-14" class="published updated">
         2023 mmm dd
@@ -39,29 +39,49 @@
 
 <hr>
 
-Abstract
+<p>
+    This goes over the set up of the angle measurements in-lab between the ISAAC and RPS. The idea here was to try to derive the absolute angle of the ISAAC copolar axis WRT to gravity using the RPS.
+</p>
 
 <hr>
 
-<section><h2>Intro</h2>
+<section><h2>Experimental Set Up</h2>
+
+    <p>Summary:</p>
+    <ul>
+        <li>The wire grid angles WRT to their reference surfaces are measured for both the RPS and ISAAC in the knee mill.</li>
+        <li>The tilt meters for both the RPS and ISAAC are then calibrated using a Starrett No.96 bubble level.</li>
+        <li>The RPS and ISAAC are placed in the measurement jig facing each other at some distance.</li>
+        <li>The RPS rotates from -180&deg; to 180&deg; usually in 30&deg; increments.</li>
+        <li>At each commanded angle, the RPS waits 2 seconds before moving to the next angle.</li>
+        <li>Unlike the measurements on B3, we don't take beam maps with the ISAAC. It is fixed in one position for the duration of the measurement.</li>
+        <li>The RPS is chopped at 1KHz and the ISAAC is readout by the Lock-In amplifier via pac-mil detector diode. The phase between the reference and ISAAC is zeroed through the lock-in.</li>
+        <li>The data are recorded via labjack using my raspberry pi. I also record the tilt outputs from both the RPS and ISAAC.</li>
+        <li>Each measurement comprises 13 sets of 2-second timestreams per command angle. I average over each 2-second timestream to create a modulation curve.</li>
+        <li>For a single run, I repeat the measurement 25 times.</li>
+        <li>I fit angles to each of the 25 modulation curves.</li>
+    </ul>
+
+    <p>
+        The angle between the RPS's electric field and gravity at a given command angle, $\zeta_{comm}$, is given by:
+    </p>
+    $$
+    \zeta_{grav,RPS} = \zeta_{comm}-\zeta_{grid,RPS}+\zeta_{tilt,RPS}
+    $$
+
+    <p>where $\zeta_{grid}$ is the command angle at which the RPS's wire grid is horizontal with its reference surface
+        and $\zeta_{tilt,RPS}$ is the calibrated readout of the tilt meter.</p>   
+
+    <p>Similarly, the angle between the ISAAC's electric field WRT to gravity (in the same coordinate system) is</p>
+
+    $$
+    \zeta_{grav,ISAAC} = \zeta_{grid,ISAAC}-\zeta_{tilt,ISAAC}
+    $$
+
     <p>
 
     </p>
 
-
-</section>
-
-<section>
-    <h2>Angle vs. Distance</h2>
-
-
-</section>
-
-<section><h2>Conclusions</h2>
-
-    <p>
-
-    </p>
 
 </section>
 
@@ -184,49 +204,20 @@ Abstract
 
         // Shorthand tags
         var tags = [
-            "Carroll1990",
-            "Harari1992",
-            "Kaufman2013",
-            "JBW2016",
-            "EWB2016",
-            "BKIX",
-            "BKXII",
-            "BKXIV",
-            "BKXVII",
-            "JAC2023",
+            "NA",
         ];
 
         // Links
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
-            "papers/carroll1990.pdf",
-            "papers/harari1992.pdf",
-            "https://arxiv.org/pdf/1312.7877.pdf",
-            "bkcmb/analysis_logbook/analysis/20160907_polrot/",
-            "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
-            "https://arxiv.org/pdf/1705.02523.pdf",
-            "https://arxiv.org/pdf/2011.03483.pdf",
-            "https://arxiv.org/pdf/2108.03316.pdf",
-            "https://arxiv.org/pdf/2210.08038.pdf",
-            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
-
-
+            "",
         ];
 
 
         // Posting titles
         var desc = [
-            "Limits on a Lorentz- and parity-violating modification of electrodynamics",
-            "Effects of a Nambu-Goldstone boson on the polarization of radio galaxies and the cosmic microwave background",
-            "Self-Calibration of BICEP1 Three-Year Data and Constraints on Astrophysical Polarization Rotation",
-            "Birefringence/Polarization rotation in K2015 and BK15",
-            "Polarization Rotation Sims Global Rotation",
-            "New Bounds on Anisotropies of CMB Polarization Rotation and Implications for Axion-Like Particles and Primordial Magnetic Fields",
-            "Constraints on axion-like polarization oscillations in the cosmic microwave background",
-            "Improved Constraints on axion-like polarization oscillations in the Cosmic Microwave Background",
-            "Line of Sight Distortion Analysis: Estimates of Gravitational Lensing, Anisotropic Cosmic Birefringence, Patchy Reionization, and Systematic Errors",
-            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "",
         ];
         // Debug
 
