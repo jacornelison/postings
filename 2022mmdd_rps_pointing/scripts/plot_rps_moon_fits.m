@@ -845,10 +845,11 @@ for targind = 2%1:3
                                 source.elevation = reshape(fd_rast.el_cen_src,[],1);
 
                             case {'rps','rps11'}
-                                mirrorperrast = rps_fit_mirror(fd_rast,rpsopt,p,'');
+                                [mirrorperrast, sourceperrast] = rps_fit_mirror_and_source(fd_rast,rpsopt.model,p,'',[NaN,NaN,-177.522,2.678]);
+                                
+                                %mirrorperrast = rps_fit_mirror(fd_rast,rpsopt,p,'');
                                 mirrparms(end+1,:) = [mirrorperrast.tilt,mirrorperrast.roll];
-
-
+                                
                         end
 
                         [fd_rast.x,fd_rast.y,phi] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,fd_rast.dk_cen,model,'bicep3',mirrorperrast,source,[]);
@@ -958,6 +959,8 @@ for targind = 2%1:3
 end
 toc
 
+
+
 %% Make a histogram of the fpu angle over all obs
 
 fig = figure(2);
@@ -972,5 +975,9 @@ xlim([edges(1) edges(end)])
 xlabel('\deltaK [Deg]')
 title({'Per-rasterset FPU Angle fits',sprintf('M: %1.3f | STD: %1.3f',nanmean(fpparms{2}(:,1)),nanstd(fpparms{2}(:,1)))})
 figname = 'fpu_angle_hist_type5';
-saveas(fig,fullfile(figdir,figname),'png')
+%saveas(fig,fullfile(figdir,figname),'png')
+
+%%
+clf; hist(fpparms{2}(:,1))
+
 
