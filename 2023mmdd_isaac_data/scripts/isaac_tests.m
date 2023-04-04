@@ -59,13 +59,14 @@ grid on
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
 isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 
-clf
+clf; hold on;
 % Jun 25 calibrations
 isaac_tilt_ticks = [0 -1 -2 -1 0 2 2];
 isaac_tilt_meter = [0.4718 0.4054 0.314 0.389 0.458 0.545 0.5714];
 isaac_inc_readout = [-0.05 -0.04 -0.09 -0.06 -0.03 0.01 0.01];
 isaac_tilt_cal = polyfit(isaac_tilt_meter,level_cal*isaac_tilt_ticks,1);
 fprintf('ISAAC 25 Jun 2022: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
+plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'.')
 
 rps_tilt_ticks = [0 1 2 1 0 -1 -2 -2 -1 0 0 -2 -2 -1 -1 1 1 2 2];
 rps_tilt_meter = [0.0278 0.119 0.2049 0.1208 0.051 -0.039 -0.118 -0.153 -0.035 0.068 0.026 -0.0987 -0.132 -0.051 -0.019 0.109 0.141 0.1875 0.216];
@@ -73,7 +74,7 @@ rps_inc_readout = [-0.02 -0.01 +0.02 -0.02 -0.05 -0.06 -0.09 -0.09 -0.07 -0.02 -
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
 fprintf('RPS 25 Jun 2022: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
 plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'.')
-
+grid on
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
 isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 
@@ -195,18 +196,18 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,5)*37*0.0254];
-for prefind = 21:41
+for prefind = 21:36
 
 
     if ismember(prefind,[1:20 23:25])
         rpscal = rps_tilt_cals_all{end};
-        isaaccal = isaac_tilt_cals_all{end};
+        isaaccal = isaac_tilt_cals_all{end-1};
     elseif ismember(prefind,[21:22])
         rpscal = rps_tilt_cals_all{end};
-        isaaccal = isaac_tilt_cals_all{end};
+        isaaccal = isaac_tilt_cals_all{end-1};
     elseif ismember(prefind,[26:length(prefix)])
         rpscal = rps_tilt_cals_all{end};
-        isaaccal = isaac_tilt_cals_all{end};
+        isaaccal = isaac_tilt_cals_all{end-1};
         %isaaccal = [0.28 -0.1778];
     end
 
@@ -225,7 +226,7 @@ for prefind = 21:41
     end
     for fitind = 2%1:length(fitnames)
         %fittype=fitnames{fitind};
-        fittype = 'lsq0';
+        fittype = 'lsq';
         for wgtind = 1%1:3
 
             lock_cal = 50/10; %mV per V
@@ -270,6 +271,7 @@ for prefind = 21:41
                 switch wgtind
                     case 1
                         w = 1;
+                        %w = 1./Rs.^2;
                     case 2
                         w = R<0.7*max(R);
                     case 3
@@ -294,9 +296,14 @@ for prefind = 21:41
                 rps_tilt = T;
                 rps_grid = homeangle;
                 isaac_tilt = T2;
-                isaac_grid = 0.17;
+                isaac_grid = 0.19;%0.17;
                 a = a + rps_tilt - rps_grid;% + isaac_tilt + isaac_grid;
-                a_isaac = mean(isaac_grid - isaac_tilt);
+                % ISAAC grid and tiltmeter are set up the same as the RPS
+                % So the ISAAC angle in the RPS coordinate system is
+                % flipped sign.
+                a_isaac = -1*mean(isaac_tilt - isaac_grid);
+                               
+                
                 mod_curve(:,di) = R;
 
                 mxfev = 100000;
@@ -469,11 +476,15 @@ for wgtind = 1%1:3
     % ind = ~ismember(fd.schnum,[28:31 37:39]) & fd.wgt == wgtind;
     % plot(fd.schnum(ind),fd.phi(ind)+1*5.454545-1*fd.tilt(ind)-1*fd.istilt(ind),'.')
     ind = true(size(fd.schnum)) & fd.wgt == wgtind;
-    plot(fd.schnum(ind),fd.phi(ind)-fd.phi_isaac,'.');
-    plot(fd.schnum(ind),fd.istilt(ind),'.')
-    plot(fd.schnum(ind),fd.tilt(ind),'.')
+    %ind = ismember(fd.schnum,[27, 32:36]) & fd.wgt == wgtind;
+    plot(fd.schnum(ind),fd.phi(ind)-fd.phi_isaac(ind),'.','MarkerSize',14);
+    
+    plot(fd.schnum(ind),fd.tilt(ind),'.','MarkerSize',14)
+    plot(fd.schnum(ind),-1*fd.istilt(ind),'x','MarkerSize',14)
+    plot(fd.schnum(ind),fd.phi_isaac(ind),'x','MarkerSize',14)
     ylim([-1 1])
     grid on
+    %xlim([26 37])
 end
 
 %% Look the jig data

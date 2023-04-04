@@ -731,7 +731,7 @@ end
 
 %% Scatter plots mirrorfit per-rasterset / transformation fits per-rasterset
 clc
-clear all;
+%clear all;
 load('z:/dev/rps/fpu_data_obs.mat')
 load('z:/dev/rps/pm.mat')
 load('z:/dev/rps/source_fit_data.mat')
@@ -782,13 +782,44 @@ for targind = 2%1:3
 
 
         case 'rps'
-            load('z:/dev/rps/rps_beam_fits_type5_rerun_mirror_refit.mat')
+            if 0
+
+                load('z:/dev/rps/rps_beam_fits_type5_rerun_mirror_refit.mat')
+
+            else
+                load('z:/dev/rps/rps_phi_final_2022.mat')
+                % Grab the moon-sun angles
+                % MJD, , ,raapp,decapp
+                fname = fullfile('z:/dev/sun_check_2022Aug12.txt');
+                f = fopen(fname);
+                hd_sun = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',60);
+                hd_sun{1} = hd_sun{1}-2400000.5;
+                fclose(f);
+                %fd.az_cen_sun = interp1(hd_sun{1},hd_sun{4},fd.t_cen);
+                fd.az_cen_sun = wrapTo180(interp1(hd_sun{1},unwrap(hd_sun{4}*pi/180)*180/pi,fd.t));
+                fd.el_cen_sun = interp1(hd_sun{1},hd_sun{5},fd.t);
+
+                %
+                clc
+                % MJD, , ,raapp,decapp
+                fname = fullfile('z:/dev/moon_check_2022Aug12.txt');
+                f = fopen(fname);
+                hd_moon = textscan(f,'%f%s%s%f%f','delimiter',',','HeaderLines',61);
+                hd_moon{1} = hd_moon{1}-2400000.5;
+                fclose(f);
+                %fd.az_cen_moon = interp1(hd_moon{1},hd_moon{4},fd.t_cen);
+                fd.az_cen_moon = interp1(hd_moon{1},unwrap(hd_moon{4}*pi/180)*180/pi,fd.t);
+                fd.el_cen_moon = interp1(hd_moon{1},hd_moon{5},fd.t);
+
+
+            end
 
 
             rpsopt.mirror = mirror;
             rpsopt.source.distance = 195.5;
             % Fit for the source params given our mirror info:
             source = rps_fit_source(fd,rpsopt,p,'');
+            source
             rpsopt.source = source;
 
         case 'rps11'
@@ -845,14 +876,15 @@ for targind = 2%1:3
                                 source.elevation = reshape(fd_rast.el_cen_src,[],1);
 
                             case {'rps','rps11'}
-                                [mirrorperrast, sourceperrast] = rps_fit_mirror_and_source(fd_rast,rpsopt.model,p,'',[NaN,NaN,-177.522,2.678]);
-                                
+                                [mirrorperrast, sourceperrast] = rps_fit_mirror_and_source(fd_rast,rpsopt.model,p,'',[NaN,NaN,-177.49,3.417]);
+                                %[mirrorperrast, sourceperrast] = rps_fit_mirror_and_source(fd_rast,rpsopt.model,p,'',[NaN,NaN,-177.5221,2.678]);
                                 %mirrorperrast = rps_fit_mirror(fd_rast,rpsopt,p,'');
                                 mirrparms(end+1,:) = [mirrorperrast.tilt,mirrorperrast.roll];
                                 
                         end
 
-                        [fd_rast.x,fd_rast.y,phi] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,fd_rast.dk_cen,model,'bicep3',mirrorperrast,source,[]);
+                        %[fd_rast.x,fd_rast.y,phi] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,fd_rast.dk_cen,model,'bicep3',mirrorperrast,source,[]);
+                        [fd_rast.x,fd_rast.y,phi] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,fd_rast.dk_cen,model,'bicep3',mirrorperrast,sourceperrast,[]);
                         fd_rast.x = reshape(fd_rast.x,size(fd_rast.ch));
                         fd_rast.y = reshape(fd_rast.y,size(fd_rast.ch));
 
@@ -959,21 +991,21 @@ for targind = 2%1:3
 end
 toc
 
+%
 
+% Make a histogram of the fpu angle over all obs
 
-%% Make a histogram of the fpu angle over all obs
-
-fig = figure(2);
-fig.Position(3:4) = [460 400];
+fig = figure(7);
+fig.Position(3:4) = [430 500];
 clf; hold on;
 
-edges = (-1:0.1:1)*0.03;
+edges = (-1:0.1:1)*1.5;
 N = histc(fpparms{2}(:,1),edges);
 bar(edges,N,'histc')
 grid on;
 xlim([edges(1) edges(end)])
 xlabel('\deltaK [Deg]')
-title({'Per-rasterset FPU Angle fits',sprintf('M: %1.3f | STD: %1.3f',nanmean(fpparms{2}(:,1)),nanstd(fpparms{2}(:,1)))})
+title({'Per-rasterset FPU Angle fits',sprintf('M: %1.3f | STD: %1.3f | N: %i',nanmean(fpparms{2}(:,1)),nanstd(fpparms{2}(:,1)),length(fpparms{2}(:,1)))})
 figname = 'fpu_angle_hist_type5';
 %saveas(fig,fullfile(figdir,figname),'png')
 

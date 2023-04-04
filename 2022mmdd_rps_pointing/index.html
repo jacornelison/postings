@@ -1098,6 +1098,87 @@ Important links:
     <p>While these offsets/correlations indicate room for improvement in our systematics, these offsets are extremely small compared to our uncertainty goal on the global absolute polarization angle (~0.1&deg;). In my next posting, I plan to go over the actual polarization angle estimates and address any systematics we see there.</p>
 </section>
 
+<section>
+    <h2>How well can RPS data constrain Mirror/Source by itself?</h2>
+
+    <p>We've known for a long time that the geometry of the pointing model is such that the mirror roll parameter affects not just an apparent translation, but also an apparent rotation of the focal plane as well. Figure 2.1 of <a href="JAC2022c"></a> does a good job of showing this. As such, we should ideally be able to determine the orientation of the mirror as well as the location of the RPS because the mirror roll and source azimuth are not perfectly degenerate.</p>
+
+    <p>In reality, while not explicitely stating it, Clara's previous work [<a href="CV2021a"></a>, <a href="CV2021b"></a>, and <a href="CV2022"></a>] has shown that at least one of the mirror or source parameters has to be fixed in order to sufficiently fit for the other three.</p>
+
+    <p>In this section, I try to show this more conclusively, applying the lessons we've learned along the way since Clara's postings. Specifically, fitting mirror/source/angles at the per-rasterset level.</p>
+
+    <hr>
+
+    <p>
+        The pager below shows histograms of the per-raster fits to the Mirror/Source parameters for different scenarios where we've allowed up to all of the parameters to be fit simultaneously. The best-fit parameters are those that minimize the residuals between the CMB-derived pointing and RPS-derived pointing. Just a note that I also tried including a part where the FPU angle was an extra statistic that was minimized, but this had no effect on the fits.
+        <p>
+    <p>
+        <b>Left 4 Plots:</b>  I show the histograms of the mirror and source parameters fit per-rasterset. When we lock a parameter during a fit, I have two options for what we lock that parameter when switching between <b>Hold</b> options:
+</p>
+    <p><b>Constraint</b>
+    <ul>
+    <li>
+        <b>RPS:</b> Locks the parameter to the mean value that we see in the histogram when Hold:"None" is selected (Az:-177.54&deg; / El: 3.78&deg;).
+    </li>
+    <li>
+       <b>Moon:</b>  As we've seen in the sections above, the Moon analysis converges on a particular mean orientation of the mirror (and thus a source location), so when we lock in the Source Az and/or El I include an option to lock the Az/El to those given by the Moon data (Az:-177.52&deg; / El: 2.68&deg;).
+    </li>
+</ul>
+
+    Note: Any movement of the Source Azimuth is constrained by the tilt meter data to be <0.01&deg; while we have evidence from the Moon data of large fluctuations of the mirror, so I only ever lock in the source parameters.
+
+    </p>
+
+    <p>
+        <b>Middle Plot:</b> This show a histogram of the per-rasterset fits for the angles to the best-fit beam center residuals.
+    </p>
+
+    <p>
+        <b>Right Plot:</b> Lastly, I wanted to show an additional metric which demonstrates the effect of our fitting choices on the polarization angles. For this, I chose to show the standard deviations of the per-detector angles across observations under the assumption that the fluctuation on $\phi_d$ for a given detector will approach our intrinsic measurement uncertainty as we get the pointing model more correct. This metric isn't perfect because it ignores the possibility of a scenerio where the pointing is wrong but in a way that is correlated across observations (e.g. a configuration which doesn't bias the focal plane angle but which somehow biases $\phi_s$, the angle between the &theta;=0 axis and projection of the source co-polar axis onto the focal plane.)
+    </p>
+
+    <figure>
+        <img alt="Name pager" id="constraintpager" src="#" />
+        <figcaption>
+
+            <p>The <b>left</b> four histograms show the mirror/source parameters fit per-rasterset.</p>
+            <p>The <b>middle</b> histogram is the per-rasterset fit of the FPU angle, fit</p>
+            <p>The <b>right</b> plot is a histogram of the standard deviations of $\phi_d$ across all observations for each detector.</p>
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                if (params.hold ==  'nohold') {
+                    return 'figs/mirr_src_constraint_plots_'+params.hold+'.png';
+                };
+                return 'figs/mirr_src_constraint_plots_'+params.hold+params.const+'.png';
+            }
+
+            pager.link("#constraintpager",
+                {
+                    'Constraint|const' : ['RPS|','Moon|moon'],
+                    'Hold|hold' : ['None|nohold','Az|azhold','El|elhold','Az/El|azelhold'],
+
+                },
+                fcn);
+            pager.setparams({
+                //'fit': 'overall',
+                'const' : '',
+                'hold': 'nohold',
+            });
+        </script>
+    </figure>
+
+    <p>
+        As I hinted, we do see that there does exist some preferred mirror/source parameters when allowing all parameters to vary freely. However, if I lock the source Az/El to the "preferred" values, the FPU angle and pol angle STD's get worse, not better.
+    </p>
+    <p>
+        Using instead the parameters derived from the Moon, the FPU angle scatter increases but is still consistent with zero and the pol angle STD improve by ~30% compared to when we freed all 4 parameters.
+    </p>
+
+
+
+</section>
+
 
 <hr>
 
@@ -1328,6 +1409,7 @@ Important links:
         // These are the possible places to find postings
         // The strings are for if you post your posting in that directory.
         var sitemap = {
+            cverges: "../../../",
             jcornelison: "../../../",   // /jcornelison/postings/
             bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
             bicep3: "../../../",        //
@@ -1358,8 +1440,11 @@ Important links:
             "JBW2018a",
             "JBW2018b",
             "JAC2019",
+            "CV2021a",
+            "CV2021b",
             "JAC2021",
             "JAC2022a",
+            "CV2022",
             "JAC2022b",
             "JAC2022c",
             "BS2022",
@@ -1374,11 +1459,15 @@ Important links:
             "bkcmb/analysis_logbook/analysis/20181129_B2016_beamcen_yrquarters/",
             "bkcmb/analysis_logbook/analysis/20181207_B2018_beamcen/",
             "bkcmb/analysis_logbook/analysis/20190516_rps_pointing_defs/",
+            "cverges/20210105_pa_reconstruction/",
+            "cverges/20210604_pa_reconstruction_2/",
             "bkcmb/analysis_logbook/analysis/20210518_bmpm/",
             "bicep3/analysis_logbook/20220428_mirror_analysis/",
             "bicep3/analysis_logbook/20220505_mirror_analysis_2/",
+            "cverges/20220620_rps_fp_orientation/",
             "bicep3/analysis_logbook/20220816_mirror_analysis_3/",
-            "bkcmb/analysis_logbook/analysis/20220922_B2021_beamcens/"
+            "bkcmb/analysis_logbook/analysis/20220922_B2021_beamcens/",
+
         ];
 
 
@@ -1390,8 +1479,11 @@ Important links:
             "B2016 per-deck, per-scan direction beam centers for quarter-season data sets",
             "B2016, B2017, and B2018 CMB-derived beam center correlations",
             "Pointing Model Definitions for Polarized Beam Mapping",
+            "Polarisation angle reconstruction I: mirror/source parameters",
+            "Polarisation angle reconstruction II: mirror/source parameters",
             "A New Pointing Model for Beam Mapping",
             "Deriving Mirror Properties from the Moon",
+            "RPS 2022: Fitting for focal plane orientation",
             "2022 Moon Analysis II: GCP Coordinate Systems and Moon Phases",
             "2022 Moon Analysis III: Moon Phase Correction and Mirror Systematics",
             "B2021 Beam Centers",

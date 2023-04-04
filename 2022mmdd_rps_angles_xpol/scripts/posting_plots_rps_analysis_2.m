@@ -48,17 +48,20 @@ fd_2018 = fd;
 fd_2018 = get_pair_params(fd_2018,ind0,ind90);
 [fd_2018, phis_2018, phi_pair_2018, xpols_2018, poleff_pair_2018,~,~,~] = get_pol_params_per_obs(fd_2018,p);
 
-%
+%%
 clc
 load('z:/dev/rps/rps_obs_info.mat')
 %load('z:/dev/rps/rps_beam_fits_type5_withbparam.mat')
 load('z:/dev/rps/rps_beam_fits_type5_21feb_rerun.mat');
-fd = rps_cut_fitdata(fd,p,p_ind);%,1,figdir);
+fd = rps_cut_fitdata(fd,p,p_ind,1);%,1,figdir);
 %fd = rps_cut_fitdata(fd,p,[]);%,1,figdir);
 %
+%load('z:/dev/rps/rps_beam_fits_type5_21feb_rerun_cut_new_phi_s.mat')
+%fd.phi = fd.phi+fd.phi_s-fd.phi_s_new;
 fd = get_pair_params(fd,ind0,ind90);
 [fd, phis, phi_pair, xpols, poleff_pair,n1s,n2s,amps] = get_pol_params_per_obs(fd,p,scheds);
 
+%
 load('z:/pipeline/beammap/viridis_cm.mat')
 load('z:/dev/rps/sch_type5.mat')
 load('z:/dev/rps/pm.mat')
@@ -469,6 +472,7 @@ if ~exist('tiltcorrfig','var') | ~ishandle(tiltcorrfig)
         count = count+1;
     end
 end
+
 tiltcorrfig = figure(count);
 tiltcorrfig.Position(3:4) = [750 400];
 clf; hold on;
@@ -523,7 +527,7 @@ xlabel('\phi_{pair} - median(\phi_{pair}) [Deg]')
 ylabel('N')
 
 fname = 'tilt_corr_hist';
-saveas(tiltcorrfig,fullfile(figdir,fname),'png')
+%saveas(tiltcorrfig,fullfile(figdir,fname),'png')
 
 %% Find the maximum STD for 2022 data subsets
 
@@ -850,7 +854,7 @@ title('Pol 90 Vs Pol 0')
 pbaspect([1 1 1])
 
 fname = 'pol90_vs_pol0_type5.png';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
 
 %% Now plot the covariance vs DK
 [C D] = deal([]);
@@ -1422,6 +1426,127 @@ if 1
     fprintf('CMB\tRPS\t%%\n')
     fprintf('%i\t%i\t%1.0f\n',sum(usedchans(1,:),2)/2,sum(usedchans(2,:),2)/2,(sum(usedchans(2,:),2)./sum(usedchans(1,:),2))*100)
 end
+
+%% Look at psi and phi_s
+    
+FD = load('z:/dev/rps/rps_beam_fits_type5_30mar_rerun.mat');
+fd_psi = FD.fd; clear FD;
+
+cutind = true(size(fd.ch));
+for chind = 1:length(fd.ch)
+    idx = find(fd.schnum==fd_psi.schnum(chind) & fd.rowind==fd_psi.rowind(chind) & fd.ch==fd_psi.ch(chind));
+    if isempty(idx)
+        cutind(chind) = false;
+    end
+end
+fd_psi = structcut(fd_psi,cutind);
+
+%%
+
+fd0 = fd;
+fd.phi_s_new = fd.phi_s;
+fd0.psi = fd0.phi-fd0.phi_s;
+fd0.phi_new = fd0.psi+fd0.phi_s_new;
+
+K = NaN(1,32);
+for dkind = 1:10
+    s = size(scheds{dkind},2);
+    K(1,scheds{dkind}) = dks(dkind)*ones(1,s);
+end
+
+[th, r] = cart2pol(fd.x,fd.y);
+th = th-fd.dk_cen*pi/180;
+[fd.xm, fd.ym] = pol2cart(th,r);
+
+for obsind = 4%1:10
+        
+    fig = figure(4);
+    clf; hold on;
+    if 0
+    for rowind = 1:19
+        idx = find(fd0.schnum==obsind & fd0.rowind == rowind);
+        if ~isempty(idx)
+            fd_rast = structcut(fd0,idx);
+            mirror = rpsopt.mirror;
+            mirror.tilt = nanmean(fd_rast.mirr_tilt)+0;
+                mirror.roll = nanmean(fd_rast.mirr_roll)+0;
+            source = rpsopt.source;
+            source.azimuth = nanmean(fd_rast.src_az)+0;
+            source.elevation = nanmean(fd_rast.src_el);
+            source.height = source.distance*tand(source.elevation);
+
+            [~, ~, phi_s] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,fd_rast.dk_cen,model,'bicep3',mirror,source,[]);
+            fd0.phi_s(idx) = reshape(phi_s,1,[]);
+        end
+    end
+    end
+    subplot(1,2,1)
+    hold on
+    idx = find(fd0.obsnum==obsind & ismember(fd0.ch,ind0));
+    plot(fd0.phi(idx))
+    plot(fd0.phi_new(idx))
+   
+   %plot(-fd0.phi_s(idx)-(fd0.psi(idx)))
+    %plot(-fd0.phi_s(idx)-nanmean(-fd0.phi_s(idx)))
+    %plot(fd0.phi(idx)-fd0.phi_s(idx)-nanmean(fd0.phi(idx)-fd0.phi_s(idx)))
+%     plot((fd0.phi(idx)-fd0.phi_s(idx))./(-fd0.phi_s(idx)))
+    grid on
+    %ylim([-5 2]+K(obsind)-90)
+
+end
+%%
+for obsind = 4
+    subplot(1,2,2)
+    hold on
+    idx = find(fd0.schnum==obsind & ismember(fd0.ch,ind90));
+    
+    plot(-fd0.phi_s(idx))
+    plot(fd0.psi(idx)-90)
+    %plot(-fd0.phi_s(idx)-(fd0.psi(idx)-90))
+%     plot(-fd0.phi_s(idx)-nanmean(-fd0.phi_s(idx)))
+%     plot(fd0.phi(idx)-fd0.phi_s(idx)-nanmean(fd0.phi(idx)-fd0.phi_s(idx)))
+%    plot((fd0.phi(idx)-fd0.phi_s(idx)-90)./(-fd0.phi_s(idx)))
+    grid on
+    ylim([-5 2]+K(obsind)-90)
+
+end
+
+
+
+
+
+
+
+%%
+for obsind = 1:10
+    fig = figure(5);
+clf; hold on;
+
+
+        
+    subplot(1,2,1)
+    hold on
+    idx = find(fd_notilt.obsnum==obsind & ismember(fd_notilt.ch,ind0));
+   plot(-fd_notilt.phi_s(idx))
+   plot(fd_notilt.phi(idx)-fd_notilt.phi_s(idx))
+    %plot(-fd_notilt.phi_s(idx)-nanmean(-fd_notilt.phi_s(idx)))
+    %plot(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)-nanmean(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)))
+     %plot((fd_notilt.phi(idx)-fd_notilt.phi_s(idx))./(-fd_notilt.phi_s(idx)))
+    grid on
+    
+    subplot(1,2,2)
+    hold on
+    idx = find(fd_notilt.obsnum==obsind & ismember(fd_notilt.ch,ind90));
+    
+    plot(-fd_notilt.phi_s(idx))
+    plot(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)-90)
+%     plot(-fd_notilt.phi_s(idx)-nanmean(-fd_notilt.phi_s(idx)))
+%     plot(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)-nanmean(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)))
+%    plot((fd_notilt.phi(idx)-fd_notilt.phi_s(idx)-90)./(-fd_notilt.phi_s(idx)))
+    grid on
+   
+end
+
 
 
 %% End of main function
