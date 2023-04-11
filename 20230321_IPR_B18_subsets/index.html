@@ -165,15 +165,17 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
         Focusing primarily on BB then:
 
     <ul>
-    <li><b>Unlensed-LCDM:</b>Differences in coverage mostly affect the three lowest &ell;-bins, which I think makes intuitive sense. Lower coverage translates into a higher sample variance and the lower &ell;'s are most affected by that. When we matrix-purify, matrix purification is qualitatively still effective and most of the large deviations in the frac-diff are due to dividing a small number by another small number.</li>
-    <li><b>Lensed-LCDM:</b> The comment about coverage is the same as before. However, now that we have a high-SNR measurement of lensing, the difference between purified spectra is only 3% or so, which tells us that the purification matrix isn't running into any issues with the reduced detectors or coverage.</li>
-    <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 30%. No surprise there -- we've dropped the number of detectors we're using by 30% and the noise BB power is going to reflect that. I don't know that BB-power and N-detectors are known to be strongly linked -- I'd expect pair coverages/weights to obfuscate that relationship a bit -- so the fact that both are ~30% is interesting.</li>
+    <li><b>Unlensed-LCDM:</b>
+    I personally found it difficult to make any definitive comments through these unlensed-signal-only sims. It seems that the SNR on BB is so low that we get non-sensical frac-diff because we're dividing a small number by another small number.
+    </li>
+    <li><b>Lensed-LCDM:</b> Now that we have a high-SNR measurement of lensing, the difference between purified spectra is only 3% or so, which tells us that the purification matrix isn't running into any issues with the reduced detectors or coverage.</li>
+    <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 30%. No surprise there -- we've dropped the number of detectors we're using by 30% and the noise BB power is going to reflect that. I don't know that BB-power and N-detectors are known to be strongly linked -- I'd expect pair coverages/weights to obfuscate that relationship a bit, not to mention Baibhav's findings on N<sub>&ell;</sub> scaling with N<sub>det</sub> <a href="BS2021"></a> -- so the fact that both are ~30% is interesting.</li>
     <li><b>L-LCDM+Noise(+Dust):</b> we're noise-dominated in BB at high-&ell;, so we see that 30% increase in BB-power where noise is dominant. At lower &ell;, the noise isn't as dominant over the lensing signal and the contribution to dust is more profound as well, so while we see an increase in BB, it's only 10-20% at those lower &ell; for both type 7 and 8.
     </li>
 </ul>
 </p>
 
-    <p>In summary, we can see through Lensed-signal only that the purification efficiency for maps with our reduced coverage is around 97%, so we should be good to continue using the B18 purification matrix so long as the angles aren't biased in any way.</p>
+    <p>In summary, we can see through Lensed-signal only that the purification efficiency for maps with our reduced coverage is around 97%, so we should be good to continue using the B18 purification matrix so long as the purification doesn't bias the angles in any way.</p>
 
     <h3>How does this affect our angle fits?</h3>
     <p>
@@ -439,6 +441,7 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
         // Shorthand tags
         var tags = [
             "KKL2020",
+            "BS2021",
             "JAC2023",
             "JAC2023b",
             "JAC2023c",
@@ -451,6 +454,7 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
             "bkcmb/analysis_logbook/analysis/20201218_BK18_purification_diagnostics/",
+            "bkcmb/analysis_logbook/analysis/20210406_noise_int_down_B32017jack02/",
             "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
@@ -464,6 +468,7 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
         // Posting titles
         var desc = [
             "BK18 Purification Eigensystem Matrix Diagnostics",
+            "How N_ell integrates down with N_det in B3 2017 data",
             "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
             "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
             "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
