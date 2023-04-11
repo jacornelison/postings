@@ -2,9 +2,9 @@
 
 
 clc
-close all
+%close all
 figure(5)
-hold on
+clf; hold on;
 level_cal = 85/3600.; % degrees per tick
 
 rps_tilt_cals_all = {};
@@ -15,25 +15,25 @@ rps_tilt_ticks = [0 1 2 1 0 0];
 rps_tilt_meter = [0.113 0.210 0.302 0.204 0.111 0.110]; % in Volts
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
 fprintf('RPS 03 Dec 2021: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'.')
+plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'b.')
 
 
 rps_tilt_ticks = [0 2 1 0 -1 -2 -1];
 rps_tilt_meter = [0.1360 0.2610 0.1840 0.1160 0.0345 -0.0445 0.0390];
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
-fprintf('RPS ?? Dec 2021: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'.')
+fprintf('RPS 16 Dec 2021: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
+plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'bx')
 
 isaac_tilt_ticks = [0 2 0 1 -1 -2 0];
 isaac_tilt_meter = [0.553 0.681 0.558 0.615 0.479 0.407 0.569]+0*(0.644-0.553); % in Volts
 isaac_tilt_cal = polyfit(isaac_tilt_meter,level_cal*isaac_tilt_ticks,1);
 fprintf('ISAAC 9 Dec 2021: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
-plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'.')
+plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'r.')
 isaac_tilt_ticks = [0 -1 -2 -2 -2 -1 0 1 2 1 0];
 isaac_tilt_meter = [0.5585 0.4890 0.3885 0.3925 0.3975 0.4725 0.5485 0.6180 0.7180 0.6380 0.5485];
 isaac_tilt_cal = polyfit(isaac_tilt_meter,level_cal*isaac_tilt_ticks,1);
 fprintf('ISAAC 16 Dec 2021: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
-plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'.')
+plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'rx')
 
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
 isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
@@ -43,14 +43,14 @@ inc_tilt_meter = [0.247,0.405,0.550,0.184];
 inc_readout = [-0.04 -0.01 +0.03 -0.06]+0.055;
 rps_tilt_cal = polyfit(inc_tilt_meter,inc_readout,1);
 fprintf('RPS 24 Dec 2021: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(inc_tilt_meter,inc_readout,'.')
+plot(inc_tilt_meter,inc_readout,'b^')
 
 % isaac
 inc_tilt_meter = [0.602,0.276,0.250,0.632,0.315,0.515];
 inc_readout = -1*[-0.03 +0.06 +0.08 -0.03 +0.04 -0.03]+0.055;
 isaac_tilt_cal = polyfit(inc_tilt_meter,inc_readout,1);
 fprintf('ISAAC 24 Dec 2021: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
-plot(inc_tilt_meter,inc_readout,'.')
+plot(inc_tilt_meter,inc_readout,'r^')
 xlabel('Tilt meter [V]')
 ylabel('Cal''d Tilt [^o]')
 grid on
@@ -59,28 +59,37 @@ grid on
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
 isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 
-clf; hold on;
+% Jun 21 RPS Cal?
+rps_tilt_ticks = [0 -1 -2 -1 0 1 2 1 0];
+rps_tilt_meter = [0.0413 -0.0368 -0.1160 -0.0368 0.0467 0.1074 0.1929 0.1166 0.04684];
+rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
+fprintf('RPS 21 Jun 2022: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
+plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'bo')
+grid on
+%rps_tilt_cals_all{end+1} = rps_tilt_cal;
+
+%clf; hold on;
 % Jun 25 calibrations
 isaac_tilt_ticks = [0 -1 -2 -1 0 2 2];
 isaac_tilt_meter = [0.4718 0.4054 0.314 0.389 0.458 0.545 0.5714];
 isaac_inc_readout = [-0.05 -0.04 -0.09 -0.06 -0.03 0.01 0.01];
 isaac_tilt_cal = polyfit(isaac_tilt_meter,level_cal*isaac_tilt_ticks,1);
 fprintf('ISAAC 25 Jun 2022: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
-plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'.')
+plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'r+')
 
 rps_tilt_ticks = [0 1 2 1 0 -1 -2 -2 -1 0 0 -2 -2 -1 -1 1 1 2 2];
 rps_tilt_meter = [0.0278 0.119 0.2049 0.1208 0.051 -0.039 -0.118 -0.153 -0.035 0.068 0.026 -0.0987 -0.132 -0.051 -0.019 0.109 0.141 0.1875 0.216];
 rps_inc_readout = [-0.02 -0.01 +0.02 -0.02 -0.05 -0.06 -0.09 -0.09 -0.07 -0.02 -0.02 -0.1 -0.1 -0.06 -0.07];
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
 fprintf('RPS 25 Jun 2022: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'.')
+plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'b+')
 grid on
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
 isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 
 
-%%
-clc
+%
+%clc
 addpath('z:/pipeline/beammap/')
 gitdir = fullfile('C:','Users','James','Documents','');
 %figdir = fullfile(gitdir,'GitHub','postings','2021mmdd_isaac_test','figs');
@@ -105,7 +114,7 @@ prefix = {...
     'isaac_cal_5_with_home_indoor';... % Indoor test after installing heater
     'isaac_cal_6_with_home_indoor';... % Indoor test because I'm paranoid
     'isaac_cal_7_with_home_indoor';... % Another indoor test because everything is still shitty.
-    'isaac_cal_8_with_home_indoor';... % Added a 'fine' homing switch to the stepper motor.
+    'isaac_cal_8_with_home_indoor';... % Added a 'fine' homing switch to the stepper motor. Skip this one.
     'isaac_cal_1_fine_home_check';... % Edited the homing to avoid intermittent homing position.
     'isaac_cal_2_fine_home_check';... % Checking if I'm an idiot...
     'isaac_cal_1_fine_home_check_outdoor';... % Outdoor Check!
@@ -123,11 +132,13 @@ prefix = {...
     'isaac_cal_jig_nonhome_8';... % RPS jig check 29 Jun 2022 @ 20", This was actually homed!
     'isaac_cal_jig_withhome_2';... % 30 Jun 2022 @ 20"; homed. Repeat of last
     'isaac_cal_jig_withhome_3';... % 30 Jun 2022 @ 20"; homed. Repeat of last
+    'isaac_cal_jig_latmove_1in_1';... %30 Jun 2022 @ 20"; homed. Offset 1in.
     'isaac_cal_jig_withhome_4';... % 29 Jul 2022 @ 37"; homed.
     'isaac_cal_jig_withhome_5';... % 31 Jul 2022 @ 37"; homed. Repeat of last
     'isaac_cal_jig_withhome_6';... % 31 Jul 2022 @ 37"; homed. Zeroed RPS to -0.03
     'isaac_cal_jig_withhome_7';... % 31 Jul 2022 @ 37"; homed. Zeroed ISAAC
     'isaac_cal_jig_withhome_8';... % 31 Jul 2022 @ 37"; homed. Added baffling.
+    'isaac_cal_jig_offsets_1';... 28 Jul 2022 @ 40; homed. Ella moving around at 40"
     };
 
 labs = {...;
@@ -138,21 +149,21 @@ labs = {...;
     '55dB Attenuation, No Homing';...
     'Indoor test with grids, with homing';...
     'Indoor test with grids, No homing';...
-    'Outdoor test, No homing';...
+    'Outdoor test, No homing';... 8
     'Outdoor test, Same platform, No Homing';...
-    'Outdoor test, Same platform, Releveled';...
+    'Outdoor test, Same platform, Releveled';... 10
     'Outdoor test, After ISAAC grid check';...
-    'Outdoor test, Homed RPS once';...
+    'Outdoor test, Homed RPS once';... 12
     'Outdoor test, Homed RPS every scan';...
-    'Outdoor test, Homed RPS every scan';...
+    'Outdoor test, Homed RPS every scan';... 14
     'Indoor Test, Homed RPS every scan';...
+    'Indoor Test, Homed RPS every scan, with stage heater';...16
     'Indoor Test, Homed RPS every scan, with stage heater';...
-    'Indoor Test, Homed RPS every scan, with stage heater';...
-    'Indoor Test, Homed RPS every scan, with stage heater';...
+    'Indoor Test, Homed RPS every scan, with stage heater';...%18
     'Indoor Test, Added Fine Homing Switch';...
     'Indoor Test, Added Fine Homing Switch, Wrong Homing Position';...
-    'Indoor Test, Added Fine Homing Switch';...
-    'Outdoor Test, With Fine Homing Sw, Homed Every Scan';...
+    'Indoor Test, Added Fine Homing Switch';...%21
+    'Outdoor Test, Pre RPS Observation, Homed Every Scan';...
     'Outdoor Test, Post RPS Observation, Homed Every Scan';...
     'Indoor Test, Post RPS Observation';... % 24
     'Indoor Test, Post RPS Observation, ISAAC Refrozen';...
@@ -167,20 +178,22 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 20"';...
     'On Alignment Jig, Homing, Dist = 20"';... % 35
     'On Alignment Jig, Homing, Dist = 20"';... % 36
-    'On Alignment Jig, Homing, Dist = 37"';... % 37
-    'On Alignment Jig, Homing, Dist = 37", repeat';... % 38
-    'On Alignment Jig, Homing, Dist = 37", zeroed RPS';... % 39
-    'On Alignment Jig, Homing, Dist = 37", zeroed isaac';... % 40
-    'On Alignment Jig, Homing, Dist = 37", added baffling';... % 41
+    'On Alignment Jig, Homing, Dist = 20", offset 1"';... % 37
+    'On Alignment Jig, Homing, Dist = 37"';... % 38
+    'On Alignment Jig, Homing, Dist = 37", repeat';... % 39
+    'On Alignment Jig, Homing, Dist = 37", zeroed RPS';... % 40
+    'On Alignment Jig, Homing, Dist = 37", zeroed isaac';... % 41
+    'On Alignment Jig, Homing, Dist = 37", added baffling';... % 42
+    'On Alignment Jig, Homing, Dist = 40", offsets';... % 43
     };
 if ~exist('meanguess','var')
     meanguess = 0;
 end
 
 fd = struct();
-flds = {'schnum','rownum','phi','eps','N1','N2','A','time','tilt','istilt','temp','istemp','istilttemp','wgt','fitind','phi_isaac'};
+flds = {'schnum','rownum','phi','eps','N1','N2','A','time','tilt','istilt','temp','istemp','istilttemp','wgt','fitind','phi_isaac','obsnum'};
 vals = {'prefind','di','parm(1)','parm(2)','parm(3)','parm(4)','parm(5)','nanmean(TIME)',...
-    'nanmean(T)','nanmean(T2)','nanmean(TEMP)','nanmean(ISTEMP)','nanmean(ISTILTTEMP)','wgtind','fitind','nanmean(a_isaac)'};
+    'nanmean(T)','nanmean(T2)','nanmean(TEMP)','nanmean(ISTEMP)','nanmean(ISTILTTEMP)','wgtind','fitind','nanmean(a_isaac)','obsnum'};
 for fldind = 1:length(flds)
     fd.(flds{fldind}) = [];
 end
@@ -194,25 +207,27 @@ weightnames = {'uniform','threshold','one_on_r'};
 
 fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
-
+obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,5)*37*0.0254];
-for prefind = 21:36
+for prefind = [12:15, 20:42]%20:42
 
+    if ismember(prefind,[1:18])
+        rpscal = rps_tilt_cals_all{end-2};
+        isaaccal = isaac_tilt_cals_all{end-2};
+    elseif ismember(prefind,[19:21 24:26])
+        rpscal = rps_tilt_cals_all{end-2};
+        isaaccal = isaac_tilt_cals_all{end-2};
+    elseif ismember(prefind,[22:23])
+        rpscal = rps_tilt_cals_all{end-2};
+        isaaccal = isaac_tilt_cals_all{end-2};
+    elseif ismember(prefind,[27:length(prefix)])
+        rpscal = rps_tilt_cals_all{end};
+        isaaccal = isaac_tilt_cals_all{end};
 
-    if ismember(prefind,[1:20 23:25])
-        rpscal = rps_tilt_cals_all{end};
-        isaaccal = isaac_tilt_cals_all{end-1};
-    elseif ismember(prefind,[21:22])
-        rpscal = rps_tilt_cals_all{end};
-        isaaccal = isaac_tilt_cals_all{end-1};
-    elseif ismember(prefind,[26:length(prefix)])
-        rpscal = rps_tilt_cals_all{end};
-        isaaccal = isaac_tilt_cals_all{end-1};
-        %isaaccal = [0.28 -0.1778];
     end
-
+    isaaccal(1) = 0.3;
+    %rpscal(1) = 0.28;
     d = dir(fullfile(direct,[prefix{prefind} '_scan*']));
-    disp(labs{prefind})
     data = {};
     for di = 1:length(d)
         if ~ismember(prefind, [8:21 22:26])
@@ -227,6 +242,7 @@ for prefind = 21:36
     for fitind = 2%1:length(fitnames)
         %fittype=fitnames{fitind};
         fittype = 'lsq';
+        %fittype = 'complex';
         for wgtind = 1%1:3
 
             lock_cal = 50/10; %mV per V
@@ -266,8 +282,8 @@ for prefind = 21:36
                     end
 
                 end
-                R = R./max(R);
-
+                %R = R./nanmax(R);
+                
                 switch wgtind
                     case 1
                         w = 1;
@@ -282,7 +298,7 @@ for prefind = 21:36
                 itempmn(di) = nanmean(ISTILTTEMP);
                 if ismember(prefind, [6:18])
                     homeangle = 0.77;
-                elseif ismember(prefind,[12,20,22:length(prefix)])
+                elseif ismember(prefind,[20,22:length(prefix)])
                     homeangle = 5.454545;
                 else
                     homeangle = 0;
@@ -310,11 +326,11 @@ for prefind = 21:36
                 mxiter = 100000;
                 options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
                 lb = [-20 -0.5 -10 -10 0];
-                ub = [20 0.5 10 10 10];
+                ub = [20 0.5 10 10 1e6];
                 meanguess = 0;%0;
                 for nind = 1%1:3
 
-                    guess = [meanguess,0.002,0,0,max(R)/2]+1e-6;
+                    guess = [meanguess,0.002*0,0,0,nanmax(R)/2];
                     %fittype = 'lsq';
                     switch fittype
                         case 'basic'
@@ -324,7 +340,7 @@ for prefind = 21:36
                             %plot(a,R-modfunc(parm(1),parm(2),parm(3)))
                             res(:,di) = R-modfunc(parm(1),parm(2),parm(3));
                         case 'fmin'
-
+                            fittype
                             modfunc = @(ang,e,A,N1,N2) A/2*(cosd(2*(a-ang))-(e+1)/(e-1)).*(N1*cosd(a)+N2*sind(a)+1);
                             chifun = @(x) sum((R-modfunc(x(1),x(2),x(3),x(4),x(5))).^2);
 
@@ -334,8 +350,6 @@ for prefind = 21:36
                             res(:,di) = R-modfunc(parm(1),parm(2),parm(3),parm(4),parm(5));
 
                         case 'lsq0'
-                            lb = [-20 -0.5 -10 -10 0];
-                            ub = [20 0.5 10 10 1e6];
                             parm = lsqcurvefit(@rps_get_mod_model,guess,a,R,lb,ub,options);
                             res(:,di) = R-rps_get_mod_model(parm,a);
                         case 'lsq'
@@ -364,8 +378,6 @@ for prefind = 21:36
                                 ub = [10 0.5 10 10 10 10 10 0.5 0.5];
                                 guess = [0,0,0,0,0,0,1,0,0];
 
-
-
                                 modfunc = @(p) rps_get_mod_model_vectors(p(1:7),a,[0,p(8),p(9)],B3,B1,source,false,false);
                                 chifunc = @(p) w.*(R-modfunc(p)');
                             else
@@ -383,8 +395,9 @@ for prefind = 21:36
                             res(:,di) = chifunc(parm);
                             parm(1) = -parm(1);
                     end
-
+                    
                     parms(di,1:length(parm)) = parm;
+                    
                     times(di) = mean(TIME);
                     meanguess = nanmean(parms(:,1));
                     if plotmodcurve
@@ -394,7 +407,8 @@ for prefind = 21:36
                         ind1 = 1:7;
                         ind2 = 7:13;
                         plot(res(:,di))
-                        ylim([-1 1]*0.01)
+                        %plot(R)
+                        %ylim([-1 1]*0.01)
                         %plot(R(ind1)-R(ind2));
                         %ylim([-1 1]*0.04)
                         %xlim([-1 1]*190)
@@ -409,12 +423,11 @@ for prefind = 21:36
 
                 end
 
-                if abs(R(1)-R((length(R)+1)/2))<0.05
+                if abs(R(1)-R((length(R)+1)/2))<0.2
                     for fldind = 1:length(flds)
                         eval(sprintf('fd.%s(end+1) = %s;',flds{fldind},vals{fldind}))
                     end
                     angs{end+1} = a;
-                    parm(1) = 0;
                     reses{end+1} = R-rps_get_mod_model(parm,a);
                 else
                     parms(di,1:length(parm)) = NaN(1,length(parm));
@@ -461,42 +474,112 @@ for prefind = 21:36
             end
         end
     end
-    fprintf('Angle: %0.3f +/- %0.3f\n',nanmean(parms(:,1))-a_isaac,nanstd(parms(:,1)))
+    fprintf('%i: %s\nAngle: %0.3f +/- %0.3f\n',prefind,labs{prefind},nanmean(parms(:,1))-a_isaac,nanstd(parms(:,1)))
     fprintf('Eff: %0.4f +/- %0.4f\n',nanmean(parms(:,2)),nanstd(parms(:,2)))
+    obsnum = obsnum+1;
 end
 
 
 %% Look the jig data
 
-for wgtind = 1%1:3
-    fig = figure(2+wgtind);
-    clf; hold on;
-    % ind = ismember(fd.schnum,[28:31 37:39]) & fd.wgt == wgtind;
-    % plot(fd.schnum(ind),fd.phi(ind)+1*5.454545-1*fd.tilt(ind)-1*fd.istilt(ind),'.')
-    % ind = ~ismember(fd.schnum,[28:31 37:39]) & fd.wgt == wgtind;
-    % plot(fd.schnum(ind),fd.phi(ind)+1*5.454545-1*fd.tilt(ind)-1*fd.istilt(ind),'.')
-    ind = true(size(fd.schnum)) & fd.wgt == wgtind;
-    %ind = ismember(fd.schnum,[27, 32:36]) & fd.wgt == wgtind;
-    plot(fd.schnum(ind),fd.phi(ind)-fd.phi_isaac(ind),'.','MarkerSize',14);
-    
-    plot(fd.schnum(ind),fd.tilt(ind),'.','MarkerSize',14)
-    plot(fd.schnum(ind),-1*fd.istilt(ind),'x','MarkerSize',14)
-    plot(fd.schnum(ind),fd.phi_isaac(ind),'x','MarkerSize',14)
-    ylim([-1 1])
-    grid on
-    %xlim([26 37])
+cmlines = colormap('lines');
+
+fig = figure(2+wgtind);
+fig.Position(3:4) = [1900 900]*1;
+clf; hold on;
+ind = true(size(fd.schnum));
+
+t = tiledlayout(1,1);
+t.Padding = 'none';
+t.TileSpacing = 'compact';
+nexttile
+hold on
+clear s;
+scheds = unique(fd.obsnum);%[12:15, 20:42]; 
+[phi, pstd] = deal(NaN(1,length(scheds))); 
+for schind = 1:length(scheds)
+    idx = fd.obsnum==scheds(schind);
+    phi(schind) = mean(fd.phi(idx)-fd.phi_isaac(idx));
+    pstd(schind) = std(fd.phi(idx)-fd.phi_isaac(idx));
 end
+s(2) = plot(fd.obsnum(ind),-1*fd.istilt(ind),'x','Color',cmlines(3,:),'MarkerSize',16,'LineWidth',1.5);
+s(3) = plot(fd.obsnum(ind),fd.tilt(ind),'.','MarkerSize',16,'Color',cmlines(2,:));
+%s(1) = scatter(fd.schnum(ind),fd.phi(ind)-fd.phi_isaac(ind),14,cmlines(1,:));%,'filled');
+s(1) = errorbar(scheds,phi,pstd,'.','Color',cmlines(1,:),'LineWidth',1,'MarkerSize',16);
+%s.MarkerFaceAlpha = 0.7;
+%s.MarkerEdgeAlpha = 1;
+
+
+%plot(fd.schnum(ind),fd.phi_isaac(ind),'^','MarkerSize',10)
+plot([1 1]*4.5,[-1 0.5],'k--','LineWidth',2)
+plot([1 1]*11.5,[-1 1],'k--','LineWidth',2)
+ylim([-0.6 1])
+grid on
+xlim([min(scheds)-1,max(scheds)+1])
+
+% Show where we homed during the harvard measurements
+plot([11.8 18.2], [1 1]*-0.5,':','LineWidth',2,'Color',[1 1 1]*0.5)
+text(14.25,-0.45,'No Homing','FontSize',13)
+plot([18.8 27.2], [1 1]*-0.5,':','LineWidth',2,'Color',[1 1 1]*0.5)
+text(21.35,-0.45,'Homed Each Measurement','FontSize',13)
+
+
+ax = gca();
+legend(s,{'\phi_{fit} minus \phi_{actual}','ISAAC Tilt Angle','RPS Tilt Angle'},...
+    'location','northwest','FontSize',13)
+text(4.5,0.65,'Pole Measurements','FontSize',16)
+text(1.45,0.45,'No Fine Homing','FontSize',13)
+text(7.25,0.45,'Fine Homing','FontSize',13)
+text(16.5,0.85,'2022 Measurements at Harvard','FontSize',16)
+ylabel('Angle [Degrees]')
+xlabs = {...
+    'Outdoor,Homed Once',...
+    'Outdoor,Homed Each',...
+    'Outdoor,Homed Each',...
+    'Indoor, Homed Each',...
+    'Indoor, Pre-Obs1',...
+    'Indoor, Pre-Obs2',...
+    'Outdoor, Pre-Obs',...
+    'Outdoor, Post-Obs',...
+    'Indoor, Post-Obs1',...
+    'Indoor, Post-Obs2',...
+    'Indoor, Post-Obs3',...
+    'Dist 0.5m' ...
+    'Dist 1m',...
+    'Dist 1m',...
+    'Dist 1m, new tilt',...
+    'Dist 1m, old tilt',...
+    'Dist 0.5m',...
+    'Dist 0.5m',...
+    'Dist 0.5m',...
+    'Dist 0.5m',...
+    'Dist 0.5m',...
+    'D 0.5m, Y-off 2cm',...
+    'D 1m, Y-off 2cm',...
+    'D 1m, Y-off 2cm',...
+    'D 1m, Y-off 2cm',...
+    'D 1m, Y-off 2cm',...
+    'D 1m, Y-off 2cm, Baffled',...
+    };
+ax.XTickLabelRotation = -60;
+ax.XTick = linspace(min(scheds)-1,max(scheds)+1,length(scheds)+2);
+ax.XTickLabel(2:end-1) = xlabs;
+ax.XTickLabel([1, end]) = {'',''};
+
+
+
+saveas(fig,'C:\Users\James\Documents\GitHub\postings\2023mmdd_isaac_data\figs\angle_fit_vs_actual_plot','png')
 
 %% Look the jig data
 
 vals = {fd.temp*1000, fd.istemp*1000, fd.istilttemp*100+273.15};
 vals = {fd.N1,fd.N2}
 %vals = {fd.A};
-%fig = figure(2+wgtind);
+fig = figure(10);
 clf; hold on;
 for valind = 1:length(vals)
     ind = true(size(fd.schnum)) & fd.wgt == wgtind;
-    plot(fd.schnum(ind),vals{valind}(ind),'.');
+    scatter(fd.schnum(ind),vals{valind}(ind),'.');
     %plot(fd.phi(ind),vals{valind}(ind),'.');
     % ind = ismember(fd.schnum,[28:31 37:39]) & fd.wgt == wgtind;
     % plot(fd.schnum(ind),vals{valind}(ind),'.');
@@ -506,37 +589,38 @@ end
 %ylim([-1 7])
 grid on
 
-%% look at residuals
+%% Look at time between measurements
 
-ind = find(fd.schnum==37 & fd.wgt==3);
-figure(6);
-clf; hold on;
-for rowind = ind
-    plot(angs{rowind},reses{rowind})
-
+dt = NaN(1,max(fd.obsnum));
+for obsind = 5:max(fd.obsnum)
+    idx = find(fd.obsnum==obsind);
+    [s si] = sort(fd.time(idx));
+    dt(obsind) = median(diff(fd.time(idx(si))));
 end
 
-%% Tilt / Temp Plots
+fig = figure(91824);
+plot(dt)
 
-plotflag = 1;
-temp = [];
-figure(4)
-clf; hold on;
-for di =1:length(data)
-    if plotflag==1
-        plot(data{di}.Time,polyval(rps_tilt_cal,data{di}.Tilt),'b')
-        plot(data{di}.Time,polyval(isaac_tilt_cal,data{di}.ISTilt),'r')
-    elseif plotflag==2
-        plot(data{di}.Time,data{di}.ISTemp,'r')
-        plot(data{di}.Time,data{di}.Temp,'b')
-    elseif plotflag==3
-        plot(data{di}.Time,data{di}.Tilt,'b')
-        plot(data{di}.Time,data{di}.ISTilt,'r')
-    end
-    xlabel('Time')
-    grid on
-    %temp = [temp; data{di}.Temp];
+%% Calc angle from uneven stage heating.
+
+cme = 2.34e-5;
+dA = 0.1;
+dT = tand(dA)./cme;
+fprintf('dT: %2.1f\n',dT)
+
+
+%% Find unique files in rps_cal/data
+
+d = dir(fullfile(direct, 'isaac_cal*'));
+
+fnames = {};
+for dirind = 1:length(d)
+    str = d(dirind).name;
+    str = strsplit(str,'_scan');
+    fnames{dirind} = str{1};
 end
+
+
 
 
 %% Sigma angle vs Attenuation

@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>IPR Analysis 2: B18 Sims</title>
+    <title>In-Lab ISAAC Measurements</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -40,7 +40,7 @@
 <hr>
 
 <p>
-    This goes over the set up of the angle measurements in-lab between the ISAAC and RPS. The idea here was to try to derive the absolute angle of the ISAAC copolar axis WRT to gravity using the RPS.
+    This goes over the set up of the angle measurements between the ISAAC and RPS both at Pole and here at Harvard. Currently, I can derive the angle of the ISAAC's polarization angle WRT gravity with an accuracy of ~<0.2&deg;. I don't yet fully understand the limitations of this measurement, my current hypothesis is that the measurement is more sensitive to the alignment of the experimental set up that I have so far been able to achieve.
 </p>
 
 <hr>
@@ -51,7 +51,7 @@
     <ul>
         <li>The wire grid angles WRT to their reference surfaces are measured for both the RPS and ISAAC in the knee mill.</li>
         <li>The tilt meters for both the RPS and ISAAC are then calibrated using a Starrett No.96 bubble level.</li>
-        <li>The RPS and ISAAC are placed in the measurement jig facing each other at some distance.</li>
+        <li>The RPS and ISAAC are placed at some distance apart facing each other.</li>
         <li>The RPS rotates from -180&deg; to 180&deg; usually in 30&deg; increments.</li>
         <li>At each commanded angle, the RPS waits 2 seconds before moving to the next angle.</li>
         <li>Unlike the measurements on B3, we don't take beam maps with the ISAAC. It is fixed in one position for the duration of the measurement.</li>
@@ -70,18 +70,148 @@
     $$
 
     <p>where $\zeta_{grid}$ is the command angle at which the RPS's wire grid is horizontal with its reference surface
-        and $\zeta_{tilt,RPS}$ is the calibrated readout of the tilt meter.</p>   
+        and $\zeta_{tilt,RPS}$ is the calibrated readout of the tilt meter.</p>
+    <p>I define the angle $\phi$ which is the angle measured from the vector that defines "up" WRT gravity to the vector defining the ISAAC's electric field</p>
+    <p>I estimate $\phi$ using our typical model for a modulation curve: </p>
 
-    <p>The ISAAC's tilt meter is installed in the same configuration at the RPS -- the angle between the ISAAC's electric field WRT to gravity (in the same coordinate system) is</p>
+    \begin{equation}
+    A = G\left[\cos(2(\zeta_{grav,RPS}+\phi))-\frac{\epsilon+1}{\epsilon-1}\right]\left(N_1 \cos(\zeta_{grav,RPS}) + N_2 \sin(\zeta_{grav,RPS}) + 1\right)
+    \end{equation}
+
+
+
+
+
+    <p>The ISAAC's tilt meter is installed in the same configuration as the RPS -- the angle between the ISAAC's electric field WRT to gravity (in the same coordinate system) is</p>
 
     $$
-    \zeta_{grav,ISAAC} = \zeta_{grid,ISAAC}-\zeta_{tilt,ISAAC}
+    \phi_{actual} = \zeta_{grid,ISAAC}-\zeta_{tilt,ISAAC}
     $$
+
+<p>
+
+</p>
 
     <p>
+        The figure below shows the results of the RPS-ISAAC measurements done at Pole before the campaign, before we installed the fine homing switch; after we installed the fine homing switch; after I brought the RPS down; and then when I measured the RPS in the jig at Harvard. I show the tilt of the RPS and the tilt of the ISAAC to show I'm accounting for them correctly. The angle fit from the modulation curves should be the same as $\phi_{actual}$ within uncertainty. So in the figure, we're expecting all of the blue data points to overlap with zero.
+    </p>
+
+    <p>
+        At Pole, I used the Starrett bubble level to level the RPS and ISAAC before the measurements. At Harvard, I purposefully didn't level them until later to verify that they tilts could properly be accounted for.
+    </p>
+
+    <figure>
+
+        <img src="figs/angle_fit_vs_actual_plot.png"/>
+        <figcaption>
+            <p>Summary plot of the RPS-ISAAC measurements at Pole and at Harvard. Each blue dot is the mean/std of the
+                angles estimated from modulation curves minus the actual angle expected of the ISAAC from the tilt/grid
+                info. Yellow x's are the mean ISAAC tilt angle from a given modulation curve within a dataset. The red
+                dots are the mean RPS tilt angle from a given modulation curve within a dataset.</p>
+            <p>
+                Salient information for these data are outlined the section below.
+            </p>
+        </figcaption>
+    </figure>
+
+    <p>
+        Notes on the Pole Measurements
+        <ul>
+        <li>Before installing the fine homing switch:
+            <ul>
+                <li>
+                    <b><tt>Outdoor, Homed Once:</tt></b> We found very good repeatability when not homing between measurements, even outside. At this time, I was ignoring the fact that the means were non-zero.
+                </li>
+                <li>
+                    <b><tt>Outdoor, Homed Each:</tt></b> When homing each measurement, the homing repeatability got significantly worse.
+                </li>
+                <li>
+                    <b><tt>Indoor, Homed Each:</tt></b> When brought back inside, the homing repeatability appeared to improve.
+                </li>
+                <li>The measurements here eventually led us to retrofitting the rotation stage with a fine homing switch. For more details on those initial measurements see <a href="JAC2021"></a> and a collection of the emails exchanged during that time curated by Clara (<a href="https://docs.google.com/document/d/1dewXjLoCzYZSDZdeKzdBJFfFibG-s4vx7ZVfwHjYttc/edit#">RPS Obs Troubleshooting Emails</a>).</li>
+                <li>
+                    In addition to the new homing switch, there were a few more notable changes between this set of measurements and the next set:
+                    <ul>
+                        <li>We installed a dial on the stepper knob</li>
+                        <li>We installed an additional heater, bolted directly to one side of the rotation stage.</li>
+                        <li>The gears in the rotation stage were degreased and re-greased with low-temp aviation grease.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            After installing the fine homing switch:
+            <ul>
+                <li>
+                    For all of these datasets, I homed between every measurement. I also ensured the ISAAC and RPS were level WRT gravity using the Starrett bubble level. I realize I should've taken some measurements without homing, but I hadn't thought to do so at the time, it seems.
+                </li>
+                <li>
+                    <b><tt>Indoor, Pre-Obs: </tt></b>The two indoor tests showed reasonable repeatability with means around zero. The setup was unchanged between the two measurements. I also verified that I could not detect any backlash by sight or feel.
+                </li>
+                <li><b><tt>Outdoor, Pre-Obs</tt></b>: Before starting the RPS campaign, I performed one last rooftop measurement. The repeatability was still reasonable, but the mean is off by ~-0.1&deg;. My notes show that the knob angle was unchanged throughout this measurement.
+                    <ul>
+                        <li><b>A mystery:</b> My notes state that the mean for this measurement was consistent with zero, but this is obviously not the case now. I recall in the last day that I was at Pole, I discovered an issue with the chi-square minimizer I was using, <tt>fminsearch</tt>, had a bug where it would return values close to the initial guess regardless of what the actual angle was. I recall replacing <tt>fminsearch</tt> with another minimizer <tt>lsqcurvefit</tt> resolved this issue. However, I have so far been unable to reproduce my previous results by going back and using <tt>fminsearch</tt>-- but I've since upgraded my matlab so perhaps this has been fixed. Hard say exactly what happened here.</li>
+                    </ul>
+                </li>
+                <li>
+                    <b><tt>Outdoor, Post-Obs:</tt></b> When I brought the RPS down, I took 1 outdoor measurement and 3 indoor measurements. My notes are limited here, but I recall verifying that the knob angle was unchanged from before we raised the mast.
+                </li>
+                <li>
+                    <b><tt>Indoor, Post-Obs: </tt></b>
+                    <ul>
+                        <li>When bringing the RPS back inside, I verified that I was unable to detect any backlash by sight or feel.</li>
+                        <li>The set up for the three indoor measurements were more or less the same except either the RPS or ISAAC was picked up and put back down between taking each measurement set. The distance between the RPS and ISAAC for each measurement was ~1m, I aligned the pointing by eye, and I ensured they were level using the Starrett bubble level.</li>
+                        <li>An important bit of information here is that I had developed a worry that uneven heating of the rotation stage from the extra heater we installed on it might induce a rotation of the grid not captured by the tilt meter. The first of indoor measurements I took occurred while the RPS and ISAAC were still warming up. For the second indoor measurement, I had allowed the RPS to warm up to room temp, but brought the ISAAC back outside and took another measurement while it was still cold. For the third measurement, I did the opposite: while the ISAAC warmed up, I placed the RPS outside and let it cool down, taking another measurement while the stage was still relatively cold. I realized since then that the &Delta;T required for a rotation of ~0.2&deg; I saw is $\frac{tan(\Delta\theta)}{CTE}=\frac{tan(0.2)}{23\times 10^{-6}}=150K$ where the CTE is aluminum -- not at all realistic -- so what I effectively did was change the alignment from measurement-to-measurement.</li>
+                    </ul>
+                </li>
+
+            </ul>
+        </li>
+        </ul>
+    </p>
+
+    <p>Notes on the in-lab measurements at Harvard.
+    <ul>
+        <li>I verified in the RX-lab's Bridgeport that the RPS and ISAAC grid angles were unchanged from the measurements I took in Late December 2021. I did however measure backlash of +0.06&deg; in the rotation stage in March 2023. I verified in October 2023 that the 0.06&deg; backlash was unchanged.</li>
+
+        <li>I created an alignment jig here in the lab that allowed me repeat alignment between the RPS/ISAAC to within a few millimeters (see the figure below).
+            The RPS and ISAAC are both capable of up-down (X)/left-right (Y)/ forward-back (Z) translation.
+            I also fixed the ISAAC to the spare rotation stage so that I could adjust the azimuthal pointing of the ISAAC more precisely.</li>
+
+        <li>Most of these measurements took place in late July 2023.</li>
+
+        <li><b>Initital Alignment:</b> I placed RPS and ISAAC at distance of ~1cm away from each other. I then adjusted the X/Y translation of the ISAAC such that the wire grids which are the same diameter were concentric to within a few millimeters. I minimized the aligment of the two in elevation by leveling them in the Z-direction with a rough bubble level (level within a few degrees). I minimized the azimuthal alignment of the ISAAC by eye by adjusting the spare rotation stage by eye so that the ISAAC was square with the RPS rotation stage.</li>
+
+        <li>I took measurements at two distances, 0.5m and 1m.</li>
+
+        <li>For the first portion of the data, I took them without homing between each measurement (i.e. I collected 25 modulation curves before homing again). For the second portion, I homed between each modulation curve I collected. We can see that there's virtually no difference between homing and no homing.</li>
+
+        <li>For most of the data I collected in the lab, I purposefully didn't level the RPS or ISAAC. However, I did at some point change the tilt of both the RPS and ISAAC to show that angle we get out was unchanged and we are thus accounting for the tilts properly.</li>
+        <li>
+            For the last few measurements, I offset the ISAAC by a couple centimeters to examine the effect.
+        </li>
+        <li>
+          For the very last measurement set I collected, I added a bunch of eccosorb around the jig to try and mitigate reflections and saw no significant change.
+        </li>
+    </ul>
 
     </p>
 
+    <figure>
+        <img src="figs/rps_isaac_jig.jpg" width="100%">
+        <figcaption>
+            Set up of the RPS-ISAAC measurements on the jig at Harvard.
+        </figcaption>
+    </figure>
+
+
+    <h3>My Conclusions so far</h3>
+    <p>
+        Any minor change to the apparatus results in a significant, repeatable offset to the angle we estimate from the modulation curves.
+        I was able to show that I'm accounting for the tilts correctly and after adding eccosorb to the jig set up and seeing no changes, I think we have evidence that multipath effects are also not a significant contributor.
+        I've tried testing the hypothesis that the measurement at this distance is limited by the alignment by simulating mod curves with a complex pointing geometry, but my current model doesn't create any offsets at this level.
+        At any rate, if it <i>is</i> an alignment issue, at least in terms of linear translation, we expect the effect to decrease as a function of distance.
+    </p>
 
 </section>
 
@@ -204,20 +334,20 @@
 
         // Shorthand tags
         var tags = [
-            "NA",
+            "JAC2021",
         ];
 
         // Links
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
-            "",
+            "jcornelison/postings/2021mmdd_isaac_test/",
         ];
 
 
         // Posting titles
         var desc = [
-            "",
+            "In-Situ Angle Calibrator (ISAAC)",
         ];
         // Debug
 
