@@ -1134,29 +1134,36 @@ Important links:
     </p>
 
     <p>
-        <b>Right Plot:</b> Lastly, I wanted to show an additional metric which demonstrates the effect of our fitting choices on the polarization angles. For this, I chose to show the standard deviations of the per-detector angles across observations under the assumption that the fluctuation on $\phi_d$ for a given detector will approach our intrinsic measurement uncertainty as we get the pointing model more correct. This metric isn't perfect because it ignores the possibility of a scenerio where the pointing is wrong but in a way that is correlated across observations (e.g. a configuration which doesn't bias the focal plane angle but which somehow biases $\phi_s$, the angle between the &theta;=0 axis and projection of the source co-polar axis onto the focal plane.)
+        <b>Right Plot:</b> Lastly, I wanted to show an additional metric which demonstrates the effect of our fitting choices on the polarization angles. For this, I chose to show the standard deviations of the per-detector angles across observations under the assumption that the fluctuation on $\phi_d$ for a given detector will approach our intrinsic measurement uncertainty as we get the pointing model more correct. This metric isn't perfect because it ignores the possibility of a scenario where the pointing is wrong but in a way that is correlated across observations (e.g. a configuration which doesn't bias the focal plane angle but which somehow biases $\phi_s$, the angle between the &theta;=0 axis and projection of the source co-polar axis onto the focal plane.)
     </p>
 
     <figure>
         <img alt="Name pager" id="constraintpager" src="#" />
         <figcaption>
+            <dl>
+                <dt>Histograms</dt>
+                <dd>The <b>left</b> four histograms show the mirror/source parameters fit per-rasterset.</dd>
+                <dd>The <b>middle</b> histogram is the per-rasterset fit of the FPU angle, fit</dd>
+                <dd>The <b>right</b> plot is a histogram of the standard deviations of $\phi_d$ across all observations for each detector.</dd>
 
-            <p>The <b>left</b> four histograms show the mirror/source parameters fit per-rasterset.</p>
-            <p>The <b>middle</b> histogram is the per-rasterset fit of the FPU angle, fit</p>
-            <p>The <b>right</b> plot is a histogram of the standard deviations of $\phi_d$ across all observations for each detector.</p>
+                <dt>$\phi$-scatter</dt>
+                <dd>A scatter plot of pol angles, median subtracted per-detector.</dd>
+
+            </dl>
         </figcaption>
         <script type="text/javascript">
             function fcn(params){
                 if (params.hold ==  'nohold') {
-                    return 'figs/mirr_src_constraint_plots_'+params.hold+'.png';
+                    return 'figs/mirr_src_constraint_'+params.type+'_'+params.hold+'.png';
                 };
-                return 'figs/mirr_src_constraint_plots_'+params.hold+params.const+'.png';
+                return 'figs/mirr_src_constraint_'+params.type+'_'+params.hold+params.const+'.png';
             }
 
             pager.link("#constraintpager",
                 {
                     'Constraint|const' : ['RPS|','Moon|moon'],
                     'Hold|hold' : ['None|nohold','Az|azhold','El|elhold','Az/El|azelhold'],
+                    'Plot Type|type' : ['Histograms|plots','$\\phi$ Scatter|phiscatters'],
 
                 },
                 fcn);
@@ -1164,6 +1171,7 @@ Important links:
                 //'fit': 'overall',
                 'const' : '',
                 'hold': 'nohold',
+                'type': 'plots',
             });
         </script>
     </figure>
@@ -1172,8 +1180,18 @@ Important links:
         As I hinted, we do see that there does exist some preferred mirror/source parameters when allowing all parameters to vary freely. However, if I lock the source Az/El to the "preferred" values, the FPU angle and pol angle STD's get worse, not better.
     </p>
     <p>
-        Using instead the parameters derived from the Moon, the FPU angle scatter increases but is still consistent with zero and the pol angle STD improve by ~30% compared to when we freed all 4 parameters.
+        Using instead the parameters derived from the Moon, the FPU angle scatter increases but is still consistent with zero and the pol angle STD improve by ~30% compared to when we freed all 4 parameters. Further, I found using a simple grid search around the Moon-given source location (Az=-177.52&deg;/El=2.68&deg;) that these values give the minimum STD.
     </p>
+
+    <h3>Section 3 Conclusions / Questions</h3>
+    <p>
+
+    </p>
+    <ul>
+        <li>
+            Why does RPS data prefer Mirror/Source parameters that result in large deviations in polarization angle?</li>
+
+    </ul>
 
 
 
