@@ -40,7 +40,7 @@
 <hr>
 
 <p>
-    This goes over the set up of the angle measurements between the ISAAC and RPS both at Pole and here at Harvard. Currently, I can derive the angle of the ISAAC's polarization angle WRT gravity with an accuracy of ~<0.2&deg;. I don't yet fully understand the limitations of this measurement, my current hypothesis is that the measurement is more sensitive to the alignment of the experimental set up that I have so far been able to achieve.
+    This goes over the set up of the angle measurements between the ISAAC and RPS both at Pole and here at Harvard. Currently, I can derive the angle of the ISAAC's polarization angle WRT gravity with an accuracy of ~<0.2&deg;. I don't yet fully understand the limitations of this measurement, my current hypothesis is that, at these short distances of &le;1m, the measurement is more sensitive to the alignment of the experimental set up that I have so far been able to achieve.
 </p>
 
 <hr>
@@ -210,7 +210,12 @@
         Any minor change to the apparatus results in a significant, repeatable offset to the angle we estimate from the modulation curves.
         I was able to show that I'm accounting for the tilts correctly and after adding eccosorb to the jig set up and seeing no changes, I think we have evidence that multipath effects are also not a significant contributor.
         I've tried testing the hypothesis that the measurement at this distance is limited by the alignment by simulating mod curves with a complex pointing geometry, but my current model doesn't create any offsets at this level.
-        At any rate, if it <i>is</i> an alignment issue, at least in terms of linear translation, we expect the effect to decrease as a function of distance.
+    </p>
+    <p>
+        At any rate, if it <i>is</i> an alignment issue, at least in terms of linear translation, we expect the effect to decrease as a function of distance and, with the RPS a distance of 200m during normal observation, I expect any bias we see as a result of transformation offsets to be negligible.
+    </p>
+    <p>
+        For azimuthal or elevation misaligment, however, that isn't necessarily true. Fortunately, the tags on the side of the RPS box ensures that azimuthal misalignment keeps us to <0.5&deg;. For elevation, I admittedly don't have nearly as strong of a prior.   
     </p>
 
 </section>
