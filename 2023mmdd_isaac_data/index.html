@@ -216,10 +216,34 @@
     </p>
     <p>
         At any rate, if it <i>is</i> an alignment issue, at least in terms of linear translation, we expect the effect to decrease as a function of distance and, with the RPS a distance of 200m during normal observation, I expect any bias we see as a result of transformation offsets to be negligible.
-    </p>
-    <p>
         For azimuthal or elevation misaligment, however, that isn't necessarily true. Fortunately, the tags on the side of the RPS box ensures that azimuthal misalignment keeps us to <0.5&deg;. For elevation, I admittedly don't have nearly as strong of a prior.
     </p>
+
+    <h3>Can we check for evidence of backlash on BICEP3 obs through homing measurements?</h3>
+<p>
+    Another interesting note is the no-homing vs. homing distributions for the at-Harvard measurements. Specifically, that there's virtually no difference between the two whereas it was very obvious when we weren't homing in earlier measurements. I can imagine a scenario where, at command angles where the rotational torque on the RPS is sufficiently small, what side of the backlash the source falls on is somewhat randomized and that will result in an increased uncertainty whether or not we're homing.
+</p>
+
+    <p>
+        If the argument above is correct, then we can compare distributions of pol angles on BICEP3 with and without homing to check for evidence of backlash occurring during the campaign.
+        On the last day of the campaign, I took a number of diagnostic measurements, including a set of 10 Type 9 observations that did not home between rasterset.
+        If backlash developed sometime during the campaign, we should expect to see no difference between the Type 9 observations that homed before every measurement and this dataset without homing.
+        In the plot below, I show histograms of both the Pol-0 and Pol-90 detectors with- and without homing. We can see that the distribution without homing is roughly 20% smaller than when we are homing.
+    </p>
+<p>
+    This isn't very strong evidence because we expect from our first ISAAC measurements that we were able to get down to a precision of ~0.01&deg; when not homing. However, I find it plausible that the non-homing $\sigma_\phi$ could be lower, but we're simply running up against the intrinsic statistical limit of the measurement on BICEP3.
+</p>
+
+
+    <figure>
+        <img src="figs/type9_homing_hists.png" width="70%">
+    </figure>
+
+    <h3>Why isn't the homing repeatability affected by backlash?</h3>
+    <p>
+        We can also see that the means on the distributions are consistent to 0.01&deg;, so it appears the homing repeatability is unaffected by the backlash. In the hypothesis that the backlash is unconstrained (i.e. not directionally driven), this means that when the RPS is around the homing switch, the rotational torque must always be in the same direction, forcing the stage to consistently be on one side of the backlash. Looking at the RPS in the figure above, we can see at angles near zero that the torque on the stage is strongly in the counterclockwise direction (looking toward the front of the RPS) due to the uneven weight distribution of the BSNS, which supports my hypothesis.
+    </p>
+
 
 </section>
 

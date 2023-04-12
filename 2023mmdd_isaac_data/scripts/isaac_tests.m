@@ -200,7 +200,7 @@ end
 
 reses = {};
 angs = {};
-
+rsmax = [];
 thresh = 0.7;
 weighttitles = {'Uniform',sprintf('Amp<%0.1f',thresh),'1/Amp'};
 weightnames = {'uniform','threshold','one_on_r'};
@@ -283,7 +283,8 @@ for prefind = [12:15, 20:42]%20:42
 
                 end
                 %R = R./nanmax(R);
-                
+                Rs = Rs./max(R);
+                rsmax(end+1) = max(Rs);
                 switch wgtind
                     case 1
                         w = 1;
@@ -519,17 +520,17 @@ xlim([min(scheds)-1,max(scheds)+1])
 
 % Show where we homed during the harvard measurements
 plot([11.8 18.2], [1 1]*-0.5,':','LineWidth',2,'Color',[1 1 1]*0.5)
-text(14.25,-0.45,'No Homing','FontSize',13)
+text(12.75,-0.45,'Homed once at beginning of dataset','FontSize',13)
 plot([18.8 27.2], [1 1]*-0.5,':','LineWidth',2,'Color',[1 1 1]*0.5)
-text(21.35,-0.45,'Homed Each Measurement','FontSize',13)
+text(20.95,-0.45,'Homed before every measurement','FontSize',13)
 
 
 ax = gca();
 legend(s,{'\phi_{fit} minus \phi_{actual}','ISAAC Tilt Angle','RPS Tilt Angle'},...
     'location','northwest','FontSize',13)
 text(4.5,0.65,'Pole Measurements','FontSize',16)
-text(1.45,0.45,'No Fine Homing','FontSize',13)
-text(7.25,0.45,'Fine Homing','FontSize',13)
+text(1.25,0.45,'No Fine Homing Sw.','FontSize',13)
+text(6.5,0.45,'Added Fine Homing Sw.','FontSize',13)
 text(16.5,0.85,'2022 Measurements at Harvard','FontSize',16)
 ylabel('Angle [Degrees]')
 xlabs = {...
@@ -565,8 +566,6 @@ ax.XTickLabelRotation = -60;
 ax.XTick = linspace(min(scheds)-1,max(scheds)+1,length(scheds)+2);
 ax.XTickLabel(2:end-1) = xlabs;
 ax.XTickLabel([1, end]) = {'',''};
-
-
 
 saveas(fig,'C:\Users\James\Documents\GitHub\postings\2023mmdd_isaac_data\figs\angle_fit_vs_actual_plot','png')
 
@@ -608,17 +607,20 @@ dA = 0.1;
 dT = tand(dA)./cme;
 fprintf('dT: %2.1f\n',dT)
 
+%% Compare non-homing to homing
 
-%% Find unique files in rps_cal/data
+fig = figure(1423);
+%fig.Position(3:4) = [560 650];
+clf;
+t = tiledlayout(1,2);
+t.TileSpacing = 'compact';
+t.Padding = 'compact';
 
-d = dir(fullfile(direct, 'isaac_cal*'));
+nexttile()
+hist(pstd(12:18))
 
-fnames = {};
-for dirind = 1:length(d)
-    str = d(dirind).name;
-    str = strsplit(str,'_scan');
-    fnames{dirind} = str{1};
-end
+nexttile()
+hist(pstd(19:27))
 
 
 
