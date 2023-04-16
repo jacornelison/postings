@@ -102,7 +102,7 @@ for matind = 1:2
             plot(Ddiff,'Color',cmlines(1,:))
             grid on
             if specind ==1
-                title({'fractional difference','$(D-D_{sub})/D$'})
+                title({'fractional difference','$(D_sub-D})/D$'})
             elseif ismember(specind,[5 6])
                 ylim([-1 1])
             end
