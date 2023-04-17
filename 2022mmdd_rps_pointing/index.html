@@ -156,6 +156,8 @@
     My last few postings on the Moon analysis used only the Type-7 data. This posting mostly focuses on the Type-5 main RPS data, but I will also look into the Type-11 cross-check data. The Type-10 data would also be used for this, but I hadn't thought through the scanning strategy all that well and thus didn't acquire many detectors with full rastersets. I'll have to think more about how to make the Type-10 data more immediately useful.
 </p>
 
+
+    <!--
     <h3>RPS Analysis in a nutshell</h3>
 
     <p>
@@ -199,7 +201,7 @@
         The polarization angle $\psi$ in Equation \ref{eq:modcurve} is a relative measurement and is agnostic to the orientation of the focal plane.
         We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the focal plane, by combining $\psi$ with the angle between the telescope's focal plane orientation and the RPS's orientation, called $\phi_s$, which is computed through the pointing model <a href="JAC2019"></a>.
     </p>
-    \begin{equation}
+    \begin{equation}\label{eq:phidef}
     \phi_d = \psi + \phi_s
     \end{equation}
 
@@ -215,7 +217,7 @@
 <p>
     Because this $\phi_s$ term tracks the focal plane orientation, it is sensitive to the inputs of the pointing model. As such, the rest of this posting is dedicated to characterizing possible sources of systematics on the focal plane orientation and establishing a constraint on the total uncertainty of $\phi_s$.
 </p>
-
+-->
 </section>
 
 <section><h2>Mirror/Source Systematics</h2>
@@ -1200,10 +1202,61 @@ Important links:
 
     </ul>
 
+</section>
+<section>
+    <h2 id="mirrfixedcase">Fixing Mirror/Source Parameters</h2>
+    <p>
+        For this section, I fixed the mirror and source parameters in place and instead fit an overall angle to the beam center residuals per-rasterset and use that angle as a correction to the apparent rotation of the focal plane. The source parameters are fixed to those that I got from the moon Az=-177.52&deg;/El=2.68&deg;. The moon parameters are fixed at the mean per-rasterset fits used in previous sections Tilt=44.88&deg;/Roll=-0.07&deg;.
+    </p>
+<p>
+    In the plot below I compare show the best-fit FPU angles for when I allow the mirror to be fit per-rasterset (left) and when I fix it (right).
+</p>
 
+    <p>
+        <b>Question:</b> Fixing the mirror even though it is moving around will result in an apparent rotation of the focal plane so we expect the distribution on the right to be larger, but can we predict how large the increase should be?
+    </p>
+
+<figure>
+    <img src="figs/fpuang_hist.png" width="70%">
+    <figcaption>
+
+    </figcaption>
+</figure>
+
+    <p>
+        Before worrying too much about the question above, let's look at the impact on the polarization angles. I plot below the mean-subtracted, FPU angle-corrected A/B pol angles vs samples (ordered chronologically) which shows the effect of correcting for the focal plane angle. We can see that some parts look consistent to the 'mirror-free' case, but others are systematically worse -- the angles are offset in some coherent way. Since these are two approaches to getting the same answer, in a perfect world, I would expect the scatter to be roughly the same.
+    </p>
+
+    <figure>
+        <img src="figs/polang_vs_samples.png" width="70%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>
+        The histograms below compare the distributions. The scatter increases by ~30%.
+    </p>
+
+    <figure>
+        <img src="figs/polang_hist.png" width="70%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>
+        Again, before I get too concerned with this, I want to see how this averages down in the final per-pair angles. How different are the per-pair angles averaged over all 10 observations? Not very. Below are histograms of the obs-averaged, per-pair angles and we can see that the means and SDevs are within a percent or so of each other.
+    </p>
+
+    <figure>
+        <img src="figs/polangpair_hist.png" width="70%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
 
 </section>
-
 
 <hr>
 
