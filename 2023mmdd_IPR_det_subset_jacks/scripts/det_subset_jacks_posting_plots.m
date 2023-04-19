@@ -1,4 +1,4 @@
-function get_sim_global_rotation_B18()
+function det_subset_jacks_posting_plots()
 
 %% Add relevant paths
 addpath('z:/pipeline')
@@ -23,9 +23,9 @@ purename = {'','_matrix'};
 puretitle = {'No purification','Matrix Purification'};
 
 % Per sernum
-%sername = {'6600','6614','6614'};
-sername = {'6622','6600','6614'};
-daughter = {'fgh','fgh','fgh'};
+sername = {'6607','6607','6607','6608','6608','6608','6609','6609','6609'};
+daughter = {'f','g','h','f','g','h','f','g','h',};
+
 % Per fixed/free axes
 axname = {'_free','_fixed'};
 
@@ -47,31 +47,300 @@ crossname = {'','_cross'};
 cm = colormap('lines');
 close all
 
-%% Grab the pol angles for a given sernum
+%% Grab the pol angles for a given sernum (on Odyssey)
 
-polopt = struct;
-polopt.offdiag = 0;
+sername1 = {'6607','6608','6609'};
+daughter1 = {'f','g','h','fgh'};
+pure1 = {'matrix_'};
+cross1 = {false};
+cov1 = {'normal'};
+bins1 = {2:10,2:15};
+combos = product(sername1,daughter1,pure1,cross1,cov1,bins1);
 
-fitopt = struct;
-fitopt.signame = [2 3 5 6 7 8];
-fitopt.sername = '6607';
-fitopt.daughter = 'h';
-%fitopt.purename = '';
-%fitopt.iscross = true;
-fitopt.covtype = 'normal';
-fitopt.polopt = polopt;
-fitopt.estimator = 'linear';
-fitopt.bpcm_simset = '6614/xxx8_fgh_filtp3_weight3_gs_dp1100_jack0_matrix_cm_overfreq.mat';
-fitopt.usebins = 11:15;
+%%
+for combind = 1:length(combos)
 
-clear accumulate_pol_rot_fits
-tic;
-accumulate_pol_rot_fits(fitopt)
-toc
+    C = combos{combind};
+    polopt = struct;
+    polopt.offdiag = 0;
+
+    fitopt = struct;
+    fitopt.sername =  C{1};
+    fitopt.daughter = C{2};
+    fitopt.purename = C{3};
+    fitopt.iscross = C{4};
+    fitopt.covtype = C{5};
+    fitopt.usebins = C{6};
+    fitopt.signame = [2 3 5 6 7 8];
+    fitopt.polopt = polopt;
+    %fitopt.estimator = 'linear';
+    fitopt.bpcm_simset = '6614/xxx8_fgh_filtp3_weight3_gs_dp1100_jack0_matrix_cm_overfreq.mat';
+
+    clear accumulate_pol_rot_fits
+    tic;
+    accumulate_pol_rot_fits(fitopt)
+    toc
+
+end
+
+
+%% Look at the distributions of data subsets (rewrite!)
+
+clc
+close all
+sername = {'6600','6603','6604','6605'};
+sigind = 1;
+pureind = 1;
+for serind = 1:length(sername)
+    apsname = sprintf('z:/dev/sims/aps/%s/xxx%i_h_filtp3_weight3_gs_dp1100_jack01_%scm_overfreq.mat',sername{serind},signame(sigind),purename{pureind});
+    load(apsname,'coaddopt')
+    plot_tiles(double(ismember(1:2640,coaddopt.ind.rgl100)),coaddopt.p,'title','FPU coverage');
+    %length(coaddopt.ind.rgl100a)
+    fname = sprintf('%s_tile_plot.png',sername{serind});
+    saveas(serind,fullfile(figdir,fname))
+end
+
+%% Histogram of upper-middle-lower angle data splits
+
+load('z:/dev/sims/phi_dummy_bicep3_20170101_struct.mat')
+
+dp = k.diffphi;
+q = quantile(dp,[0,0.3333,0.6666,1]);
+idx = logical(k.hasmeas);
+
+fig = figure(101);
+fig.Position(3:4) = [440 430];
+clf; hold on;
+t = tiledlayout(1,1);
+t.TileSpacing = 'compact';
+t.Padding = 'compact';
+nexttile()
+hold on
+
+edges = -1.5:3.5/71:0.6;
+N = histc(dp(idx),edges);
+bar(edges,N,'histc')
+
+yedges = [0, max(N)*1.2];
+clr = {'b','r','g'};
+for pltind=1:3
+    plot([1 1]*q(pltind),yedges,'--','Color',clr{pltind})
+    plot([1 1]*q(pltind+1),yedges,'--','Color',clr{pltind})
+end
+text(-1.35,max(N)*1.1,'Lower')
+text(-0.88,max(N)*1.1,'Middle')
+text(-0.45,max(N)*1.1,'Upper')
+grid on
+xlim([min(edges), max(edges)])
+ylim(yedges)
+xlabel('$\phi_{pair,RPS}\;-\;\phi_{pair,obs}$ [Deg]')
+ylabel('N')
+title('Histogram of as-measured angle vs. fiducial')
+pbaspect([1 1 1])
+fname = 'hist_diffphi.png';
+saveas(fig,fullfile(figdir,fname))
+
+%% Calc the expected angle for the simsets (on Odyssey)
+% Load an APS and the phi_dummy for a year, grab the channels used.
+
+Aexp = NaN(length(sername1),length(daughter1));
+for combind = 1:length(combos)
+    C = combos{combind};
+    [sername0,daughter0,pure0,cross0,cov0,bins0] = deal(C{:});
+
+    if strcmp(daughter0,'f')
+        fdate = 20160101;
+    else
+        fdate = 20170101;
+    end
+
+    if strcmp(daughter0,'fgh')
+        jack = '0';
+    else
+        jack = '01';
+    end
+
+    apsname = sprintf('aps/%s/xxx%i_%s_filtp3_weight3_gs_dp1100_jack%s_%scm_overfreq.mat',sername0,2,daughter0,jack,pure0);
+    if ~exist(apsname,'file')
+        error('%s not found',apsname)
+    else
+        aps = load(apsname);
+    end
+
+    fbase = sprintf('aux_data/%s_bicep3',aps.coaddopt.chflags.filebase{end});
+    k = find_file_by_date(fdate,fbase,false);
+
+
+    [b, si] = ismember(sername0,sername1);
+    [b, di] = ismember(daughter0,daughter1);
+    
+    Aexp(si,di) = nanmean(k.diffphi(aps.coaddopt.ind.rgla));
+
+end
+
+save('dev/sims/datasplit_jack_alpha_expected','Aexp')
+
+%% Grab the mean alphas and SDevs
+clc
+
+
+signums = [2,8];
+pssigs = [2 3 5 6 7 8];
+
+[Asim, Ssim] = deal(NaN(length(sername1),length(daughter1),2,length(signums)));
+AsimAll = deal(NaN(length(sername1),length(daughter1),2,length(signums),10));
+for combind = 1:length(combos)
+    C = combos{combind};
+    [sername0,daughter0,pure0,cross0,cov0,bins0] = deal(C{:});
+
+    [~, si] = ismember(sername0,sername1);
+    [~, di] = ismember(daughter0,daughter1);
+    [~, bi] = ismember(bins0(end),[10 15]);
+
+    psname = sprintf('z:/dev/sims/%s_%s_global_pol_fits_bins_%i_%i_offdiag_0_matrix_normal_repsim_6614xxx8.mat',...
+        sername0,daughter0,bins0(1),bins0(end));
+    load(psname)
+
+    for sigind = 1:length(signums)
+        % Only looking at EB-only these days.
+        Asim(si,di,bi,sigind)  = nanmean(ps{pssigs==signums(sigind)}.alpha(1,:));
+        Ssim(si,di,bi,sigind)  = nanstd(ps{pssigs==signums(sigind)}.alpha(1,:));
+        AsimAll(si,di,bi,sigind,:) = ps{pssigs==signums(sigind)}.alpha(1,:);
+    end
+end
+
+%% Plot the alphas from sims vs expected
+
+load('z:/dev/sims/datasplit_jack_alpha_expected.mat')
+cm = colormap('lines');
+mk = {'-','--',':','-.'};
+ebscaling = 0.862;
+lims = [-1.4 -0.2];
+
+x = size(Asim);
+count = 0;
+for sigind = 1:length(signums)
+    for binind = 1:2
+    fig = figure(58041+0*count);
+    fig.Position(3:4) = [520 520]*0.9;
+    clf; hold on;
+    t = tiledlayout(1,1);
+    t.TileSpacing = 'compact';
+    t.Padding = 'compact';
+    nexttile()
+    hold on
+    clear z
+    for dind = 1:x(2)
+        A0 = squeeze(Asim(:,dind,binind,sigind))/ebscaling;
+        S0 = squeeze(Ssim(:,dind,binind,sigind))/ebscaling;
+        Aexp0 = Aexp(:,dind)/ebscaling;
+        %errorbar(Aexp0,A0,S0,'Marker','.','MarkerSize',14)
+        z(dind) = errorbar(Aexp0,A0,S0,'.','MarkerSize',14);
+
+    end
+    plot(lims,lims,'k--')
+    legend(z,{'B2016','B2017','B2018','B18'},'Location','northwest')
+    
+    text(-1.3,-1.05,'Low','Rotation',90)
+    text(-0.95,-0.75,'Mid','Rotation',90)
+    text(-0.55,-0.4,'High','Rotation',90)
+
+    xlim(lims)
+    ylim(lims)
+    xlabel({'Mean Input Angle [Deg]','(from FP data file)'})
+    ylabel({'Mean Output Angle [Deg]','(Fit form sim APS)'})
+    grid on
+    pbaspect([1 1 1])
+    count = count+1;
+
+    fsuffix = sprintf('type_%i_bins_%i_%i',signums(sigind),bins1{binind}(1),bins1{binind}(end));
+    title(fsuffix,'Interpreter','none')
+    fname = sprintf('alpha_in_vs_out_plots_%s',fsuffix);
+    saveas(fig,fullfile(figdir,fname),'png')
+    end
+end
+
+%% Now plot the differences between each subset
+% and compare to the expected
+clc
+
+ind1 = [1 2 1];
+ind2 = [2 3 3];
+cm = colormap('lines');
+mk = {'-','--',':'};
+signums = [2, 8];
+% Loop over signals
+ebscaling = 0.862;
+lims = [0 3.5];
+daughtoffs = linspace(-1,1,length(daughter1))*0.2;
+
+count = 0;
+x = size(Asim);
+for sigind = 1:length(signums)
+    for binind = 1:2
+    fig = figure(85521+0*count);
+    fig.Position(3:4) = [520 520]*0.9;
+    clf; hold on;
+    t = tiledlayout(1,1);
+    t.TileSpacing = 'compact';
+    t.Padding = 'compact';
+    nexttile()
+    hold on
+    for dind = 1:x(2)
+            [A0, S0, Aexp0] = deal(NaN(1,length(ind1)));
+        for diffind = 1:length(ind1)
+            A = squeeze(AsimAll(ind1(diffind),dind,binind,sigind,:)-AsimAll(ind2(diffind),dind,binind,sigind,:))/ebscaling;
+            A0(diffind) = mean(A);
+            S0(diffind) = std(A);
+            Aexp0(diffind) = (Aexp(ind1(diffind),dind)-Aexp(ind2(diffind),dind))/ebscaling;
+        end
+        
+        errorbar((1:3)+daughtoffs(dind),A0,S0,'.','MarkerSize',14)
+
+    end
+
+    legend({'B2016','B2017','B2018','B18'},'Location','northeast')
+    xlim([0 4])
+    ylim([-1 0.2])
+    ylabel('Expected Difference')
+    ax = gca;
+    ax.XTick = 0:3;
+    ax.XTickLabel = {'','Low-Mid','Mid-High','Low-High'};
+    ax.XTickLabelRotation = -60;
+    grid on
+    pbaspect([1 1 1])
+    count = count+1;
+    
+    fsuffix = sprintf('type_%i_bins_%i_%i',signums(sigind),bins1{binind}(1),bins1{binind}(end));
+    title(fsuffix,'Interpreter','none')
+    fname = sprintf('alpha_diff_plots_%s',fsuffix);
+    saveas(fig,fullfile(figdir,fname),'png')
+    end
+end
+
+
+%% PTE Table
+% Make a table of PTE's for the case where the difference in angle is 0 in real data
+
+% why is making tables in matlab so hard?
 
 
 
-%% Plot the APS now
+%% Make a blank image
+fig = figure(1);
+fig.Position(3:4) = [600 400];
+clf;
+
+figname = 'blank.png';
+saveas(fig,fullfile(figdir,figname))
+
+%% Make a blank image
+fig = figure(1);
+fig.Position(3:4) = [600 600];
+clf;
+
+
+%% Plot the APS now (rewrite!)
 %
 
 clc
@@ -207,12 +476,12 @@ end
 %% Plot histograms of Alpha
 
 if 1
-fig = figure(1);
-fig.Position(3:4) = [1100 400];
-clf;
+    fig = figure(1);
+    fig.Position(3:4) = [1100 400];
+    clf;
 
-figname = 'blank_6x4.png';
-saveas(fig,fullfile(figdir,figname))
+    figname = 'blank_6x4.png';
+    saveas(fig,fullfile(figdir,figname))
 end
 scaling = {[1 1 1],[0.865 0.803 0.848]};
 scalename = {'','_corr'};
@@ -243,11 +512,11 @@ for combidx = 1:length(combos)
 
     [crossind, scaleind, serind, pureind,...
         usebins,covtypename,repname,pseudoname,offdiagname] = deal(combos{combidx}{:});
-    
+
 
     fname = sprintf('%s_%s_global_pol_fits_bins_%i_%i_offdiag_%i%s%s%s%s%s',sername{serind},daughter{serind},...
-            min(usebins),max(usebins),offdiagname,purename{pureind},crossname{crossind},...
-            ['_' covtypename],repname);
+        min(usebins),max(usebins),offdiagname,purename{pureind},crossname{crossind},...
+        ['_' covtypename],repname);
     disp(fname)
     load(fullfile('z:/dev/sims/',fname))
 
@@ -255,183 +524,12 @@ for combidx = 1:length(combos)
         figname = sprintf('%s_%s_sig_%i_alpha_hist_bins_%i_%i_offdiag_%i%s%s%s%s%s',sername{serind},daughter{serind},...
             ps{sigind}.signame,min(usebins),max(usebins),offdiagname,purename{pureind},crossname{crossind},...
             ['_' covtypename],repname);
-        
+
         do_alpha_hist_plots(ps{sigind},figname,figdir)
     end
 end
 
 
-
-%% Make a blank image
-fig = figure(1);
-fig.Position(3:4) = [600 400];
-clf;
-
-figname = 'blank.png';
-saveas(fig,fullfile(figdir,figname))
-
-%% Make a blank image
-fig = figure(1);
-fig.Position(3:4) = [600 600];
-clf;
-
-
-
-%% Look at the distributions of data subsets
-
-clc
-close all
-sername = {'6600','6603','6604','6605'};
-sigind = 1;
-pureind = 1;
-for serind = 1:length(sername)
-    apsname = sprintf('z:/dev/sims/aps/%s/xxx%i_h_filtp3_weight3_gs_dp1100_jack01_%scm_overfreq.mat',sername{serind},signame(sigind),purename{pureind});
-    load(apsname,'coaddopt')
-    plot_tiles(double(ismember(1:2640,coaddopt.ind.rgl100)),coaddopt.p,'title','FPU coverage');
-    %length(coaddopt.ind.rgl100a)
-    fname = sprintf('%s_tile_plot.png',sername{serind});
-    saveas(serind,fullfile(figdir,fname))
-end
-
-%% Histogram of upper-middle-lower angle data splits
-
-load('z:/dev/sims/phi_dummy_bicep3_20170101_struct.mat')
-
-dp = k.diffphi;
-q = quantile(dp,[0,0.3333,0.6666,1]);
-idx = logical(k.hasmeas);
-
-fig = figure(101);
-fig.Position(3:4) = [440 430];
-clf; hold on;
-t = tiledlayout(1,1);
-t.TileSpacing = 'compact';
-t.Padding = 'compact';
-nexttile()
-hold on
-
-edges = -1.5:3.5/71:0.6;
-N = histc(dp(idx),edges);
-bar(edges,N,'histc')
-
-yedges = [0, max(N)*1.2];
-clr = {'b','r','g'};
-for pltind=1:3
-    plot([1 1]*q(pltind),yedges,'--','Color',clr{pltind})
-    plot([1 1]*q(pltind+1),yedges,'--','Color',clr{pltind})
-end
-text(-1.35,max(N)*1.1,'Lower')
-text(-0.88,max(N)*1.1,'Middle')
-text(-0.45,max(N)*1.1,'Upper')
-grid on
-xlim([min(edges), max(edges)])
-ylim(yedges)
-xlabel('$\phi_{pair,RPS}\;-\;\phi_{pair,obs}$ [Deg]')
-ylabel('N')
-title('Histogram of as-measured angle vs. fiducial')
-pbaspect([1 1 1])
-fname = 'hist_diffphi.png';
-saveas(fig,fullfile(figdir,fname))
-
-
-%% Plot the actual mean vs. expected (with error bars?)
-clc
-
-Aexp = [-1.069 -0.796 -0.778 -0.468];
-
-
-cm = colormap('lines');
-mk = {'-','--',':'};
-signums = [2,5, 7, 8];
-% Loop over signals
-clear z
-for sigind = 1:size(Amean,2)
-    fig = figure(1);
-    fig.Position(3:4) = [600 500]*0.75;
-    clf; hold on;
-
-    % Loop over fit-types
-    for fitind = 1:size(Amean,3)
-        Dexp = Aexp;
-        Dsim = squeeze(Amean(:,sigind,fitind))';
-        Dstd = squeeze(Astd(:,sigind,fitind))';
-        z(fitind) = errorbar(Dexp,Dsim,Dstd/2,'Color',cm(fitind,:),'LineStyle',mk{fitind});
-        plot(Dexp,Dsim,'.','Color',cm(fitind,:),'MarkerSize',12)
-        grid on
-
-    end
-
-    lims = [-1.2 -0.3];
-    plot(lims,lims,'k--')
-
-    xlim(lims)
-    ylim(lims)
-
-    xlabel('Expected Angle [Degrees]')
-    ylabel('Actual Angle [Degrees]')
-    legend(z,{'EB','TB','EB+TB'},'location','northwest')
-
-    text(-1.125,-1.05,'Lower','Rotation',90)
-    text(-0.85,-0.79,'Middle','Rotation',90)
-    text(-0.7,-1.05,'B2018+RPS','Rotation',90)
-    text(-0.4,-.7,'Upper','Rotation',90)
-
-
-    fname = sprintf('subset_mean_compare_type_%i',signums(sigind));
-    %saveas(fig,fullfile(figdir,fname),'png')
-
-end
-
-
-
-%% Now plot the differences between each subset
-% and compare to the expected
-clc
-
-Aexp = [-1.069 -0.796 -0.778 -0.468];
-
-ind1 = [1 2 1];
-ind2 = [2 4 4];
-cm = colormap('lines');
-mk = {'-','--',':'};
-signums = [2,5, 7, 8];
-% Loop over signals
-clear z
-for sigind = 1:size(Amean,2)
-    fig = figure(1);
-    fig.Position(3:4) = [600 500]*0.75;
-    clf; hold on;
-
-    % Loop over fit-types
-    for fitind = 1:size(Amean,3)
-        Dexp = Aexp(ind2)-Aexp(ind1);
-        Dsim = squeeze(Amean(ind2,sigind,fitind)-Amean(ind1,sigind,fitind))';
-        Dstd = sqrt(squeeze(Astd(ind2,sigind,fitind)).^2+squeeze(Astd(ind1,sigind,fitind)).^2)';
-        z(fitind) = errorbar(Dexp,Dsim,Dstd/2,'Color',cm(fitind,:),'LineStyle',mk{fitind});
-        plot(Dexp,Dsim,'.','Color',cm(fitind,:),'MarkerSize',12)
-        grid on
-
-    end
-
-    lims = [0.15 0.65];
-    plot(lims,lims,'k--')
-
-    xlim(lims)
-    ylim(lims)
-
-    xlabel('Expected Difference [Degrees]')
-    ylabel('Actual Difference [Degrees]')
-    legend(z,{'EB','TB','EB+TB'},'location','northwest')
-
-    text(0.25,0.3,'Mid - Low','Rotation',90)
-    text(0.32,0.4,'Upper - Mid','Rotation',90)
-    text(0.6,0.35,'Upper - Low','Rotation',90)
-
-
-    fname = sprintf('subset_diff_compare_type_%i',signums(sigind));
-    %saveas(fig,fullfile(figdir,fname),'png')
-
-end
 
 
 %end of main function
@@ -495,7 +593,7 @@ x = size(a);
 for specind = 1:specmax
     edges = (-1:0.075:1)*0.5;
     N = histc(a(specind,:),edges);
-    
+
     nexttile(specind)
     bar(edges,N,'histc')
     xlim([min(edges) max(edges)])

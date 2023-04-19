@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>polrot data subsets</title>
+    <title>IPR 8: Angle Split Jack</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -29,15 +29,19 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis: Cross checking angles in B2018 data subsets</h1>
+    <h1>Isotropic Polarization Rotation Analysis 8: Parameter-Blind Validation Test of RPS Angles in B18 sims.</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
-        2023 Jan 20
+        2023 Apr 25
     </time> —
     J. Cornelison
 </header>
 
 <hr>
+
+<p>
+    This posting is part of a series which comprises the IPR analysis, see <a href="#references">previous postings</a> for more on this.
+</p>
 
 <p>
 The goal of this posting is to demonstrate a procedure to split CMB data into subsets and comparing their angles which will serve as an important consistency check on the as-measured polarization angles during unblinding.
@@ -48,14 +52,21 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
 <section>
     <h2>Cross-checking RPS Polarization Angles</h2>
     <p>
-        We've come up with a procedure to cross-check that the RPS-derived polarization angles without unblinding ourselves to the birefrinence angle.
+        The angle we get from a given EB power spectrum (in the absence of birefringence) comes from the fact that the polarization angles we use to make timestreams differ from those we use to make maps.
+        The real BICEP3 CMB data as it current exists uses some generally ideal values for the polarization angles of the detectors when we turn timestreams into maps.
+        Having no hard prior on what to set them to, the polarization angles are set to the same value.
+        On the other hand, the angles I measured with the RPS show a detector-to-detector scatter of ~0.1 deg.
+    </p>
 
-        A comparison of my preliminary RPS measurements vs the polarization angles we're currently using to make maps shows a variance across the focal plane on the order of ~1&deg;.
-
-        That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in global rotation angle among the different subsets. Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle. While it doesn't really give us information on the absolute angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the RPS analysis.
+    <p>
+        <!--We've come up with a procedure to cross-check that the RPS-derived polarization angles without unblinding ourselves to the birefrinence angle.-->
+        That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in the angle between the different subsets.
+        Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle. While it doesn't really give us information on the overall angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the pol angles I measured using the RPS.
     </p>
     <p>
-        The figure below shows how the data could be split up. In this case, I choose to split the pairs evenly into thirds where the mean difference in global rotation angle between the lower-to-middle and middle-to-upper datasets is expected to be ~0.3&deg;.
+        The figure below shows how the data could be split up.
+        The choice is relatively arbitrary, but limited ultimately by the fact that noise increases with fewer detectors.
+        In this case, I choose to split the pairs evenly into thirds where the mean difference in global rotation angle between the lower-to-middle and middle-to-upper datasets is expected to be ~0.3&deg;.
     </p>
 
     <figure>
@@ -66,39 +77,31 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
     </figure>
 
     <p>
-        I now fit the global rotation angle to each signal type of each subset and examine the distributions.
+        I created three subsets of B18 sims, 10 realizations each, based on the detector grouping above. I then fit the global rotation angle to the EB spectra of each subset and compare the those angles to the angles I expect. Because I have to make the individual years of 2016 through 2018 in order to make the three year coadd, I fit angles to the three years individually as well as the B18 coadded maps.
     </p>
 
-    <p>As we saw in my previous posting <a href="JAC2023b"></a>, we can calculate the expected angles by taking the uniform mean of the difference between the RPS-derived and CMB-derived polarization angles.</p>
-
-    <p>Expected angles:</p>
-
-    <ul>
-        <li>B2018+RPS: -0.778&deg;</li>
-        <li>subset-lower: -1.069&deg;</li>
-        <li>subset-middle: -0.796&deg;</li>
-        <li>subset-upper: -0.468&deg;</li>
-    </ul>
-
-    <p>The pager below shows the expected angle vs. the mean alpha of the the realizations per-signal type with the 1-&sigma; standard deviations as the error bars.</p>
-
+    <p>
+        In the figure below, I show results the unlensed-CMB signal (type 2) and Lense-CMB+Noise+Dust (Type 8), type 2 to look at the subsets without noise and type 8 because that's what we'll ultimately be comparing the real CMB data to. I also include an option for selecting between fitting over our typical 9 bandpowers or fitting our 9 plus higher ells.
+    </p>
 
     <figure>
-        <img alt="Name pager" id="comparpager" src="#" onerror=this.src="figs/blank.png" width="75%"/>
+        <img alt="Name pager" id="comparepager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
-            pager.link("#comparpager",
+            pager.link("#comparepager",
                 {
-                    'Signal Type|sig2': ['Unlensed-LCDM|2','Lensed-LCDM|5','L-LCDM+Noise|7','L-LCDM+N+Dust|8'],
+                    'Signal Type|sig1': ['Unlensed-LCDM|2','L-LCDM+N+Dust|8'],
+                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],
 
                 },
                 function(params) {
-                    return 'figs/subset_mean_compare_type_'+params.sig2+'.png';
+                    return 'figs/alpha_in_vs_out_plots_type_'+params.sig1+'_bins_'+params.bin1+'.png';
                 });
             pager.setparams({
-                'sig2': '2',
+                'sig1': '2',
+                'bin1': '2_10',
 
             });
         </script>
@@ -106,30 +109,34 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
 
 
 
-    <p>The pager below shows the resulting differences of the angles </p>
+    <p>The pager below shows the resulting differences of the angles.</p>
 
     <figure>
-        <img alt="Name pager" id="diffpager" src="#" onerror=this.src="figs/blank.png" width="75%"/>
+        <img alt="Name pager" id="diffpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
             pager.link("#diffpager",
                 {
-                    'Signal Type|sig2': ['Unlensed-LCDM|2','Lensed-LCDM|5','L-LCDM+Noise|7','L-LCDM+N+Dust|8'],
+                    'Signal Type|sig1': ['Unlensed-LCDM|2','L-LCDM+N+Dust|8'],
+                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],
 
                 },
                 function(params) {
-                    return 'figs/subset_diff_compare_type_'+params.sig2+'.png';
+                    return 'figs/alpha_diff_plots_type_'+params.sig1+'_bins_'+params.bin1+'.png';
                 });
             pager.setparams({
-                'sig2': '2',
+                'sig1': '2',
+                'bin1': '2_10',
 
             });
         </script>
     </figure>
 
+<p>
 
+</p>
 
 
 </section>
@@ -302,6 +309,7 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
         // The strings are for if you post your posting in that directory.
         var sitemap = {
             jcornelison: "../../../",   // /jcornelison/postings/
+            cverges: "../../../",
             bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
             bicep3: "../../../",        //
             bicep_array: "../../../",   //
@@ -325,33 +333,38 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
 
         // Shorthand tags
         var tags = [
-            "JBW2016",
-            "EWB2016a",
-            "EWB2016b",
             "JAC2023a",
-            "JAC2023b"
+            "JAC2023b",
+            "JAC2023c",
+            "JAC2023d",
+            "JAC2023e",
+            "JAC2023f",
+            "CV2023",
         ];
 
         // Links
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
-            "bkcmb/analysis_logbook/analysis/20160907_polrot/",
-            "bkcmb/analysis_logbook/analysis/20161103_polrotsims_pager/",
-            "bkcmb/analysis_logbook/analysis/20161215_rot_sims_polrot/",
-            "jcornelison/postings/20221213_birefringence_fits_to_B2018/index.html",
-            "jcornelison/postings/20221213_birefringence_pol_rot_sims/",
-
+            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "jcornelison/postings/20230321_IPR_high_ell/",
+            "jcornelison/postings/20230321_IPR_forecasting/",
+            "jcornelison/postings/20230321_IPR_B18_subsets/",
+            "cverges/20221215_alt_dust_sim/",
         ];
 
 
         // Posting titles
         var desc = [
-            "Birefringence/Polarization rotation in K2015 and BK15",
-            "Polarization Rotation Sims Pager",
-            "Polarization Rotation Sims Global Rotation",
-            "Uniform Birefringence Analysis I: Global Polarization Rotation Fits on Standard B2018 Sims",
-            "Isotropic Birefringence Analysis: Global Polarization Rotation Angles in B2018 sims",
+            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+            "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+            "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
+            "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
+            "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
+            "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
         ];
         // Debug
         var posty = document.getElementById("testp");
