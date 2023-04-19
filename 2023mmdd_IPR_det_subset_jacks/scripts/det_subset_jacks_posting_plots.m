@@ -274,6 +274,7 @@ ebscaling = 0.862;
 lims = [0 3.5];
 daughtoffs = linspace(-1,1,length(daughter1))*0.2;
 
+[Asimdiff Ssimdiff] = deal(NaN(size(Asim)));
 count = 0;
 x = size(Asim);
 for sigind = 1:length(signums)
@@ -294,7 +295,8 @@ for sigind = 1:length(signums)
             S0(diffind) = std(A);
             Aexp0(diffind) = (Aexp(ind1(diffind),dind)-Aexp(ind2(diffind),dind))/ebscaling;
         end
-        
+        Asimdiff(:,dind,binind,sigind) = A0';
+        Ssimdiff(:,dind,binind,sigind) = S0';
         errorbar((1:3)+daughtoffs(dind),A0,S0,'.','MarkerSize',14)
 
     end
@@ -322,8 +324,14 @@ end
 %% PTE Table
 % Make a table of PTE's for the case where the difference in angle is 0 in real data
 
-% why is making tables in matlab so hard?
+chisq = (Asimdiff-0).^2./Ssimdiff.^2;
+pte = 1-chi2cdf(chisq,length(2:15)-1);
 
+% why is making tables in matlab so hard?
+XLabs = {'Low-Mid','Mid-High','Low-High'};
+YLabs = {'B2016','B2017','B2018','B18'};
+
+simple_html_table(squeeze(pte(:,:,2,2))',XLabs,YLabs,struct)
 
 
 %% Make a blank image

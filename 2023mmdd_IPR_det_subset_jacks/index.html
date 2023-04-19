@@ -135,9 +135,46 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
     </figure>
 
 <p>
-
+Unfortunately, these don't appear to be particularly strong tests. If we imagine a scenario where the angles we currently have in the FP data file are actually correct, then the difference angles would all be zero. In the table below, I show the resulting pte's for such a case and we see that even our strongest test (B18, low-high, 14 bandpowers), our test still doesn't fail according to our typical requirements (0.01>pte<0.99).
 </p>
 
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th></th>
+                <th>Low-Mid</th>
+                <th>Mid-High</th>
+                <th>Low-High</th>
+            </tr>
+            <tr>
+                <td>B2016</td>
+                <td>1.000</td>
+                <td>1.000</td>
+                <td>1.000</td>
+            </tr>
+            <tr>
+                <td>B2017</td>
+                <td>0.964</td>
+                <td>0.997</td>
+                <td>0.379</td>
+            </tr>
+            <tr>
+                <td>B2018</td>
+                <td>1.000</td>
+                <td>0.975</td>
+                <td>0.912</td>
+            </tr>
+            <tr>
+                <td>B18</td>
+                <td>0.997</td>
+                <td>0.964</td>
+                <td>0.054</td>
+            </tr>
+        </table>
+        <figcaption>
+            Table of PTE's for the case where the real angles in the CMB data are what's currently being used (i.e. a difference angle of zero) and we're fitting over 14 bandpowers.
+        </figcaption>
+    </figure>
 
 </section>
 <section><h2>Conclusions</h2>
