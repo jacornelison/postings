@@ -135,11 +135,14 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
     </figure>
 
 <p>
-Unfortunately, these don't appear to be particularly strong tests. If we imagine a scenario where the angles we currently have in the FP data file are actually correct, then the difference angles would all be zero. In the table below, I show the resulting pte's for such a case and we see that even our strongest test (B18, low-high, 14 bandpowers), our test still doesn't fail according to our typical requirements (0.01>pte<0.99).
+Unfortunately, these don't appear to be particularly strong tests. If we imagine a scenario where the angles we currently have in the FP data file are actually correct, then the difference angles would all be zero. In the table below, I show the resulting pte's for such a case and we see that even our strongest test (B18, low-high, 14 bandpowers), our test still doesn't fail according to our typical requirements (0.01 < pte < 0.99).
 </p>
 
     <figure class="table">
         <table class="results">
+            <tr>
+                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-15</th>
+            </tr>
             <tr>
                 <th></th>
                 <th>Low-Mid</th>
@@ -188,74 +191,74 @@ Unfortunately, these don't appear to be particularly strong tests. If we imagine
 
     <h3>APS for data Subsets</h3>
 
-    <figure>
-        <img alt="Name pager" id="apspager2" src="#" width="85%" onerror=this.src="figs/blank.png" />
-        <figcaption>
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="apspager2" src="#" width="85%" onerror=this.src="figs/blank.png" />-->
+<!--        <figcaption>-->
 
-        </figcaption>
+<!--        </figcaption>-->
 
-        <script type="text/javascript">
-            pager.link("#apspager2",
-                {
-                    'Signal Type|sig2': ['2','3','5','6','7','8'],
-                    'Simset|sernum3': ['B2018|6614','B2018+RPS|6606','subset-lower|6607','subset-middle|6608','subset-upper|6609'],
-                    'y-axes|axes': ['Fixed|_fixed','Free|_free']
-                },
-                function(params) {
-                    return 'figs/aps_'+params.sernum3+'_matrix_'+params.sig2+params.axes+'.png';
-                });
-            pager.setparams({
-                'sig2': '2',
-                'sernum3': '6607',
-                'axes': '_fixed',
-            });
-        </script>
-    </figure>
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#apspager2",-->
+<!--                {-->
+<!--                    'Signal Type|sig2': ['2','3','5','6','7','8'],-->
+<!--                    'Simset|sernum3': ['B2018|6614','B2018+RPS|6606','subset-lower|6607','subset-middle|6608','subset-upper|6609'],-->
+<!--                    'y-axes|axes': ['Fixed|_fixed','Free|_free']-->
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/aps_'+params.sernum3+'_matrix_'+params.sig2+params.axes+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'sig2': '2',-->
+<!--                'sernum3': '6607',-->
+<!--                'axes': '_fixed',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
-<h3>Alpha histograms for data subsets</h3>
+<!--<h3>Alpha histograms for data subsets</h3>-->
 
-    <figure>
-        <img alt="Name pager" id="histpager3" src="#" onerror=this.src="figs/blank.png" width="100%"/>
-        <figcaption>
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="histpager3" src="#" onerror=this.src="figs/blank.png" width="100%"/>-->
+<!--        <figcaption>-->
 
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#histpager3",
-                {
-                    'Signal Type|sig': ['Unlensed-LCDM|2','Dust Only|3','Lensed-LCDM|5','Noise Only|6','L-LCDM+Noise|7','L-LCDM+N+Dust|8'],
-                    'Simset|sernum5': ['B2018+RPS|6606','subset-lower|6607','subset-middle|6608','subset-upper|6609'],
-                },
-                function(params) {
-                    return 'figs/alpha_hist_'+params.sernum5+'matrix_'+params.sig+'_corr.png';
-                });
-            pager.setparams({
-                'sig': '2',
-                'sernum5': '6606',
-            });
-        </script>
-    </figure>
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#histpager3",-->
+<!--                {-->
+<!--                    'Signal Type|sig': ['Unlensed-LCDM|2','Dust Only|3','Lensed-LCDM|5','Noise Only|6','L-LCDM+Noise|7','L-LCDM+N+Dust|8'],-->
+<!--                    'Simset|sernum5': ['B2018+RPS|6606','subset-lower|6607','subset-middle|6608','subset-upper|6609'],-->
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/alpha_hist_'+params.sernum5+'matrix_'+params.sig+'_corr.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'sig': '2',-->
+<!--                'sernum5': '6606',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
 
 
-    <h3>Focal Plane Coverage for data subsets</h3>
-    <figure>
-        <img alt="Name pager" id="coveragepager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
-        <figcaption>
-            Focal plane coverage for each of the simsets. Yellow indicates detector pairs used in the coadds.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#coveragepager",
-                {
-                    'Simset|sernum4': ['B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],
-                },
-                function(params) {
-                    return 'figs/'+params.sernum4+'_tile_plot.png';
-                });
-            pager.setparams({
-                'sernum4': '6600',
-            });
-        </script>
-    </figure>
+<!--    <h3>Focal Plane Coverage for data subsets</h3>-->
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="coveragepager" src="#" onerror=this.src="figs/blank.png" width="65%"/>-->
+<!--        <figcaption>-->
+<!--            Focal plane coverage for each of the simsets. Yellow indicates detector pairs used in the coadds.-->
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#coveragepager",-->
+<!--                {-->
+<!--                    'Simset|sernum4': ['B2018-rerun|6600','subset-lower|6603','subset-middle|6604','subset-upper|6605'],-->
+<!--                },-->
+<!--                function(params) {-->
+<!--                    return 'figs/'+params.sernum4+'_tile_plot.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'sernum4': '6600',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
 
     <h3>Footnotes</h3>
