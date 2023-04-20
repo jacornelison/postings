@@ -323,9 +323,8 @@ end
 
 %% PTE Table
 % Make a table of PTE's for the case where the difference in angle is 0 in real data
-
-chisq = (Asimdiff-0).^2./Ssimdiff.^2;
-pte = 1-chi2cdf(chisq,length(2:15)-1);
+z = (0-Asimdiff)./Ssimdiff;
+pte = 1-normcdf(z);
 
 % why is making tables in matlab so hard?
 XLabs = {'Low-Mid','Mid-High','Low-High'};
