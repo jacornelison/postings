@@ -63,6 +63,25 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
         That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in the angle between the different subsets.
         Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle. While it doesn't really give us information on the overall angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the pol angles I measured using the RPS.
     </p>
+
+    <p>The angle we fit to the real data as it currently exists will be a combination of the miscalibration angle and any celestial isotropic polarization sigals</p>
+
+    \begin{equation}
+    \alpha_\text{obs} = \alpha_\text{B3} + \alpha_\text{IPR}
+    \end{equation}
+
+    <p>If we split the data into subsets groups by angle and subtract them, we are left with only a difference between the angles as the celestial signals should cancel-out.</p>
+
+    \begin{equation}
+    \begin{split}
+    \Delta\alpha &= \alpha_{\text{obs},i} - \alpha_{\text{obs},j}\\
+    &= \alpha_{\text{B3},i} + \alpha_\text{IPR} - \alpha_{\text{B3},j} - \alpha_\text{IPR}\\
+    &= \alpha_{\text{B3},i} - \alpha_{\text{B3},j}\\
+
+    \end{split}
+    \end{equation}
+
+
     <p>
         The figure below shows how the data could be split up.
         The choice is relatively arbitrary, but limited ultimately by the fact that noise increases with fewer detectors.
