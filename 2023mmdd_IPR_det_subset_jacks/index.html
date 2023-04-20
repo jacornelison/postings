@@ -29,10 +29,10 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis 8: Parameter-Blind Validation Test of RPS Angles in B18 sims.</h1>
+    <h1>Isotropic Polarization Rotation Analysis 8: Parameter-Blind Test Statistic of RPS Angles in B18 sims</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
-        2023 Apr 25
+        2023 mmm dd
     </time> —
     J. Cornelison
 </header>
@@ -44,7 +44,7 @@
 </p>
 
 <p>
-The goal of this posting is to demonstrate a procedure to split CMB data into subsets and comparing their angles which will serve as an important consistency check on the as-measured polarization angles during unblinding. More work is needed here, however, as my current choices for the split don't create a very strong test.
+The goal of this posting is to demonstrate a procedure to split CMB data into subsets and comparing their angles which will serve as an important consistency check on the as-measured polarization angles during unblinding.
 </p>
 
 <hr>
@@ -135,13 +135,24 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
     </figure>
 
 <p>
-Unfortunately, these don't appear to be particularly strong tests. If we imagine a scenario where the angles we currently have in the FP data file are actually correct, then the difference angles would all be zero. In the table below, I show the resulting pte's for such a case and we see that even our strongest test (B18, low-high, 14 bandpowers), our test still doesn't fail according to our typical requirements (0.01 < pte < 0.99).
+If we imagine a scenario where the angles we currently have in the FP data file are actually correct, then the difference angles would all be zero, which is a case we would hope to cause a failure of these tests. In the table below, I show the resulting pte's for such a case using the L-LCDM+N+D (Type-8) using our typical 9 bandpowers where the PTE's are calculated as:
+</p>
+
+    \begin{equation}
+    \text{PTE} = \left.1-\text{normcdf}\left(\frac{\Delta\alpha_\text{real}-\left<\Delta\alpha_{\text{sims}}\right>}{\sigma_{\Delta\alpha,\text{sims}}}\right)\right|_{\Delta\alpha,\text{real}=0}
+    \end{equation}
+
+<p>
+    Where a PTE<0.5 implies $\Delta\alpha_\text{real}\lt\left<\Delta\alpha_\text{sims}\right>$ and PTE>0.5 for $\Delta\alpha_\text{real}\gt\left<\Delta\alpha_\text{sims}\right>$.
+</p>
+    <p>
+    Only the low-minus-high &Delta;&alpha; values fail according to our typical requirements (0.01 < PTE < 0.99).
 </p>
 
     <figure class="table">
         <table class="results">
             <tr>
-                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-15</th>
+                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-10, Type 8 sims</th>
             </tr>
             <tr>
                 <th></th>
@@ -151,27 +162,72 @@ Unfortunately, these don't appear to be particularly strong tests. If we imagine
             </tr>
             <tr>
                 <td>B2016</td>
-                <td>1.000</td>
-                <td>1.000</td>
-                <td>1.000</td>
+                <td>0.228</td>
+                <td>0.140</td>
+                <td>0.062</td>
             </tr>
             <tr>
                 <td>B2017</td>
-                <td>0.964</td>
-                <td>0.997</td>
-                <td>0.379</td>
+                <td>0.063</td>
+                <td>0.119</td>
+                <td>0.009</td>
             </tr>
             <tr>
                 <td>B2018</td>
-                <td>1.000</td>
-                <td>0.975</td>
-                <td>0.912</td>
+                <td>0.162</td>
+                <td>0.107</td>
+                <td>0.005</td>
             </tr>
             <tr>
                 <td>B18</td>
-                <td>0.997</td>
-                <td>0.964</td>
-                <td>0.054</td>
+                <td>0.037</td>
+                <td>0.061</td>
+                <td>0.001</td>
+            </tr>
+        </table>
+        <figcaption>
+            Table of PTE's for the case where the real angles in the CMB data are what's currently being used (i.e. a difference angle of zero) and we're fitting over 9 bandpowers.
+        </figcaption>
+    </figure>
+
+    <p>
+        I also show a table for fits that include 14 bandpowers. Other values become marginal with the increased constraining power, but the low-minus-high value is still the only one that I would confidently say provides a sufficient failure.
+    </p>
+
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-15, Type 8 sims</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Low-Mid</th>
+                <th>Mid-High</th>
+                <th>Low-High</th>
+            </tr>
+            <tr>
+                <td>B2016</td>
+                <td>0.229</td>
+                <td>0.180</td>
+                <td>0.106</td>
+            </tr>
+            <tr>
+                <td>B2017</td>
+                <td>0.010</td>
+                <td>0.035</td>
+                <td>0.000</td>
+            </tr>
+            <tr>
+                <td>B2018</td>
+                <td>0.147</td>
+                <td>0.012</td>
+                <td>0.005</td>
+            </tr>
+            <tr>
+                <td>B18</td>
+                <td>0.039</td>
+                <td>0.010</td>
+                <td>0.000</td>
             </tr>
         </table>
         <figcaption>

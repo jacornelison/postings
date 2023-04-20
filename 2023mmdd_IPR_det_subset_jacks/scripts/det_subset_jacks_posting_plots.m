@@ -304,7 +304,7 @@ for sigind = 1:length(signums)
     legend({'B2016','B2017','B2018','B18'},'Location','northeast')
     xlim([0 4])
     ylim([-1 0.2])
-    ylabel('Expected Difference')
+    ylabel({'$\Delta\alpha$ [Deg]','(Expected Difference)'})
     ax = gca;
     ax.XTick = 0:3;
     ax.XTickLabel = {'','Low-Mid','Mid-High','Low-High'};
@@ -330,7 +330,10 @@ pte = 1-normcdf(z);
 XLabs = {'Low-Mid','Mid-High','Low-High'};
 YLabs = {'B2016','B2017','B2018','B18'};
 
-simple_html_table(squeeze(pte(:,:,2,2))',XLabs,YLabs,struct)
+binind = 1;
+sigind = 2;
+
+simple_html_table(squeeze(pte(:,:,binind,sigind))',XLabs,YLabs,struct)
 
 
 %% Make a blank image
