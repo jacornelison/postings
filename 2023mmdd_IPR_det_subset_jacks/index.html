@@ -55,7 +55,7 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
         The angle we get from a given EB power spectrum (in the absence of birefringence) comes from the fact that the polarization angles we use to make timestreams differ from those we use to make maps.
         The real BICEP3 CMB data as it current exists uses some generally ideal values for the polarization angles of the detectors when we turn timestreams into maps.
         Having no hard prior on what to set them to, the polarization angles are set to the same value.
-        On the other hand, the angles I measured with the RPS show a detector-to-detector scatter of ~0.1 deg.
+        On the other hand, the angles I measured with the RPS show a detector-to-detector scatter of ~0.5 deg.
     </p>
 
     <p>
@@ -64,23 +64,21 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
         Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle. While it doesn't really give us information on the overall angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the pol angles I measured using the RPS.
     </p>
 
-    <p>The angle we fit to the real data as it currently exists will be a combination of the miscalibration angle of the instrument and any celestial isotropic polarization sigals</p>
+    <p>The angle we fit to the real data as it currently exists will be a combination of the miscalibration angle of the instrument and any celestial isotropic polarization signals</p>
 
     \begin{equation}
     \alpha_\text{obs} = \alpha_\text{B3} + \alpha_\text{IPR}
     \end{equation}
 
-    <p>If we split the data into subsets groups by angle and subtract them, we are left with only a difference between the angles as the celestial signals should cancel-out.</p>
+    <p>If we split the data into subsets grouped by angle and subtract the angles fit from those subsets, we are left with only a difference between the instrument angles as the celestial signals should cancel-out.</p>
 
     \begin{equation}
     \begin{split}
     \Delta\alpha &= \alpha_{\text{obs},i} - \alpha_{\text{obs},j}\\
     &= \alpha_{\text{B3},i} + \alpha_\text{IPR} - \alpha_{\text{B3},j} - \alpha_\text{IPR}\\
     &= \alpha_{\text{B3},i} - \alpha_{\text{B3},j}\\
-
     \end{split}
     \end{equation}
-
 
     <p>
         The figure below shows how the data could be split up.

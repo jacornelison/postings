@@ -1100,6 +1100,7 @@ Important links:
     <p>While these offsets/correlations indicate room for improvement in our systematics, these offsets are extremely small compared to our uncertainty goal on the global absolute polarization angle (~0.1&deg;). In my next posting, I plan to go over the actual polarization angle estimates and address any systematics we see there.</p>
 </section>
 
+<!--
 <section id="mrr_src_constrain">
     <h2>How well can RPS data constrain Mirror/Source by itself?</h2>
 
@@ -1203,6 +1204,9 @@ Important links:
     </ul>
 
 </section>
+-->
+
+<!--
 <section>
     <h2 id="mirrfixedcase">Fixing Mirror/Source Parameters</h2>
     <p>
@@ -1261,6 +1265,127 @@ Important links:
     </p>
 
 </section>
+-->
+
+<hr>
+
+<section>
+    <h2></h2>
+
+    <p>
+        The first pager I show is of quivers of the beam-center residuals in mirror-fixed coordinates with a combination of free parameters -- mirror roll and two transformation parameters -- that are fit per-rasterset (i.e. ~1hr timescales over ~1/60th of the focal plane with a median of 20 detector pairs). The quiver plots allow us to qualitatively examine the effect of freeing up a given parameter. I chose mirror-fixed coordinates because this roughly separates systematics in tilt and roll into residuals on the Y- and X-axis respectively.
+    </p>
+
+    <p>
+        The mirror tilt imparts a direct Y<sub>m</sub> translation and we're only focused on mirror roll right now, so I allowed the tilt be be a free parameter during all of the options below so I wouldn't have to worry about making Y-translation a free parameter when we keep the mirror roll fixed.
+    </p>
+
+    <p>Options:</p>
+    <ul>
+        <li>
+            <b>Obs DK</b> - Observations denoted by the DK at which they were taken.
+        </li>
+        <li>
+            <b>Mirror Roll</b> - The mirror roll either being fixed at -0.07&deg; or allowed to be a free parameter .
+        </li>
+        <li>
+            <b>Xform Fit</b> - Fits a rotation and/or X-translation to the CMB-derived beam centroids such that the residuals between CMB- and RPS-derived centroids are minimized.
+        </li>
+    </ul>
+
+
+    <figure>
+        <img alt="Name pager" id="finalquiverpager" src="#" width="70%"/>
+        <figcaption>
+            Quiver plots of beam center residuals between CMB-derived and RPS-derived beam centers in mirror-fixed coordinates. Residuals are scaled by a factor of 20.
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/quiver_finalcheck_mirr_'+params.mirrf+'_fit_'+params.fitf+'_dk_'+params.dkf+'.png';
+            }
+
+            pager.link("#finalquiverpager",
+                {
+                    'Obs DK|dkf' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],
+                    'Roll|mirrf': ['Fixed|fixed','Free|free'],
+                    'Xform Fit|fitf': ['None|none','Angle only|ang','Xtrans only|xtrans','Both|ang_and_xtrans'],
+                },
+                fcn);
+            pager.setparams({
+
+                'dkf' : '68_1',
+                'mirrf': 'fixed',
+                'fitf': 'none',
+            });
+        </script>
+    </figure>
+
+    <p>
+        A link in the form of [Mirror:option, Fit:option] represents a given click in the pager above. Which observation is chosen doesn't really matter.
+    </p>
+    <ol>
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf': 'none'})">[Mirror:fixed, Fits:none]</a>: A good place to start -- the option for no mirror or translation fits applied.
+        </li>
+
+        <li>
+            We know that the mirror roll constrains both a rotation and an X-translation in mirror-fixed coordinates. We can see that the just fitting the mirror roll <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'none'})">[Mirror:free, Fit:None]</a> does just as well as blindly fitting both a rotation and translation parameter <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'ang_and_xtrans'})">[Mirror:fixed, Fit:both]</a>, qualitatively speaking. While residuals can result from systematics from any part of the pointing model, that allowing the mirror roll to be free does such a good job at reducing the residuals gives pretty strong evidence that the mirror is the dominant source of our systematics.
+        </li>
+        <li>
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'none'})">[Mirror:free, Fit:None]</a>
+            |
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'ang_and_xtrans'})">[Mirror:free, Fit:both]</a>:
+            We can see that the mirror roll accounts for almost all of the rotation and X-translation compared to if we kept the
+
+        </li>
+        <li>
+            Clicking between
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'none'})">Mirr-fixed, No Xform fits</a>
+            and
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'xtrans'})">Mirr-fixed, XTrans only fits</a>
+            we can see that most of amplitude of the residuals originates from an X-translation.
+            Adding the rotation as a free parameter:
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'ang_and_xtrans'})">Mirr-fixed, Ang/Trans-fit</a> doesn't change much.
+
+        </li>
+
+    </ol>
+
+
+    <p>
+        Below
+    </p>
+
+    <figure>
+        <img alt="Name pager" id="finalhistpager" src="#" />
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/hist_finalcheck_mirr_'+params.mirrf+'_fit_'+params.fitf+'_parm_'+params.parmf+'.png';
+            }
+
+            pager.link("#finalhistpager",
+                {
+                    'Param|parmf' : ['Roll|roll','ang','xtrans'],
+                    'Mirror|mirrf': ['Free|free','Fixed|fixed'],
+                    'Xform Fit|fitf': ['None|none','Angle only|ang','Xtrans only|xtrans','Both|ang_and_xtrans'],
+                },
+                fcn);
+            pager.setparams({
+
+                'parmf' : 'roll',
+                'mirrf': 'fixed',
+                'fitf': 'none',
+            });
+        </script>
+    </figure>
+
+
+
+</section>
+
 
 <hr>
 
