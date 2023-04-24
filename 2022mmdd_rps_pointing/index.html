@@ -1321,7 +1321,7 @@ Important links:
     </figure>
 
     <p>
-        A link in the form of [Mirror:option, Fit:option] represents a given click in the pager above. Which observation is chosen doesn't really matter.
+        A link in the form of [Mirror:option, Xform:option] represents a given click in the pager above. Which observation is chosen doesn't really matter.
     </p>
     <ol>
         <li>
@@ -1329,23 +1329,23 @@ Important links:
         </li>
 
         <li>
-            We know that the mirror roll constrains both a rotation and an X-translation in mirror-fixed coordinates. We can see that the just fitting the mirror roll <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'none'})">[Mirror:free, Fit:None]</a> does just as well as blindly fitting both a rotation and translation parameter <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'ang_and_xtrans'})">[Mirror:fixed, Fit:both]</a>, qualitatively speaking. While residuals can result from systematics from any part of the pointing model, that allowing the mirror roll to be free does such a good job at reducing the residuals gives pretty strong evidence that the mirror is the dominant source of our systematics.
+            We know that the mirror roll constrains both a rotation and an X-translation in mirror-fixed coordinates. We can see that the just fitting the mirror roll <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'none'})">[Mirror:free, Xform:None]</a> does just as well as blindly fitting both a rotation and translation parameter <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'ang_and_xtrans'})">[Mirror:fixed, Xform:both]</a>, qualitatively speaking. While residuals can result from systematics from any part of the pointing model, that allowing the mirror roll to be free does such a good job at reducing the residuals gives pretty strong evidence that the mirror is the dominant source of our systematics.
         </li>
         <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'none'})">[Mirror:free, Fit:None]</a>
-            |
-            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'ang_and_xtrans'})">[Mirror:free, Fit:both]</a>:
-            We can see that the mirror roll accounts for almost all of the rotation and X-translation compared to if we kept the
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'none'})">[Mirror:free, Xform:None]</a>
+             |
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'free','fitf':'ang_and_xtrans'})">[Mirror:free, Xform:both]</a>:
+            We can see that the mirror roll accounts for almost all of the rotation and X-translation
 
         </li>
         <li>
             Clicking between
-            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'none'})">Mirr-fixed, No Xform fits</a>
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'none'})">[Mirror:fixed, Xform:none]</a>
             and
-            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'xtrans'})">Mirr-fixed, XTrans only fits</a>
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'xtrans'})">[Mirror:fixed, Xform:xtrans]</a>
             we can see that most of amplitude of the residuals originates from an X-translation.
             Adding the rotation as a free parameter:
-            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'ang_and_xtrans'})">Mirr-fixed, Ang/Trans-fit</a> doesn't change much.
+            <a href="javascript:void(0)" onclick="pager.setparams({'mirrf': 'fixed','fitf':'ang_and_xtrans'})">[Mirror:fixed, Xform:both]</a> doesn't change much.
 
         </li>
 
