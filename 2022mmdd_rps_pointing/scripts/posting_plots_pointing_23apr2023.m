@@ -59,9 +59,16 @@ fit_array = NaN(...
     length(unqsch)*19,... Nrastersets = Nsch * 19 rastersets
     length(mirr_fit),... N mirror cases
     length(res_fit),... N residual fit cases
-    3 ... mirr tilt, FP angle, FP xtrans
+    3 ... mirr tilt, FP angle, FP xtrans, x-res
     );
 
+% array of x-residuals
+res_array = NaN(...
+    length(fd.ch),... Nrastersets = Nsch * 19 rastersets
+    length(mirr_fit),... N mirror cases
+    length(res_fit),... N residual fit cases
+    2 ... x and y
+    );
 
 % Init mirror/source
 mirror = struct();
@@ -103,7 +110,7 @@ fd = fd0;
 %% Compute the pointing et al in one big loop.
 % Takes longer but is easier to read.
 
-DOQUIV = true;
+DOQUIV = false;
 KEEPTILT = true;
 for mirrind = 1:length(mirr_fit)
     mf = mirr_fit(mirrind);
@@ -187,7 +194,8 @@ for mirrind = 1:length(mirr_fit)
 
                     fd0.x0(idx) = reshape(xyrot(:,1),size(fd_rast.ch));
                     fd0.y0(idx) = reshape(xyrot(:,2),size(fd_rast.ch));
-
+                    res_array(idx,mirrind,resind,1) = reshape(fd0.x0(idx)-fd0.x(idx),[],1);
+                    res_array(idx,mirrind,resind,2) = reshape(fd0.y0(idx)-fd0.y(idx),[],1);
                 end
                 count = count+1;
             end
@@ -234,33 +242,43 @@ end
 %% Now plot the histograms
 
 fig = figure(69421);
-fig.Position(3:4) = [400 450];
-t = tiledlayout(1,1);
-t.Padding = 'compact';
-t.TileSpacing = 'compact';
-nexttile()
+fig.Position(3:4) = [1000 300];
 
-lims = {[-1 1]*0.1-0.07 [-1 1]*0.4 [-1 1]*0.1};
+
+lims = {[-1 1]*0.1-0.07 [-1 1]*0.4 [-1 1]*0.1 [-1 1]*0.1};
 res = 30;
 
 parmnames = {...
     'roll',...
     'ang',...
     'xtrans',...
+    'sres',...
     };
 
 parmttls = {...
     'Mirror Roll [Deg]',...
     'FPU Angle [Deg]',...
     'X_m Translation [Deg]',...
+    'X_m Residuals [Deg]',...
     };
 
 for mirrind = 1:length(mirr_fit)
     for resind = 1:length(res_fit)
-        for parmind = 1:3
+        t = tiledlayout(1,4);
+        t.Padding = 'compact';
+        t.TileSpacing = 'compact';
+
+        for parmind = 1:4
+            nexttile()
+            hold on
             lim = lims{parmind};
+            if parmind == 4
+            V = squeeze(res_array(:,mirrind,resind,1));
+            else
             V = squeeze(fit_array(:,mirrind,resind,parmind));
             V = V(inrange(V,lim(1),lim(2)));
+            end
+            
             M = nanmean(V);
             S = nanstd(V);
             L = length(V(~isnan(V)));
@@ -274,14 +292,16 @@ for mirrind = 1:length(mirr_fit)
             xlim(lims{parmind})
             grid on
             title({...
-                sprintf('Mirror: %s | Xform Fit: %s',mirr_fit{mirrind},res_ttls{resind}),...
-                sprintf('M: %0.3f | S: %0.3f | N: %0.3f | EOM: %0.4f',M,S,L,S/sqrt(L)),...
+                sprintf('M: %1.2E | S: %1.2E | N: %i',M,S,L),...
                 })
             xlabel(parmttls{parmind})
             pbaspect([1 1 1])
-            fname = sprintf('hist_finalcheck_mirr_%s_fit_%s_parm_%s',mirr_fit{mirrind},res_names{resind},parmnames{parmind});
-            saveas(fig,fullfile(figdir,fname),'png')
+            
+            
         end
+        sgtitle(sprintf('Mirror: %s | Xform Fit: %s',mirr_fit{mirrind},res_ttls{resind}))
+        fname = sprintf('hist_finalcheck_mirr_%s_fit_%s',mirr_fit{mirrind},res_names{resind});
+        saveas(fig,fullfile(figdir,fname),'png')
     end
 end
 
@@ -295,4 +315,33 @@ for schedind = 1:length(unqsch)
         end
     end
 end
+
+%% Make histograms per resolution (WIP)
+
+
+for resind = 1:4
+    fd0 = fd;
+    p0 = p;
+    % make mirr-fixed obs angles
+    r = reshape(p0.r(fd0.ch),size(fd.ch));
+    th = reshape(p0.theta(fd0.ch),size(fd.ch))-fd0.dk_cen;
+    [fd0.x0, fd0.y0] = pol2cart(th*pi/180,r);
+
+    switch resind
+        case 1 % Overall
+            fd_rast = fd0;
+            mirror0 = mirror;
+            [x,y,phi_s] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,...
+                        fd_rast.dk_cen,model,'bicep3',mirror0,source,[]);
+            [th, r] = cart2pol(x,y);
+
+        case 2 % Per Obs
+
+        case 3 % Per Schedule
+
+        case 4 % Per Rasterset
+
+    end
+end
+
 
