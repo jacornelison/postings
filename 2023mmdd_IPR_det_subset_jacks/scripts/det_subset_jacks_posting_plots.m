@@ -214,7 +214,7 @@ end
 load('z:/dev/sims/datasplit_jack_alpha_expected.mat')
 cm = colormap('lines');
 mk = {'-','--',':','-.'};
-ebscaling = 0.862;
+ebscaling = 0.87;
 lims = [-1.4 -0.2];
 
 x = size(Asim);
@@ -330,8 +330,8 @@ pte = 1-normcdf(z);
 XLabs = {'Low-Mid','Mid-High','Low-High'};
 YLabs = {'B2016','B2017','B2018','B18'};
 
-binind = 1;
-sigind = 2;
+binind = 2; % [9bp's 14 bp's]
+sigind = 2; % [type2 type 8]
 
 simple_html_table(squeeze(pte(:,:,binind,sigind))',XLabs,YLabs,struct)
 
