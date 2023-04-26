@@ -21,15 +21,15 @@ polopt.offdiag = 0;
 
 fitopt = struct;
 fitopt.signame = [2 3 5 6 7 8];
-fitopt.sername = '6600';
-fitopt.daughter = 'fgh';
+fitopt.sername = '6622';
+fitopt.daughter = 'gh';
 %fitopt.purename = '';
 fitopt.iscross = true;
 fitopt.covtype = 'normal';
 fitopt.polopt = polopt;
-fitopt.estimator = 'linear';
+%fitopt.estimator = 'linear';
 fitopt.bpcm_simset = '6614/xxx8_fgh_filtp3_weight3_gs_dp1100_jack0_matrix_cm_overfreq.mat';
-fitopt.usebins = 2:15;
+fitopt.usebins = 2:10;
 
 clear accumulate_pol_rot_fits
 tic;
@@ -49,10 +49,6 @@ for matind = 1:2
     psname = sprintf('z:/dev/sims/6614_fgh_global_pol_fits_bins_2_10_offdiag_0%s_cross_normal_repsim_6614xxx8.mat',matname{matind});
     load(psname)
     aps = polstruct2aps(ps);
-
-
-
-
 
     for apsind = 1:6
         sigind = ps{apsind}.signame;
@@ -74,7 +70,6 @@ for matind = 1:2
         t.TileSpacing = 'tight';
 
         for specind = [1:6]
-
 
             D = squeeze(mean(aps(apsind).Cs_l(:,specind,1:10),3));
             D_sub = squeeze(mean(aps_sub(apsind).Cs_l(:,specind,1:10),3));

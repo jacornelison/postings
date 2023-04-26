@@ -50,7 +50,7 @@ close all
 %% Grab the pol angles for a given sernum (on Odyssey)
 
 sername1 = {'6607','6608','6609'};
-daughter1 = {'f','g','h','fgh'};
+daughter1 = {'f','g','h','gh','fgh'};
 pure1 = {'matrix_'};
 cross1 = {false};
 cov1 = {'normal'};
@@ -154,7 +154,7 @@ for combind = 1:length(combos)
         fdate = 20170101;
     end
 
-    if strcmp(daughter0,'fgh')
+    if length(daughter0)>1
         jack = '0';
     else
         jack = '01';
@@ -239,7 +239,7 @@ for sigind = 1:length(signums)
 
     end
     plot(lims,lims,'k--')
-    legend(z,{'B2016','B2017','B2018','B18'},'Location','northwest')
+    legend(z,{'B2016','B2017','B2018','17+18','16+17+18'},'Location','northwest')
     
     text(-1.3,-1.05,'Low','Rotation',90)
     text(-0.95,-0.75,'Mid','Rotation',90)
@@ -270,7 +270,7 @@ cm = colormap('lines');
 mk = {'-','--',':'};
 signums = [2, 8];
 % Loop over signals
-ebscaling = 0.862;
+ebscaling = 0.87;
 lims = [0 3.5];
 daughtoffs = linspace(-1,1,length(daughter1))*0.2;
 
@@ -301,7 +301,7 @@ for sigind = 1:length(signums)
 
     end
 
-    legend({'B2016','B2017','B2018','B18'},'Location','northeast')
+    legend({'B2016','B2017','B2018','17+18','16+17+18'},'Location','northeast')
     xlim([0 4])
     ylim([-1 0.2])
     ylabel({'$\Delta\alpha$ [Deg]','(Expected Difference)'})
@@ -328,7 +328,7 @@ pte = 1-normcdf(z);
 
 % why is making tables in matlab so hard?
 XLabs = {'Low-Mid','Mid-High','Low-High'};
-YLabs = {'B2016','B2017','B2018','B18'};
+YLabs = {'B2016','B2017','B2018','17+18','16+17+18'};
 
 binind = 2; % [9bp's 14 bp's]
 sigind = 2; % [type2 type 8]
