@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<!--suppress HtmlDeprecatedAttribute -->
+<head>
+    <meta charset="utf-8">
+    <title>RPS Maps</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+            // src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>RPS Analysis: T, Q, and U maps</h1>
+
+    <time datetime="2020-xx-xx" class="published updated">
+        2023 mmm dd
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+
+
+<hr>
+
+
+
+<section>
+    <h2>RPS Maps</h2>
+
+    <h3>Raster Maps</h3>
+
+    <p>
+        In RPS land, we raster across the focal plane once for every command angle of the RPS and we typically have a set of 13 rasters at 13 different rotation angles (-180&deg; to 180&deg; in 30&deg; increments) in a given observation, called a rasterset.
+        I call a single map that makes of one of the 13 maps in an observation a <b>Raster Map</b> and the coadd of all 13 of these maps a <b>Component Map</b> to be consistent with the nomenclature outlined in <a href="CV2021"></a>.
+    </p>
+
+    <p>
+        The pager below shows the rastermaps for a two known good pairs of detectors, one pair at the center of the focal plane and the other at the very edge of the focal plane on Tile 3.
+    </p>
+
+    <figure>
+        <img alt="Name pager" id="rastermappager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+            var vallist = new Array(10);
+            for (var ii=1; ii<=10; ++ii) {
+                vallist[ii] = ii;
+            }
+
+            var valopt = new Pager.DataList(vallist);
+            valopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 1) { val = "0"+val; }
+                return val;
+            }
+            valopt.fromString = function(val) {
+                return parseInt(val);
+            }
+
+            var vallist2 = new Array(10);
+            for (var ii=1; ii<=10; ++ii) {
+                vallist2[ii] = ii;
+            }
+
+            var valopt2 = new Pager.DataList(vallist2);
+            valopt2.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 1) { val = "0"+val; }
+                return val;
+            }
+            valopt2.fromString = function(val) {
+                return parseInt(val);
+            }
+
+
+            pager.link("#rastermappager",
+                {
+                    'Channel|ch': ['696|0696', '697|0697', '1590', '1591'],
+                    'Obs|obs' : valopt,
+                    'RPS Angle|rot': valopt2,
+                    //'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                },
+                function(params) {
+                    //return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';
+                    return 'figs/rastermap_ch_'+params.ch+'_obs_'+params.obs+'_rot_'+params.rot+'.png';
+                });
+            pager.setparams({
+                'ch' : '0696',
+                'obs': '7',
+                'rot': '1',
+                //'coord' : '',
+
+            });
+        </script>
+    </figure>
+
+
+
+<p>
+
+</p>
+
+<h3>T/Q/U Component Maps</h3>
+
+    <p>Since we've got 13 samples of the RPS at 13 different orientations, we're able to create Q and U maps for a single detector in addition to T. Christos' posting <a href="CG2021"></a> is a good reference on how we convert maps at different angles to T/Q/U.</p>
+
+    <p>The pager below shows the component maps for the same 4 detectors above across all 10 RPS observations taken during the 2021/2022 summer calibration season.</p>
+
+
+
+<h3>Single-Detector Composite Maps</h3>
+
+
+
+
+</section>
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+
+    <h3>Footnotes</h3>
+    <p>Click on the number to return to the main text.</p>
+    <div class="footnote">
+        <p>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+
+    </p>
+    </div>
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+    <h3>Data</h3>
+    <p id="data"></p>
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "dummycode.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "dummy description",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "dummydata.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Dummy description",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            cverges: "../../../",
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "CV2021",
+            "CG2021",
+            "JAC2023a",
+            "JAC2023b",
+            "JAC2023c",
+            "JAC2023d",
+            "JAC2023e",
+            "JAC2023f",
+            "CV2023",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which it lies if you can.
+        // This ensures that we can view the linked postings at Pole without the internet.
+        var hrefs = [
+            "bkcmb/analysis_logbook/analysis/20211216_beam_terminology/#measurements",
+            "bicep3/analysis_logbook/20210826_sing_det_pol_beammaps/",
+            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "jcornelison/postings/20230321_IPR_high_ell/",
+            "jcornelison/postings/20230321_IPR_forecasting/",
+            "jcornelison/postings/20230321_IPR_B18_subsets/",
+            "cverges/20221215_alt_dust_sim/",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "BK Standard Beam Terminology",
+            "Single Detector TQU Beammaps BSNS2018",
+            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+            "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+            "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
+            "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
+            "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
+            "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
