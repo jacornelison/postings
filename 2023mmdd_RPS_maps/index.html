@@ -39,7 +39,9 @@
 
 <hr>
 
-
+<p>
+    There's a lot of really cool stuff we can do with the RPS data. Specifically, there's an plethora of science that can be done with the RPS maps. I don't really have the time to give this the love that it needs, so I'm making this posting as to demonstrate the potential of this dataset in hopes that I can motivate someone to take the reigns and take this further... And I needed some pretty pictures for my thesis :-).
+</p>
 
 <hr>
 
@@ -52,11 +54,16 @@
 
     <p>
         In RPS land, we raster across the focal plane once for every command angle of the RPS and we typically have a set of 13 rasters at 13 different rotation angles (-180&deg; to 180&deg; in 30&deg; increments) in a given observation, called a rasterset.
-        I call a single map that makes of one of the 13 maps in an observation a <b>Raster Map</b> and the coadd of all 13 of these maps a <b>Component Map</b> to be consistent with the nomenclature outlined in <a href="CV2021"></a>.
+        I call a single map that makes up one of the 13 maps in an observation a <b>Raster Map</b> and then coadd of all 13 of these maps into a <b>Component Map</b> to be consistent with the nomenclature outlined in <a href="CV2021"></a>.
     </p>
 
     <p>
         The pager below shows the rastermaps for a two known good pairs of detectors, one pair at the center of the focal plane and the other at the very edge of the focal plane on Tile 3.
+    </p>
+
+    <p>
+        to-do: give some info on the how the maps are made -- reasoning behind pixel size, masking, demod choice, etc...
+
     </p>
 
     <figure>
@@ -123,7 +130,13 @@
 Interesting Clicks:
         <ol>
     <li>
-
+        There's some artifact resulting from either the RPS reflecting off the ground or diffracting off of the groundshield. Hard to say which.
+    </li>
+    <li>
+        Looks like Cross-talk beams are from an orthogonal detector -- the cross talk beam turns on when the main beam dims and turns off when it gets brighter. In Q maps, these beams should show up as negative Q and we'll see in the next section that they do.
+    </li>
+    <li>
+        Buddy beams have the same polarization response as the main beam. We'll know for sure by looking at Q/U maps.
     </li>
 </ol>
 </p>
@@ -132,7 +145,7 @@ Interesting Clicks:
 
     <p>Since we've got 13 samples of the RPS at 13 different orientations, we're able to create Q and U maps for a single detector in addition to T. Christos' posting <a href="CG2021"></a> is a good reference on how we convert maps at different angles to T/Q/U.</p>
 
-    <p>The pager below shows the component maps for the same 4 detectors above across all 10 RPS observations taken during the 2021/2022 summer calibration season.</p>
+    <p>The pager below shows the component maps for the same 4 detectors above across all 10 RPS observations taken during the 2021/2022 summer calibration season. Note that this log plot conserves the sign of the map amplitude: we cross over from positive to negative at 10<sup>-6</sup></p>
 
     <figure>
         <img alt="Name pager" id="componentmappager" src="#" width="100%"/>
@@ -174,12 +187,25 @@ Interesting Clicks:
         </script>
     </figure>
 
+    <p>
+        Interesting Clicks:
+        <ol>
+    <li>
+        Channel 1591|Obs 5|Map Q: As hinted in the previous section, we can see that the buddy beam is the same sign as the main beam, but the cross-talk beam is the opposite.
+    </li>
+    <li>
+        The sign of U of the main beam is consistently negative, but the artifact flips from positive to negative... pretty interesting.
+    </li>
+</ol>
+    </p>
 
 </section>
 <section>
 <h2>Composite Maps</h2>
 <h3>Single-Detector Composite Maps</h3>
-
+<p>
+    I compute the composite maps in the same way as the FFBM analysis <a href="TSG2021"></a>, I take the median of the pixels over all observations. The only mask I've applied is over the ~1x2-deg area where that ground reflection artifact is. This means, that we might possibly improve these maps if we adopt the masking techniques from FFBM.
+</p>
     <figure>
         <img alt="Name pager" id="compositemappager" src="#" width="100%"/>
         <figcaption>
@@ -206,6 +232,9 @@ Interesting Clicks:
 
 <p><b>Split Maps</b></p>
 
+    <p>
+        I make split maps by creating two maps from the 10 observations selected arbitrarily from the first 5 and the last 5 observations -- this can change easily enough. Currently, we're down to an average RMS of ~7&times;10<sup>-5</sup>. to-do: Compare this value and the per-tile composite RMS to FFBM maps.
+    </p>
 
     <figure>
         <img alt="Name pager" id="splitmappager" src="#" width="100%"/>
@@ -231,7 +260,13 @@ Interesting Clicks:
         </script>
     </figure>
 
+
+
     <h3>Per-Tile Composite Maps</h3>
+<p>
+    Here I demonstrate a composite map of all detectors across the entire center tile (Tile 11) comprising a total of 43 pairs. Again, I conserve the sign of the amplitude and we cross from positive to negative at 10<sup>-7</sup>.
+</p>
+
 
     <figure>
         <img alt="Name pager" id="tilemappager" src="#" width="100%"/>
@@ -254,7 +289,24 @@ Interesting Clicks:
         </script>
     </figure>
 
+<p>
+    Below is a slice along x' and y' for each map.
+</p>
+
+    <figure>
+        <img src="figs/tile11_xyslice.png"/>
+        <figcaption>
+
+        </figcaption>
+
+    </figure>
+
+
     <p><b>Tile 11 Split Maps</b></p>
+    <p>
+        Same thing as before, but we can see we're down to an average RMS of ~1.3&times;10<sup>-5</sup>. Going from 1 to averaging over 86 detectors, we're expecting the RMS to be roughly half of this value in an ideal case where there's only noise.
+    </p>
+
     <figure>
         <img alt="Name pager" id="t11splitmappager" src="#" width="100%"/>
         <figcaption>
@@ -275,14 +327,6 @@ Interesting Clicks:
             });
         </script>
     </figure>
-
-<figure>
-    <img src="figs/tile11_xyslice.png"/>
-    <figcaption>
-        
-    </figcaption>
-
-</figure>
 
 </section>
 
@@ -405,6 +449,7 @@ Interesting Clicks:
         var tags = [
             "CV2021",
             "CG2021",
+            "TSG2021",
             "JAC2023a",
             "JAC2023b",
             "JAC2023c",
@@ -420,6 +465,7 @@ Interesting Clicks:
         var hrefs = [
             "bkcmb/analysis_logbook/analysis/20211216_beam_terminology/#measurements",
             "bicep3/analysis_logbook/20210826_sing_det_pol_beammaps/",
+            "bkcmb/analysis_logbook/analysis/20210907_ffbm_pipeline/#Composites",
             "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
@@ -434,6 +480,7 @@ Interesting Clicks:
         var desc = [
             "BK Standard Beam Terminology",
             "Single Detector TQU Beammaps BSNS2018",
+            "FFBM Pipeline Overview and Data Product Directory",
             "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
             "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
             "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
