@@ -81,8 +81,8 @@
                 return parseInt(val);
             }
 
-            var vallist2 = new Array(10);
-            for (var ii=1; ii<=10; ++ii) {
+            var vallist2 = new Array(13);
+            for (var ii=1; ii<=13; ++ii) {
                 vallist2[ii] = ii;
             }
 
@@ -119,9 +119,13 @@
     </figure>
 
 
+    <p>
+Interesting Clicks:
+        <ol>
+    <li>
 
-<p>
-
+    </li>
+</ol>
 </p>
 
 <h3>T/Q/U Component Maps</h3>
@@ -130,12 +134,155 @@
 
     <p>The pager below shows the component maps for the same 4 detectors above across all 10 RPS observations taken during the 2021/2022 summer calibration season.</p>
 
+    <figure>
+        <img alt="Name pager" id="componentmappager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+            var vallist = new Array(10);
+            for (var ii=1; ii<=10; ++ii) {
+                vallist[ii] = ii;
+            }
+
+            var valopt3 = new Pager.DataList(vallist);
+            valopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 1) { val = "0"+val; }
+                return val;
+            }
+            valopt3.fromString = function(val) {
+                return parseInt(val);
+            }
+
+            pager.link("#componentmappager",
+                {
+                    'Channel|ch': ['696|0696', '697|0697', '1590', '1591'],
+                    'Obs|obs2' : valopt3,
+                    'Map|map' : ['T','Q','U'],
+                },
+                function(params) {
+                    //return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';
+                    return 'figs/componentmap_ch_'+params.ch+'_obs_'+params.obs2+'_map_'+params.map+'.png';
+                });
+            pager.setparams({
+                'ch' : '0696',
+                'obs2': '7',
+                'map': 'T',
+            });
+        </script>
+    </figure>
 
 
+</section>
+<section>
+<h2>Composite Maps</h2>
 <h3>Single-Detector Composite Maps</h3>
 
+    <figure>
+        <img alt="Name pager" id="compositemappager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
 
 
+            pager.link("#compositemappager",
+                {
+                    'Channel|ch': ['696|0696', '697|0697', '1590', '1591'],
+                    'Map|map' : ['T','Q','U'],
+                },
+                function(params) {
+                    return 'figs/compositemap_ch_'+params.ch+'_map_'+params.map+'.png';
+                });
+            pager.setparams({
+                'ch' : '0696',
+
+                'map': 'T',
+            });
+        </script>
+    </figure>
+
+<p><b>Split Maps</b></p>
+
+
+    <figure>
+        <img alt="Name pager" id="splitmappager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+
+            pager.link("#splitmappager",
+                {
+                    'Channel|ch': ['696|0696', '697|0697', '1590', '1591'],
+                    'Map|map' : ['T','Q','U'],
+                },
+                function(params) {
+                    return 'figs/splitmap_ch_'+params.ch+'_map_'+params.map+'.png';
+                });
+            pager.setparams({
+                'ch' : '0696',
+
+                'map': 'T',
+            });
+        </script>
+    </figure>
+
+    <h3>Per-Tile Composite Maps</h3>
+
+    <figure>
+        <img alt="Name pager" id="tilemappager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+
+            pager.link("#tilemappager",
+                {
+                    'Map|map' : ['T','Q','U'],
+                },
+                function(params) {
+                    return 'figs/tile11compositemap_map_'+params.map+'.png';
+                });
+            pager.setparams({
+                'map': 'T',
+            });
+        </script>
+    </figure>
+
+    <p><b>Tile 11 Split Maps</b></p>
+    <figure>
+        <img alt="Name pager" id="t11splitmappager" src="#" width="100%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+
+            pager.link("#t11splitmappager",
+                {
+                    'Map|map' : ['T','Q','U'],
+                },
+                function(params) {
+                    return 'figs/tile11splitmap_map_'+params.map+'.png';
+                });
+            pager.setparams({
+                'map': 'T',
+            });
+        </script>
+    </figure>
+
+<figure>
+    <img src="figs/tile11_xyslice.png"/>
+    <figcaption>
+        
+    </figcaption>
+
+</figure>
 
 </section>
 
