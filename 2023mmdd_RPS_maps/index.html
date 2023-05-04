@@ -336,11 +336,29 @@ Interesting Clicks:
     </figure>
 
 </section>
+<section>
+    <h2>Demodulation leakage</h2>
+    <p>
+        I'm currently using <tt>lockin_demod</tt> to demodulate these maps and so far we can see that it does a really good job at rejecting background signals. However, there is still some amount of background that gets leaked. I convert all maps into DK0 x/y coordinates and coadd them. In the figure below we can see MAPO, the BICEP Array groundshield, and even the ground begin to leak through when we start to integrate over long enough periods of time. The brightest parts of the background are at about -30dB compare to the main beam. This means that, with our current demodulators, we still need to mask out pretty much all pixels below y<sub>DK0</sub>=0 to mitigate systematics from background leakage.
+    </p>
+
+    <figure>
+        <img src="figs/demod_leakage_map.png"/>
+        <figcaption>
+
+        </figcaption>
+
+    </figure>
+
+
+</section>
+
 
 <hr>
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+
 
     <h3>Footnotes</h3>
     <p>Click on the number to return to the main text.</p>
