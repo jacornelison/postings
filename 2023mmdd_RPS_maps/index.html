@@ -40,7 +40,7 @@
 <hr>
 
 <p>
-    There's a lot of really cool stuff we can do with the RPS data. Specifically, there's an plethora of science that can be done with the RPS maps. I don't really have the time to give this the love that it needs, so I'm making this posting as to demonstrate the potential of this dataset in hopes that I can motivate someone to take the reigns and take this further... And I needed some pretty pictures for my thesis :-).
+    There's a lot of really cool stuff we can do with the RPS data. Specifically, there's an plethora of science that can still be done map space. I don't really have the time to give this the love that it needs, so I'm making this posting to demonstrate the potential of this dataset in hopes that I can motivate someone to take the reigns and take this further... And I needed some pretty pictures for my thesis :-).
 </p>
 
 <hr>
@@ -54,7 +54,7 @@
 
     <p>
         In RPS land, we raster across the focal plane once for every command angle of the RPS and we typically have a set of 13 rasters at 13 different rotation angles (-180&deg; to 180&deg; in 30&deg; increments) in a given observation, called a rasterset.
-        I call a single map that makes up one of the 13 maps in an observation a <b>Raster Map</b> and then coadd of all 13 of these maps into a <b>Component Map</b> to be consistent with the nomenclature outlined in <a href="CV2021"></a>.
+        I call one of the single maps that makes up one of the 13 maps in an observation a <b>Raster Map</b>. I then coadd of all 13 of these raster maps into a <b>Component Map</b> to be consistent with the nomenclature outlined in <a href="CV2021"></a>.
     </p>
 
     <p>
@@ -207,6 +207,10 @@ Interesting Clicks:
 <p>
     I compute the composite maps in the same way as the FFBM analysis <a href="TSG2021"></a>, I take the median of the pixels over all observations. The only mask I've applied is over the ~1x2-deg area where that ground reflection artifact is. This means, that we might possibly improve these maps if we adopt the masking techniques from FFBM.
 </p>
+    <p>
+        Interesingly, I don't see the same features that Christos sees in his figure 2 of <a href="CG2022"></a> when looking into 2018 BSNS data. I think that I'd expect to unless swapping out the window, the only major hardware difference between these two datasets,got rid of this 'feature'.
+    </p>
+
     <figure>
         <img alt="Name pager" id="compositemappager" src="#" width="100%"/>
         <figcaption>
@@ -305,8 +309,10 @@ Interesting Clicks:
 
     <p><b>Tile 11 Split Maps</b></p>
     <p>
-        Same thing as before, but we can see we're down to an average RMS of ~1.3&times;10<sup>-5</sup>. Going from 1 to averaging over 86 detectors, we're expecting the RMS to be roughly half of this value in an ideal case where there's only noise.
+        Same thing as before, but we can see we're down to an average RMS of ~1.3&times;10<sup>-5</sup>. Going from 1 to averaging over 86 detectors, we're expecting the RMS to be roughly half of this value in an ideal case where there's only noise. Still, considering we're at &sigma;~10<sup>-5</sup> out to 20 degrees for the center I'd say this is really good fidelity.
     </p>
+
+    <p>to do: compare an edge tile composite</p>
 
     <figure>
         <img alt="Name pager" id="t11splitmappager" src="#" width="100%"/>
@@ -451,6 +457,7 @@ Interesting Clicks:
             "CV2021",
             "CG2021",
             "TSG2021",
+            "CG2022",
             "JAC2023a",
             "JAC2023b",
             "JAC2023c",
@@ -467,6 +474,7 @@ Interesting Clicks:
             "bkcmb/analysis_logbook/analysis/20211216_beam_terminology/#measurements",
             "bicep3/analysis_logbook/20210826_sing_det_pol_beammaps/",
             "bkcmb/analysis_logbook/analysis/20210907_ffbm_pipeline/#Composites",
+            "bicep3/analysis_logbook/20221027_B3BSNS_Tupdate/",
             "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
@@ -482,6 +490,7 @@ Interesting Clicks:
             "BK Standard Beam Terminology",
             "Single Detector TQU Beammaps BSNS2018",
             "FFBM Pipeline Overview and Data Product Directory",
+            "B3 BSNS 2018 Intensity Maps Update",
             "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
             "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
             "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
