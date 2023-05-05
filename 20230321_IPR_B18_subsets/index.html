@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>IPR Analysis 6: B18 Subset Angles</title>
+    <title>IPR Analysis 6: B2017+B2018 Subset Angles</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims</h1>
+    <h1>Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B2017+B2018 sims</h1>
 
     <time datetime="2022-03-28" class="published updated">
         2023 Mar 28
@@ -59,24 +59,24 @@
 \)
 
 <p>
-    This posting is part of a series which comprises the IPR analysis, see <a href="#references">previous postings</a> for more on this.
+    This posting is part of a series which comprises the IPR analysis on BICEP3, see <a href="#references">previous postings</a> for more on this.
 </p>
 <p>
-In this posting, I examine the effect on &alpha; and $\siga$ due to the fact that we didn't measure the pol angles for all detector pairs used in B18. In addition to increased noise from simply having fewer detectors on-sky, we are also worried about how well the standard B18 purification matrix will work on a map with reduced coverage.
+In this posting, I examine the effect on &alpha; and $\siga$ due to the fact that we didn't measure the pol angles for all detector pairs used in B18 -- we also discovered recently that all of BICEP3's modules were removed for inspection and reinstalled between the 2016 and 2017 observing seasons and so we are moving forward using only B2017+B2018 coadded maps moving forward. In addition to increased noise from simply having fewer detectors on-sky, we are also worried about how well the standard B18 purification matrix will work on a map with reduced coverage.
     </p>
-<p>I compare the first 10 realizations from the B18 499 sims to a 10 new B18 sims with maps created using only the detectors for which I have RPS-derived pol angles. Fortunately, I find that the matrix purification shows an increase in $\siga$ by only 3-5% for maps with reduced coverages. We do, however, see an increase in $\siga$ of 50% resulting from increased noise due to having less detectors.
+<p>I compare the first 10 realizations from the B2017+B2018 499 sims to a 10 new B2017+B2018 sims with maps created using only the detectors for which I have RPS-derived pol angles. Fortunately, I find that the matrix purification shows an increase in $\siga$ by only 3-5% for maps with reduced coverages. We do, however, see an increase in $\siga$ of 50% resulting from increased noise due to having less detectors.
 </p>
 
 
 <hr>
 
 <section>
-    <h2>Purification of B18 with fewer detectors</h2>
+    <h2>Purification of B2017+B2018 with fewer detectors</h2>
     <p>
-        Making purification matrices is a really involved process so we'd rather not have to remake them for this analysis. Instead, we're hoping to reuse the purification matrix created for the BICEP3 3-year dataset (AKA B18) that was used in BK18.
+        Making purification matrices is a really involved process so we'd rather not have to remake them for this analysis. Instead, we're hoping to reuse the purification matrix created for the BICEP3 3-year dataset (AKA B2017+B2018) that was used in BK18.
     </p>
     <p>
-        For this analysis, we will only be using detector pairs for which we have high-quality measurements from the RPS. This means we have only ~70% of the the detector pairs that were used in any of the given years comprising B18. Because fewer detectors means less coverage, we can expect a hit to the efficiency of the matrix purification in the maps which only contain detectors with RPS-derived pol angles.
+        For this analysis, we will only be using detector pairs for which we have high-quality measurements from the RPS. This means we have only ~70% of the the detector pairs that were used in any of the given years comprising B2017+B2018. Because fewer detectors means less coverage, we can expect a hit to the efficiency of the matrix purification in the maps which only contain detectors with RPS-derived pol angles.
     </p>
 
     <figure class="table">
@@ -86,7 +86,7 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
             </tr>
             <tr>
                 <th>Year</th>
-                <th>B18</th>
+                <th>B2017+B2018</th>
                 <th>RPS</th>
                 <th>%</th>
             </tr>
@@ -126,7 +126,7 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
     </figure>
 
     <p>
-        I check the impact on the purification efficiency by comparing two B18 simsets of 10 realizations, one with maps comprising all detectors used in B18 (sernum 6600, B18-rerun) and another with only detectors that also have RPS-derived angles (sernum 6622, B18-rerun-subset).
+        I check the impact on the purification efficiency by comparing two B2017+B2018 simsets of 10 realizations, one with maps comprising all detectors used in BK18 (sernum 6614, B18 matrix-purified) and another with only detectors for which we have measured angles (sernum 6622, B18-rerun-subset).
         The plot below compares the spectra of the two simsets.</p>
     <p>Some notes:
         <ul>
@@ -199,11 +199,11 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
             </tr>
             <tr>
                 <th></th>
-                <th class="cstart">B18 &sigma;<sub>&alpha;</sub></th>
-                <th class="cstart">B18-sub &sigma;<sub>&alpha;</sub>  </th>
+                <th class="cstart">B2017+B2018 &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">B2017+B2018-sub &sigma;<sub>&alpha;</sub>  </th>
                 <th class="cstart">frac-diff</th>
-                <th class="cstart">B18 &sigma;<sub>&alpha;</sub></th>
-                <th class="cstart">B18-sub &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">B2017+B2018 &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">B2017+B2018-sub &sigma;<sub>&alpha;</sub></th>
                 <th class="cstart">frac-diff</th>
             </tr>
 <!--            <tr>-->
@@ -217,61 +217,43 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
 <!--            </tr>-->
             <tr>
                 <td>L-LCDM</td>
-                <td class="cstart">0.0603</td>
-                <td>0.0622</td>
-                <td>0.03</td>
-                <td class="cstart">0.0293</td>
-                <td>0.0309</td>
-                <td>0.05</td>
+                <td>0.059</td>
+                <td>0.061</td>
+                <td>0.028</td>
+                <td>0.035</td>
+                <td>0.036</td>
+                <td>0.010</td>
             </tr>
             <tr>
                 <td>Noise</td>
-                <td class="cstart">0.0389</td>
-                <td>0.0644</td>
-                <td>0.66</td>
-                <td class="cstart">0.0431</td>
-                <td>0.0526</td>
-                <td>0.22</td>
+                <td>0.073</td>
+                <td>0.090</td>
+                <td>0.233</td>
+                <td>0.057</td>
+                <td>0.067</td>
+                <td>0.175</td>
             </tr>
-<!--            <tr>-->
-<!--                <td>Dust</td>-->
-<!--                <td class="cstart">0.0171</td>-->
-<!--                <td>0.0177</td>-->
-<!--                <td>0.03</td>-->
-<!--                <td class="cstart">0.0064</td>-->
-<!--                <td>0.0065</td>-->
-<!--                <td>0.02</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>L-LCDM+Noise</td>-->
-<!--                <td class="cstart">0.0461</td>-->
-<!--                <td>0.0742</td>-->
-<!--                <td>0.61</td>-->
-<!--                <td class="cstart">0.0383</td>-->
-<!--                <td>0.0541</td>-->
-<!--                <td>0.41</td>-->
-<!--            </tr>-->
             <tr>
                 <td>L-LCDM+N+Dust</td>
-                <td class="cstart">0.0581</td>
-                <td>0.0848</td>
-                <td>0.46</td>
-                <td class="cstart">0.0357</td>
-                <td>0.0528</td>
-                <td>0.48</td>
+                <td>0.106</td>
+                <td>0.120</td>
+                <td>0.130</td>
+                <td>0.074</td>
+                <td>0.083</td>
+                <td>0.115</td>
             </tr>
 
         </table>
         <figcaption>
-            A comparison of $\siga$ between B18 and B18-subset.
+            A comparison of $\siga$ between B2017+B2018 and B2017+B2018-subset.
         </figcaption>
     </figure>
 
     <p>
-        I also show a table of the mean &alpha; and $\siga$ of L-LCDM+Noise+Dust between the two simsets. We can look at the means to determine if we see a bias, but the issue here is that we're only looking at 10 sims. We know from the &alpha; distribution all 499 of B18's sims that there is indeed a bias of ~2&sigma; WRT to the error on the mean. Because we've only got 10 sims, the error on the mean is ~10x larger. So while we don't see a bias here, we'll have to increase the number of sims to be sure.
+        I also show a table of the mean &alpha; and $\siga$ of L-LCDM+Noise+Dust between the two simsets. We can look at the means to determine if we see a bias, but the issue here is that we're only looking at 10 sims.
     </p>
     <p>
-        That said, I do find it interesting that even at 10 sims, the mean of B18 is still away from zero to ~1&sigma; WRT to the EOM in both fit cases in the table below while the "B18-subset" means are both well within the EOM.
+        That said, I do find it interesting that even at 10 sims, the mean of B2017+B2018 is still away from zero to ~1&sigma; WRT to the EOM in both fit cases in the table below while the "B2017+B2018-subset" means are both well within the EOM.
     </p>
 
 
@@ -290,29 +272,29 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
                 <th>&sigma;<sub>&alpha;</sub> [Deg]</th>
             </tr>
             <tr>
-                <td>B18</td>
-                <td class="cstart">0.0058</td>
-                <td>0.0587</td>
-                <td class="cstart">-0.0031</td>
-                <td>0.0357</td>
+                <td>17+18</td>
+                <td>-0.002</td>
+                <td>0.106</td>
+                <td>0.005</td>
+                <td>0.074</td>
             </tr>
             <tr>
-                <td>B18-Subset</td>
-                <td class="cstart">-0.0017</td>
-                <td>0.0848</td>
-                <td class="cstart">-0.0148</td>
-                <td>0.0528</td>
+                <td>17+18 Subset</td>
+                <td>-0.005</td>
+                <td>0.120</td>
+                <td>0.001</td>
+                <td>0.083</td>
             </tr>
             <tr>
-                <th>frac-diff</th>
-                <th class="cstart">-</th>
-                <th>+0.46</th>
-                <th class="cstart">-</th>
-                <th>+0.48</th>
+                <td>Frac-Diff</td>
+                <td>-</td>
+                <td>0.130</td>
+                <td>-</td>
+                <td>0.115</td>
             </tr>
         </table>
         <figcaption>
-            A comparison of Lensed-LCDM+Noise+Dust between B18 and B18 with a reduced number of detector pairs.
+            A comparison of Lensed-LCDM+Noise+Dust between B2017+B2018 and B2017+B2018 with a reduced number of detector pairs.
         </figcaption>
     </figure>
 

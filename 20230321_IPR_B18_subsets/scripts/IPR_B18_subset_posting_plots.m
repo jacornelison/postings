@@ -16,6 +16,7 @@ cmlines = colormap('lines');
 
 %% Grab the pol angles for a given sernum
 
+
 polopt = struct;
 polopt.offdiag = 0;
 
@@ -23,7 +24,7 @@ fitopt = struct;
 fitopt.signame = [2 3 5 6 7 8];
 fitopt.sername = '6622';
 fitopt.daughter = 'gh';
-%fitopt.purename = '';
+fitopt.purename = '';
 fitopt.iscross = true;
 fitopt.covtype = 'normal';
 fitopt.polopt = polopt;
@@ -40,8 +41,9 @@ toc
 %%
 clc
 matname = {'','_matrix'};
-for matind = 1:2
-    psname = sprintf('z:/dev/sims/6622_fgh_global_pol_fits_bins_2_10_offdiag_0%s_cross_normal_repsim_6614xxx8.mat',matname{matind});
+nsims = 1:30;
+for matind = 2%1:2
+    psname = sprintf('z:/dev/sims/6622_gh_global_pol_fits_bins_2_10_offdiag_0%s_cross_normal_repsim_6614xxx8.mat',matname{matind});
     load(psname)
     ps_sub = ps;
     aps_sub = polstruct2aps(ps_sub);
@@ -71,8 +73,8 @@ for matind = 1:2
 
         for specind = [1:6]
 
-            D = squeeze(mean(aps(apsind).Cs_l(:,specind,1:10),3));
-            D_sub = squeeze(mean(aps_sub(apsind).Cs_l(:,specind,1:10),3));
+            D = squeeze(mean(aps(apsind).Cs_l(:,specind,nsims),3));
+            D_sub = squeeze(mean(aps_sub(apsind).Cs_l(:,specind,nsims),3));
             Ddiff = (D_sub-D)./D;
             %Ddiff(abs(Ddiff)>1.5) = NaN;
 
@@ -84,7 +86,7 @@ for matind = 1:2
             plot(D_sub,'.','Color',cmlines(2,:))
             grid on
             if specind ==1
-                title({'Spectra','Blue: B18, Red: B18-subset'})
+                title({'Spectra','Blue: Original, Red: RPS-Subset'})
             end
             %ylabel({ylabs{specind},'$\ell(\ell+1)C_{\ell}\,[\muK^2]$'})
             ylabel({ylabs{specind},'$D_{\ell}\,[\mu K^2]$'})
@@ -97,7 +99,7 @@ for matind = 1:2
             plot(Ddiff,'Color',cmlines(1,:))
             grid on
             if specind ==1
-                title({'fractional difference','$(D_sub-D})/D$'})
+                title({'fractional difference','$(D_{sub}-D)/D$'},'Interpreter','Latex')
             elseif ismember(specind,[5 6])
                 ylim([-1 1])
             end
@@ -137,37 +139,51 @@ ylim([-6 0])
 
 sigind = 1;
 clc
+A = NaN(6,6);
+
 for sigind = 1:6
 
 fprintf('\n\n%i:\n',sigind)
-load('z:/dev/sims/6600_fgh_global_pol_fits_bins_2_10_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
-M = mean(ps{sigind}.alpha(1,:));
-S1 = std(ps{sigind}.alpha(1,:));
-fprintf('6600 | 2-10 | M: %1.4f | S: %1.4f\n',M,S1)
+load('z:/dev/sims/6614_gh_global_pol_fits_bins_2_10_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
+M1 = mean(ps{sigind}.alpha(1,:))/0.87;
+S1 = std(ps{sigind}.alpha(1,:))/0.87;
+fprintf('6614 | 2-10 | M: %1.4f | S: %1.4f\n',M,S1)
 
-load('z:/dev/sims/6622_fgh_global_pol_fits_bins_2_10_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
-M = mean(ps{sigind}.alpha(1,:));
-S3 = std(ps{sigind}.alpha(1,:));
-fprintf('6622 | 2-10 | M: %1.4f | S: %1.4f\n',M,S3)
 
-fprintf('%%-diff | 2-10 | %1.4f\n',((S3-S1)/S1))
+load('z:/dev/sims/6622_gh_global_pol_fits_bins_2_10_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
+M2 = mean(ps{sigind}.alpha(1,:))/0.87;
+S2 = std(ps{sigind}.alpha(1,:))/0.87;
+fprintf('6622 | 2-10 | M: %1.4f | S: %1.4f\n',M,S2)
+fprintf('%%-diff | 2-10 | %1.4f\n',((S2-S1)/S1))
 
-load('z:/dev/sims/6600_fgh_global_pol_fits_bins_2_15_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
-M = mean(ps{sigind}.alpha(1,:));
-S2 = std(ps{sigind}.alpha(1,:));
-fprintf('6600 | 2-15 | M: %1.4f | S: %1.4f\n',M,S2)
+load('z:/dev/sims/6614_gh_global_pol_fits_bins_2_15_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
+M3 = mean(ps{sigind}.alpha(1,:))/0.87;
+S3 = std(ps{sigind}.alpha(1,:))/0.87;
+fprintf('6614 | 2-15 | M: %1.4f | S: %1.4f\n',M,S3)
 
-load('z:/dev/sims/6622_fgh_global_pol_fits_bins_2_15_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
-M = mean(ps{sigind}.alpha(1,:));
-S4 = std(ps{sigind}.alpha(1,:));
+load('z:/dev/sims/6622_gh_global_pol_fits_bins_2_15_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
+M4= mean(ps{sigind}.alpha(1,:))/0.87;
+S4 = std(ps{sigind}.alpha(1,:))/0.87;
 fprintf('6622 | 2-15 | M: %1.4f | S: %1.4f\n',M,S4)
 
-fprintf('%%-diff | 2-15 | %1.4f\n',((S4-S2)/S2))
+fprintf('%%-diff | 2-15 | %1.4f\n',((S4-S3)/S3))
+
+A(sigind,:) = [S1 S2 ((S2-S1)/S1), S3, S4, ((S4-S3)/S3)];
+if sigind==6
+    B = [M1 S1 M3 S3; M2 S2 M4 S4; NaN ((S2-S1)/S1) NaN ((S4-S3)/S3)];
+end
 
 end
 
-    
+%
+hd = {};
+rl = {'L-LCDM','Noise','L-LCDM+N+Dust'};
+simple_html_table(A([3 4 6],:),hd,rl)    
 
+%
+
+rl = {'17+18','17+18 Subset','Frac-Diff'};
+simple_html_table(B,{},rl)
 
 
 
