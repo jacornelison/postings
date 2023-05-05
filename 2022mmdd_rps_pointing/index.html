@@ -31,1246 +31,1252 @@
     <h1>2022 RPS Analysis: Observations and Pointing Systematics</h1>
 
     <time datetime="2022-08-30" class="published updated">
-        2022 Nov 10
+        2023 MMM DD
     </time> —
     J. Cornelison
 </header>
 
 <hr>
 
-<p>
-    This posting is the first in a series of postings which covers the analysis of the observations of the RPS taken in January 2022.
-    In this posting I briefly discuss the details of the RPS observations, give an overview of the RPS analysis, and then I conduct an investigation of possible sources of systematic uncertainty on polarization angles from the pointing model.
-    I estimate an general location of the RPS assuming the mirror Tilt and Roll as given from the Moon analysis <a href="JAC2022c"></a> and then lock in the source location for all RPS observations and instead fit the mirror parameters in the RPS data per-rasterset.
-    I fit mirror Tilt and Rolls to the RPS data per-rasterset by comparing RPS-derived beam centroids to those derived from the CMB <a href="BS2022"></a>.
-    Beam-center residuals are mean-zero in both x and y with a 1-&sigma; standard deviation of 0.008&deg;.
-    I look for systematics by fitting additional angle, scaling, and translation parameters to the beam-center residuals. I find that the rotation angle of the FPU seen in the Moon data and RPS data is in agreement with the CMB data to within 0.02&deg; and 0.01&deg; respectively.
-    There are also some statistically significant offsets (~1.5&sigma;) in the scaling and translation parameters but these offsets are very small [O(0.02%) scaling, O(1 arcsec) translation].
-</p>
 
+
+<!--<p>-->
+<!--    This posting is the first in a series of postings which covers the analysis of the observations of the RPS taken in January 2022.-->
+<!--    In this posting I briefly discuss the details of the RPS observations, give an overview of the RPS analysis, and then I conduct an investigation of possible sources of systematic uncertainty on polarization angles from the pointing model.-->
+<!--    I estimate an general location of the RPS assuming the mirror Tilt and Roll as given from the Moon analysis <a href="JAC2022c"></a> and then lock in the source location for all RPS observations and instead fit the mirror parameters in the RPS data per-rasterset.-->
+<!--    I fit mirror Tilt and Rolls to the RPS data per-rasterset by comparing RPS-derived beam centroids to those derived from the CMB <a href="BS2022"></a>.-->
+<!--    Beam-center residuals are mean-zero in both x and y with a 1-&sigma; standard deviation of 0.008&deg;.-->
+<!--    I look for systematics by fitting additional angle, scaling, and translation parameters to the beam-center residuals. I find that the rotation angle of the FPU seen in the Moon data and RPS data is in agreement with the CMB data to within 0.02&deg; and 0.01&deg; respectively.-->
+<!--    There are also some statistically significant offsets (~1.5&sigma;) in the scaling and translation parameters but these offsets are very small [O(0.02%) scaling, O(1 arcsec) translation].-->
+<!--</p>-->
+
+
+<!--<hr>-->
+<!--&lt;!&ndash;16 Aug 2022&ndash;&gt;-->
+<!--<section>-->
+<!--    <h2>RPS Observations</h2>-->
+<!--<p>-->
+<!--    We acquire beam maps of a given detector by scanning over the RPS in 9&deg;Az&times;2&deg;El rasters at 1.5&deg;/s in Az and 0.1&deg; steps in El &#45;&#45; all with the RPS fixed at a given angle WRT gravity.-->
+<!--    We get modulation curves by completing multiple rasters over the same part of the focal plane with the RPS commanded to a different angle for each raster, which we call a rasterset.-->
+<!--    Each rasterset includes 13 rasters with the RPS rotated from -180&deg; to 180&deg; in 30&deg; increments and takes about 40 minutes to complete &#45;&#45; compare to a full Moon schedule which takes a roughly an hour.-->
+<!--    A typical RPS schedule run by GCP consists of 19 rastersets where the first rasterset starts with an El offset of -12.5&deg; and steps in 1.5&deg; between each rasterset to ensure there are no gaps in coverage over the focal plane [see Fig. 1.1 of <a href="JAC2022a"></a> for an example].-->
+<!--    In this posting, I'll typically refer to the Moon and RPS data in terms of rasters, rastersets, or observations. Each observation typically consists of 3 schedules and generally maps beams across the entire focal plane at a single DK angle.-->
+<!--</p>-->
+
+<!--    <p>-->
+<!--        Aside from the main suite of science-grade RPS schedules, we also completed a number of cross check schedules. These schedules are mostly identical to the our main schedules except we adjust one or two parameters depending on the particular systematics we want to probe. We categorize the schedules by their schedule number where the most recent RPS science schedule is Type-5 and proceeding schedule types denote cross-check schedules<sup><a name="sup1" href="#ftn1">[1]</a></sup>. A list of the observations we collected in Jan 2022, their schedule types and their uses is shown in Table 1.1.-->
+<!--    </p>-->
+
+
+<!--    <figure class="table">-->
+<!--        <table class="center results">-->
+<!--            <tr>-->
+<!--                <th colspan="1">Schedule Type</th>-->
+<!--                <th colspan="1">Obs. Length (Hrs.)</th>-->
+<!--                <th colspan="1">Total Time (Hrs.)</th>-->
+<!--                <th colspan="1">Adjusted Parameter</th>-->
+<!--                <th colspan="1">Systematics Probed</th>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>5</td>-->
+<!--                <td>13.5</td>-->
+<!--                <td>420.4</td>-->
+<!--                <td>None</td>-->
+<!--                <td>Standard RPS Observations</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>6</td>-->
+<!--                <td>13.6</td>-->
+<!--                <td>13.6</td>-->
+<!--                <td>RPS angle -180 to 180 Minus DK angle</td>-->
+<!--                <td>Importance of nulling mod curve</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>7</td>-->
+<!--                <td>1</td>-->
+<!--                <td>70.7</td>-->
+<!--                <td>Target Moon, only one raster</td>-->
+<!--                <td>Standard Moon Observations</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>8</td>-->
+<!--                <td>0.1</td>-->
+<!--                <td>0.5</td>-->
+<!--                <td>No Mount Movement</td>-->
+<!--                <td>Rotation stage operational checks</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>9</td>-->
+<!--                <td>0.5</td>-->
+<!--                <td>22.9</td>-->
+<!--                <td>Quick-turnaround 1&deg;&times;1&deg; single-pair map</td>-->
+<!--                <td>System stability</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>9.1</td>-->
+<!--                <td>0.3</td>-->
+<!--                <td>3.5</td>-->
+<!--                <td>1&deg;&times;1&deg; map, 45&deg; increments</td>-->
+<!--                <td>&sigma;-Angle vs. Mod Curve Samples</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>9.2</td>-->
+<!--                <td>1.1</td>-->
+<!--                <td>11.0</td>-->
+<!--                <td>1&deg;&times;1&deg; map, 10&deg; increments</td>-->
+<!--                <td>&sigma;-Angle vs. Mod Curve Samples</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>9.3</td>-->
+<!--                <td>0.5</td>-->
+<!--                <td>4.6</td>-->
+<!--                <td>1&deg;&times;1&deg; map, No Homing between obs.</td>-->
+<!--                <td>RPS homing precision</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>10</td>-->
+<!--                <td>3.1</td>-->
+<!--                <td>9.2</td>-->
+<!--                <td>RPS fixed & boresight rotated instead</td>-->
+<!--                <td>Pointing model validation</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>11</td>-->
+<!--                <td>3.2</td>-->
+<!--                <td>9.2</td>-->
+<!--                <td>Rasters 27&deg; in Az</td>-->
+<!--                <td>Short- & long-timescale mirror deformation</td>-->
+<!--            </tr>-->
+
+<!--        </table>-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--<p>-->
+<!--    My last few postings on the Moon analysis used only the Type-7 data. This posting mostly focuses on the Type-5 main RPS data, but I will also look into the Type-11 cross-check data. The Type-10 data would also be used for this, but I hadn't thought through the scanning strategy all that well and thus didn't acquire many detectors with full rastersets. I'll have to think more about how to make the Type-10 data more immediately useful.-->
+<!--</p>-->
+
+
+<!--    &lt;!&ndash;-->
+<!--    <h3>RPS Analysis in a nutshell</h3>-->
+
+<!--    <p>-->
+<!--        The general approach to converting the RPS data to estimations on the polarization angles and cross-polar response of a given detector is to done in two parts: fit 2D Gaussians to a rasterstet to derive the amplitudes of a modulation curve and then fit a sinusoidal function to the modulation curve to derive the polarization angle and cross-polar response (see Figure 1.1 below).-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img src="figs\spie_mod_curve.png"/>-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+
+<!--    <p>The Gaussian we fit is done at the timestream level in raw mount coordinates <a href="KWY2007"></a> and is of the form:</p>-->
+
+<!--    \begin{equation}-->
+<!--    B(\mathbf{x}) = A e^{(\mathbf{x}-\mathbf{\mu})^T\Sigma^{-1}(\mathbf{x}-\mathbf{\mu})}-->
+<!--    \end{equation}-->
+<!--    Where $A$ is the amplitude, $\mathbf{\mu} = (Az_0\,\,El_0)$ is the beam centroid, and-->
+
+<!--    \begin{equation}-->
+<!--    \Sigma =-->
+<!--    \begin{bmatrix} \sigma_{Az}^2& \rho \sigma_{Az} \sigma_{El} \\ \rho \sigma_{Az} \sigma_{El} & \sigma_{El}^2 \end{bmatrix}-->
+<!--    \end{equation}-->
+
+<!--    <p>-->
+<!--    where $(\sigma_{Az},\,\sigma_{El})$ is the beam width, and $\rho$ is the beam ellipticity. The significant difference between this analysis and other analyses involving beams is that we include 13 amplitude parameters to account for each beam in the modulation curve while fitting only a single $Az_0$, $El_0$, $\sigma_{Az}$, $\sigma_{El}$, and $\rho$ parameter across all the beams in a rasterset. This is to mitigate pointing effects from the Roger Effect <a href="RWO2013"></a> and to allow good beam centroid fits for rasters during which the RPS angle is orthogonal to a given detector and the SNR on the beam amplitude is low.-->
+<!--    </p>-->
+
+<!--    <p>Once we have our modulation curve, we could fit a sinusoidal function of the form:</p>-->
+
+<!--    \begin{equation}\label{eq:modcurve}-->
+<!--    A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\theta)+n_2\sin(\theta)+1\right)-->
+<!--    \end{equation}-->
+<!--    <p>-->
+<!--        where $G$ is the detector gain, $\theta$ is the RPS angle WRT gravity, $\psi$ is the detector polarization angle with respect to the source, $\epsilon$-->
+<!--        is the detector cross-polar response, and ($n_1,\,n_2$) are nuisance parameters to account for miscollimation of the source rotation axis.-->
+<!--    </p>-->
+<!--    <p>-->
+<!--        The polarization angle $\psi$ in Equation \ref{eq:modcurve} is a relative measurement and is agnostic to the orientation of the focal plane.-->
+<!--        We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the focal plane, by combining $\psi$ with the angle between the telescope's focal plane orientation and the RPS's orientation, called $\phi_s$, which is computed through the pointing model <a href="JAC2019"></a>.-->
+<!--    </p>-->
+<!--    \begin{equation}\label{eq:phidef}-->
+<!--    \phi_d = \psi + \phi_s-->
+<!--    \end{equation}-->
+
+<!--    <p>In application, $\phi_s$ is computed for at every RPS angle to account for any polarization projection effects from the mirror<sup><a name="sup2" href="#ftn2">[2]</a></sup>:</p>-->
+
+
+<!--    \begin{equation}\label{eq:modcurve2}-->
+<!--    A(\theta) = G\left(\cos\left(2\left(\theta+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\theta)+n_2\sin(\theta)+1\right)-->
+<!--    \end{equation}-->
+
+<!--    <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>-->
+
+<!--<p>-->
+<!--    Because this $\phi_s$ term tracks the focal plane orientation, it is sensitive to the inputs of the pointing model. As such, the rest of this posting is dedicated to characterizing possible sources of systematics on the focal plane orientation and establishing a constraint on the total uncertainty of $\phi_s$.-->
+<!--</p>-->
+<!--&ndash;&gt;-->
+<!--</section>-->
+
+<!--<section><h2>Mirror/Source Systematics</h2>-->
+
+
+<!--    <h3>Estimating RPS Location and Mirror Orientation</h3>-->
+
+
+<!--<p>We have a general idea of where the RPS is located on the sky, but we constrain it to a high degree by locking in the mirror orientation from Moon data and then, knowing all other inputs of our pointing model, estimate the location of the source by comparing our RPS-derived beams to our fiducial CMB-derived beams.-->
+<!--    I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c">JAC2022c</a> and fit for a source location to the Type-5 Main RPS data over all DK angles using a method similar to how we fit for mirror parameters described in &sect;2 of <a href="JAC2022a"></a> except we take the mirror parameters in the pointing model as known and instead let the source azimuth and elevation be free parameters:</p>-->
+<!--    <p>With <tt>beam_map_pointing_model.m</tt> as our-->
+<!--        model we computer the instrument-fixed coordinates in x/y <a href="JAC2021"></a>:</p>-->
+
+<!--    \begin{equation}-->
+<!--    \label{bmpm}-->
+<!--    [x,\,y,\,\phi] = \text{beam_map_pointing_model}(Az_{src},\,El_{src} | A_{0},\,E_{0},\,K_{0},\,Mount,\,Mirror)-->
+<!--    \end{equation}-->
+
+<!--    where $A_0$, $E_0$, and $D_0$ are the as-fit beam centers in raw mount coordinates; $Mount$ comprises the relevant-->
+<!--    mount information derived from both optical starpointing and Solidworks drawings; $Mirror$ comprises the tilt, roll and height of the mirror.-->
+
+<!--    <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>-->
+
+<!--    \begin{equation}-->
+<!--    \label{sourcechi2}-->
+<!--    \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}-->
+<!--    \end{equation}-->
+
+<!--    <p>We know from the Moon analysis that the mirror orientation fluctuates on relatively fast timescales (<1hr). Further, the tilt meter in the RPS tells us that the RPS itself moves around in Azimuth by ~20 arcseconds at most throughout the campaign. Therefore, after fitting for a source position using all the main Type-5 RPS data, I use that position as given and instead fit for the mirror parameters using the same approach above. A single rasterset in an RPS observation takes ~40 Minutes to complete which is about the same amount of time to complete as an entire Moon observation, so <b>the mirror tilt/roll fits for the RPS are done per-rasterset.</b></p>-->
+
+
+<!--    <h3>Beam Center Residuals</h3>-->
+<!--    <p>-->
+<!--        The histogram belows shows the distribution of residuals between the CMB-derived and RPS-derived best-fit beam centroids across all RPS obervations. The distributions look Gaussian and are mean-zero in both x and y with a 1-&sigma; standard deviation of 0.008&deg;.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img src="figs/beam_cen_hists.png"/>-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+
+
+<!--    <p>-->
+<!--        The pager below shows the residuals between the CMB-derived and RPS-derived best-fit beam centroids. The quivers are color-coded by the chronological order of the rastersets where purple is the earliest and yellow is the latest. I try to quantify any systematics in the residuals by fitting global rotation/scaling/translation parameters as descriibed in &sect;2.2 and I show the change in residuals with and without these corrections applied in the pager. Note that the arrows in the plots are scaled by a factor of 20, so the largest differences seen here are typically much smaller than ~0.05&deg;.-->
+<!--    </p>-->
+
+
+<!--    <ul>-->
+<!--        <li>-->
+<!--            <b>Obs DK</b> - Observations denoted by the DK at which they were taken.-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <b>Coord</b> - Choose between an instrument-fixed or a quasi-mirror-fixed coordinate system which is calculated by derotating the DK angle at which the observation was done.-->
+<!--        </li>-->
+<!--    </ul>-->
+<!--        <p></p>-->
+<!--        <figure>-->
+<!--            <img alt="Name pager" id="quiverpager" src="#" />-->
+<!--            <figcaption>-->
+
+<!--            </figcaption>-->
+<!--            <script type="text/javascript">-->
+<!--                function fcn(params){-->
+<!--                        return 'figs/quiver_dk'+params.dk+'_fit_perrast'+params.coord+'_'+params.corr+'_rps.png';-->
+<!--                }-->
+
+<!--                pager.link("#quiverpager",-->
+<!--                    {-->
+<!--                        'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],-->
+<!--                        //'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],-->
+<!--                         //   'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],-->
+<!--                        'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],-->
+<!--                     },-->
+<!--                fcn);-->
+<!--                pager.setparams({-->
+<!--                    //'fit': 'overall',-->
+<!--                    'dk' : '68_1',-->
+<!--                    'corr': 'none',-->
+<!--                    'coord': '',-->
+<!--                });-->
+<!--            </script>-->
+<!--            </figure>-->
+
+
+
+
+<!--    <p>There does not appear to be any coherence in the quivers that I can see. I quantify any possible features in the residuals in the next section.</p>-->
+
+<!--    <h3>FPU Transformation Fits</h3>-->
+<!--    <p>-->
+<!--        We have many inputs to the pointing model but there are likely still more things we are not accounting for.-->
+<!--        I track any non-idealities in the pointing model that could impart some systematics by fitting four global parameters to the beam center residuals across the focal plane: Angle, Scaling, X-Translation, and Y-translation. After converting from raw mount coordinates to instrument-fixed $x,\,y$, I fit a 4-parameter transformation model across the whole focal plane as follows:-->
+<!--    </p>-->
+
+
+<!--    \begin{align}-->
+<!--    \begin{bmatrix} x'_i \\ y'_i \end{bmatrix} &= (1+\delta A)-->
+<!--    \begin{bmatrix} \cos(\delta K) & -\sin(\delta K) \\-->
+<!--    \sin(\delta K) &-->
+<!--    \cos(\delta K) \end{bmatrix} \left(-->
+<!--    \begin{bmatrix} \hat x_i \\ \hat y_i \end{bmatrix}-->
+<!--    - \begin{bmatrix} \delta x \\ \delta y \end{bmatrix}-->
+<!--    \right)-->
+<!--    \end{align}-->
+
+<!--    <p>-->
+<!--        where $\delta K$ is the FPU rotation angle, $\delta A$ is the scaling, and $\delta x,\,\delta y$ are the x/y translations. This is the same transformation function that is used to make CMB-derived beam centers [see the equations in &sect;2 of <a href="JBW2018a"></a>]. The primary difference here is that our fiducial data is the CMB-derived beam centers and not ideal. So, in a perfect world where our pointing model (which includes a mirror) exactly matches reality <b>all of these parameters should be consistent with zero</b>.-->
+<!--    </p>-->
+
+<!--    <p>-->
+<!--       In the pager below, I plot the parameters derived from 4-parameter model fits to the residuals shown in Fig 2.2 as a function of multiple different variables. For comparison, I show the data for both the Moon and RPS data. The data are color-coded by the chronological order in which the observations were taken. I show both the fits to the entire focal plane and also at the per-rasterset level since we known from Moon data that the mirror (and thus these transformation parameters) can shift around at those timescales. And important note is that, since we're no longer sampling the whole focal plane at per-rasterset levels, the scaling and translation parameters are somewhat degenerate and so only the angle parameter should be taken seriously in those clicks.</p>-->
+
+<!--    <p><b>Pager Options</b></p>-->
+<!--    <ul>-->
+<!--        <li>-->
+<!--            <b>Y-Axis</b> -  Angle/Scaling/Translation fit per observation-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <b>X-Axis</b>-->
+<!--            <ul>-->
+<!--                <li>-->
+<!--                    Time - The time, in days, since the very first Moon observation on Nov 30th 2021.-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    DK - The DK angle at which the observation occurred.-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    Sun-Src Az/El - The angles between the sun and observation target (i.e. Moon or RPS).-->
+<!--                </li>-->
+
+<!--            </ul>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <b>Target</b> - Switch between Moon and RPS Main (Type 5) data.-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <b>Resolution</b> - Fitting transformation parameters over per-observation or per-rasterset (i.e. whole focal plane or 1/60th).-->
+<!--        </li>-->
+<!--    </ul>-->
+
+<!--    <figure>-->
+<!--        <img alt="Maps pager" id="versuspager" src="#" width="100%"/>-->
+<!--        <figcaption>-->
+<!--        A plot of FPU angle/scaling/translation best-fit parameters from each Moon and standard Type-5 RPS observation. The gray dashed lines represent 1-&sigma; deviations from the null hypothesis.-->
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#versuspager",-->
+<!--                {-->
+<!--                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs'],-->
+<!--                    'X-Axis|x' : ['Time|t','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],-->
+<!--                    'Target|tgt': ['Moon|moon','RPS|rps'],-->
+<!--                    'Y Limits|lim': ['Free|','Fixed|_fixed'],-->
+<!--                    'Resolution|res': ['Per-Obs|','Per-Rast|_perrast'],-->
+
+<!--                },-->
+
+<!--                function(params) {-->
+<!--                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt+params.lim+params.res+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'param': 'fpu_ang_obs',-->
+<!--                'x': 'dk',-->
+<!--                'tgt': 'moon',-->
+<!--                'lim': '_fixed',-->
+<!--                'res': '_perrast',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+
+<!--    <p>Important clicks:</p>-->
+<!--    <ol>-->
+
+<!--        <li>-->
+<!--    <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt': 'moon','lim':'_fixed','res':'_perrast'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt': 'rps','lim':'_fixed','res':'_perrast'})">RPS</a> Angle (per-rasterset): The overall rotation angle is consistent with zero (1-&sigma; standard deviation of 0.02&deg; and 0.01&deg; for the Moon and RPS respectively.-->
+<!--</li>-->
+
+<!--        <li>-->
+<!--            RPS <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt': 'rps','lim':'_fixed','res':''})">X-Trans</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ytrans_obs','tgt': 'rps','lim':'_fixed','res':''})">Y-Trans</a>: There ~1.5&sigma; offsets in the global X- and Y-translations at around  -0.5 arcseconds in the RPS data across all observations &#45;&#45; a feature which is not seen in the Moon data.-->
+<!--        </li>-->
+<!--&lt;!&ndash;-->
+<!--        <li>-->
+<!--            Moon <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt': 'moon','lim':'_fixed','res':''})">Angle</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt': 'moon','lim':'_fixed','res':''})">X-Trans</a> Vs. DK: We see some correlation in the angle and X-translation.-->
+<!--        </li>-->
+<!--        &ndash;&gt;-->
+<!--        <li>-->
+<!--           RPS <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'dk','tgt': 'rps','lim':'','res':''})">Scaling</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ytrans_obs','x': 'dk','tgt': 'rps','lim':'','res':''})">Y-Translation</a> vs. DK: We also see some correlations in the RPS data.-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'moon','lim':'_fixed','res':''})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'rps','lim':'_fixed','res':''})">RPS</a> Scaling vs. Sun-Source Angle: We saw some indication in the Moon data that the scaling of the mirror was affected by the location of the Sun with respect to the mirror pointing. There's no indication of that with the RPS data here because each data point represents 36 hours of observing time.-->
+<!--        </li>-->
+
+
+<!--    </ol>-->
+
+<!--    <p>-->
+<!--        For point 2, it's currently unclear what could be causing the significant offset. Some potential ideas could be: systematics in my Moon phase correction (in the case of Moon data); unaccounted inputs in the pointing model (e.g. gravitational flexure); incorrect origin of the Az/El tilts in the pointing model.-->
+<!--    </p>-->
+
+<!--    <p>-->
+<!--        For point 3, I take a closer look at possible correlations by calculating the correlation coefficients from the covariance matrices in the Moon and RPS data (Table 2.1).-->
+<!--        &lt;!&ndash;-->
+<!--        In the table below, I compare the correlation coefficients from the angle/scaling/translation parameters plotted above to the expected correlation coefficients I get from estimating those same parameters in a simple simulation of the beam-center residuals based on statistical fluctuations alone.-->
+<!--        For my sims, I dither the CMB-derived beam centroids for all detectors across the focal plane by the 1&sigma; STD of 0.008&deg; in Fig 2.1 for the RPS data (and 0.018&deg; for the Moon data shows in Figure A.1).-->
+<!--        I fit the angle/scaling/translation parameters to these beam centers as before using the CMB-derived beam centers as my fiducial data.-->
+<!--        I compute these parameters for 1000 noise realizations and compute the correlation coefficients from the data for comparison.&ndash;&gt;-->
+<!--    </p>-->
+
+<!--    <figure class="table">-->
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <td  style="padding-left: 100px; padding-right: 100px;">-->
+<!--                    <table class="results">-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">RPS</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">Correlation Coefficient</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2272B2">-0.10</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>0.03</td>-->
+<!--                            <td><font color="orange">0.52</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">-0.24</font></td>-->
+<!--                            <td>0.83</td>-->
+<!--                            <td><font color="F748A5">0.29</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">PTE</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2272B2">0.77</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>0.92</td>-->
+<!--                            <td><font color="orange">0.13</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">0.51</font></td>-->
+<!--                            <td>0.003</td>-->
+<!--                            <td><font color="F748A5">0.41</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </td>-->
+<!--                <td>-->
+
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <table class="results">-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">Moon</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">Correlation Coefficient</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2271B2">-0.17</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>-0.08</td>-->
+<!--                            <td><font color="orange">0.55</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">0.31</font></td>-->
+<!--                            <td>-0.10</td>-->
+<!--                            <td><font color="F748A5">-0.02</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">PTE</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2271B2">0.40</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>0.68</td>-->
+<!--                            <td><font color="orange">0.004</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">0.12</font></td>-->
+<!--                            <td>0.61</td>-->
+<!--                            <td><font color="F748A5">0.93</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                    &lt;!&ndash;<table class="results">-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">Sims N=1000</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2271B2">-0.02</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>-0.06</td>-->
+<!--                            <td><font color="orange">-0.01</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">-0.03</font></td>-->
+<!--                            <td>0.06</td>-->
+<!--                            <td><font color="F748A5">-0.01</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                    &ndash;&gt;-->
+<!--                </td>-->
+<!--            </tr>-->
+
+<!--        </table>-->
+
+<!--        <figcaption>-->
+<!--            A comparison of angle/scaling/translation correlation coefficients between Type-5 RPS and Moon data. Colors are used for easier comparison.-->
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--&lt;!&ndash;-->
+<!--<figure class="table">-->
+<!--<table>-->
+<!--    <tr>-->
+<!--        <td  style="padding: 100px;">-->
+<!--            <table class="results">-->
+<!--                <tr>-->
+<!--                    <th colspan="5">Real</th>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td></td>-->
+<!--                    <td>Angle</td>-->
+<!--                    <td>Scaling</td>-->
+<!--                    <td>X-trans</td>-->
+<!--                    <td>Y-trans</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Angle</td>-->
+<!--                    <td>1</td>-->
+<!--                    <td>-</td>-->
+<!--                    <td>-</td>-->
+<!--                    <td>-</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Scaling</td>-->
+<!--                    <td><font color="#2271B2">-0.17</font></td>-->
+<!--                    <td>1</td>-->
+<!--                    <td>-</td>-->
+<!--                    <td>-</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>X-trans</td>-->
+<!--                    <td>-0.08</td>-->
+<!--                    <td><font color="orange">0.55</font></td>-->
+<!--                    <td>1</td>-->
+<!--                    <td>-</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Y-trans</td>-->
+<!--                    <td><font color="359B73">0.31</font></td>-->
+<!--                    <td>-0.10</td>-->
+<!--                    <td><font color="F748A5">-0.02</font></td>-->
+<!--                    <td>1</td>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--        </td>-->
+<!--        <td>-->
+
+<!--        </td>-->
+<!--        <td>-->
+<!--            <table class="results">-->
+<!--                <tr>-->
+<!--                    <th colspan="5">Sims N=1000</th>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td></td>-->
+<!--                    <td>Angle</td>-->
+<!--                    <td>Scaling</td>-->
+<!--                    <td>X-trans</td>-->
+<!--                    <td>Y-trans</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Angle</td>-->
+<!--                    <td>1</td>-->
+<!--                    <td>-</td>-->
+<!--                    <td>-</td>-->
+<!--                    <td>-</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Scaling</td>-->
+<!--                    <td><font color="#c71585">-0.02</font></td>-->
+<!--                    <td>1</td>-->
+<!--                    <td>-</td>-->
+<!--                    <td>-</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>X-trans</td>-->
+<!--                    <td>-0.06</td>-->
+<!--                    <td><font color="orange">-0.02</font></td>-->
+<!--                    <td>1</td>-->
+<!--                    <td>-</td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Y-trans</td>-->
+<!--                    <td><font color="359B73">-0.02</font></td>-->
+<!--                    <td>0.05</td>-->
+<!--                    <td><font color="F748A5">0.01</font></td>-->
+<!--                    <td>1</td>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--</table>-->
+
+<!--    <figcaption>-->
+<!--A comparison of angle/scaling/translation correlation coefficients between real Moon data and sims. Colors are used for easy comparison between real and simulated coefficients.-->
+<!--    </figcaption>-->
+<!--</figure>-->
+<!--&ndash;&gt;-->
+<!--<p>-->
+<!--    We do see some relatively strong correlations between the angle-translation and scaling-translation in both datasets. The PTE's for all but a few of these are pretty high, however, so I'm not very convinced that most of the correlations are real. Since both datasets have strong correlations between Scaling and translation, a possible next step would be to try thinking about what sort of systematic could cause similar features in both parameters.-->
+<!--</p>-->
+
+<!--    <p>-->
+<!--        The figure below shows a histogram of all of the FPU angles from all observations. We can see that the angle is consistent with zero to within <0.01&deg;.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img src="figs/fpu_angle_hist_type5.png" width="70%"/>-->
+<!--        <figcaption>-->
+<!--            Histogram of the fits to the overall focal plane angle per-rasterset.-->
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--    <p>-->
+<!--    In the next section, I put the Type-11 cross-check data through the same analysis as was done in this section in order to provide an extra independent cross-check of the instrumental effects that we see.-->
+<!--</p>-->
+
+<!--    <h3>Comparing to Type-11 data</h3>-->
+<!--    <p>-->
+
+<!--        The primary difference between Type-5 and Type-11 data is that, for each raster, we perform three 9&deg;Az&times;2&deg;El scans where the first scan is offset in Az by -13&deg;, the second by -4.5&deg;Az, and the third by 4&deg;Az.-->
+<!--        This ensures that we're mapping beams at each end of the focal plane (and thus the mirror) and allows us to trace systematics from one side of the mirror to the other on a shorter timescale. For comparison, the moon data samples one end of the mirror to the other along the Roll axis in roughly 2 hours, the Type-5 RPS data does the same in roughly 26 hours, and the Type-11 RPS data does this in about 40 minutes.-->
+<!--    </p>-->
+
+<!--    <p>-->
+<!--        We show figure 2.2 again, but this time with the Type-11 data included and it reinforces many of the points that we made in the previous section.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img alt="Maps pager" id="versuspager2" src="#" width="100%"/>-->
+<!--        <figcaption>-->
+<!--            A plot of FPU angle/scaling/translation best-fit parameters from each Moon, RPS Type-5, and RPS Type-11 observation. The gray dashed lines represent 1-&sigma; deviations from the null hypothesis.-->
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            pager.link("#versuspager2",-->
+<!--                {-->
+<!--                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs'],-->
+<!--                    'X-Axis|x' : ['Time|t','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],-->
+<!--                    'Target|tgt2': ['Moon|moon','RPS Type-5|rps' ,'RPS Type-11|rps11'],-->
+<!--                    'Y Limits|lim': ['Free|','Fixed|_fixed'],-->
+<!--                    'Resolution|res': ['Per-Obs|','Per-Rast|_perrast'],-->
+<!--                },-->
+
+<!--                function(params) {-->
+<!--                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt2+params.lim+params.res+'.png';-->
+<!--                });-->
+<!--            pager.setparams({-->
+<!--                'param': 'fpu_ang_obs',-->
+<!--                'x': 'dk',-->
+<!--                'tgt2': 'rps11',-->
+<!--                'lim': '_fixed',-->
+<!--                'res': '_perrast',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+<!--Important links:-->
+<!--    <ol>-->
+
+<!--        <li>-->
+<!--            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'moon','lim':'_fixed','res':'_perrast'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps','lim':'_fixed','res':'_perrast'})">RPS Type-5</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps11','lim':'_fixed'})">RPS Type-11</a> Angle (per-rasterset): The Type-11 data has higher variance than either the RPS or Moon data, likely because we have so few samples and we're not sampling enough of the focal plane.-->
+<!--        </li>-->
+
+<!--        <li>-->
+<!--            RPS Type-11 <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','tgt2': 'rps11','lim':'_fixed','res':''})">Scaling</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt2': 'rps11','lim':'_fixed','res':''})">X-Trans</a> Vs. DK: We possibly see a similar correlation between scaling and X-translation from in the Type-11 data also.-->
+<!--        </li>-->
+
+<!--        <li>-->
+
+<!--            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt2': 'moon','lim':'_fixed','res':''})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt2': 'rps11','lim':'_fixed','res':'_perrast'})">RPS-11</a> Scaling vs. Sun-Target Azimuth: There's a dip right around a Sun-Src Azimuth angle of 0 in the Type-11 RPS data. Given the low amount of data, it's impossible to say if this shows agreement with the Moon observations or is just a lucky coincidence.-->
+
+<!--        </li>-->
+<!--    </ol>-->
+
+<!--    <p>-->
+<!--        As with the previous section, I include the correlation coefficients and PTE's for the parameters. The only correlation that the Type-11 strongly agrees with is between Scaling and X-translation. Despite the low sample size, that it shows as clearly as it does in the Type-11 data leads me to believe it's real.-->
+<!--    </p>-->
+
+
+<!--    <figure class="table">-->
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    <table class="results">-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">RPS Type-5</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">Correlation Coefficient</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2272B2">-0.10</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>0.03</td>-->
+<!--                            <td><font color="orange">0.52</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">-0.24</font></td>-->
+<!--                            <td>0.83</td>-->
+<!--                            <td><font color="F748A5">0.29</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">PTE</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2272B2">0.77</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>0.92</td>-->
+<!--                            <td><font color="orange">0.13</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">0.51</font></td>-->
+<!--                            <td>0.003</td>-->
+<!--                            <td><font color="F748A5">0.41</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <table class="results">-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">Moon</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">Correlation Coefficient</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2271B2">-0.17</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>-0.08</td>-->
+<!--                            <td><font color="orange">0.55</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">0.31</font></td>-->
+<!--                            <td>-0.10</td>-->
+<!--                            <td><font color="F748A5">-0.02</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">PTE</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2271B2">0.40</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>0.68</td>-->
+<!--                            <td><font color="orange">0.004</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">0.12</font></td>-->
+<!--                            <td>0.61</td>-->
+<!--                            <td><font color="F748A5">0.93</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <table class="results">-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">RPS Type-11</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">Correlation Coefficient</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2271B2">-0.42</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>-0.61</td>-->
+<!--                            <td><font color="orange">0.70</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">0.64</font></td>-->
+<!--                            <td>-0.56</td>-->
+<!--                            <td><font color="F748A5">-0.11</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th colspan="5">PTE</th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>Y-trans</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Angle</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Scaling</td>-->
+<!--                            <td><font color="#2271B2">0.40</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>X-trans</td>-->
+<!--                            <td>0.20</td>-->
+<!--                            <td><font color="orange">0.12</font></td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>-</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td>Y-trans</td>-->
+<!--                            <td><font color="359B73">0.17</font></td>-->
+<!--                            <td>0.25</td>-->
+<!--                            <td><font color="F748A5">0.83</font></td>-->
+<!--                            <td>1</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </td>-->
+<!--            </tr>-->
+
+<!--        </table>-->
+
+<!--        <figcaption>-->
+<!--            A comparison of angle/scaling/translation correlation coefficients between our standard Type-5 RPS data, Moon data, and the Type-11 RPS cross-check data. Colors are used for easier comparison.-->
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+
+<!--    <h3>Discussion and Conclusions</h3>-->
+<!--    <p>-->
+<!--        I find no difference between the FPU orientation angle in the RPS data and CMB data to ~0.01&deg; and Moon and CMB data to ~0.02&deg;.-->
+<!--        We do see some significant (~1.5&sigma;) offset in the scaling/translation parameters at a maximum of 0.02% and 1 arcsecond respectively with some correlations between the parameters also.-->
+<!--    </p>-->
+
+<!--    <p>While these offsets/correlations indicate room for improvement in our systematics, these offsets are extremely small compared to our uncertainty goal on the global absolute polarization angle (~0.1&deg;). In my next posting, I plan to go over the actual polarization angle estimates and address any systematics we see there.</p>-->
+<!--</section>-->
+<!--&ndash;&gt;-->
+<!--&lt;!&ndash;-->
+<!--<section id="mrr_src_constrain">-->
+<!--    <h2>How well can RPS data constrain Mirror/Source by itself?</h2>-->
+
+<!--    <p>We've known for a long time that the geometry of the pointing model is such that the mirror roll parameter affects not just an apparent translation, but also an apparent rotation of the focal plane as well. Figure 2.1 of <a href="JAC2022c"></a> does a good job of showing this. As such, we should ideally be able to determine the orientation of the mirror as well as the location of the RPS because the mirror roll and source azimuth are not perfectly degenerate.</p>-->
+
+<!--    <p>In reality, while not explicitely stating it, Clara's previous work [<a href="CV2021a"></a>, <a href="CV2021b"></a>, and <a href="CV2022"></a>] has shown that at least one of the mirror or source parameters has to be fixed in order to sufficiently fit for the other three.</p>-->
+
+<!--    <p>In this section, I try to show this more conclusively, applying the lessons we've learned along the way since Clara's postings. Specifically, fitting mirror/source/angles at the per-rasterset level.</p>-->
+
+<!--    <hr>-->
+
+<!--    <p>-->
+<!--        The pager below shows histograms of the per-raster fits to the Mirror/Source parameters for different scenarios where we've allowed up to all of the parameters to be fit simultaneously. The best-fit parameters are those that minimize the residuals between the CMB-derived pointing and RPS-derived pointing. Just a note that I also tried including a part where the FPU angle was an extra statistic that was minimized, but this had no effect on the fits.-->
+<!--        <p>-->
+<!--    <p>-->
+<!--        <b>Left 4 Plots:</b>  I show the histograms of the mirror and source parameters fit per-rasterset. When we lock a parameter during a fit, I have two options for what we lock that parameter when switching between <b>Hold</b> options:-->
+<!--</p>-->
+<!--    <p><b>Constraint</b>-->
+<!--    <ul>-->
+<!--    <li>-->
+<!--        <b>RPS:</b> Locks the parameter to the mean value that we see in the histogram when Hold:"None" is selected (Az:-177.54&deg; / El: 3.78&deg;).-->
+<!--    </li>-->
+<!--    <li>-->
+<!--       <b>Moon:</b>  As we've seen in the sections above, the Moon analysis converges on a particular mean orientation of the mirror (and thus a source location), so when we lock in the Source Az and/or El I include an option to lock the Az/El to those given by the Moon data (Az:-177.52&deg; / El: 2.68&deg;).-->
+<!--    </li>-->
+<!--</ul>-->
+
+<!--    Note: Any movement of the Source Azimuth is constrained by the tilt meter data to be <0.01&deg; while we have evidence from the Moon data of large fluctuations of the mirror, so I only ever lock in the source parameters.-->
+
+<!--    </p>-->
+
+<!--    <p>-->
+<!--        <b>Middle Plot:</b> This show a histogram of the per-rasterset fits for the angles to the best-fit beam center residuals.-->
+<!--    </p>-->
+
+<!--    <p>-->
+<!--        <b>Right Plot:</b> Lastly, I wanted to show an additional metric which demonstrates the effect of our fitting choices on the polarization angles. For this, I chose to show the standard deviations of the per-detector angles across observations under the assumption that the fluctuation on $\phi_d$ for a given detector will approach our intrinsic measurement uncertainty as we get the pointing model more correct. This metric isn't perfect because it ignores the possibility of a scenario where the pointing is wrong but in a way that is correlated across observations (e.g. a configuration which doesn't bias the focal plane angle but which somehow biases $\phi_s$, the angle between the &theta;=0 axis and projection of the source co-polar axis onto the focal plane.)-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="constraintpager" src="#" />-->
+<!--        <figcaption>-->
+<!--            <dl>-->
+<!--                <dt>Histograms</dt>-->
+<!--                <dd>The <b>left</b> four histograms show the mirror/source parameters fit per-rasterset.</dd>-->
+<!--                <dd>The <b>middle</b> histogram is the per-rasterset fit of the FPU angle, fit</dd>-->
+<!--                <dd>The <b>right</b> plot is a histogram of the standard deviations of $\phi_d$ across all observations for each detector.</dd>-->
+
+<!--                <dt>$\phi$-scatter</dt>-->
+<!--                <dd>A scatter plot of pol angles, median subtracted per-detector.</dd>-->
+
+<!--            </dl>-->
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            function fcn(params){-->
+<!--                if (params.hold ==  'nohold') {-->
+<!--                    return 'figs/mirr_src_constraint_'+params.type+'_'+params.hold+'.png';-->
+<!--                };-->
+<!--                return 'figs/mirr_src_constraint_'+params.type+'_'+params.hold+params.const+'.png';-->
+<!--            }-->
+
+<!--            pager.link("#constraintpager",-->
+<!--                {-->
+<!--                    'Constraint|const' : ['RPS|','Moon|moon'],-->
+<!--                    'Hold|hold' : ['None|nohold','Az|azhold','El|elhold','Az/El|azelhold'],-->
+<!--                    'Plot Type|type' : ['Histograms|plots','$\\phi$ Scatter|phiscatters'],-->
+
+<!--                },-->
+<!--                fcn);-->
+<!--            pager.setparams({-->
+<!--                //'fit': 'overall',-->
+<!--                'const' : '',-->
+<!--                'hold': 'nohold',-->
+<!--                'type': 'plots',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
+
+<!--    <p>-->
+<!--        As I hinted, we do see that there does exist some preferred mirror/source parameters when allowing all parameters to vary freely. However, if I lock the source Az/El to the "preferred" values, the FPU angle and pol angle STD's get worse, not better.-->
+<!--    </p>-->
+<!--    <p>-->
+<!--        Using instead the parameters derived from the Moon, the FPU angle scatter increases but is still consistent with zero and the pol angle STD improve by ~30% compared to when we freed all 4 parameters. Further, I found using a simple grid search around the Moon-given source location (Az=-177.52&deg;/El=2.68&deg;) that these values give the minimum STD.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img src="figs/gridsearch.png" width="75%">-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--    <h3>Section 3 Conclusions / Questions</h3>-->
+<!--    <p>-->
+
+<!--    </p>-->
+<!--    <ul>-->
+<!--        <li>-->
+<!--            Why does RPS data prefer Mirror/Source parameters that result in large deviations in polarization angle?</li>-->
+
+<!--    </ul>-->
+
+<!--</section>-->
+<!--&ndash;&gt;-->
+
+<!--&lt;!&ndash;-->
+<!--<section>-->
+<!--    <h2 id="mirrfixedcase">Fixing Mirror/Source Parameters</h2>-->
+<!--    <p>-->
+<!--        For this section, I fixed the mirror and source parameters in place and instead fit an overall angle to the beam center residuals per-rasterset and use that angle as a correction to the apparent rotation of the focal plane. The source parameters are fixed to those that I got from the moon Az=-177.52&deg;/El=2.68&deg;. The moon parameters are fixed at the mean per-rasterset fits used in previous sections Tilt=44.88&deg;/Roll=-0.07&deg;.-->
+<!--    </p>-->
+<!--<p>-->
+<!--    In the plot below I compare show the best-fit FPU angles for when I allow the mirror to be fit per-rasterset (left) and when I fix it (right).-->
+<!--</p>-->
+
+<!--    <p>-->
+<!--        <b>Question:</b> Fixing the mirror even though it is moving around will result in an apparent rotation of the focal plane so we expect the distribution on the right to be larger, but can we predict how large the increase should be?-->
+<!--    </p>-->
+
+<!--<figure>-->
+<!--    <img src="figs/fpuang_hist.png" width="70%">-->
+<!--    <figcaption>-->
+
+<!--    </figcaption>-->
+<!--</figure>-->
+
+<!--    <p>-->
+<!--        Before worrying too much about the question above, let's look at the impact on the polarization angles. I plot below the mean-subtracted, FPU angle-corrected A/B pol angles vs samples (ordered chronologically) which shows the effect of correcting for the focal plane angle. We can see that some parts look consistent to the 'mirror-free' case, but others are systematically worse &#45;&#45; the angles are offset in some coherent way. Since these are two approaches to getting the same answer, in a perfect world, I would expect the scatter to be roughly the same.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img src="figs/polang_vs_samples.png" width="70%">-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--    <p>-->
+<!--        The histograms below compare the distributions. The scatter increases by ~30%.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img src="figs/polang_hist.png" width="70%">-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--    <p>-->
+<!--        Again, before I get too concerned with this, I want to see how this averages down in the final per-pair angles. How different are the per-pair angles averaged over all 10 observations? Not very. Below are histograms of the obs-averaged, per-pair angles and we can see that the means and SDevs are within a percent or so of each other.-->
+<!--    </p>-->
+
+<!--    <figure>-->
+<!--        <img src="figs/polangpair_hist.png" width="70%">-->
+<!--        <figcaption>-->
+
+<!--        </figcaption>-->
+<!--    </figure>-->
+
+<!--    <p>-->
+<!--        <b>Editorial:</b> There's more we could look into here &#45;&#45; We know that there's a measureable  relationship between how far from the actual mirror roll we are and the apparent FPU angle we fit and Figure 4.2 suggest that the angles aren't always what we might expect them to be. However, since we get the same per-pair angles to within a couple of percent, I'm going to call this a good consistency check, as-is.-->
+<!--    </p>-->
+
+<!--</section>-->
+<!--&ndash;&gt;-->
 
 <hr>
-<!--16 Aug 2022-->
-<section>
-    <h2>RPS Observations</h2>
-<p>
-    We acquire beam maps of a given detector by scanning over the RPS in 9&deg;Az&times;2&deg;El rasters at 1.5&deg;/s in Az and 0.1&deg; steps in El -- all with the RPS fixed at a given angle WRT gravity.
-    We get modulation curves by completing multiple rasters over the same part of the focal plane with the RPS commanded to a different angle for each raster, which we call a rasterset.
-    Each rasterset includes 13 rasters with the RPS rotated from -180&deg; to 180&deg; in 30&deg; increments and takes about 40 minutes to complete -- compare to a full Moon schedule which takes a roughly an hour.
-    A typical RPS schedule run by GCP consists of 19 rastersets where the first rasterset starts with an El offset of -12.5&deg; and steps in 1.5&deg; between each rasterset to ensure there are no gaps in coverage over the focal plane [see Fig. 1.1 of <a href="JAC2022a"></a> for an example].
-    In this posting, I'll typically refer to the Moon and RPS data in terms of rasters, rastersets, or observations. Each observation typically consists of 3 schedules and generally maps beams across the entire focal plane at a single DK angle.
-</p>
-
-    <p>
-        Aside from the main suite of science-grade RPS schedules, we also completed a number of cross check schedules. These schedules are mostly identical to the our main schedules except we adjust one or two parameters depending on the particular systematics we want to probe. We categorize the schedules by their schedule number where the most recent RPS science schedule is Type-5 and proceeding schedule types denote cross-check schedules<sup><a name="sup1" href="#ftn1">[1]</a></sup>. A list of the observations we collected in Jan 2022, their schedule types and their uses is shown in Table 1.1.
-    </p>
-
-
-    <figure class="table">
-        <table class="center results">
-            <tr>
-                <th colspan="1">Schedule Type</th>
-                <th colspan="1">Obs. Length (Hrs.)</th>
-                <th colspan="1">Total Time (Hrs.)</th>
-                <th colspan="1">Adjusted Parameter</th>
-                <th colspan="1">Systematics Probed</th>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>13.5</td>
-                <td>420.4</td>
-                <td>None</td>
-                <td>Standard RPS Observations</td>
-            </tr>
-            <tr>
-                <td>6</td>
-                <td>13.6</td>
-                <td>13.6</td>
-                <td>RPS angle -180 to 180 Minus DK angle</td>
-                <td>Importance of nulling mod curve</td>
-            </tr>
-            <tr>
-                <td>7</td>
-                <td>1</td>
-                <td>70.7</td>
-                <td>Target Moon, only one raster</td>
-                <td>Standard Moon Observations</td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>0.1</td>
-                <td>0.5</td>
-                <td>No Mount Movement</td>
-                <td>Rotation stage operational checks</td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>0.5</td>
-                <td>22.9</td>
-                <td>Quick-turnaround 1&deg;&times;1&deg; single-pair map</td>
-                <td>System stability</td>
-            </tr>
-            <tr>
-                <td>9.1</td>
-                <td>0.3</td>
-                <td>3.5</td>
-                <td>1&deg;&times;1&deg; map, 45&deg; increments</td>
-                <td>&sigma;-Angle vs. Mod Curve Samples</td>
-            </tr>
-            <tr>
-                <td>9.2</td>
-                <td>1.1</td>
-                <td>11.0</td>
-                <td>1&deg;&times;1&deg; map, 10&deg; increments</td>
-                <td>&sigma;-Angle vs. Mod Curve Samples</td>
-            </tr>
-            <tr>
-                <td>9.3</td>
-                <td>0.5</td>
-                <td>4.6</td>
-                <td>1&deg;&times;1&deg; map, No Homing between obs.</td>
-                <td>RPS homing precision</td>
-            </tr>
-            <tr>
-                <td>10</td>
-                <td>3.1</td>
-                <td>9.2</td>
-                <td>RPS fixed & boresight rotated instead</td>
-                <td>Pointing model validation</td>
-            </tr>
-            <tr>
-                <td>11</td>
-                <td>3.2</td>
-                <td>9.2</td>
-                <td>Rasters 27&deg; in Az</td>
-                <td>Short- & long-timescale mirror deformation</td>
-            </tr>
-
-        </table>
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-<p>
-    My last few postings on the Moon analysis used only the Type-7 data. This posting mostly focuses on the Type-5 main RPS data, but I will also look into the Type-11 cross-check data. The Type-10 data would also be used for this, but I hadn't thought through the scanning strategy all that well and thus didn't acquire many detectors with full rastersets. I'll have to think more about how to make the Type-10 data more immediately useful.
-</p>
-
-
-    <!--
-    <h3>RPS Analysis in a nutshell</h3>
-
-    <p>
-        The general approach to converting the RPS data to estimations on the polarization angles and cross-polar response of a given detector is to done in two parts: fit 2D Gaussians to a rasterstet to derive the amplitudes of a modulation curve and then fit a sinusoidal function to the modulation curve to derive the polarization angle and cross-polar response (see Figure 1.1 below).
-    </p>
-
-    <figure>
-        <img src="figs\spie_mod_curve.png"/>
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-
-    <p>The Gaussian we fit is done at the timestream level in raw mount coordinates <a href="KWY2007"></a> and is of the form:</p>
-
-    \begin{equation}
-    B(\mathbf{x}) = A e^{(\mathbf{x}-\mathbf{\mu})^T\Sigma^{-1}(\mathbf{x}-\mathbf{\mu})}
-    \end{equation}
-    Where $A$ is the amplitude, $\mathbf{\mu} = (Az_0\,\,El_0)$ is the beam centroid, and
-
-    \begin{equation}
-    \Sigma =
-    \begin{bmatrix} \sigma_{Az}^2& \rho \sigma_{Az} \sigma_{El} \\ \rho \sigma_{Az} \sigma_{El} & \sigma_{El}^2 \end{bmatrix}
-    \end{equation}
-
-    <p>
-    where $(\sigma_{Az},\,\sigma_{El})$ is the beam width, and $\rho$ is the beam ellipticity. The significant difference between this analysis and other analyses involving beams is that we include 13 amplitude parameters to account for each beam in the modulation curve while fitting only a single $Az_0$, $El_0$, $\sigma_{Az}$, $\sigma_{El}$, and $\rho$ parameter across all the beams in a rasterset. This is to mitigate pointing effects from the Roger Effect <a href="RWO2013"></a> and to allow good beam centroid fits for rasters during which the RPS angle is orthogonal to a given detector and the SNR on the beam amplitude is low.
-    </p>
-
-    <p>Once we have our modulation curve, we could fit a sinusoidal function of the form:</p>
-
-    \begin{equation}\label{eq:modcurve}
-    A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\theta)+n_2\sin(\theta)+1\right)
-    \end{equation}
-    <p>
-        where $G$ is the detector gain, $\theta$ is the RPS angle WRT gravity, $\psi$ is the detector polarization angle with respect to the source, $\epsilon$
-        is the detector cross-polar response, and ($n_1,\,n_2$) are nuisance parameters to account for miscollimation of the source rotation axis.
-    </p>
-    <p>
-        The polarization angle $\psi$ in Equation \ref{eq:modcurve} is a relative measurement and is agnostic to the orientation of the focal plane.
-        We define an angle $\phi_d$, which is the polarization angle of a detector with respect to the focal plane, by combining $\psi$ with the angle between the telescope's focal plane orientation and the RPS's orientation, called $\phi_s$, which is computed through the pointing model <a href="JAC2019"></a>.
-    </p>
-    \begin{equation}\label{eq:phidef}
-    \phi_d = \psi + \phi_s
-    \end{equation}
-
-    <p>In application, $\phi_s$ is computed for at every RPS angle to account for any polarization projection effects from the mirror<sup><a name="sup2" href="#ftn2">[2]</a></sup>:</p>
-
-
-    \begin{equation}\label{eq:modcurve2}
-    A(\theta) = G\left(\cos\left(2\left(\theta+\psi+\phi_s\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(n_1\cos(\theta)+n_2\sin(\theta)+1\right)
-    \end{equation}
-
-    <p>This way, the angle we estimate from the modulation curve is automatically given as $\phi_d$.</p>
-
-<p>
-    Because this $\phi_s$ term tracks the focal plane orientation, it is sensitive to the inputs of the pointing model. As such, the rest of this posting is dedicated to characterizing possible sources of systematics on the focal plane orientation and establishing a constraint on the total uncertainty of $\phi_s$.
-</p>
--->
-</section>
-
-<section><h2>Mirror/Source Systematics</h2>
-
-
-    <h3>Estimating RPS Location and Mirror Orientation</h3>
-
-
-<p>We have a general idea of where the RPS is located on the sky, but we constrain it to a high degree by locking in the mirror orientation from Moon data and then, knowing all other inputs of our pointing model, estimate the location of the source by comparing our RPS-derived beams to our fiducial CMB-derived beams.
-    I use the mirror parameters derived from the Moon Analysis described in <a href="JAC2022c">JAC2022c</a> and fit for a source location to the Type-5 Main RPS data over all DK angles using a method similar to how we fit for mirror parameters described in &sect;2 of <a href="JAC2022a"></a> except we take the mirror parameters in the pointing model as known and instead let the source azimuth and elevation be free parameters:</p>
-    <p>With <tt>beam_map_pointing_model.m</tt> as our
-        model we computer the instrument-fixed coordinates in x/y <a href="JAC2021"></a>:</p>
-
-    \begin{equation}
-    \label{bmpm}
-    [x,\,y,\,\phi] = \text{beam_map_pointing_model}(Az_{src},\,El_{src} | A_{0},\,E_{0},\,K_{0},\,Mount,\,Mirror)
-    \end{equation}
-
-    where $A_0$, $E_0$, and $D_0$ are the as-fit beam centers in raw mount coordinates; $Mount$ comprises the relevant
-    mount information derived from both optical starpointing and Solidworks drawings; $Mirror$ comprises the tilt, roll and height of the mirror.
-
-    <p>Then using CMB-derived beam centers as the 'observed' quantity, the chi-square to minimize is just:</p>
-
-    \begin{equation}
-    \label{sourcechi2}
-    \chi^2=\sum \frac{(x_{CMB,i}-x_{0,i})^2+(y_{CMB,i}-y_{0,i})^2}{\sigma_i^2}
-    \end{equation}
-
-    <p>We know from the Moon analysis that the mirror orientation fluctuates on relatively fast timescales (<1hr). Further, the tilt meter in the RPS tells us that the RPS itself moves around in Azimuth by ~20 arcseconds at most throughout the campaign. Therefore, after fitting for a source position using all the main Type-5 RPS data, I use that position as given and instead fit for the mirror parameters using the same approach above. A single rasterset in an RPS observation takes ~40 Minutes to complete which is about the same amount of time to complete as an entire Moon observation, so <b>the mirror tilt/roll fits for the RPS are done per-rasterset.</b></p>
-
-
-    <h3>Beam Center Residuals</h3>
-    <p>
-        The histogram belows shows the distribution of residuals between the CMB-derived and RPS-derived best-fit beam centroids across all RPS obervations. The distributions look Gaussian and are mean-zero in both x and y with a 1-&sigma; standard deviation of 0.008&deg;.
-    </p>
-
-    <figure>
-        <img src="figs/beam_cen_hists.png"/>
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-
-
-    <p>
-        The pager below shows the residuals between the CMB-derived and RPS-derived best-fit beam centroids. The quivers are color-coded by the chronological order of the rastersets where purple is the earliest and yellow is the latest. I try to quantify any systematics in the residuals by fitting global rotation/scaling/translation parameters as descriibed in &sect;2.2 and I show the change in residuals with and without these corrections applied in the pager. Note that the arrows in the plots are scaled by a factor of 20, so the largest differences seen here are typically much smaller than ~0.05&deg;.
-    </p>
-
-
-    <ul>
-        <li>
-            <b>Obs DK</b> - Observations denoted by the DK at which they were taken.
-        </li>
-        <li>
-            <b>Coord</b> - Choose between an instrument-fixed or a quasi-mirror-fixed coordinate system which is calculated by derotating the DK angle at which the observation was done.
-        </li>
-    </ul>
-        <p></p>
-        <figure>
-            <img alt="Name pager" id="quiverpager" src="#" />
-            <figcaption>
-
-            </figcaption>
-            <script type="text/javascript">
-                function fcn(params){
-                        return 'figs/quiver_dk'+params.dk+'_fit_perrast'+params.coord+'_'+params.corr+'_rps.png';
-                }
-
-                pager.link("#quiverpager",
-                    {
-                        'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
-                        //'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],
-                         //   'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
-                        'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
-                     },
-                fcn);
-                pager.setparams({
-                    //'fit': 'overall',
-                    'dk' : '68_1',
-                    'corr': 'none',
-                    'coord': '',
-                });
-            </script>
-            </figure>
-
-
-
-
-    <p>There does not appear to be any coherence in the quivers that I can see. I quantify any possible features in the residuals in the next section.</p>
-
-    <h3>FPU Transformation Fits</h3>
-    <p>
-        We have many inputs to the pointing model but there are likely still more things we are not accounting for.
-        I track any non-idealities in the pointing model that could impart some systematics by fitting four global parameters to the beam center residuals across the focal plane: Angle, Scaling, X-Translation, and Y-translation. After converting from raw mount coordinates to instrument-fixed $x,\,y$, I fit a 4-parameter transformation model across the whole focal plane as follows:
-    </p>
-
-
-    \begin{align}
-    \begin{bmatrix} x'_i \\ y'_i \end{bmatrix} &= (1+\delta A)
-    \begin{bmatrix} \cos(\delta K) & -\sin(\delta K) \\
-    \sin(\delta K) &
-    \cos(\delta K) \end{bmatrix} \left(
-    \begin{bmatrix} \hat x_i \\ \hat y_i \end{bmatrix}
-    - \begin{bmatrix} \delta x \\ \delta y \end{bmatrix}
-    \right)
-    \end{align}
-
-    <p>
-        where $\delta K$ is the FPU rotation angle, $\delta A$ is the scaling, and $\delta x,\,\delta y$ are the x/y translations. This is the same transformation function that is used to make CMB-derived beam centers [see the equations in &sect;2 of <a href="JBW2018a"></a>]. The primary difference here is that our fiducial data is the CMB-derived beam centers and not ideal. So, in a perfect world where our pointing model (which includes a mirror) exactly matches reality <b>all of these parameters should be consistent with zero</b>.
-    </p>
-
-    <p>
-       In the pager below, I plot the parameters derived from 4-parameter model fits to the residuals shown in Fig 2.2 as a function of multiple different variables. For comparison, I show the data for both the Moon and RPS data. The data are color-coded by the chronological order in which the observations were taken. I show both the fits to the entire focal plane and also at the per-rasterset level since we known from Moon data that the mirror (and thus these transformation parameters) can shift around at those timescales. And important note is that, since we're no longer sampling the whole focal plane at per-rasterset levels, the scaling and translation parameters are somewhat degenerate and so only the angle parameter should be taken seriously in those clicks.</p>
-
-    <p><b>Pager Options</b></p>
-    <ul>
-        <li>
-            <b>Y-Axis</b> -  Angle/Scaling/Translation fit per observation
-        </li>
-        <li>
-            <b>X-Axis</b>
-            <ul>
-                <li>
-                    Time - The time, in days, since the very first Moon observation on Nov 30th 2021.
-                </li>
-                <li>
-                    DK - The DK angle at which the observation occurred.
-                </li>
-                <li>
-                    Sun-Src Az/El - The angles between the sun and observation target (i.e. Moon or RPS).
-                </li>
-
-            </ul>
-        </li>
-        <li>
-            <b>Target</b> - Switch between Moon and RPS Main (Type 5) data.
-        </li>
-        <li>
-            <b>Resolution</b> - Fitting transformation parameters over per-observation or per-rasterset (i.e. whole focal plane or 1/60th).
-        </li>
-    </ul>
-
-    <figure>
-        <img alt="Maps pager" id="versuspager" src="#" width="100%"/>
-        <figcaption>
-        A plot of FPU angle/scaling/translation best-fit parameters from each Moon and standard Type-5 RPS observation. The gray dashed lines represent 1-&sigma; deviations from the null hypothesis.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#versuspager",
-                {
-                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs'],
-                    'X-Axis|x' : ['Time|t','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],
-                    'Target|tgt': ['Moon|moon','RPS|rps'],
-                    'Y Limits|lim': ['Free|','Fixed|_fixed'],
-                    'Resolution|res': ['Per-Obs|','Per-Rast|_perrast'],
-
-                },
-
-                function(params) {
-                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt+params.lim+params.res+'.png';
-                });
-            pager.setparams({
-                'param': 'fpu_ang_obs',
-                'x': 'dk',
-                'tgt': 'moon',
-                'lim': '_fixed',
-                'res': '_perrast',
-            });
-        </script>
-    </figure>
-
-    <p>Important clicks:</p>
-    <ol>
-
-        <li>
-    <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt': 'moon','lim':'_fixed','res':'_perrast'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt': 'rps','lim':'_fixed','res':'_perrast'})">RPS</a> Angle (per-rasterset): The overall rotation angle is consistent with zero (1-&sigma; standard deviation of 0.02&deg; and 0.01&deg; for the Moon and RPS respectively.
-</li>
-
-        <li>
-            RPS <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt': 'rps','lim':'_fixed','res':''})">X-Trans</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ytrans_obs','tgt': 'rps','lim':'_fixed','res':''})">Y-Trans</a>: There ~1.5&sigma; offsets in the global X- and Y-translations at around  -0.5 arcseconds in the RPS data across all observations -- a feature which is not seen in the Moon data.
-        </li>
-<!--
-        <li>
-            Moon <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt': 'moon','lim':'_fixed','res':''})">Angle</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt': 'moon','lim':'_fixed','res':''})">X-Trans</a> Vs. DK: We see some correlation in the angle and X-translation.
-        </li>
-        -->
-        <li>
-           RPS <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'dk','tgt': 'rps','lim':'','res':''})">Scaling</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ytrans_obs','x': 'dk','tgt': 'rps','lim':'','res':''})">Y-Translation</a> vs. DK: We also see some correlations in the RPS data.
-        </li>
-        <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'moon','lim':'_fixed','res':''})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt': 'rps','lim':'_fixed','res':''})">RPS</a> Scaling vs. Sun-Source Angle: We saw some indication in the Moon data that the scaling of the mirror was affected by the location of the Sun with respect to the mirror pointing. There's no indication of that with the RPS data here because each data point represents 36 hours of observing time.
-        </li>
-
-
-    </ol>
-
-    <p>
-        For point 2, it's currently unclear what could be causing the significant offset. Some potential ideas could be: systematics in my Moon phase correction (in the case of Moon data); unaccounted inputs in the pointing model (e.g. gravitational flexure); incorrect origin of the Az/El tilts in the pointing model.
-    </p>
-
-    <p>
-        For point 3, I take a closer look at possible correlations by calculating the correlation coefficients from the covariance matrices in the Moon and RPS data (Table 2.1).
-        <!--
-        In the table below, I compare the correlation coefficients from the angle/scaling/translation parameters plotted above to the expected correlation coefficients I get from estimating those same parameters in a simple simulation of the beam-center residuals based on statistical fluctuations alone.
-        For my sims, I dither the CMB-derived beam centroids for all detectors across the focal plane by the 1&sigma; STD of 0.008&deg; in Fig 2.1 for the RPS data (and 0.018&deg; for the Moon data shows in Figure A.1).
-        I fit the angle/scaling/translation parameters to these beam centers as before using the CMB-derived beam centers as my fiducial data.
-        I compute these parameters for 1000 noise realizations and compute the correlation coefficients from the data for comparison.-->
-    </p>
-
-    <figure class="table">
-        <table>
-            <tr>
-                <td  style="padding-left: 100px; padding-right: 100px;">
-                    <table class="results">
-                        <tr>
-                            <th colspan="5">RPS</th>
-                        </tr>
-                        <tr>
-                            <th colspan="5">Correlation Coefficient</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2272B2">-0.10</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>0.03</td>
-                            <td><font color="orange">0.52</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">-0.24</font></td>
-                            <td>0.83</td>
-                            <td><font color="F748A5">0.29</font></td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <th colspan="5">PTE</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2272B2">0.77</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>0.92</td>
-                            <td><font color="orange">0.13</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">0.51</font></td>
-                            <td>0.003</td>
-                            <td><font color="F748A5">0.41</font></td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-
-                </td>
-                <td>
-                    <table class="results">
-                        <tr>
-                            <th colspan="5">Moon</th>
-                        </tr>
-                        <tr>
-                            <th colspan="5">Correlation Coefficient</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2271B2">-0.17</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>-0.08</td>
-                            <td><font color="orange">0.55</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">0.31</font></td>
-                            <td>-0.10</td>
-                            <td><font color="F748A5">-0.02</font></td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <th colspan="5">PTE</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2271B2">0.40</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>0.68</td>
-                            <td><font color="orange">0.004</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">0.12</font></td>
-                            <td>0.61</td>
-                            <td><font color="F748A5">0.93</font></td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                    <!--<table class="results">
-                        <tr>
-                            <th colspan="5">Sims N=1000</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2271B2">-0.02</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>-0.06</td>
-                            <td><font color="orange">-0.01</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">-0.03</font></td>
-                            <td>0.06</td>
-                            <td><font color="F748A5">-0.01</font></td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                    -->
-                </td>
-            </tr>
-
-        </table>
-
-        <figcaption>
-            A comparison of angle/scaling/translation correlation coefficients between Type-5 RPS and Moon data. Colors are used for easier comparison.
-        </figcaption>
-    </figure>
-
-<!--
-<figure class="table">
-<table>
-    <tr>
-        <td  style="padding: 100px;">
-            <table class="results">
-                <tr>
-                    <th colspan="5">Real</th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Angle</td>
-                    <td>Scaling</td>
-                    <td>X-trans</td>
-                    <td>Y-trans</td>
-                </tr>
-                <tr>
-                    <td>Angle</td>
-                    <td>1</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>Scaling</td>
-                    <td><font color="#2271B2">-0.17</font></td>
-                    <td>1</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>X-trans</td>
-                    <td>-0.08</td>
-                    <td><font color="orange">0.55</font></td>
-                    <td>1</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>Y-trans</td>
-                    <td><font color="359B73">0.31</font></td>
-                    <td>-0.10</td>
-                    <td><font color="F748A5">-0.02</font></td>
-                    <td>1</td>
-                </tr>
-            </table>
-        </td>
-        <td>
-
-        </td>
-        <td>
-            <table class="results">
-                <tr>
-                    <th colspan="5">Sims N=1000</th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Angle</td>
-                    <td>Scaling</td>
-                    <td>X-trans</td>
-                    <td>Y-trans</td>
-                </tr>
-                <tr>
-                    <td>Angle</td>
-                    <td>1</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>Scaling</td>
-                    <td><font color="#c71585">-0.02</font></td>
-                    <td>1</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>X-trans</td>
-                    <td>-0.06</td>
-                    <td><font color="orange">-0.02</font></td>
-                    <td>1</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>Y-trans</td>
-                    <td><font color="359B73">-0.02</font></td>
-                    <td>0.05</td>
-                    <td><font color="F748A5">0.01</font></td>
-                    <td>1</td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-
-    <figcaption>
-A comparison of angle/scaling/translation correlation coefficients between real Moon data and sims. Colors are used for easy comparison between real and simulated coefficients.
-    </figcaption>
-</figure>
--->
-<p>
-    We do see some relatively strong correlations between the angle-translation and scaling-translation in both datasets. The PTE's for all but a few of these are pretty high, however, so I'm not very convinced that most of the correlations are real. Since both datasets have strong correlations between Scaling and translation, a possible next step would be to try thinking about what sort of systematic could cause similar features in both parameters.
-</p>
-
-    <p>
-        The figure below shows a histogram of all of the FPU angles from all observations. We can see that the angle is consistent with zero to within <0.01&deg;.
-    </p>
-
-    <figure>
-        <img src="figs/fpu_angle_hist_type5.png" width="70%"/>
-        <figcaption>
-            Histogram of the fits to the overall focal plane angle per-rasterset.
-        </figcaption>
-    </figure>
-
-    <p>
-    In the next section, I put the Type-11 cross-check data through the same analysis as was done in this section in order to provide an extra independent cross-check of the instrumental effects that we see.
-</p>
-
-    <h3>Comparing to Type-11 data</h3>
-    <p>
-
-        The primary difference between Type-5 and Type-11 data is that, for each raster, we perform three 9&deg;Az&times;2&deg;El scans where the first scan is offset in Az by -13&deg;, the second by -4.5&deg;Az, and the third by 4&deg;Az.
-        This ensures that we're mapping beams at each end of the focal plane (and thus the mirror) and allows us to trace systematics from one side of the mirror to the other on a shorter timescale. For comparison, the moon data samples one end of the mirror to the other along the Roll axis in roughly 2 hours, the Type-5 RPS data does the same in roughly 26 hours, and the Type-11 RPS data does this in about 40 minutes.
-    </p>
-
-    <p>
-        We show figure 2.2 again, but this time with the Type-11 data included and it reinforces many of the points that we made in the previous section.
-    </p>
-
-    <figure>
-        <img alt="Maps pager" id="versuspager2" src="#" width="100%"/>
-        <figcaption>
-            A plot of FPU angle/scaling/translation best-fit parameters from each Moon, RPS Type-5, and RPS Type-11 observation. The gray dashed lines represent 1-&sigma; deviations from the null hypothesis.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#versuspager2",
-                {
-                    'Y-Axis|param' : ['FPU Angle|fpu_ang_obs','FPU Scaling|fpu_scale_obs','FPU X Trans|fpu_xtrans_obs','FPU Y Trans|fpu_ytrans_obs'],
-                    'X-Axis|x' : ['Time|t','DK|dk','Sun-Src El|sun_els','Sun-Src Az|sun_azs'],
-                    'Target|tgt2': ['Moon|moon','RPS Type-5|rps' ,'RPS Type-11|rps11'],
-                    'Y Limits|lim': ['Free|','Fixed|_fixed'],
-                    'Resolution|res': ['Per-Obs|','Per-Rast|_perrast'],
-                },
-
-                function(params) {
-                    return 'figs/'+params.param+'_vs_'+params.x+'_'+params.tgt2+params.lim+params.res+'.png';
-                });
-            pager.setparams({
-                'param': 'fpu_ang_obs',
-                'x': 'dk',
-                'tgt2': 'rps11',
-                'lim': '_fixed',
-                'res': '_perrast',
-            });
-        </script>
-    </figure>
-Important links:
-    <ol>
-
-        <li>
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'moon','lim':'_fixed','res':'_perrast'})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps','lim':'_fixed','res':'_perrast'})">RPS Type-5</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_ang_obs','tgt2': 'rps11','lim':'_fixed'})">RPS Type-11</a> Angle (per-rasterset): The Type-11 data has higher variance than either the RPS or Moon data, likely because we have so few samples and we're not sampling enough of the focal plane.
-        </li>
-
-        <li>
-            RPS Type-11 <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','tgt2': 'rps11','lim':'_fixed','res':''})">Scaling</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_xtrans_obs','tgt2': 'rps11','lim':'_fixed','res':''})">X-Trans</a> Vs. DK: We possibly see a similar correlation between scaling and X-translation from in the Type-11 data also.
-        </li>
-
-        <li>
-
-            <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt2': 'moon','lim':'_fixed','res':''})">Moon</a> and <a href="javascript:void(0)" onclick="pager.setparams({'param': 'fpu_scale_obs','x': 'sun_azs','tgt2': 'rps11','lim':'_fixed','res':'_perrast'})">RPS-11</a> Scaling vs. Sun-Target Azimuth: There's a dip right around a Sun-Src Azimuth angle of 0 in the Type-11 RPS data. Given the low amount of data, it's impossible to say if this shows agreement with the Moon observations or is just a lucky coincidence.
-
-        </li>
-    </ol>
-
-    <p>
-        As with the previous section, I include the correlation coefficients and PTE's for the parameters. The only correlation that the Type-11 strongly agrees with is between Scaling and X-translation. Despite the low sample size, that it shows as clearly as it does in the Type-11 data leads me to believe it's real.
-    </p>
-
-
-    <figure class="table">
-        <table>
-            <tr>
-                <td>
-                    <table class="results">
-                        <tr>
-                            <th colspan="5">RPS Type-5</th>
-                        </tr>
-                        <tr>
-                            <th colspan="5">Correlation Coefficient</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2272B2">-0.10</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>0.03</td>
-                            <td><font color="orange">0.52</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">-0.24</font></td>
-                            <td>0.83</td>
-                            <td><font color="F748A5">0.29</font></td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <th colspan="5">PTE</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2272B2">0.77</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>0.92</td>
-                            <td><font color="orange">0.13</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">0.51</font></td>
-                            <td>0.003</td>
-                            <td><font color="F748A5">0.41</font></td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    <table class="results">
-                        <tr>
-                            <th colspan="5">Moon</th>
-                        </tr>
-                        <tr>
-                            <th colspan="5">Correlation Coefficient</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2271B2">-0.17</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>-0.08</td>
-                            <td><font color="orange">0.55</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">0.31</font></td>
-                            <td>-0.10</td>
-                            <td><font color="F748A5">-0.02</font></td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <th colspan="5">PTE</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2271B2">0.40</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>0.68</td>
-                            <td><font color="orange">0.004</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">0.12</font></td>
-                            <td>0.61</td>
-                            <td><font color="F748A5">0.93</font></td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    <table class="results">
-                        <tr>
-                            <th colspan="5">RPS Type-11</th>
-                        </tr>
-                        <tr>
-                            <th colspan="5">Correlation Coefficient</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2271B2">-0.42</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>-0.61</td>
-                            <td><font color="orange">0.70</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">0.64</font></td>
-                            <td>-0.56</td>
-                            <td><font color="F748A5">-0.11</font></td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <th colspan="5">PTE</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Angle</td>
-                            <td>Scaling</td>
-                            <td>X-trans</td>
-                            <td>Y-trans</td>
-                        </tr>
-                        <tr>
-                            <td>Angle</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Scaling</td>
-                            <td><font color="#2271B2">0.40</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>X-trans</td>
-                            <td>0.20</td>
-                            <td><font color="orange">0.12</font></td>
-                            <td>1</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>Y-trans</td>
-                            <td><font color="359B73">0.17</font></td>
-                            <td>0.25</td>
-                            <td><font color="F748A5">0.83</font></td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-
-        </table>
-
-        <figcaption>
-            A comparison of angle/scaling/translation correlation coefficients between our standard Type-5 RPS data, Moon data, and the Type-11 RPS cross-check data. Colors are used for easier comparison.
-        </figcaption>
-    </figure>
-
-
-    <h3>Discussion and Conclusions</h3>
-    <p>
-        I find no difference between the FPU orientation angle in the RPS data and CMB data to ~0.01&deg; and Moon and CMB data to ~0.02&deg;.
-        We do see some significant (~1.5&sigma;) offset in the scaling/translation parameters at a maximum of 0.02% and 1 arcsecond respectively with some correlations between the parameters also.
-    </p>
-
-    <p>While these offsets/correlations indicate room for improvement in our systematics, these offsets are extremely small compared to our uncertainty goal on the global absolute polarization angle (~0.1&deg;). In my next posting, I plan to go over the actual polarization angle estimates and address any systematics we see there.</p>
-</section>
-
-<!--
-<section id="mrr_src_constrain">
-    <h2>How well can RPS data constrain Mirror/Source by itself?</h2>
-
-    <p>We've known for a long time that the geometry of the pointing model is such that the mirror roll parameter affects not just an apparent translation, but also an apparent rotation of the focal plane as well. Figure 2.1 of <a href="JAC2022c"></a> does a good job of showing this. As such, we should ideally be able to determine the orientation of the mirror as well as the location of the RPS because the mirror roll and source azimuth are not perfectly degenerate.</p>
-
-    <p>In reality, while not explicitely stating it, Clara's previous work [<a href="CV2021a"></a>, <a href="CV2021b"></a>, and <a href="CV2022"></a>] has shown that at least one of the mirror or source parameters has to be fixed in order to sufficiently fit for the other three.</p>
-
-    <p>In this section, I try to show this more conclusively, applying the lessons we've learned along the way since Clara's postings. Specifically, fitting mirror/source/angles at the per-rasterset level.</p>
-
-    <hr>
-
-    <p>
-        The pager below shows histograms of the per-raster fits to the Mirror/Source parameters for different scenarios where we've allowed up to all of the parameters to be fit simultaneously. The best-fit parameters are those that minimize the residuals between the CMB-derived pointing and RPS-derived pointing. Just a note that I also tried including a part where the FPU angle was an extra statistic that was minimized, but this had no effect on the fits.
-        <p>
-    <p>
-        <b>Left 4 Plots:</b>  I show the histograms of the mirror and source parameters fit per-rasterset. When we lock a parameter during a fit, I have two options for what we lock that parameter when switching between <b>Hold</b> options:
-</p>
-    <p><b>Constraint</b>
-    <ul>
-    <li>
-        <b>RPS:</b> Locks the parameter to the mean value that we see in the histogram when Hold:"None" is selected (Az:-177.54&deg; / El: 3.78&deg;).
-    </li>
-    <li>
-       <b>Moon:</b>  As we've seen in the sections above, the Moon analysis converges on a particular mean orientation of the mirror (and thus a source location), so when we lock in the Source Az and/or El I include an option to lock the Az/El to those given by the Moon data (Az:-177.52&deg; / El: 2.68&deg;).
-    </li>
-</ul>
-
-    Note: Any movement of the Source Azimuth is constrained by the tilt meter data to be <0.01&deg; while we have evidence from the Moon data of large fluctuations of the mirror, so I only ever lock in the source parameters.
-
-    </p>
-
-    <p>
-        <b>Middle Plot:</b> This show a histogram of the per-rasterset fits for the angles to the best-fit beam center residuals.
-    </p>
-
-    <p>
-        <b>Right Plot:</b> Lastly, I wanted to show an additional metric which demonstrates the effect of our fitting choices on the polarization angles. For this, I chose to show the standard deviations of the per-detector angles across observations under the assumption that the fluctuation on $\phi_d$ for a given detector will approach our intrinsic measurement uncertainty as we get the pointing model more correct. This metric isn't perfect because it ignores the possibility of a scenario where the pointing is wrong but in a way that is correlated across observations (e.g. a configuration which doesn't bias the focal plane angle but which somehow biases $\phi_s$, the angle between the &theta;=0 axis and projection of the source co-polar axis onto the focal plane.)
-    </p>
-
-    <figure>
-        <img alt="Name pager" id="constraintpager" src="#" />
-        <figcaption>
-            <dl>
-                <dt>Histograms</dt>
-                <dd>The <b>left</b> four histograms show the mirror/source parameters fit per-rasterset.</dd>
-                <dd>The <b>middle</b> histogram is the per-rasterset fit of the FPU angle, fit</dd>
-                <dd>The <b>right</b> plot is a histogram of the standard deviations of $\phi_d$ across all observations for each detector.</dd>
-
-                <dt>$\phi$-scatter</dt>
-                <dd>A scatter plot of pol angles, median subtracted per-detector.</dd>
-
-            </dl>
-        </figcaption>
-        <script type="text/javascript">
-            function fcn(params){
-                if (params.hold ==  'nohold') {
-                    return 'figs/mirr_src_constraint_'+params.type+'_'+params.hold+'.png';
-                };
-                return 'figs/mirr_src_constraint_'+params.type+'_'+params.hold+params.const+'.png';
-            }
-
-            pager.link("#constraintpager",
-                {
-                    'Constraint|const' : ['RPS|','Moon|moon'],
-                    'Hold|hold' : ['None|nohold','Az|azhold','El|elhold','Az/El|azelhold'],
-                    'Plot Type|type' : ['Histograms|plots','$\\phi$ Scatter|phiscatters'],
-
-                },
-                fcn);
-            pager.setparams({
-                //'fit': 'overall',
-                'const' : '',
-                'hold': 'nohold',
-                'type': 'plots',
-            });
-        </script>
-    </figure>
-
-    <p>
-        As I hinted, we do see that there does exist some preferred mirror/source parameters when allowing all parameters to vary freely. However, if I lock the source Az/El to the "preferred" values, the FPU angle and pol angle STD's get worse, not better.
-    </p>
-    <p>
-        Using instead the parameters derived from the Moon, the FPU angle scatter increases but is still consistent with zero and the pol angle STD improve by ~30% compared to when we freed all 4 parameters. Further, I found using a simple grid search around the Moon-given source location (Az=-177.52&deg;/El=2.68&deg;) that these values give the minimum STD.
-    </p>
-
-    <figure>
-        <img src="figs/gridsearch.png" width="75%">
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-    <h3>Section 3 Conclusions / Questions</h3>
-    <p>
-
-    </p>
-    <ul>
-        <li>
-            Why does RPS data prefer Mirror/Source parameters that result in large deviations in polarization angle?</li>
-
-    </ul>
-
-</section>
--->
-
-<!--
-<section>
-    <h2 id="mirrfixedcase">Fixing Mirror/Source Parameters</h2>
-    <p>
-        For this section, I fixed the mirror and source parameters in place and instead fit an overall angle to the beam center residuals per-rasterset and use that angle as a correction to the apparent rotation of the focal plane. The source parameters are fixed to those that I got from the moon Az=-177.52&deg;/El=2.68&deg;. The moon parameters are fixed at the mean per-rasterset fits used in previous sections Tilt=44.88&deg;/Roll=-0.07&deg;.
-    </p>
-<p>
-    In the plot below I compare show the best-fit FPU angles for when I allow the mirror to be fit per-rasterset (left) and when I fix it (right).
-</p>
-
-    <p>
-        <b>Question:</b> Fixing the mirror even though it is moving around will result in an apparent rotation of the focal plane so we expect the distribution on the right to be larger, but can we predict how large the increase should be?
-    </p>
-
-<figure>
-    <img src="figs/fpuang_hist.png" width="70%">
-    <figcaption>
-
-    </figcaption>
-</figure>
-
-    <p>
-        Before worrying too much about the question above, let's look at the impact on the polarization angles. I plot below the mean-subtracted, FPU angle-corrected A/B pol angles vs samples (ordered chronologically) which shows the effect of correcting for the focal plane angle. We can see that some parts look consistent to the 'mirror-free' case, but others are systematically worse -- the angles are offset in some coherent way. Since these are two approaches to getting the same answer, in a perfect world, I would expect the scatter to be roughly the same.
-    </p>
-
-    <figure>
-        <img src="figs/polang_vs_samples.png" width="70%">
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-    <p>
-        The histograms below compare the distributions. The scatter increases by ~30%.
-    </p>
-
-    <figure>
-        <img src="figs/polang_hist.png" width="70%">
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-    <p>
-        Again, before I get too concerned with this, I want to see how this averages down in the final per-pair angles. How different are the per-pair angles averaged over all 10 observations? Not very. Below are histograms of the obs-averaged, per-pair angles and we can see that the means and SDevs are within a percent or so of each other.
-    </p>
-
-    <figure>
-        <img src="figs/polangpair_hist.png" width="70%">
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-    <p>
-        <b>Editorial:</b> There's more we could look into here -- We know that there's a measureable  relationship between how far from the actual mirror roll we are and the apparent FPU angle we fit and Figure 4.2 suggest that the angles aren't always what we might expect them to be. However, since we get the same per-pair angles to within a couple of percent, I'm going to call this a good consistency check, as-is.
-    </p>
-
-</section>
--->
-
-<hr>
 
 <section>
-    <h2></h2>
+    <h2>Tracking the orientation of the FPU</h2>
+
+    <p>
+        This section covers two approaches to accounting for the apparent rotation in the FPU as seen in beam center residuals. The first where the RPS data alone provides a constraint of the mirror tilt/roll per-rasterset (~1-hour timescales) and any excess rotation is determined by fitting an overall angle to the residuals (also per-rasterset). The second is a consistency check where we use the Moon to give us a prior on the mirror tilt/roll and, keeping the mirror fixed, measure excess apparent rotation by fitting an overall angle to the residuals as in the first approach. Lastly, since we know any error on the mirror roll imparts both an apparent rotation as well as a translation along the x-axis in mirror-fixed coordinates, I convert the residuals from boresight-centered, instrument-fixed coordinates to boresight-centered, mirror-fixed coordinates and fit an X<sub>m</sub>-translation parameter in both cases.
+    </p>
 
     <p>
         The first pager I show is of quivers of the beam-center residuals in mirror-fixed coordinates with a combination of free parameters -- mirror roll and two transformation parameters -- that are fit per-rasterset (i.e. ~1hr timescales over ~1/60th of the focal plane with a median of 20 detector pairs). The quiver plots allow us to qualitatively examine the effect of freeing up a given parameter. I chose mirror-fixed coordinates because this roughly separates systematics in tilt and roll into residuals on the Y- and X-axis respectively.
@@ -1394,7 +1400,7 @@ Important links:
 
     <p>
         There is likely an optimum timescale over which to fit mirror parameters, but there are a few which are easier to do because they correspond to a natural quantization of the RPS data.
-        The RPS data are most easily split along four hierarchies which correspond with four different timescales: Across the whole campaign -- ~1 month; per-observation -- ~1.5 days, whole focal plane; per-schedule -- ~13 hours, 1/3 focal plane; and per-rasterset -- ~40 minutes, 1/60 focal plane.
+        The RPS data are most easily split along four hierarchies which correspond with four different timescales: Across the whole campaign -- ~1 month; per-observation -- ~1.5 days, covering the whole focal plane once; per-schedule -- ~13 hours, covering 1/3 focal plane; and per-rasterset -- ~40 minutes, covering 1/60 focal plane.
     </p>
 <p>
     In the quiver plots above, when clicking between the two observations at DK=68, it is obvious to me that the fluctuations are significant between observations so we want to fit on timescales faster than that so I'm left with the option to fit either per-schedule or per-rasterset.</p>
@@ -1415,136 +1421,136 @@ Important links:
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
 
-<h3>Quivers with 4-parameter fits</h3>
-    <p>
-        I replot in Figure 2.3 the quiver pager from Figure 2.2 below, but now with one or all of the best-fit angle/scaling/translations applied. This in the appendix because the parameters are so small, you can barely see any difference, but I still thought it should be included.
-    </p>
+<!--<h3>Quivers with 4-parameter fits</h3>-->
+<!--    <p>-->
+<!--        I replot in Figure 2.3 the quiver pager from Figure 2.2 below, but now with one or all of the best-fit angle/scaling/translations applied. This in the appendix because the parameters are so small, you can barely see any difference, but I still thought it should be included.-->
+<!--    </p>-->
 
-    <ul>
-        <li>
-            <b>Obs DK</b> - Observations denoted by the DK at which they were taken.
-        </li>
-        <li>
-            <b>Correction</b> - These options apply the best-fit angle/scaling/translation parameters described in &sect;2.2 to the RPS-derived beam centroids before plotting.
-        </li>
-        <li>
-            <b>Coord</b> - Choose between an instrument-fixed or a quasi-mirror-fixed coordinate system which is calculated by derotating the DK angle at which the observation was done.
-        </li>
-    </ul>
+<!--    <ul>-->
+<!--        <li>-->
+<!--            <b>Obs DK</b> - Observations denoted by the DK at which they were taken.-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <b>Correction</b> - These options apply the best-fit angle/scaling/translation parameters described in &sect;2.2 to the RPS-derived beam centroids before plotting.-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <b>Coord</b> - Choose between an instrument-fixed or a quasi-mirror-fixed coordinate system which is calculated by derotating the DK angle at which the observation was done.-->
+<!--        </li>-->
+<!--    </ul>-->
 
-<h3>Type-5 RPS</h3>
-    <figure>
-        <img alt="Name pager" id="quivercorrpager" src="#" />
-        <figcaption>
+<!--<h3>Type-5 RPS</h3>-->
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="quivercorrpager" src="#" />-->
+<!--        <figcaption>-->
 
-        </figcaption>
-        <script type="text/javascript">
-            function fcn(params){
-                return 'figs/quiver_dk'+params.dk+'_fit_perrast'+params.coord+'_'+params.corr+'_rps.png';
-            }
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            function fcn(params){-->
+<!--                return 'figs/quiver_dk'+params.dk+'_fit_perrast'+params.coord+'_'+params.corr+'_rps.png';-->
+<!--            }-->
 
-            pager.link("#quivercorrpager",
-                {
-                    'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],
-                    //'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],
-                    'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
-                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
-                },
-                fcn);
-            pager.setparams({
-                //'fit': 'overall',
-                'dk' : '68_1',
-                'corr': 'none',
-                'coord': '',
-            });
-        </script>
-    </figure>
+<!--            pager.link("#quivercorrpager",-->
+<!--                {-->
+<!--                    'Obs DK|dk' : ['-81','0','23','45','61','68_1','68_2','90','135','174'],//, '0_1', '0_2','90_2','90_3','-68','-23'],-->
+<!--                    //'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],-->
+<!--                    'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],-->
+<!--                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],-->
+<!--                },-->
+<!--                fcn);-->
+<!--            pager.setparams({-->
+<!--                //'fit': 'overall',-->
+<!--                'dk' : '68_1',-->
+<!--                'corr': 'none',-->
+<!--                'coord': '',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
 
 
-    <h4>Moon Quivers</h4>
-    <figure>
-        <img alt="Name pager" id="quiver3pager" src="#" />
-        <figcaption>
+<!--    <h4>Moon Quivers</h4>-->
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="quiver3pager" src="#" />-->
+<!--        <figcaption>-->
 
-        </figcaption>
-        <script type="text/javascript">
-            function fcn(params){
-                return 'figs/quiver_dk'+params.dk+'_fit_perrast'+params.coord+'_'+params.corr+'_moon.png';
-            }
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            function fcn(params){-->
+<!--                return 'figs/quiver_dk'+params.dk+'_fit_perrast'+params.coord+'_'+params.corr+'_moon.png';-->
+<!--            }-->
 
-            pager.link("#quiver3pager",
-                {
-                    'Obs DK|dk3': [
-                        '0_1',
-                        '90_1',
-                        '23_1',
-                        '174_1',
-                        '68_1',
-                        '-81_1',
-                        '68_2',
-                        '68_3',
-                        '45_1',
-                        '135_1',
-                        '23_2',
-                        '23_3',
-                        '23_4',
-                        '174_2',
-                        '174_3',
-                        '-81_2',
-                        '-81_3',
-                        '68_4',
-                        '68_5',
-                        '0_2',
-                        '90_2',
-                        '45_2',
-                        '135_2',
-                        '-23',
-                        '-68',
-                        '112',
-                        '157',],
-                    //'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],
-                    'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
-                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
-                },
-                fcn);
-            pager.setparams({
-                'fit': 'overall',
-                'dk3' : '0_1',
-                'corr': 'none',
-                'coord': '',
-            });
-        </script>
-    </figure>
+<!--            pager.link("#quiver3pager",-->
+<!--                {-->
+<!--                    'Obs DK|dk3': [-->
+<!--                        '0_1',-->
+<!--                        '90_1',-->
+<!--                        '23_1',-->
+<!--                        '174_1',-->
+<!--                        '68_1',-->
+<!--                        '-81_1',-->
+<!--                        '68_2',-->
+<!--                        '68_3',-->
+<!--                        '45_1',-->
+<!--                        '135_1',-->
+<!--                        '23_2',-->
+<!--                        '23_3',-->
+<!--                        '23_4',-->
+<!--                        '174_2',-->
+<!--                        '174_3',-->
+<!--                        '-81_2',-->
+<!--                        '-81_3',-->
+<!--                        '68_4',-->
+<!--                        '68_5',-->
+<!--                        '0_2',-->
+<!--                        '90_2',-->
+<!--                        '45_2',-->
+<!--                        '135_2',-->
+<!--                        '-23',-->
+<!--                        '-68',-->
+<!--                        '112',-->
+<!--                        '157',],-->
+<!--                    //'Mirror Tilt/Roll Fit|fit' : ['Overall|overall','Per-Obs|perobs','Per-Rasterset|perrast'],-->
+<!--                    'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],-->
+<!--                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],-->
+<!--                },-->
+<!--                fcn);-->
+<!--            pager.setparams({-->
+<!--                'fit': 'overall',-->
+<!--                'dk3' : '0_1',-->
+<!--                'corr': 'none',-->
+<!--                'coord': '',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
-    <h4>Type-11 RPS data</h4>
+<!--    <h4>Type-11 RPS data</h4>-->
 
-    <figure>
-        <img alt="Name pager" id="quiver2pager" src="#" />
-        <figcaption>
+<!--    <figure>-->
+<!--        <img alt="Name pager" id="quiver2pager" src="#" />-->
+<!--        <figcaption>-->
 
-        </figcaption>
-        <script type="text/javascript">
-            function fcn(params){
-                return 'figs/quiver_dk'+params.dk2+'_fit_perrast'+params.coord+'_'+params.corr+'_rps11.png';
-            }
+<!--        </figcaption>-->
+<!--        <script type="text/javascript">-->
+<!--            function fcn(params){-->
+<!--                return 'figs/quiver_dk'+params.dk2+'_fit_perrast'+params.coord+'_'+params.corr+'_rps11.png';-->
+<!--            }-->
 
-            pager.link("#quiver2pager",
-                {
-                    'Obs DK|dk2' : ['0_1','0_2','90_1','90_2','-68','-23'],
-                    'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],
-                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+<!--            pager.link("#quiver2pager",-->
+<!--                {-->
+<!--                    'Obs DK|dk2' : ['0_1','0_2','90_1','90_2','-68','-23'],-->
+<!--                    'Correction|corr': ['None|none','Angle|ang','scale','xtrans','ytrans','all'],-->
+<!--                    'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],-->
 
-                },
-                fcn);
-            pager.setparams({
-                'fit': 'overall',
-                'dk2' : '0_1',
-                'corr': 'none',
-                'coord': '',
-            });
-        </script>
-    </figure>
+<!--                },-->
+<!--                fcn);-->
+<!--            pager.setparams({-->
+<!--                'fit': 'overall',-->
+<!--                'dk2' : '0_1',-->
+<!--                'corr': 'none',-->
+<!--                'coord': '',-->
+<!--            });-->
+<!--        </script>-->
+<!--    </figure>-->
 
 
 
