@@ -62,9 +62,11 @@
     This posting is part of a series which comprises the IPR analysis on BICEP3, see <a href="#references">previous postings</a> for more on this.
 </p>
 <p>
-In this posting, I examine the effect on &alpha; and $\siga$ due to the fact that we didn't measure the pol angles for all detector pairs used in B18 -- we also discovered recently that all of BICEP3's modules were removed for inspection and reinstalled between the 2016 and 2017 observing seasons and so we are moving forward using only B2017+B2018 coadded maps moving forward. In addition to increased noise from simply having fewer detectors on-sky, we are also worried about how well the standard B18 purification matrix will work on a map with reduced coverage.
+In this posting, I examine the effect on &alpha; and &sigma;<sub>&alpha;</sub> due to the fact that we didn't measure the pol angles for all detector pairs used in B18 -- we also discovered recently that all of BICEP3's modules were removed for inspection and reinstalled between the 2016 and 2017 observing seasons and so we are using only B2017+B2018 coadded maps moving forward. In addition to increased noise from simply having fewer detectors on-sky, we are also worried about how well the standard B18 purification matrix will work on a map with reduced coverage.
     </p>
-<p>I compare the first 10 realizations from the B2017+B2018 499 sims to a 10 new B2017+B2018 sims with maps created using only the detectors for which I have RPS-derived pol angles. Fortunately, I find that the matrix purification shows an increase in $\siga$ by only 3-5% for maps with reduced coverages. We do, however, see an increase in $\siga$ of 50% resulting from increased noise due to having less detectors.
+<p>I compare the first 30 realizations from the B18 499 sims to a 30 new B2017+B2018 sims with maps created using only the detectors for which I have RPS-derived pol angles. Fortunately, I find that the matrix purification shows an increase in &sigma;<sub>&alpha;</sub> by only 3-5% for maps with reduced coverages. This means that we should be okay to continue using the B18 purification matrix without fear of imparting any significant systematics on &alpha; or &sigma;<sub>&alpha;</sub>.</p>
+<p>
+We do, however, see an increase in &sigma;<sub>&alpha;</sub> of ~20% resulting from increased noise due to losing 2016 data and using less detectors, bringing our &sigma;<sub>&alpha;</sub> to 0.120&deg; when using our standard 9 bandpowers. I go on to show that we can compensate for this increase by using higher bandpowers up to 15, bringing our final &sigma;<sub>&alpha;</sub> down to 0.083&deg;. As such, next steps will be to determine the viability of including these higher ell-bins by looking beam sims for potential uncertainties due to T&rightarrow;P leakage from undeprojected residuals.
 </p>
 
 
@@ -76,7 +78,8 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
         Making purification matrices is a really involved process so we'd rather not have to remake them for this analysis. Instead, we're hoping to reuse the purification matrix created for the BICEP3 3-year dataset (AKA B18) that was used in BK18.
     </p>
     <p>
-        For this analysis, we will only be using detector pairs for which we have high-quality measurements from the RPS. This means we have only ~70% of the the detector pairs that were used in any of the given years comprising B2017+B2018. Because fewer detectors means less coverage, we can expect a hit to the efficiency of the matrix purification in the maps which only contain detectors with RPS-derived pol angles.
+        Through recent discussions with Howard, we discovered that all of the tiles were removed and reinstalled during the 2016-2017 summer season during the module swap which means that our calibration cannot be applied to the B2016 dataset.
+        Further, we will only be using detector pairs in this analysis for which we have high-quality angle measurements from the RPS. This means we have only ~70% of the the detector pairs that were used in any of the given years comprising B2017+B2018. Because fewer detectors means less coverage, we can expect a hit to the efficiency of the matrix purification in the maps which only contain detectors with RPS-derived pol angles.
     </p>
 
     <figure class="table">
@@ -86,16 +89,16 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
             </tr>
             <tr>
                 <th>Year</th>
-                <th>B2017+B2018</th>
+                <th>BK18</th>
                 <th>RPS</th>
                 <th>%</th>
             </tr>
-            <tr>
-                <td>2016</td>
-                <td>700</td>
-                <td>474</td>
-                <td>68</td>
-            </tr>
+<!--            <tr>-->
+<!--                <td>2016</td>-->
+<!--                <td>700</td>-->
+<!--                <td>474</td>-->
+<!--                <td>68</td>-->
+<!--            </tr>-->
             <tr>
                 <td>2017</td>
                 <td>773</td>
@@ -126,14 +129,14 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
     </figure>
 
     <p>
-        I check the impact on the purification efficiency by comparing two B2017+B2018 simsets of 10 realizations, one with maps comprising all detectors used in BK18 (sernum 6614, B18 matrix-purified) and another with only detectors for which we have measured angles (sernum 6622, B18-rerun-subset).
+        I check the impact on the purification efficiency by comparing 30 realizations of B18 which comprises all maps and detectors used in BK18 (sernum 6614, B18 matrix-purified) and another with only maps and detectors for which we have measured angles (sernum 6622, 17+18 subset).
         The plot below compares the spectra of the two simsets.</p>
     <p>Some notes:
         <ul>
-    <li>Each bandpower in the plot is the average over the 10 realizations. Both simsets use realization indices of 1-10 so, because we use seeded realizations, the spectra would be identical if using less detectors had no effect.</li>
+    <li>Each bandpower in the plot is the average over the 30 realizations. Both simsets use realization indices of 1-30 so, because we use seeded realizations, the spectra would be identical if using less years/detectors had no effect.</li>
     <li>I show both the spectra themselves and the fractional difference between the two. For the frac-diff plots, I limit the y-axis &pm;1 where needed as large deviations beyond 1 are due to a small number being divided by another small number.</li>
     <li>As with my recent previous postings, I cross Type 8 (Lensed Signal+Noise+Dust) T/E/B with a given signal's T/E/B.
-        This is useful because it gives meaning to EB/TB angle fits for noise and dust signal types. For instance, we know that $\sigasq$ scales linearly with BB-power with signals crossed with CMB so we can predict a priori through the spectra how $\siga$ will be affected by this reduction in coverage or any inefficiencies in purification. All other signals are crossed with type 8 to make the spectra comparable in an absolute sense.</li>
+        This is useful because it gives meaning to EB/TB angle fits for noise and dust signal types. For instance, we know that $\sigasq$ scales linearly with BB-power with signals crossed with CMB so we can predict a priori through the spectra how &sigma;<sub>&alpha;</sub> will be affected by this reduction in coverage or any inefficiencies in purification. All other signals are crossed with type 8 to make the spectra comparable in an absolute sense.</li>
 </ul>
     </p>
 
@@ -160,27 +163,41 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
         </script>
     </figure>
     <p>
-    Differences in TT, TE, and EE due to coverage are on the percent level for the most part -- perhaps not too surprising. When we matrix purify, we don't see any change to TE, or EE because we don't bother adding E lost to E&rightarrow;B leakage back into E, I think. </p>
+    Differences in TT, TE, and EE due to coverage are on the percent level for the most part -- perhaps not too surprising. When we matrix purify, we don't see any change to TE, or EE because we don't bother adding E lost to E&rightarrow;B leakage back into E. </p>
     <p>
         Focusing primarily on BB then:
 
     <ul>
     <li><b>Unlensed-LCDM:</b>
-    I personally found it difficult to make any definitive comments through these unlensed-signal-only sims. It seems that the SNR on BB is so low that we get non-sensical frac-diff because we're dividing a small number by another small number.
+        Without purification, there isn't much change here and we'd only expect there to be if we were significantly reducing our coverage which we're not. When we purify, the spectra at the same within a factor of two for the most part. CMB+Lensing click looks much better than this and while I'm not 100% certain, I think this is just due to the fact that we've removed all the B modes and we're now just seeing small numbers being divided by other small numbers with low SNR.
     </li>
-    <li><b>Lensed-LCDM:</b> Now that we have a high-SNR measurement of lensing, the difference between purified spectra is only 3% or so, which tells us that the purification matrix isn't running into any issues with the reduced detectors or coverage.</li>
-    <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 30%. No surprise there -- we've dropped the number of detectors we're using by 30% and the noise BB power is going to reflect that. I don't know that BB-power and N-detectors are known to be strongly linked -- I'd expect pair coverages/weights to obfuscate that relationship a bit, not to mention Baibhav's findings on N<sub>&ell;</sub> scaling with N<sub>det</sub> <a href="BS2021"></a> -- so the fact that both are ~30% is interesting.</li>
-    <li><b>L-LCDM+Noise(+Dust):</b> we're noise-dominated in BB at high-&ell;, so we see that 30% increase in BB-power where noise is dominant. At lower &ell;, the noise isn't as dominant over the lensing signal and the contribution to dust is more profound as well, so while we see an increase in BB, it's only 10-20% at those lower &ell; for both type 7 and 8.
+    <li><b>Lensed-LCDM:</b> Now that we have a high-SNR of B modes from lensing, the difference between purified spectra is only 3% or so, which tells us that the purification matrix isn't running into any issues with the reduced data or detectors.</li>
+        <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 70%. If we assume the contribution of each detector is the same then the expected change to BB-Noise from the combination of losing B2016 and having fewer detectors for the other years to be a simple scaling of their survey weights, W, by the percentage of detectors we're actually using:
+        \begin{equation}
+        \frac{{N}^{BB}_{17+18 subset}-N^{BB}_{B18}}{N^{BB}_{B18}} \sim \frac{W_{16}+W_{17}+W_{18}}{W_{17}n_{det,17}+W_{18}n_{det,18}}-1 = 0.72
+        \end{equation}
+
+        We know from Baibhav's postings of N<sub>&ell;</sub> scaling with N<sub>det</sub><a href="BS2021"></a> that this isn't exactly true, but we can see that it's close enough that it's not raising any alarms.
+        </li>
+    <li><b>L-LCDM+Noise+Dust:</b>
+        While the Noise BB is consistently 70% higher, we only approach that here at high ell. The reason why is easier to see in Fig 1.2 which overplots BB power for the relevant signal types. We're noise-dominated in BB at high-&ell;, so we see that 70% increase in BB-power where noise is dominant. At lower &ell;, the noise isn't as dominant over the lensing signal and the contribution to dust is more profound as well, so while we see an increase in BB, it's only 25-40% at those lower &ell; for type 8.
     </li>
 </ul>
 </p>
 
-    <p>In summary, we can see through Lensed-signal only that the purification efficiency for maps with our reduced coverage is around 97%, so we should be good to continue using the B18 purification matrix so long as the purification doesn't bias the angles in any way.</p>
+    <figure>
+        <img src="figs/spectra_compare_17+18subset.png" width="75%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+    <p>In summary, we can see through Lensed-signal only that the purification efficiency for maps with our reduced coverage is around 97%, so we should be good to continue using the B18 purification matrix so long as the purification doesn't bias the angles in any way. We can also see the resulting increase in Noise BB from losing B2016 and reducing detector count, but the effect isn't as strong at lower &ell;.</p>
 
     <h3>How does this affect our angle fits?</h3>
     <p>
         The table below shows a comparison of the angle uncertainties between our two simsets.
-        In one of my previous postings, I showed that we could decrease $\siga$ by ~30% by increasing bandpowers over which we fit from 2-10 to 2-15, so I include a column for both fits over bins 2-10 and 2-15. In either case, we do see a ~50% increase in $\siga$. Incidentally, the effect of including more bandpowers roughly cancels-out the effect of using less detectors, providing an even stronger motivation to look into this.
+        In one of my previous postings, I showed that we could decrease &sigma;<sub>&alpha;</sub> by ~30% by increasing bandpowers over which we fit from 2-10 to 2-15, so I include a column for both fits over bins 2-10 and 2-15.
     </p>
 
 <p>
@@ -199,11 +216,11 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
             </tr>
             <tr>
                 <th></th>
-                <th class="cstart">B2017+B2018 &sigma;<sub>&alpha;</sub></th>
-                <th class="cstart">B2017+B2018-sub &sigma;<sub>&alpha;</sub>  </th>
+                <th class="cstart">B18 &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">17+18 subset &sigma;<sub>&alpha;</sub>  </th>
                 <th class="cstart">frac-diff</th>
-                <th class="cstart">B2017+B2018 &sigma;<sub>&alpha;</sub></th>
-                <th class="cstart">B2017+B2018-sub &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">B18 &sigma;<sub>&alpha;</sub></th>
+                <th class="cstart">17+18 subset &sigma;<sub>&alpha;</sub></th>
                 <th class="cstart">frac-diff</th>
             </tr>
 <!--            <tr>-->
@@ -217,44 +234,56 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
 <!--            </tr>-->
             <tr>
                 <td>L-LCDM</td>
-                <td>0.059</td>
+                <td>0.060</td>
                 <td>0.061</td>
-                <td>0.028</td>
-                <td>0.035</td>
+                <td>0.017</td>
                 <td>0.036</td>
-                <td>0.010</td>
+                <td>0.036</td>
+                <td>-0.003</td>
             </tr>
             <tr>
                 <td>Noise</td>
-                <td>0.073</td>
+                <td>0.063</td>
                 <td>0.090</td>
-                <td>0.233</td>
-                <td>0.057</td>
+                <td>0.441</td>
+                <td>0.053</td>
                 <td>0.067</td>
-                <td>0.175</td>
+                <td>0.262</td>
             </tr>
             <tr>
                 <td>L-LCDM+N+Dust</td>
-                <td>0.106</td>
+                <td>0.096</td>
                 <td>0.120</td>
-                <td>0.130</td>
-                <td>0.074</td>
+                <td>0.248</td>
+                <td>0.070</td>
                 <td>0.083</td>
-                <td>0.115</td>
+                <td>0.193</td>
             </tr>
 
         </table>
         <figcaption>
-            A comparison of $\siga$ between B2017+B2018 and B2017+B2018-subset.
+            A comparison of &sigma;<sub>&alpha;</sub> between B2017+B2018 and B2017+B2018-subset.
         </figcaption>
     </figure>
 
-    <p>
-        I also show a table of the mean &alpha; and $\siga$ of L-LCDM+Noise+Dust between the two simsets. We can look at the means to determine if we see a bias, but the issue here is that we're only looking at 10 sims.
+    <p>For our default bandpowers, &sigma;<sub>&alpha;</sub> increase from 0.096&deg; to 0.120&deg; which corresponds within a couple percent of the naive expectation where the detector contribution is uniform:
+
+    \begin{equation}
+\sigma_{\alpha,17+18} = \sqrt{ \sigma^2_{\alpha,B18} \;\;\frac{W_{16}+W_{17}+W_{18}}{W_{17}n_{det,17}+W_{18}n_{det,18}} \;\; } = 0.118^\circ
+    \end{equation}
+
     </p>
+
     <p>
-        That said, I do find it interesting that even at 10 sims, the mean of B2017+B2018 is still away from zero to ~1&sigma; WRT to the EOM in both fit cases in the table below while the "B2017+B2018-subset" means are both well within the EOM.
+        When including the higher &ell;'s, we can see that we are doing little more than breaking even when compared to using bins 2-10 on the full B18 dataset -- providing an even stronger motivator to do so in the analysis on the real data.
     </p>
+
+<h3>Checking for Biases</h3>
+
+    <p>
+        Below is a table of the mean &alpha; and error-on-the-mean of L-LCDM+Noise+Dust between the two simsets. We can see for all cases the mean is within a factor of 1 of the error on the mean which means that we don't see any significant biases from purifying our subset of data with the B18 matrix.
+    </p>
+
 
 
     <figure class="table">
@@ -267,34 +296,27 @@ In this posting, I examine the effect on &alpha; and $\siga$ due to the fact tha
             <tr>
                 <th>Simset</th>
                 <th>&alpha; [Deg]</th>
-                <th>&sigma;<sub>&alpha;</sub> [Deg]</th>
+                <th>EOM [Deg]</th>
                 <th>&alpha; [Deg]</th>
-                <th>&sigma;<sub>&alpha;</sub> [Deg]</th>
+                <th>EOM [Deg]</th>
             </tr>
             <tr>
-                <td>17+18</td>
-                <td>-0.002</td>
-                <td>0.106</td>
-                <td>0.005</td>
-                <td>0.074</td>
+                <td>B18</td>
+                <td>0.007</td>
+                <td>0.018</td>
+                <td>-0.001</td>
+                <td>0.013</td>
             </tr>
             <tr>
                 <td>17+18 Subset</td>
                 <td>-0.005</td>
-                <td>0.120</td>
+                <td>0.022</td>
                 <td>0.001</td>
-                <td>0.083</td>
-            </tr>
-            <tr>
-                <td>Frac-Diff</td>
-                <td>-</td>
-                <td>0.130</td>
-                <td>-</td>
-                <td>0.115</td>
+                <td>0.015</td>
             </tr>
         </table>
         <figcaption>
-            A comparison of Lensed-LCDM+Noise+Dust between B2017+B2018 and B2017+B2018 with a reduced number of detector pairs.
+            A comparison of Lensed-LCDM+Noise+Dust between B18 and B2017+B2018 with a reduced number of detector pairs.
         </figcaption>
     </figure>
 

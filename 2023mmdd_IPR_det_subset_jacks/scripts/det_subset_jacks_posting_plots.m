@@ -183,7 +183,6 @@ save('dev/sims/datasplit_jack_alpha_expected','Aexp')
 %% Grab the mean alphas and SDevs
 clc
 
-
 signums = [2,8];
 pssigs = [2 3 5 6 7 8];
 
@@ -619,3 +618,9 @@ disp(fname)
 saveas(histfig,fullfile(figdir,fname),'png');
 
 end
+
+%%
+
+
+
+
