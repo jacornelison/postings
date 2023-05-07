@@ -246,7 +246,7 @@ for sigind = 1:length(signums)
 
     xlim(lims)
     ylim(lims)
-    xlabel({'Mean Input Angle [Deg]','(from FP data file)'})
+    xlabel({'Mean Input Angle [Deg]','(Uniform Avg over RPS angles)'})
     ylabel({'Mean Output Angle [Deg]','(Fit form sim APS)'})
     grid on
     pbaspect([1 1 1])
