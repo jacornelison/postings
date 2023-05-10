@@ -326,36 +326,52 @@ Interesting Notes:
 
             pager.link("#tilemappager",
                 {
+                    'Tile|tile': ['3','11'],
                     'Map|map' : ['T','Q','U'],
                 },
                 function(params) {
-                    return 'figs/tile11compositemap_map_'+params.map+'.png';
+                    return 'figs/tile'+params.tile+'compositemap_map_'+params.map+'.png';
                 });
             pager.setparams({
+                'tile': '11',
                 'map': 'T',
             });
         </script>
     </figure>
 
 <p>
-    Below is a slice along x' and y' for each map. At ~xp/yp=13&deg;, T drops to negative. Not sure what's causing this -- the forebaffle isn't installed so it can't be that.
+    Below is a slice along x' and y' for each map. At ~xp/yp=15&deg;, T drops to negative -- possibly a shelf buddy?
 </p>
 
     <figure>
-        <img src="figs/tile11_xyslice.png"/>
+        <img alt="Name pager"  id="xyslicepager" src="#" width="100%"/>
         <figcaption>
 
         </figcaption>
+        <script type="text/javascript">
+
+
+            pager.link("#xyslicepager",
+                {
+                    'Tile|tile': ['3','11'],
+                },
+                function(params) {
+                    return 'figs/tile'+params.tile+'_xyslice.png';
+                });
+            pager.setparams({
+                'tile': '11',
+                //'map': 'T',
+            });
+        </script>
+
 
     </figure>
 
 
-    <p><b>Tile 11 Split Maps</b></p>
+    <p><b>Per-Tile Split Maps</b></p>
     <p>
         Same thing as before as with the per-det split maps, but we can see we're down to an average RMS of ~1.3&times;10<sup>-5</sup>. Going from 1 to averaging over 86 detectors, we're expecting the RMS to be roughly half of this value in an ideal case where there's only noise. Still, considering we're at &sigma;~10<sup>-5</sup> out to 20 degrees for the center I'd say this is really good fidelity.
     </p>
-
-    <p>to do: compare an edge tile composite</p>
 
     <figure>
         <img alt="Name pager" id="t11splitmappager" src="#" width="100%"/>
@@ -367,12 +383,14 @@ Interesting Notes:
 
             pager.link("#t11splitmappager",
                 {
+                    'Tile|tile': ['3','11'],
                     'Map|map' : ['T','Q','U'],
                 },
                 function(params) {
-                    return 'figs/tile11splitmap_map_'+params.map+'.png';
+                    return 'figs/tile'+params.tile+'splitmap_map_'+params.map+'.png';
                 });
             pager.setparams({
+                'tile': '11',
                 'map': 'T',
             });
         </script>
