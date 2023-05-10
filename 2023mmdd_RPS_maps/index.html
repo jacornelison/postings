@@ -62,7 +62,24 @@
     </p>
 
     <p>
-        to-do: give some info on the how the maps are made -- reasoning behind pixel size, masking, demod choice, etc...
+         Some information about the maps:
+        <ul>
+    <li>Timestreams were deconvolved with <tt>deconv_scans</tt> using the legacy option and demodulated with <tt>demod_lockin</tt> without any chop reference shifting opting instead to use the $\tan^{-1}(Y/X)$ as the demodulated timstream instead of just $X$.</li>
+    <li>
+        Demodulated rasters are sampled at 0.075&deg; in Az and the rasters step 0.1&deg; in EL, so all maps in this posting are slightly oversized to 0.15&deg; pixels to avoid single-pixel gaps in the rasters.
+    </li>
+            <li>All maps are binned in raw mount topocentric horizontal coordinates (Az/El/Dk) and converted to detector centered instrument fixed coordinates (x'/y'/&phi;').
+            <ul>
+                <li>
+                    The RPS location is fixed at Az=-117.52&deg;/El=2.68&deg; for all rasters and observations as is typical for the RPS analysis.
+                </li>
+                <li>
+                    The Mirror orientation is fixed at Tilt=44.88&deg; / Roll=-0.07&deg; for all rasters/observations which is <i>not</i> typical for the RPS analysis, but made the conversions to instrument-fixed coordinates easier for me. We know from the RPS analysis that keeping the mirror fixed increases the scatter on beam center residuals between CMB-derived and RPS-derived beam centers from 0.008&deg; to 0.03&deg; which will smear out the main beam by a small amount when coadding the maps. Future work could include per-rasterset values for the mirror to clean this up a bit.
+                </li>
+            </ul>
+            </li>
+
+</ul>
 
     </p>
 
@@ -127,7 +144,7 @@
 
 
     <p>
-Interesting Clicks:
+Interesting Notes:
         <ol>
     <li>
         There's some artifact resulting from either the RPS reflecting off the ground or diffracting off of the groundshield. Hard to say which.
@@ -145,7 +162,25 @@ Interesting Clicks:
 
     <p>Since we've got 13 samples of the RPS at 13 different orientations, we're able to create Q and U maps for a single detector in addition to T. Christos' posting <a href="CG2021"></a> is a good reference on how we convert maps at different angles to T/Q/U.</p>
 
-    <p>The pager below shows the component maps for the same 4 detectors above across all 10 RPS observations taken during the 2021/2022 summer calibration season. Note that this log plot conserves the sign of the map amplitude: we cross over from positive to negative at 10<sup>-6</sup></p>
+
+    <p>
+        More notes on the maps:
+        <ul>
+
+    <li>
+        The maps are debiased before converting to T,Q,U.
+    </li>
+    <li>
+        As noted in Christo's posting, the mixing matrix scales the maps by sin/cos of 2 times some angle $\phi$. The angle in this case is the angle measured from a given detector's copolar axis to the copolar axis of the RPS's wire grid which in turn is a function of the command angle of the RPS's rotation stage &zeta; which I calculate as
+        $$
+        \phi = &zeta;-DK+90+DA+\phi_d
+        $$
+        Where DK is the Deck angle, DA is the drum angle, and $\phi_d$ is the angle measured from the &theta;=0 axis of the focal plane to the copolar axis of the detector measured from the RPS analysis.
+    </li>
+</ul>
+    </p>
+
+    <p>The pager below shows the component maps for the same 4 detectors above across all 10 RPS observations taken during the 2021/2022 summer calibration season. Note that this log plot conserves the sign of the map amplitude: we cross over from positive to negative at 10<sup>-6</sup>. Note that I decided to leave out the masking I mentioned previously for these sets of maps to show how the reflection/diffraction artifact shows up in Q/U. </p>
 
     <p>To do: Figure out a better color scheme.</p>
     <figure>
@@ -205,8 +240,16 @@ Interesting Clicks:
 <h2>Composite Maps</h2>
 <h3>Single-Detector Composite Maps</h3>
 <p>
-    I compute the composite maps in the same way as the FFBM analysis <a href="TSG2021"></a>, I take the median of the pixels over all observations. The only mask I've applied is over the ~1x2-deg area where that ground reflection artifact is. This means, that we might possibly improve these maps if we adopt the masking techniques from FFBM.
+    I compute the composite maps in the same way as the FFBM analysis <a href="TSG2021"></a>, I take the median of the pixels over all observations.
 </p>
+    <p>
+    Map Notes:
+        <ul>
+    <li>The only mask I've applied is over the ~1x2-deg area where that ground reflection artifact is. This means, that we might possibly improve these maps if we adopt the masking techniques from FFBM.</li>
+</ul>
+    </p>
+
+
     <p>
         Interesingly, I don't see the same imprint of the modules that Christos sees in his figure 2 of <a href="CG2022"></a> when looking into 2018 BSNS data. I think that I'd expect to unless swapping out the window, the only major hardware difference between these two datasets,got rid of this 'feature'... differences demodulation or masking choices could also be a reason.
     </p>
@@ -369,11 +412,14 @@ Interesting Clicks:
     </p>
     </div>
     <h3>Code</h3>
-    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
-    <p id="code"></p>
+    <p>
+        The code to make bin and plot the maps for this posting are currently located in <tt>~jcornelison/dev/rps/</tt> on Odyssey/Canon. The maps are binned using <tt>rps_make_map_per_chan</tt> and I wrote <tt>farm_rps_mapmaking</tt> for batch jobs. The plotting code is located in <tt>rps_map_plot_scratch_30apr2023</tt> and, as the name suggests, is not in the best state it could be. Feel free to ask me questions about what something does or why I chose to do something a certain way.
+    </p>
+<!--    <p id="code"></p>-->
 
     <h3>Data</h3>
-    <p id="data"></p>
+    <p>The maps can be found in the <tt>/n/holylfs04/LABS/kovac_lab/users/jcornelison/rps/2022_rps_maps/maps/</tt> directory. The maps are grouped per channel and should contain all of the metadata necessary to reproduce them using the code mentioned above.</p>
+<!--    <p id="data"></p>-->
     <h3>References</h3>
 
     <p id="references"></p>
