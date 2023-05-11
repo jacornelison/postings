@@ -262,128 +262,128 @@ If we imagine a scenario where the ideal angles we currently use for CMB analysi
 </section>
 
 
-<!--<section>-->
-<!--    <h2>Comparing to the Real CMB Data</h2>-->
-<!--    <p>-->
-<!--        This part is fairly straightforward. I create maps from real CMB data using only detectors corresponding to each subset. The real maps are DP1102 (rg+dp+meas diff ellipt) and matrix purified with the B18 matrix. I fit angles to the EB spectra of each of the 3 subsets and, without looking at the angles, do the subtractions between them. The real data compared to the sims are shown in the plot below (real data are the X's).-->
-<!--    </p>-->
+<section>
+    <h2>Comparing to the Real CMB Data</h2>
+    <p>
+        This part is fairly straightforward. I create maps from real CMB data using only detectors corresponding to each subset. The real maps are DP1102 (rg+dp+meas diff ellipt) and matrix purified with the B18 matrix. I fit angles to the EB spectra of each of the 3 subsets and, without looking at the angles, do the subtractions between them. The real data compared to the sims are shown in the plot below (real data are the X's).
+    </p>
 
-<!--    <figure>-->
-<!--        <img alt="Name pager" id="realdiffpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>-->
-<!--        <figcaption>-->
-<!--            &delta;&alpha; distributions of real data compared to sims. The errorbars are the 1-&sigma; standard deviations of the sims.-->
-<!--        </figcaption>-->
-<!--        <script type="text/javascript">-->
-<!--            pager.link("#realdiffpager",-->
-<!--                {-->
-<!--                    'Signal Type|sig1': ['L-LCDM+N+Dust|8'],-->
-<!--                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],-->
+    <figure>
+        <img alt="Name pager" id="realdiffpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
+        <figcaption>
+            &delta;&alpha; distributions of real data compared to sims. The errorbars are the 1-&sigma; standard deviations of the sims.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#realdiffpager",
+                {
+                    'Signal Type|sig1': ['L-LCDM+N+Dust|8'],
+                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],
 
-<!--                },-->
-<!--                function(params) {-->
-<!--                    return 'figs/alpha_diff_plots_type_'+params.sig1+'_bins_'+params.bin1+'_with_real.png';-->
-<!--                });-->
-<!--            pager.setparams({-->
-<!--                'sig1': '8',-->
-<!--                'bin1': '2_10',-->
+                },
+                function(params) {
+                    return 'figs/alpha_diff_plots_type_'+params.sig1+'_bins_'+params.bin1+'_with_real.png';
+                });
+            pager.setparams({
+                'sig1': '8',
+                'bin1': '2_10',
 
-<!--            });-->
-<!--        </script>-->
-<!--    </figure>-->
+            });
+        </script>
+    </figure>
 
-<!--    <p>-->
-<!--        All of the real &Delta;&alpha;'s are all within 2 &sigma; of the sims, which isn't really informative except for the 2-year coadd as discussed in the previous section.-->
-<!--    </p>-->
+    <p>
+        All of the real &Delta;&alpha;'s are all within 2 &sigma; of the sims, which isn't really informative except for the 2-year coadd as discussed in the previous section.
+    </p>
 
-<!--    <figure class="table">-->
-<!--        <table class="results">-->
-<!--            <tr>-->
-<!--                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-10, Type 8 sims</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <th></th>-->
-<!--                <th>Low-Mid</th>-->
-<!--                <th>Mid-High</th>-->
-<!--                <th>Low-High</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2016</td>-->
-<!--                <td>0.842</td>-->
-<!--                <td>0.004</td>-->
-<!--                <td>0.356</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2017</td>-->
-<!--                <td>0.711</td>-->
-<!--                <td>0.043</td>-->
-<!--                <td>0.249</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2018</td>-->
-<!--                <td>0.036</td>-->
-<!--                <td>0.877</td>-->
-<!--                <td>0.113</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>17+18</td>-->
-<!--                <td>0.358</td>-->
-<!--                <td>0.497</td>-->
-<!--                <td>0.359</td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <figcaption>-->
-<!--            Table of PTE's for real CMB spectra fit to &ell;-bins 2 through 10.-->
-<!--        </figcaption>-->
-<!--    </figure>-->
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-10, Type 8 sims</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Low-Mid</th>
+                <th>Mid-High</th>
+                <th>Low-High</th>
+            </tr>
+            <tr>
+                <td>B2016</td>
+                <td>0.842</td>
+                <td>0.004</td>
+                <td>0.356</td>
+            </tr>
+            <tr>
+                <td>B2017</td>
+                <td>0.711</td>
+                <td>0.043</td>
+                <td>0.249</td>
+            </tr>
+            <tr>
+                <td>B2018</td>
+                <td>0.036</td>
+                <td>0.877</td>
+                <td>0.113</td>
+            </tr>
+            <tr>
+                <td>17+18</td>
+                <td>0.358</td>
+                <td>0.497</td>
+                <td>0.359</td>
+            </tr>
+        </table>
+        <figcaption>
+            Table of PTE's for real CMB spectra fit to &ell;-bins 2 through 10.
+        </figcaption>
+    </figure>
 
-<!--    <p>-->
-<!--        And the table for fits that include 14 bandpowers.-->
-<!--    </p>-->
+    <p>
+        And the table for fits that include 14 bandpowers.
+    </p>
 
-<!--    <figure class="table">-->
-<!--        <table class="results">-->
-<!--            <tr>-->
-<!--                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-15, Type 8 sims</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <th></th>-->
-<!--                <th>Low-Mid</th>-->
-<!--                <th>Mid-High</th>-->
-<!--                <th>Low-High</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2016</td>-->
-<!--                <td>0.808</td>-->
-<!--                <td>0.166</td>-->
-<!--                <td>0.504</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2017</td>-->
-<!--                <td>0.898</td>-->
-<!--                <td>0.014</td>-->
-<!--                <td>0.116</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2018</td>-->
-<!--                <td>0.015</td>-->
-<!--                <td>0.955</td>-->
-<!--                <td>0.105</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>17+18</td>-->
-<!--                <td>0.319</td>-->
-<!--                <td>0.416</td>-->
-<!--                <td>0.270</td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <figcaption>-->
-<!--            Table of PTE's for real CMB spectra fit to &ell;-bins 2 through 15.-->
-<!--        </figcaption>-->
-<!--    </figure>-->
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-15, Type 8 sims</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Low-Mid</th>
+                <th>Mid-High</th>
+                <th>Low-High</th>
+            </tr>
+            <tr>
+                <td>B2016</td>
+                <td>0.808</td>
+                <td>0.166</td>
+                <td>0.504</td>
+            </tr>
+            <tr>
+                <td>B2017</td>
+                <td>0.898</td>
+                <td>0.014</td>
+                <td>0.116</td>
+            </tr>
+            <tr>
+                <td>B2018</td>
+                <td>0.015</td>
+                <td>0.955</td>
+                <td>0.105</td>
+            </tr>
+            <tr>
+                <td>17+18</td>
+                <td>0.319</td>
+                <td>0.416</td>
+                <td>0.270</td>
+            </tr>
+        </table>
+        <figcaption>
+            Table of PTE's for real CMB spectra fit to &ell;-bins 2 through 15.
+        </figcaption>
+    </figure>
 
 
 
-<!--</section>-->
+</section>
 
 
 <hr>
