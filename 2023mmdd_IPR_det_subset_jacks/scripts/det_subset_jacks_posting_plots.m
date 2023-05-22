@@ -133,9 +133,9 @@ text(-0.45,max(N)*1.1,'Upper')
 grid on
 xlim([min(edges), max(edges)])
 ylim(yedges)
-xlabel('$\phi_{pair,RPS}\;-\;\phi_{pair,obs}$ [Deg]')
+xlabel('Expected $\alpha_{pair}$ [Deg]')
 ylabel('N')
-title('Histogram of as-measured angle vs. fiducial')
+title('')
 pbaspect([1 1 1])
 fname = 'hist_diffphi.png';
 saveas(fig,fullfile(figdir,fname))
