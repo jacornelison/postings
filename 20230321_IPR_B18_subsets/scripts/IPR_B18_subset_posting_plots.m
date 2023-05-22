@@ -22,15 +22,15 @@ polopt.offdiag = 0;
 
 fitopt = struct;
 fitopt.signame = [2 3 5 6 7 8];
-fitopt.sername = '6614';
-fitopt.daughter = 'fgh';
+fitopt.sername = '6622';
+fitopt.daughter = 'gh';
 fitopt.purename = '';
 fitopt.iscross = true;
 fitopt.covtype = 'normal';
 fitopt.polopt = polopt;
 %fitopt.estimator = 'linear';
 fitopt.bpcm_simset = '6614/xxx8_fgh_filtp3_weight3_gs_dp1100_jack0_matrix_cm_overfreq.mat';
-fitopt.usebins = 2:10;
+fitopt.usebins = 2:15;
 
 clear accumulate_pol_rot_fits
 tic;
@@ -171,24 +171,24 @@ fprintf('\n\n%i:\n',sigind)
 load('z:/dev/sims/6614_fgh_global_pol_fits_bins_2_10_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
 M1 = mean(ps{sigind}.alpha(1,usesims))/0.87;
 S1 = std(ps{sigind}.alpha(1,usesims))/0.87;
-fprintf('6614 | 2-10 | M: %1.4f | S: %1.4f\n',M,S1)
+fprintf('6614 | 2-10 | M: %1.4f | S: %1.4f\n',M1,S1)
 
 
 load('z:/dev/sims/6622_gh_global_pol_fits_bins_2_10_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
 M2 = mean(ps{sigind}.alpha(1,usesims))/0.87;
 S2 = std(ps{sigind}.alpha(1,usesims))/0.87;
-fprintf('6622 | 2-10 | M: %1.4f | S: %1.4f\n',M,S2)
+fprintf('6622 | 2-10 | M: %1.4f | S: %1.4f\n',M2,S2)
 fprintf('%%-diff | 2-10 | %1.4f\n',((S2-S1)/S1))
 
 load('z:/dev/sims/6614_fgh_global_pol_fits_bins_2_15_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
 M3 = mean(ps{sigind}.alpha(1,usesims))/0.87;
 S3 = std(ps{sigind}.alpha(1,usesims))/0.87;
-fprintf('6614 | 2-15 | M: %1.4f | S: %1.4f\n',M,S3)
+fprintf('6614 | 2-15 | M: %1.4f | S: %1.4f\n',M3,S3)
 
 load('z:/dev/sims/6622_gh_global_pol_fits_bins_2_15_offdiag_0_matrix_cross_normal_repsim_6614xxx8.mat');
 M4= mean(ps{sigind}.alpha(1,usesims))/0.87;
 S4 = std(ps{sigind}.alpha(1,usesims))/0.87;
-fprintf('6622 | 2-15 | M: %1.4f | S: %1.4f\n',M,S4)
+fprintf('6622 | 2-15 | M: %1.4f | S: %1.4f\n',M4,S4)
 
 fprintf('%%-diff | 2-15 | %1.4f\n',((S4-S3)/S3))
 
