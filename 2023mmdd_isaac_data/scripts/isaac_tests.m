@@ -768,6 +768,56 @@ for prefind = 8%26%6:length(prefix)
     end
     grid on
 
-
 end
+
+%% Isaac with/without homing and with/without backlash
+
+fig = figure(116468);
+fig.Position(3:4) = [440 470];
+clf; hold on;
+t = tiledlayout('flow');
+t.Padding = 'compact';
+t.TileSpacing = 'compact';
+
+vals = [12, 20, 27, 34];
+valttls = {'No Backlash, No Homing','No Backlash, With Homing','With Backlash, No homing','With Backlash, With Homing'};
+edges = linspace(-1,1,30)*0.2;
+
+for valind = 1:length(vals)
+nexttile()
+idx = fd.schnum == vals(valind);
+V = fd.phi(idx)-fd.phi_isaac(idx);
+V = V-nanmean(V);
+N = histc(V,edges);
+S = nanstd(V);
+L = length(V);
+bar(edges,N,'histc');
+grid on;
+ttl = '';
+ylbl = '';
+if valind == 1
+    ttl = 'No Homing';
+    ylbl = 'No Backlash';
+elseif valind == 2
+    ttl = 'With Homing';
+elseif valind ==3
+    ylbl = 'With Backlash';
+end
+
+ylabel(ylbl)
+title({ttl,...
+    sprintf('S Dev: %0.3f | N: %i',S,L)...
+    })
+pbaspect([1 1 1])
+if valind>2
+xlabel('Pol Angle (mean-subtracted) [Deg]')
+end
+end
+
+fname = 'isaac_homing_vs_backlash.png';
+exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
+
+
+
+
 

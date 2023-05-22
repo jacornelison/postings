@@ -53,8 +53,8 @@ clc
 load('z:/dev/rps/rps_obs_info.mat')
 %load('z:/dev/rps/rps_beam_fits_type5_withbparam.mat')
 load('z:/dev/rps/rps_beam_fits_type5_21feb_rerun.mat');
-fd = rps_cut_fitdata(fd,p,p_ind,1);%,1,figdir);
-%fd = rps_cut_fitdata(fd,p,[]);%,1,figdir);
+%fd = rps_cut_fitdata(fd,p,p_ind,1);%,1,figdir);
+fd = rps_cut_fitdata(fd,p,[]);%,1,figdir);
 %
 %load('z:/dev/rps/rps_beam_fits_type5_21feb_rerun_cut_new_phi_s.mat')
 %fd.phi = fd.phi+fd.phi_s-fd.phi_s_new;
@@ -551,6 +551,7 @@ end
 [~, mi] = max(abs(M.*sqrt(N)./S));
 idx_max = idx(mi,:);
 [~, mi] = min(abs(M.*sqrt(N)./S));
+[~, mi] = min(abs(M)+S);
 idx_min = idx(mi,:);
 
 % Figure 3.2.1 Consistency Checks Part 2
@@ -570,7 +571,7 @@ valunits = {'\phi_{pair} [Degrees]','1-Poleff'};
 
 for valind = 1%1:size(V,1)
 
-    for pltind = 4%1:size(V,2)
+    for pltind = 1%1:size(V,2)
         V1ttl = ttls{1};
         V2ttl = ttls{pltind};
         if pltind == 1
@@ -625,7 +626,7 @@ for valind = 1%1:size(V,1)
             });
 
         fname = sprintf('consistplot_%s_2022_vs_%s.png',valnames{valind},pltnames{pltind});
-        %saveas(fig,fullfile(figdir,fname))
+        saveas(fig,fullfile(figdir,fname))
 
     end
 end
