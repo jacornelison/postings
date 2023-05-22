@@ -50,7 +50,7 @@ close all
 %% Grab the pol angles for a given sernum (on Odyssey)
 
 sername1 = {'6607','6608','6609'};
-daughter1 = {'f','g','h','gh','fgh'};
+daughter1 = {'f','g','h','gh'};
 pure1 = {'matrix_'};
 cross1 = {false};
 cov1 = {'normal'};
@@ -187,7 +187,7 @@ signums = [2,8];
 pssigs = [2 3 5 6 7 8];
 
 [Asim, Ssim] = deal(NaN(length(sername1),length(daughter1),2,length(signums)));
-AsimAll = deal(NaN(length(sername1),length(daughter1),2,length(signums),10));
+AsimAll = deal(NaN(length(sername1),length(daughter1),2,length(signums),50));
 for combind = 1:length(combos)
     C = combos{combind};
     [sername0,daughter0,pure0,cross0,cov0,bins0] = deal(C{:});
@@ -327,7 +327,7 @@ pte = 1-normcdf(z);
 
 % why is making tables in matlab so hard?
 XLabs = {'Low-Mid','Mid-High','Low-High'};
-YLabs = {'B2016','B2017','B2018','17+18','16+17+18'};
+YLabs = {'B2016','B2017','B2018','17+18'};%,'16+17+18'};
 
 binind = 2; % [9bp's 14 bp's]
 sigind = 2; % [type2 type 8]
