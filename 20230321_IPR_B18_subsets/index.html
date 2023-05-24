@@ -64,9 +64,9 @@
 <p>
 In this posting, I examine the effect on &alpha; and &sigma;<sub>&alpha;</sub> due to the fact that we didn't measure the pol angles for all detector pairs used in B18 -- we also discovered recently that all of BICEP3's modules were removed for inspection and reinstalled between the 2016 and 2017 observing seasons and so we are using only B2017+B2018 coadded maps moving forward. In addition to increased noise from simply having fewer detectors on-sky, we are also worried about how well the standard B18 purification matrix will work on a map with reduced coverage.
     </p>
-<p>I compare the first 30 realizations from the B18 499 sims to a 30 new B2017+B2018 sims with maps created using only the detectors for which I have RPS-derived pol angles. Fortunately, I find that the matrix purification shows an increase in &sigma;<sub>&alpha;</sub> by only 3-5% for maps with reduced coverages. This means that we should be okay to continue using the B18 purification matrix without fear of imparting any significant systematics on &alpha; or &sigma;<sub>&alpha;</sub>.</p>
+<p>I compare the first 30 realizations from the B18 499 sims to a 30 new B2017+B2018 sims with maps created using only the detectors for which I have RPS-derived pol angles. Fortunately, I find that the matrix purification shows an increase in &sigma;<sub>&alpha;</sub> by only 1-2% for maps with reduced coverages. This means that we should be okay to continue using the B18 purification matrix without fear of imparting any significant systematics on &alpha; or &sigma;<sub>&alpha;</sub>.</p>
 <p>
-We do, however, see an increase in &sigma;<sub>&alpha;</sub> of ~20% in L-LCDM+Noise+Dust (Type 8) sims resulting from increased noise due to losing 2016 data and using less detectors, bringing our &sigma;<sub>&alpha;</sub> to 0.120&deg; when using our standard 9 bandpowers. I go on to show that we can compensate for this increase by using higher bandpowers up to 15, bringing our final &sigma;<sub>&alpha;</sub> down to 0.083&deg;. As such, next steps will be to determine the viability of including these higher ell-bins by looking beam sims for potential uncertainties due to T&rightarrow;P leakage from undeprojected residuals.
+We do, however, see an increase in &sigma;<sub>&alpha;</sub> of ~15% in L-LCDM+Noise+Dust (Type 8) sims resulting from increased noise due to losing 2016 data and using less detectors, bringing our &sigma;<sub>&alpha;</sub> to 0.112&deg; when using our standard 9 bandpowers. I go on to show that we can compensate for this increase by using higher bandpowers up to 15, bringing our final &sigma;<sub>&alpha;</sub> down to 0.078&deg;. As such, next steps will be to determine the viability of including these higher ell-bins by looking beam sims for potential uncertainties due to T&rightarrow;P leakage from undeprojected residuals.
 </p>
 
 
@@ -79,7 +79,7 @@ We do, however, see an increase in &sigma;<sub>&alpha;</sub> of ~20% in L-LCDM+N
     </p>
     <p>
         Through recent discussions with Howard, we discovered that all of the tiles were removed and reinstalled during the 2016-2017 summer season during the module swap which means that our calibration cannot be applied to the B2016 dataset.
-        Further, we will only be using detector pairs in this analysis for which we have high-quality angle measurements from the RPS. This means we have only ~70% of the the detector pairs that were used in any of the given years comprising B2017+B2018. Because fewer detectors means less coverage, we can expect a hit to the efficiency of the matrix purification in the maps which only contain detectors with RPS-derived pol angles.
+        Further, we will only be using detector pairs in this analysis for which we have high-quality angle measurements from the RPS. This means we have only ~90% of the the detector pairs that were used in any of the given years comprising B2017+B2018. Because fewer detectors means less coverage, we can expect an additional increase in noise as well as a hit to the efficiency of the matrix purification in the maps which only contain detectors with RPS-derived pol angles.
     </p>
 
     <figure class="table">
@@ -171,16 +171,24 @@ We do, however, see an increase in &sigma;<sub>&alpha;</sub> of ~20% in L-LCDM+N
     <li><b>Unlensed-LCDM:</b>
         Without purification, there isn't much change here and we'd only expect there to be if we were significantly reducing our coverage which we're not. When we purify, the spectra at the same within a factor of two for the most part. CMB+Lensing click looks much better than this and while I'm not 100% certain, I think this is just due to the fact that we've removed all the B modes and we're now just seeing small numbers being divided by other small numbers with low SNR.
     </li>
-    <li><b>Lensed-LCDM:</b> Now that we have a high-SNR of B modes from lensing, the difference between purified spectra is only 3% or so, which tells us that the purification matrix isn't running into any issues with the reduced data or detectors.</li>
-        <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 70%. If we assume the contribution of each detector is the same then the expected change to BB-Noise from the combination of losing B2016 and having fewer detectors for the other years to be a simple scaling of their survey weights, W, by the percentage of detectors we're actually using:
-        \begin{equation}
-        \frac{{N}^{BB}_{17+18 subset}-N^{BB}_{B18}}{N^{BB}_{B18}} \sim \frac{W_{16}+W_{17}+W_{18}}{W_{17}n_{det,17}+W_{18}n_{det,18}}-1 = 0.72
+    <li><b>Lensed-LCDM:</b> Now that we have a high-SNR of B modes from lensing, the difference between purified spectra is only 1% or so, which tells us that the purification matrix isn't running into any issues with the reduced data or detectors.</li>
+    <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 40%. If we assume the contribution of each detector to the survey weight is the same then the expected change to Noise-BB from the combination of losing B2016 and having fewer detectors for the other years to be a simple scaling of their survey weights, W (see <a href="https://docs.google.com/spreadsheets/d/1k0uw5trXj5N3v-jLQMe3Z-CW_Q16NRae6zwKBb0Pxtg/edit#gid=0" target="_blank">CMB Pol Comparison GSheets</a>), by the percentage of detectors ($\%_{det}$) we're actually using:
+
+            \begin{equation}
+            \begin{split}
+        \frac{{N}^{BB}_{17+18 subset}-N^{BB}_{B18}}{N^{BB}_{B18}} &\sim \frac{W_{16}+W_{17}+W_{18}}{W_{17}\times \%_{det,17}+W_{18}\times \%_{det,18}}-1 \\
+            &\\
+            & \frac{116151+214792+219441}{214792\times 0.90+219441\times 0.92}-1\\
+            &\\
+            &= 0.39\\
+            \end{split}
         \end{equation}
 
+        Which matches quite closely to what we're seeing.
         We know from Baibhav's postings of N<sub>&ell;</sub> scaling with N<sub>det</sub><a href="BS2021"></a> that this isn't exactly true, but we can see that it's close enough that it's not raising any alarms.
         </li>
     <li><b>L-LCDM+Noise+Dust:</b>
-        While the Noise BB is consistently 70% higher, we only approach that here at high ell. The reason why is easier to see in Fig 1.2 which overplots BB power for the relevant signal types. We're noise-dominated in BB at high-&ell;, so we see that 70% increase in BB-power where noise is dominant. At lower &ell;, the noise isn't as dominant over the lensing signal and the contribution to dust is more profound as well, so while we see an increase in BB, it's only 25-40% at those lower &ell; for type 8.
+        While the Noise BB is consistently 40% higher, we only approach that here at high ell. The reason why is easier to see in Fig 1.2 which overplots BB power for the relevant signal types. We're noise-dominated in BB at high-&ell;, so we see that 70% increase in BB-power where noise is dominant. At lower &ell;, the noise isn't as dominant over the lensing signal and the contribution to dust is more profound as well, so while we see an increase in BB, it's only 25-40% at those lower &ell; for type 8.
     </li>
 </ul>
 </p>
@@ -222,15 +230,24 @@ We do, however, see an increase in &sigma;<sub>&alpha;</sub> of ~20% in L-LCDM+N
                 <th class="cstart">17+18 subset &sigma;<sub>&alpha;</sub></th>
                 <th class="cstart">frac-diff</th>
             </tr>
-<!--            <tr>-->
-<!--                <td>LCDM</td>-->
-<!--                <td class="cstart">0.0027</td>-->
-<!--                <td>0.0040</td>-->
-<!--                <td>0.51</td>-->
-<!--                <td class="cstart">0.0023</td>-->
-<!--                <td>0.0029</td>-->
-<!--                <td>0.27</td>-->
-<!--            </tr>-->
+            <tr>
+                <td>LCDM Only</td>
+                <td>0.004</td>
+                <td>0.004</td>
+                <td>0.053</td>
+                <td>0.004</td>
+                <td>0.004</td>
+                <td>0.053</td>
+            </tr>
+            <tr>
+                <td>G. Dust</td>
+                <td>0.017</td>
+                <td>0.016</td>
+                <td>-0.017</td>
+                <td>0.007</td>
+                <td>0.007</td>
+                <td>0.043</td>
+            </tr>
             <tr>
                 <td>L-LCDM</td>
                 <td>0.060</td>
@@ -265,16 +282,22 @@ We do, however, see an increase in &sigma;<sub>&alpha;</sub> of ~20% in L-LCDM+N
         </figcaption>
     </figure>
 
-    <p>For our default bandpowers, &sigma;<sub>&alpha;</sub> increase from 0.096&deg; to 0.120&deg; which corresponds within a couple percent of the naive expectation where the detector contribution is uniform:
+    <p>For our default bandpowers, &sigma;<sub>&alpha;</sub> increases from 0.096&deg; to 0.112&deg; which corresponds within <1% of the naive expectation where the detector contribution is uniform:
 
     \begin{equation}
-\sigma_{\alpha,17+18} = \sqrt{ \sigma^2_{\alpha,B18} \;\;\frac{W_{16}+W_{17}+W_{18}}{W_{17}n_{det,17}+W_{18}n_{det,18}} \;\; } = 0.118^\circ
+        \begin{split}
+\sigma_{\alpha,17+18} &= \sqrt{ \sigma^2_{\alpha,B18} \;\;\frac{W_{16}+W_{17}+W_{18}}{W_{17}\,\%_{det,17}+W_{18}\,\%_{det,18}} \;\; }  \\
+        &\\
+        &= \sqrt{ 0.096^\circ \;\;\frac{116151+214792+219441}{214792\times 0.90+219441\times 0.92}}  \\
+        &\\
+        &= 0.113^\circ\\
+        \end{split}
     \end{equation}
 
     </p>
 
     <p>
-        When including the higher &ell;'s, we can see that we are doing little more than breaking even when compared to using bins 2-10 on the full B18 dataset -- providing an even stronger motivator to do so in the analysis on the real data.
+        When including the higher &ell;'s, we end up with a &sigma;<sub>&alpha;</sub>=0.078&deg;, still about a 30% improvement than when using only bins 2-10.
     </p>
 
 <h3>Checking for Biases</h3>

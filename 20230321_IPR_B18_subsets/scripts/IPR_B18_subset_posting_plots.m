@@ -5,6 +5,7 @@ addpath('z:/pipeline')
 addpath('z:/pipeline/util')
 addpath('z:/pipeline/beammap')
 addpath('z:/dev/sims')
+addpath('z:/dev/')
 set(groot,'defaulttextinterpreter','latex');
 set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
@@ -199,17 +200,26 @@ end
 
 end
 
-%%
+%% Table of S Devs
 hd = {};
-rl = {'L-LCDM','Noise','L-LCDM+N+Dust'};
-simple_html_table(A([3 4 6],:),hd,rl)    
+rl = {'LCDM Only','G. Dust','L-LCDM','Noise','L-LCDM+N+Dust'};
+simple_html_table(A([1 2 3 4 6],:),hd,rl)    
 
-%%
+%% Table of mean/S devs
 
 rl = {'B18','17+18 Subset'};%,'Frac-Diff'};
 simple_html_table(B,{},rl)
 
+%% Estimate Ratio of N BB
 
+perc_dets = [0 0.9 0.92];
+W = [116151 214792 219441]; % survey weights
 
+(sum(W)/sum(W.*perc_dets))-1
 
+%% Estimate increase to Sig alpha
+
+perc_dets = [0 0.9 0.92];
+W = [116151 214792 219441]; % Survey weights
+sqrt(0.096^2*sum(W)/sum(W.*perc_dets))
 
