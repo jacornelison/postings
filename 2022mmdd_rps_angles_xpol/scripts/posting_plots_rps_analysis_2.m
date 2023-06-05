@@ -48,7 +48,7 @@ fd_2018 = fd;
 fd_2018 = get_pair_params(fd_2018,ind0,ind90);
 [fd_2018, phis_2018, phi_pair_2018, xpols_2018, poleff_pair_2018,~,~,~] = get_pol_params_per_obs(fd_2018,p);
 
-%%
+%
 clc
 load('z:/dev/rps/rps_obs_info.mat')
 %load('z:/dev/rps/rps_beam_fits_type5_withbparam.mat')
@@ -362,8 +362,8 @@ P = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
 fig = figure(2);
 fig.Position(3:4) = [450 420];
 clf; hold on
-errorbar(1:10,nanmean(P,2),nanstd(P,[],2),'.','CapSize',0,'LineWidth',1.25)
-plot(1:10,nanmean(P,2),'.','MarkerSize',14)
+errorbar(1:10,nanmedian(P,2),nanstd(P,[],2),'.','CapSize',0,'LineWidth',1.25)
+plot(1:10,nanmedian(P,2),'.','MarkerSize',14)
 %plot([-180 180],polyval(C,[-180 180]),'k--')
 
 grid on
@@ -375,7 +375,7 @@ ylabel({'\phi_{pair}-md(\phi) [Deg]'})
 title({'\phi_{pair} Vs. Obs','Median-subtracted per pair, avg''d per obs'})
 pbaspect([1 1 1])
 fname = 'phi_pair_vs_obs_medsub';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
 
 %% Angle VS. DK overall
 %load('z:/dev/rps/rps_phi_final_2022.mat')
@@ -1077,7 +1077,13 @@ text(0.1,0.4,{sprintf('0/90 Cov: %1.3f [Deg^2]',C(1,2))...
     sprintf('0/90 Corr: %1.3f',D(1,2))})
 
 fname = 'pol90_vs_pol0_sim.png';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
+
+%%
+clf;
+[Ppair,Peff] = calc_pair_diff_pol(Pa,Pb,zeros(size(Pa)),zeros(size(Pb)));
+hist(Ppair)
+std(Ppair)
 
 
 %% Grab the mod curves for A/B dets 
@@ -1087,7 +1093,7 @@ fig = figure(1);
 fig.Position(3:4) = [600 500];
 clf; hold on;
 
-for obsind = 8:9%1:length(dks)
+for obsind = 9%8:9%1:length(dks)
 idx = find(ismember(fd.ch,ind0) & fd.obsnum == obsind);
 
 [B, B90, R, Bmod,Bmod90] = deal([]);
@@ -1127,6 +1133,8 @@ plot(Bres(:,idx),Bres90(:,idx),'.','MarkerSize',14,'Color',cmlines(1,:));
 xlim(lims)
 ylim(lims)
 grid on
+cov((Bres(:,idx)),(Bres90(:,idx)))
+
 end
 
 pbaspect([1 1 1])
@@ -1442,111 +1450,68 @@ for chind = 1:length(fd.ch)
 end
 fd_psi = structcut(fd_psi,cutind);
 
-%%
-
-fd0 = fd;
-fd.phi_s_new = fd.phi_s;
-fd0.psi = fd0.phi-fd0.phi_s;
-fd0.phi_new = fd0.psi+fd0.phi_s_new;
-
-K = NaN(1,32);
-for dkind = 1:10
-    s = size(scheds{dkind},2);
-    K(1,scheds{dkind}) = dks(dkind)*ones(1,s);
-end
-
-[th, r] = cart2pol(fd.x,fd.y);
-th = th-fd.dk_cen*pi/180;
-[fd.xm, fd.ym] = pol2cart(th,r);
-
-for obsind = 4%1:10
-        
-    fig = figure(4);
-    clf; hold on;
-    if 0
-    for rowind = 1:19
-        idx = find(fd0.schnum==obsind & fd0.rowind == rowind);
+%% Look at medsub phi vs medsub x/y
+clc
+[x, y, phi_s] = deal(NaN(1,2640));
+for obsind = 1:10
+    for chind = 1:2640
+        idx = find(fd.obsnum==obsind & fd.ch==chind);
         if ~isempty(idx)
-            fd_rast = structcut(fd0,idx);
-            mirror = rpsopt.mirror;
-            mirror.tilt = nanmean(fd_rast.mirr_tilt)+0;
-                mirror.roll = nanmean(fd_rast.mirr_roll)+0;
-            source = rpsopt.source;
-            source.azimuth = nanmean(fd_rast.src_az)+0;
-            source.elevation = nanmean(fd_rast.src_el);
-            source.height = source.distance*tand(source.elevation);
+            fd0 = structcut(fd,idx(1));
+            if 0
+                mirror = struct;
+                mirror.height = 1.4592;
+                mirror.tilt = fd0.mirr_tilt(1);
+                mirror.roll = fd0.mirr_roll(1);
 
-            [~, ~, phi_s] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,fd_rast.dk_cen,model,'bicep3',mirror,source,[]);
-            fd0.phi_s(idx) = reshape(phi_s,1,[]);
+                source = struct;
+                source.distance = 195.5;
+                source.azimuth = fd0.src_az(1);
+                source.elevation = fd0.src_el(1);
+                source.height = source.distance*tand(source.elevation);
+
+                [x0,y0,phi_s0] = beam_map_pointing_model(fd0.az_cen,fd0.el_cen,fd0.dk_cen, ...
+                    model,'bicep3',mirror,source,[]);
+            else
+                x0 = fd0.x;
+                y0 = fd0.y;
+                phi_s0 = fd0.phi_s;
+            end
+
+            x(obsind,chind) = nanmean(x0);
+            y(obsind,chind) = nanmean(y0);
+            phi_s(obsind,chind) = nanmean(wrapTo180(phi_s0));
+
+
+
         end
     end
-    end
-    subplot(1,2,1)
-    hold on
-    idx = find(fd0.obsnum==obsind & ismember(fd0.ch,ind0));
-    plot(fd0.phi(idx))
-    plot(fd0.phi_new(idx))
-   
-   %plot(-fd0.phi_s(idx)-(fd0.psi(idx)))
-    %plot(-fd0.phi_s(idx)-nanmean(-fd0.phi_s(idx)))
-    %plot(fd0.phi(idx)-fd0.phi_s(idx)-nanmean(fd0.phi(idx)-fd0.phi_s(idx)))
-%     plot((fd0.phi(idx)-fd0.phi_s(idx))./(-fd0.phi_s(idx)))
-    grid on
-    %ylim([-5 2]+K(obsind)-90)
-
 end
-%%
-for obsind = 4
-    subplot(1,2,2)
-    hold on
-    idx = find(fd0.schnum==obsind & ismember(fd0.ch,ind90));
-    
-    plot(-fd0.phi_s(idx))
-    plot(fd0.psi(idx)-90)
-    %plot(-fd0.phi_s(idx)-(fd0.psi(idx)-90))
-%     plot(-fd0.phi_s(idx)-nanmean(-fd0.phi_s(idx)))
-%     plot(fd0.phi(idx)-fd0.phi_s(idx)-nanmean(fd0.phi(idx)-fd0.phi_s(idx)))
-%    plot((fd0.phi(idx)-fd0.phi_s(idx)-90)./(-fd0.phi_s(idx)))
-    grid on
-    ylim([-5 2]+K(obsind)-90)
-
-end
-
-
-
-
-
-
 
 %%
-for obsind = 1:10
-    fig = figure(5);
-clf; hold on;
+x(x==0) = NaN; mx = nanmedian(x,1); mx(mx==0) = NaN;
+y(y==0) = NaN; my = nanmedian(y,1); my(my==0) = NaN;
+xmedsub = x-repmat(mx,10,1); xmedsub(xmedsub==0) = NaN;
+ymedsub = y-repmat(my,10,1); ymedsub(ymedsub==0) = NaN;
+phipairmedsub = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
+phipairmedsub(phipairmedsub==0) = NaN;
+phimedsub = phis-repmat(nanmedian(phis,1),10,1);
+phimedsub(phimedsub==0) = NaN;
+phi_smedsub = phi_s + repmat(dks',1,2640);
+phi_smedsub = phi_smedsub - repmat(nanmedian(phi_smedsub,1),10,1);
+phi_smedsub(phi_smedsub==0) = NaN;
+
+%%
+fig = figure(1345);
+clf;
+
+plot(sqrt(xmedsub.^2+ymedsub.^2),'.')
+%xlim([-1 1]*2)
+grid on
+%plot(xmedsub,phimedsub,'.')
+%plot(x','.')
 
 
-        
-    subplot(1,2,1)
-    hold on
-    idx = find(fd_notilt.obsnum==obsind & ismember(fd_notilt.ch,ind0));
-   plot(-fd_notilt.phi_s(idx))
-   plot(fd_notilt.phi(idx)-fd_notilt.phi_s(idx))
-    %plot(-fd_notilt.phi_s(idx)-nanmean(-fd_notilt.phi_s(idx)))
-    %plot(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)-nanmean(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)))
-     %plot((fd_notilt.phi(idx)-fd_notilt.phi_s(idx))./(-fd_notilt.phi_s(idx)))
-    grid on
-    
-    subplot(1,2,2)
-    hold on
-    idx = find(fd_notilt.obsnum==obsind & ismember(fd_notilt.ch,ind90));
-    
-    plot(-fd_notilt.phi_s(idx))
-    plot(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)-90)
-%     plot(-fd_notilt.phi_s(idx)-nanmean(-fd_notilt.phi_s(idx)))
-%     plot(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)-nanmean(fd_notilt.phi(idx)-fd_notilt.phi_s(idx)))
-%    plot((fd_notilt.phi(idx)-fd_notilt.phi_s(idx)-90)./(-fd_notilt.phi_s(idx)))
-    grid on
-   
-end
 
 
 
