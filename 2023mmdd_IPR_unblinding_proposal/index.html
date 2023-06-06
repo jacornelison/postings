@@ -53,11 +53,11 @@
 <section>
     <h2>Unblinding Strategy</h2>
     <p>
-        Our constraint should take the form of a single number with error bars, but there are multiple ways to go about getting that number and we've decided on two in order to have some cross checks.
+        Our constraint should take the form of a single number with error bars but there are multiple ways to go about getting that number and we've decided on two in order to have some cross checks.
     </p>
 
     <ul>
-        <li><b>Approach 1 (Sernum 6606):</b> Creating sims with the configuration we expect the real BICEP3 data to currently be in. I.E. the TOD's are made with angles I have measured from the RPS, but the maps are made using ideal angles.</li>
+        <li><b>Approach 1 (Sernum 6606):</b> Creating sims with the same configuration in which we expect the real BICEP3 data used for BK18 to be. I.E. the TOD's are made with angles I have measured from the RPS, but the maps are made using ideal polarization angles.</li>
         <li><b>Approach 2 (Sernum 6621):</b> Creating sim TOD's with the RPS-derived angles and then creating both real and sim maps with the RPS-derived polarization angles.</li>
     </ul>
 
@@ -78,38 +78,51 @@
     \end{split}
     \end{equation}
 
-    <p>I also plan on presenting constraints with angles fit to spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, I intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from approach 2 fitting to all 14 bins</b>. To use the higher bins will require a confirmation that we understand the beam uncertainties out there, but we're currently working on that.
+    <p>I plan on presenting constraints with angles fit to Type 8 (L-LCDM+Noise+Dust) spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, I intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from Approach 2 fitting to all 14 bins</b>. To use the higher bins will require a confirmation that the beam uncertainties are sufficiently small, but we're currently working on that (See &sect; 4 for a list of things we still need to complete).
     </p>
 
     <h3>Unblinding Plots</h3>
 
-    <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots</p>
+    <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from Approach 1 as the sims for Approach 2 still need to be completed.</p>
 
+    <p>
+        Before we even look at angles, I want to first look at the EB spectra from which they are derived in order to ensure nothing obviously crazy is happening.
+    </p>
     <figure>
-        <img src="">
+        <img src="figs\unblinded_spectra_6606_test.png">
         <figcaption>
-            EB power spectra
+            EB power spectra for Approach 1. Grey lines are individual sim realizations; black line is the mean of sims; and the red and blue lines will be the real spectra out to bins 10 and 15 respectively -- to remain blinded, these lines are currently just realization 1 from the sims.
         </figcaption>
     </figure>
 
+    <p>
+        Next, we'll actually look at the histograms of &beta; for fitting to both bin-ranges.
+        The standard deviation of the histograms give us the statistical uncertainty from the sims, but we still need to include the systematic uncertainty from alternate dust models and beam uncertainties.
+        However, since we expect these to be subdominant to the statistical uncertainty, this should provide us a solid visual indication of whether or not we have a detection.
+    </p>
+
     <figure>
-        <img src="">
+        <img src="figs\unblinded_hists_6606_test.png">
         <figcaption>
-            Histograms of &beta;
+            Histograms of &beta; for Approach 1. The blue bars are the sims and the green line is the real data (rlz 1 of the sims here).
         </figcaption>
     </figure>
 
-    <p></p>
+    <p>Finally, I'll also include a table of &beta; with the final statistical and systematic uncertainties which will include any error we get from the instrumental calibration that aren't already accounted for in the sims.</p>
 
 
    <h3>Detection Criteria and Consequences</h3>
     <h4>What constitutes a detection?</h4>
-    <p>I'd like to establish a detection threshold of 2&sigma;, i.e. our constraint will be consistent with the null hypothesis if it satisfies:</p>
+    <p>I'd like to establish a detection threshold of 2.5&sigma;, i.e. our constraint will be consistent with the null hypothesis if it satisfies:</p>
 
     \begin{equation}
-    \frac{|\beta|}{\sigma_{\beta}} \le 2
+    \frac{|\beta|}{\sigma_{\beta}} \le 2.5
     \end{equation}
 
+<p>
+    My reasoning is that we expect a total &sigma;<sub>&beta;</sub> of ~0.1&deg; and 3&sigma; puts us really close to being possibly being consistent with the recent <i>Planck</i> results of 0.35 even if we measure an angle of zero. I'd like to have a lower threshold to definitively rule out either zero or the results from <i>Planck</i> if I can.
+    I chose 2.5&sigma; specifically and not 2&sigma; because, as we saw above, even some of our sims exceed 2&sigma;.
+</p>
 
     <p>If our value of &beta; satisfies this, then we will finish the paper establishing some nice bounds on isotropic birefringence.</p>
 
@@ -121,14 +134,14 @@
 <p>
     That said, I propose that if &beta;&ne;0 to greater than the 2&sigma; threshold, then we pause releasing the paper until we can
     <ol type="A">
-    <li>Have at least one other person who isn't me, Clara, or John independently go through both the entire analysis</li>
+    <li>Have at least one other person who isn't me, Clara, or John independently go through the entire analysis</li>
     <li>Maybe get another RPS observation as an independent cross check.</li>
 
 </ol>
 </p>
 
     <p>
-        I predict that the first question that might be asked is "then why don't we just wait to unblind and do those things first?" and my answer to that is "I need to graduate and it'd be <i>real</i> unsatisfying to get all this way and not have a result in my thesis". Here at Harvard, we can embargo the public release of our thesi for up to on year, so if we have a non-zero result my plan is to finish my thesis including these results embargo the release so that we have time to complete the steps above.
+        I predict that the first question that might be asked is "then why don't we just wait to unblind and do those things first?" and my answer to that is "I need to graduate and it'd be <i>real</i> unsatisfying to get all this way and not have a result in my thesis". Here at Harvard, we can embargo the public release of our thesis for up to one year, so if we have a non-zero result my plan is to finish my thesis including these results and hold the public release so that we have time to complete the steps above.
     </p>
 
 </section>
@@ -136,8 +149,12 @@
 
 <section>
     <h2>Consistency Tests</h2>
-<p></p>
-
+<p>
+    Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the reprocessed real data as we do for our standard <i><b>r</b></i> analysis as well as an additional consistency test which will help boost our confidence in the RPS-derived angles. All of these jacks will need to pass in order to go ahead with unblinding.
+</p>
+<p>
+    So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back an rerunning them. Information on the extra consistency test, which I call a &Delta;&alpha; test, can be found in <a href="JAC2023g"></a>.
+</p>
 
 </section>
 
@@ -146,6 +163,34 @@
 <p>
     In addition to the consistency tests discussed above, there are also a few more threads that need to be closed before we can unblind and be fully confident in the 2-&sigma; detection threshold we established above.
 </p>
+
+    <p>
+        A link is provided if a draft posting exists for it already.
+    </p>
+
+    <ul>
+        <li>What is our final uncertainty on the birefringence angle when only using 2017 and 2018 CMB data and we only have measured angles for ~90% of detectors for each year?</li>
+        <li>What is the predicted impact on the birefringence angle bias/uncertainty from non-gaussian dust models?</li>
+        <li>What evidence do we have that the RPS-derived angles are accurate?</li>
+        <li>What is the predicted impact on the birefringence angle bias/uncertainty from beam systematics?</li>
+        <li>What can we say about our uncertainty on the orientation of the focal plane at any given time? What cross checks do we have that can lend confidence that we understand how the pointing model is impacting our instrumental calibration uncertainty?
+        </li>
+        <li>
+            What cross checks do we have on the calibration of the wire grid to gravity?
+        </li>
+        <li>
+            What is the total uncertainty contribution to the birefringence angle from the instrumental calibration and how does it interface with the uncertainty derived from the CMB analysis?
+        </li>
+        <li>
+            How certain are we that we've got the sign of &beta; correct?
+        </li>
+
+
+    </ul>
+
+    <p>
+        Which seems like a lot but, as you can see, most of these threads have postings associated with them and are close to being closed.
+    </p>
 
 </section>
 
@@ -274,22 +319,41 @@
 
         // Shorthand tags
         var tags = [
-            "",
+            "JAC2023a",
+            "JAC2023b",
+            "JAC2023c",
+            "JAC2023d",
+            "JAC2023e",
+            "JAC2023f",
+            "CV2023",
+            "JAC2023g"
         ];
 
         // Links
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
-            "",
-
+            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "jcornelison/postings/20230321_IPR_high_ell/",
+            "jcornelison/postings/20230321_IPR_forecasting/",
+            "jcornelison/postings/20230321_IPR_B18_subsets/",
+            "cverges/20221215_alt_dust_sim/",
+            "jcornelison/postings/2023mmdd_IPR_det_subset_jacks/",
         ];
 
 
         // Posting titles
         var desc = [
-            "",
-
+            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+            "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+            "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
+            "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
+            "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
+            "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
+            "Isotropic Polarization Rotation Analysis 8: An RPS Angle Subset Jack",
         ];
         // Debug
         var posty = document.getElementById("testp");
