@@ -29,10 +29,10 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis: Unblinding Proposal Strategy</h1>
+    <h1>Isotropic Polarization Rotation Analysis: Unblinding Strategy</h1>
 
     <time datetime="2022-12-13" class="published updated">
-        2023 Feb dd
+        2023 MMM DD
     </time> —
     J. Cornelison and C. Verg&egrave;s
 </header>
@@ -45,14 +45,111 @@
 
 <hr>
 
-<section><h2>Introduction</h2>
+<section><h2>Overview</h2>
 
 
 </section>
+
 <section>
-    <h2>Unblinding Proposal</h2>
-    <h3></h3>
+    <h2>Unblinding Strategy</h2>
+    <p>
+        Our constraint should take the form of a single number with error bars, but there are multiple ways to go about getting that number and we've decided on two in order to have some cross checks.
+    </p>
+
+    <ul>
+        <li><b>Approach 1 (Sernum 6606):</b> Creating sims with the configuration we expect the real BICEP3 data to currently be in. I.E. the TOD's are made with angles I have measured from the RPS, but the maps are made using ideal angles.</li>
+        <li><b>Approach 2 (Sernum 6621):</b> Creating sim TOD's with the RPS-derived angles and then creating both real and sim maps with the RPS-derived polarization angles.</li>
+    </ul>
+
+    <p>
+        These two parallel approaches are intended to be cross-checks of one another, but if we've done everything right then either approach should spit out the same number for our birefringence constraint.
+</p>
+    <p>
+        In either case, we expect that the angles going into TOD and Map making ($\alpha_{TOD}$, $\alpha_{MAP}$ resp.) are the same for both the sims and real data. That way, the excess angle resulting from cosmic birefringence, $\beta$ (in keeping with the naming convention in the literature), is just the difference between the angle fit from the real spectra, $\alpha_{real}$, and the mean angle from the sims, $\bar{\alpha}_{sims}$.
+    </p>
+
+    \begin{equation}
+    \begin{split}
+    \alpha_{sims} &= \alpha_{TOD}-\alpha_{MAP}\\
+    &\\
+    \alpha_{real} &= \alpha_{TOD}-\alpha_{MAP}+\beta\\
+    &\\
+    \beta &= \alpha_{real}-\bar{\alpha}_{sims}\\
+    \end{split}
+    \end{equation}
+
+    <p>I also plan on presenting constraints with angles fit to spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, I intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from approach 2 fitting to all 14 bins</b>. To use the higher bins will require a confirmation that we understand the beam uncertainties out there, but we're currently working on that.
+    </p>
+
+    <h3>Unblinding Plots</h3>
+
+    <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots</p>
+
+    <figure>
+        <img src="">
+        <figcaption>
+            EB power spectra
+        </figcaption>
+    </figure>
+
+    <figure>
+        <img src="">
+        <figcaption>
+            Histograms of &beta;
+        </figcaption>
+    </figure>
+
+    <p></p>
+
+
+   <h3>Detection Criteria and Consequences</h3>
+    <h4>What constitutes a detection?</h4>
+    <p>I'd like to establish a detection threshold of 2&sigma;, i.e. our constraint will be consistent with the null hypothesis if it satisfies:</p>
+
+    \begin{equation}
+    \frac{|\beta|}{\sigma_{\beta}} \le 2
+    \end{equation}
+
+
+    <p>If our value of &beta; satisfies this, then we will finish the paper establishing some nice bounds on isotropic birefringence.</p>
+
+
+    <h4>What happens if we've detected something?</h4>
+    <p>One could pose the argument that if we are confident enough to publish a &beta;=0 constraint, then we should be confident enough to publish a &beta;&ne;0 constraint.
+    My major counterpoint to this argument is that I've been solely responsible for most of the parts of this very complicated analysis and while we have no reason to believe that &beta;=0 would be a result from some systematics I've missed, I think that a significant detection of &beta; should at least warrant getting some other eyes on all of the little details that went into the result.
+    </p>
+<p>
+    That said, I propose that if &beta;&ne;0 to greater than the 2&sigma; threshold, then we pause releasing the paper until we can
+    <ol type="A">
+    <li>Have at least one other person who isn't me, Clara, or John independently go through both the entire analysis</li>
+    <li>Maybe get another RPS observation as an independent cross check.</li>
+
+</ol>
+</p>
+
+    <p>
+        I predict that the first question that might be asked is "then why don't we just wait to unblind and do those things first?" and my answer to that is "I need to graduate and it'd be <i>real</i> unsatisfying to get all this way and not have a result in my thesis". Here at Harvard, we can embargo the public release of our thesi for up to on year, so if we have a non-zero result my plan is to finish my thesis including these results embargo the release so that we have time to complete the steps above.
+    </p>
+
 </section>
+
+
+<section>
+    <h2>Consistency Tests</h2>
+<p></p>
+
+
+</section>
+
+<section>
+    <h2>Questions that still need answers</h2>
+<p>
+    In addition to the consistency tests discussed above, there are also a few more threads that need to be closed before we can unblind and be fully confident in the 2-&sigma; detection threshold we established above.
+</p>
+
+</section>
+
+
 <section><h2>Conclusions</h2>
 
 </section>
