@@ -110,7 +110,7 @@ I first summarize the remaining threads that we need to close before unblinding 
 <section>
     <h2>Consistency Tests</h2>
     <p>
-        Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the reprocessed real data as we do for our standard <i><b>r</b></i> analysis as well as an additional consistency test which will help boost our confidence in the RPS-derived angles. All of these jacks will need to pass in order to go ahead with unblinding.
+        Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the real data as we do for our standard <i><b>r</b></i> analysis as well as an additional consistency test which will help boost our confidence in the RPS-derived angles. All of these jacks will need to pass in order to go ahead with unblinding.
     </p>
     <p>
         So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back an rerunning them. Information on the extra consistency test, which I call a &Delta;&alpha; test, can be found in this draft posting: <a href="JAC2023g"></a>.
@@ -146,7 +146,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     \end{split}
     \end{equation}
 
-    <p>I plan on presenting constraints with angles fit to Type 8 (L-LCDM+Noise+Dust) EB spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, I intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from Approach 2 fitting to all 14 bins</b>. To use the higher bins will require a confirmation that the beam uncertainties are sufficiently small, but we're currently working on that (See &sect; 4 for a list of things we still need to complete).
+    <p>I plan on presenting constraints with angles fit to Type 8 (L-LCDM+Noise+Dust) EB spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, I intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from Approach 2 fitting to all 14 bins</b>. To use the higher bins will require a confirmation that the beam uncertainties are sufficiently small, but we're currently working on that.
     </p>
 
     <h3>Unblinding Plots</h3>
@@ -154,7 +154,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from Approach 1 as the sims for Approach 2 still need to be completed.</p>
     <p>
         Before we even look at angles, I want to first look at the spectra as we normally do for our <b><i>r</i></b> analysis in order to ensure nothing obviously crazy is happening.
-        The pager below shows the plots found in our typical final pagers with two major exceptions
+        The pager below shows the plots found in our typical final pagers with two major differences.
         <ol>
     <li>I use Type 8 (L-LCDM+Noise+Dust) sims instead of Type 7's (L-LCDM+Noise)</li>
     <li>My real data won't be debiased since we only care about EB/TB.</li>
@@ -175,7 +175,7 @@ I first summarize the remaining threads that we need to close before unblinding 
 
             pager.link("#finalpager",
                 {
-                    'Figure|val' : ['spectra','BP Dev|bpdev','chi2','Sum BP Dev|bphist'],
+                    'Figure|val' : ['spectra','chi2','BP Dev|bpdev','Sum BP Dev|bphist'],
                     'N Bins|bins' : ['9|10','14|15'],
                     'Jack|jack' : ['0'],
                 },
@@ -193,9 +193,7 @@ I first summarize the remaining threads that we need to close before unblinding 
 
     <ul>
         <li><span style="color:gray;">thin gray</span> :
-            s+n simulations with ΛCDM lensed scalars as signal (sim type 7),
-            debiased with ΛCDM unlensed scalars (sim type 2) and noise (sim
-            type 6)</li>
+            s+n+d simulations with ΛCDM lensed scalars as signal (sim type 8)</li>
         <li><span style="color:gray; font-weight:bold;">thick gray</span> :
             mean of sims (<span style="color:gray;">thin gray</span>)</li>
         <li><span style="color:red;">red points</span> with <span
@@ -227,9 +225,6 @@ I first summarize the remaining threads that we need to close before unblinding 
             real data</li>
         <li><span style="color:blue;">blue</span> :
             distribution from s+n sims</li>
-        <li><span style="color:green;">green</span> :
-            chi2 probability distribution fitted to <span
-                    style="color:blue">blue</span></li>
     </ul>
 
     <b>sum bp devs</b>
@@ -240,18 +235,6 @@ I first summarize the remaining threads that we need to close before unblinding 
             distribution from s+n sims</li>
     </ul>
 
-    <b>uncertainties</b>
-    <ul>
-        <li><span style="color:red;">red</span> :
-            std of s+n sims</li>
-        <li><span style="color:blue;">blue</span> :
-            std of noise-only sims</li>
-    </ul>
-
-    <p>Note: Remember that bandpower is a variance. Hence bandpower error bar
-        is the std of a variance. This means noise and sample fluctuation
-        components straight add, no quadrature — i.e. the difference between blue
-        and red is the signal fluctatution component.</p>
 
 <hr>
 
