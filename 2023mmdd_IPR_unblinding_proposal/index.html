@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis: Unblinding Strategy</h1>
+    <h1>Isotropic Polarization Rotation Analysis 8: Unblinding Strategy</h1>
 
     <time datetime="2022-12-13" class="published updated">
         2023 MMM DD
@@ -40,13 +40,72 @@
 <hr>
 
 <p>
-    Abstract
+    This posting is part of a series which comprises the IPR analysis on BICEP3, see <a href="#references">previous postings</a> for more on this.
 </p>
+
 
 <hr>
 
-<section><h2>Overview</h2>
+<section>
+    <h2>Questions that still need answers</h2>
+    <p>
+        Before we talk about unblinding, I wanted to summarize the remaining open threads that need to reviewed and concluded.
 
+    </p>
+
+    <p>
+        A link is provided if a draft posting exists for it already.
+    </p>
+
+    <p><b>Instrumental Calibration</b></p>
+    <ol>
+        <li>
+            What cross checks do we have on the calibration of the wire grid to gravity?
+        </li>
+        <ul><li>This is quantified through an in-lab measurement I did at pole and at Harvard last year. Draft Link: <a href="JAC2023h"></a></li></ul>
+
+        <li>
+            What cross checks do we have for tracking the orientation of the focal plane?
+        </li>
+            <ul>
+                <li>This draft posting <a href="JAC2023i"></a> wraps up the systematics investigation into the pointing model in which we discuss the uncertainty on the FPU angle.</li>
+            </ul>
+
+        <li>
+            What is the total uncertainty contribution to the birefringence angle from the instrumental calibration? I.E. what is the total uncertainty on the overall angle predicted by our signal+noise RPS sims?
+        </li>
+        <ul>
+            <li>This is being derived from RPS signal (i.e. modulation curves) plus noise sims which I have been documenting in my thesis, but will ultimately be described in the paper.</li>
+            <li>Included in this should be a summary of the error budget which is being developed in the Table 2 of the paper.<a href="IPRpaper"></a></li>
+        </ul>
+    </ol>
+    <p><b>CMB Analysis</b></p>
+    <ol>
+        <li>What is the predicted impact on the birefringence angle bias/uncertainty from beam systematics?</li>
+        <ul><li>Draft Link: <a href="CV2023b"></a></li></ul>
+        <li>
+            How certain are we that we've got the sign of the birefringence angle correct?
+        </li>
+        <ul>This requires reconciling the math with what we're actually doing in the code and so far I've only found one inconsistency.</ul>
+
+
+    </ol>
+
+
+    <p>
+        This seems like a lot but, as you can see, most of these threads have postings associated with them and are close to being closed.
+    </p>
+
+</section>
+
+<section>
+    <h2>Consistency Tests</h2>
+    <p>
+        Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the reprocessed real data as we do for our standard <i><b>r</b></i> analysis as well as an additional consistency test which will help boost our confidence in the RPS-derived angles. All of these jacks will need to pass in order to go ahead with unblinding.
+    </p>
+    <p>
+        So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back an rerunning them. Information on the extra consistency test, which I call a &Delta;&alpha; test, can be found in this draft posting: <a href="JAC2023g"></a>.
+    </p>
 
 </section>
 
@@ -86,25 +145,117 @@
     <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from Approach 1 as the sims for Approach 2 still need to be completed.</p>
 
     <p>
-        Before we even look at angles, I want to first look at the EB spectra from which they are derived in order to ensure nothing obviously crazy is happening, quantitatively shown by chi-squares and their PTE's. Remember that our limits on PTE's are 0.01 < PTE < 0.99.
+        Before we even look at angles, I want to first look at the spectra as we normally do for our <b><i>r</i></b> analysis in order to ensure nothing obviously crazy is happening.
+        The pager below shows the plots found in our typical final pagers with two major exceptions
+        <ol>
+    <li>I use Type 8 (L-LCDM+Noise+Dust) sims instead of Type 7's (L-LCDM+Noise)</li>
+    <li>My real data won't be debiased since we only care about EB/TB.</li>
+</ol>
     </p>
+
+
     <figure>
-        <img src="figs\unblinded_spectra_6606_test.png">
+        <img alt="Name pager" id="finalpager" src="#" width="50%"/>
         <figcaption>
-            EB power spectra for Approach 1. Grey lines are individual sim realizations; black line is the mean of sims; and the red and blue lines will be the real spectra out to bins 10 and 15 respectively -- to remain blinded, these lines are currently just realization 1 from the sims.
+            Example "Final Pager" for Approach 1. To remain blinded, all "real" data are just realization 1 from the sims.
         </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/'+params.val+'_6606_gh_bins_2_'+params.bins+'.png';
+            }
+
+            pager.link("#finalpager",
+                {
+                    'Figure|val' : ['spectra','BP Dev|bpdev','chi2','Sum BP Dev|bphist'],
+                    'N Bins|bins' : ['9|10','14|15'],
+                    'Jack|jack' : ['0'],
+                },
+                fcn);
+            pager.setparams({
+                'val' : 'spectra',
+                'bins': '10',
+                'jack' : '0',
+            });
+        </script>
     </figure>
+
+    <p>    Below is the legend for each of the plots.</p>
+    <b>spectra</b>
+
+    <ul>
+        <li><span style="color:gray;">thin gray</span> :
+            s+n simulations with ΛCDM lensed scalars as signal (sim type 7),
+            debiased with ΛCDM unlensed scalars (sim type 2) and noise (sim
+            type 6)</li>
+        <li><span style="color:gray; font-weight:bold;">thick gray</span> :
+            mean of sims (<span style="color:gray;">thin gray</span>)</li>
+        <li><span style="color:red;">red points</span> with <span
+                style="color:blue;">blue error bars</span> :
+            real data, uncertainties from the spread of the s+n
+            sims (<span style="color:gray;">thin gray</span>)</li>
+    </ul>
+
+    <b>bp devs</b>
+    <ul>
+        <li><span style="color:gray;">thin gray</span> :
+            s+n sims</li>
+        <li><span style="color:red;">thin red</span> :
+            1 sigma contours</li>
+        <li><span style="color:green;">thin green</span> :
+            2 sigma contours</li>
+        <li><span style="font-weight:bold;">thick black + markers</span> :
+            real data</li>
+        <li><span style="color:red;">red markers</span> :
+            bins that go into chi2 analysis</li>
+    </ul>
+
+    <p>Note: The contours mark the simulated bandpower in each bin closest
+        to the respective percentile.</p>
+
+    <b>chi2</b>
+    <ul>
+        <li><span style="color:red;">red vertical</span> :
+            real data</li>
+        <li><span style="color:blue;">blue</span> :
+            distribution from s+n sims</li>
+        <li><span style="color:green;">green</span> :
+            chi2 probability distribution fitted to <span
+                    style="color:blue">blue</span></li>
+    </ul>
+
+    <b>sum bp devs</b>
+    <ul>
+        <li><span style="color:red;">red vertical</span> :
+            real data</li>
+        <li><span style="color:blue;">blue</span> :
+            distribution from s+n sims</li>
+    </ul>
+
+    <b>uncertainties</b>
+    <ul>
+        <li><span style="color:red;">red</span> :
+            std of s+n sims</li>
+        <li><span style="color:blue;">blue</span> :
+            std of noise-only sims</li>
+    </ul>
+
+    <p>Note: Remember that bandpower is a variance. Hence bandpower error bar
+        is the std of a variance. This means noise and sample fluctuation
+        components straight add, no quadrature — i.e. the difference between blue
+        and red is the signal fluctatution component.</p>
+
+<hr>
+
 
     <p>
         Next, we'll actually look at the histograms of &beta; for fitting to both bin-ranges.
-        The standard deviation of the histograms give us the statistical uncertainty from the sims, but we still need to include the systematic uncertainty from alternate dust models and beam uncertainties.
-        However, since we expect these to be subdominant to the statistical uncertainty, this should provide us a solid visual indication of whether or not we have a detection.
+        The standard deviation of the histograms give us the statistical uncertainty from the sims, but we still need to include the systematic uncertainty from the sims (e.g. alternate dust models and beams) and the uncertainty from the instrumental calibration.
     </p>
 
     <figure>
         <img src="figs\unblinded_hists_6606_test.png">
         <figcaption>
-            Histograms of &beta; for Approach 1. The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines show the 2&sigma; error bars.
+            Histograms of &beta; for Approach 1. The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines will show the 2&sigma; error bars from the statistical and systematic uncertainty added in quadrature.
         </figcaption>
     </figure>
 
@@ -113,16 +264,15 @@
 
    <h3>Detection Criteria and Consequences</h3>
     <h4>What constitutes a detection?</h4>
-    <p>I'd like to establish a detection threshold of 2.5&sigma;, i.e. our constraint will be consistent with the null hypothesis if it satisfies:</p>
+    <p>I'd like to establish a detection threshold of 2&sigma;, i.e. our constraint will be consistent with the null hypothesis if it satisfies:</p>
 
     \begin{equation}
     \label{eq:sigthresh}
-    \frac{|\beta|}{\sigma_{\beta}} \le 2.5
+    \frac{|\beta|}{\sigma_{\beta}} \le 2
     \end{equation}
 
 <p>
-    My reasoning is that we expect a total &sigma;<sub>&beta;</sub> of ~0.1&deg; and 3&sigma; puts us really close to being possibly being consistent with the recent <i>Planck</i> results of 0.35 even if we measure an angle of zero. I'd like to have a lower threshold to definitively rule out either zero or the results from <i>Planck</i> if I can.
-    I chose 2.5&sigma; specifically and not 2&sigma; because, as we saw above, even some of our sims exceed 2&sigma;.
+    I chose 2&sigma; specifically because I've done a majority of this analysis by myself. I am confident in my abilities that the chances I've seriously messed up something is on the order of one in 20, but not necessarily less than one in 100 (i.e. 2.5&sigma;).
 </p>
 
     <p>If our value of &beta; satisfies Eq. \ref{eq:sigthresh}, then we will finish the paper establishing some nice bounds on isotropic birefringence.</p>
@@ -147,52 +297,6 @@
 
 </section>
 
-
-<section>
-    <h2>Consistency Tests</h2>
-<p>
-    Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the reprocessed real data as we do for our standard <i><b>r</b></i> analysis as well as an additional consistency test which will help boost our confidence in the RPS-derived angles. All of these jacks will need to pass in order to go ahead with unblinding.
-</p>
-<p>
-    So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back an rerunning them. Information on the extra consistency test, which I call a &Delta;&alpha; test, can be found in <a href="JAC2023g"></a>.
-</p>
-
-</section>
-
-<section>
-    <h2>Questions that still need answers</h2>
-<p>
-    In addition to the consistency tests discussed above, there are also a few more threads that need to be closed before we can unblind and be fully confident in the 2.5&sigma; detection threshold we established above.
-</p>
-
-    <p>
-        A link is provided if a draft posting exists for it already.
-    </p>
-
-    <ul>
-        <li>What is the predicted impact on the birefringence angle bias/uncertainty from non-gaussian dust models?</li>
-        <li>What evidence do we have that the RPS-derived angles are accurate?</li>
-        <li>What is the predicted impact on the birefringence angle bias/uncertainty from beam systematics?</li>
-        <li>What can we say about our uncertainty on the orientation of the focal plane at any given time? What cross checks do we have that can lend confidence that we understand how the pointing model is impacting our instrumental calibration uncertainty?
-        </li>
-        <li>
-            What cross checks do we have on the calibration of the wire grid to gravity?
-        </li>
-        <li>
-            What is the total uncertainty contribution to the birefringence angle from the instrumental calibration and how does it interface with the uncertainty derived from the CMB analysis?
-        </li>
-        <li>
-            How certain are we that we've got the sign of &beta; correct?
-        </li>
-
-
-    </ul>
-
-    <p>
-        Which seems like a lot but, as you can see, most of these threads have postings associated with them and are close to being closed.
-    </p>
-
-</section>
 
 
 <section><h2>Conclusions</h2>
@@ -296,6 +400,7 @@
         // The strings are for if you post your posting in that directory.
         var sitemap = {
             jcornelison: "../../../",   // /jcornelison/postings/
+            cverges: "../../",          // cverges/
             bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
             bicep3: "../../../",        //
             bicep_array: "../../../",   //
@@ -325,8 +430,12 @@
             "JAC2023d",
             "JAC2023e",
             "JAC2023f",
-            "CV2023",
-            "JAC2023g"
+            "CV2023a",
+            "JAC2023g",
+            "CV2023b",
+            "JAC2023h",
+            "JAC2023i",
+            "IPRpaper",
         ];
 
         // Links
@@ -336,11 +445,15 @@
             "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
-            "jcornelison/postings/20230321_IPR_high_ell/",
-            "jcornelison/postings/20230321_IPR_forecasting/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_high_ell/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_forecasting/",
             "jcornelison/postings/20230321_IPR_B18_subsets/",
             "cverges/20221215_alt_dust_sim/",
             "jcornelison/postings/2023mmdd_IPR_det_subset_jacks/",
+            "cverges/20230428_EB_bmsims/",
+            "jcornelison/postings/2023mmdd_isaac_data/",
+            "jcornelison/postings/2022mmdd_rps_pointing/",
+            "https://www.overleaf.com/read/qdbjrtybxdxq",
         ];
 
 
@@ -353,7 +466,11 @@
             "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
             "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
             "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
-            "Isotropic Polarization Rotation Analysis 8: An RPS Angle Subset Jack",
+            "Isotropic Polarization Rotation Analysis 9: An RPS Angle Subset Jack",
+            "Isotropic Polarization Rotation Analysis 10: T&rightarrow;P leakage systematics",
+            "Summary of RPS Angle Cross Checks with the ISAAC",
+            "2022 RPS Analysis: Observations and Pointing Systematics",
+            "IPR Analysis Paper",
         ];
         // Debug
         var posty = document.getElementById("testp");
