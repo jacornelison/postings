@@ -2,6 +2,45 @@
 
 
 <head>
+  <title>List Files</title>
+  <script>
+    function listFiles() {
+      // Make an AJAX request to retrieve the file list
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var files = JSON.parse(this.responseText);
+          var fileList = document.getElementById("fileList");
+          
+          // Clear existing list
+          while (fileList.firstChild) {
+            fileList.removeChild(fileList.firstChild);
+          }
+          
+          // Add each file to the list
+          files.forEach(function(file) {
+            var listItem = document.createElement("li");
+            var textNode = document.createTextNode(file);
+            listItem.appendChild(textNode);
+            fileList.appendChild(listItem);
+          });
+        }
+      };
+      
+	  var locdir = window.location.href
+      xhttp.open("GET", locdir.slice(0,locdir.indexOf("index")), true);
+      xhttp.send();
+    }
+  </script>
+</head>
+<body>
+  <h1>List Files</h1>
+  <button onclick="listFiles()">List Files</button>
+  <ul id="fileList"></ul>
+</body>
+</html>
+<!--
+<head>
     <meta charset="utf-8">
     <title>IPR: Unblinding Strategy</title>
 </head>
@@ -10,4 +49,25 @@
 
 <h3><a href=2023mmdd_IPR_unblinding_proposal/index.html>Isotropic Polarization Rotation Analysis: Unblinding Strategy</a><h3>
 
+<script type="text/javascript">
+//requiring path and fs modules
+const path = require('path');
+const fs = require('fs');
+//joining path of directory 
+const directoryPath = path.join(__dirname, 'Documents');
+//passsing directoryPath and callback function
+fs.readdir(directoryPath, function (err, files) {
+    //handling error
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    //listing all files using forEach
+    files.forEach(function (file) {
+        // Do whatever you want to do with the file
+        console.log(file); 
+    });
+});
+</script>
+
 </body>
+-->
