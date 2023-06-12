@@ -31,8 +31,8 @@
 <header>
     <h1>Isotropic Polarization Rotation Analysis 8: Unblinding Strategy</h1>
 
-    <time datetime="2022-12-13" class="published updated">
-        2023 MMM DD
+    <time datetime="2023-06-13" class="published updated">
+        2023 June 13
     </time> —
     J. Cornelison
 </header>
@@ -43,6 +43,14 @@
     This posting is part of a series which comprises the IPR analysis on BICEP3, see <a href="#references">previous postings</a> for more on this.
 </p>
 
+<p>
+    This posting covers our strategy for unblinding our birefringence analysis.
+I first summarize the remaining threads that we need to close before unblinding can happen.
+    I then go over the null tests we need to pass.
+</p>
+<p>
+    I discuss two approaches that we will take when actually unblinding the data and give an example of the plots we will use. Finally, I go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess birefringence angle.
+</p>
 
 <hr>
 
@@ -50,7 +58,6 @@
     <h2>Questions that still need answers</h2>
     <p>
         Before we talk about unblinding, I wanted to summarize the remaining open threads that need to reviewed and concluded.
-
     </p>
 
     <p>
@@ -82,11 +89,13 @@
     <p><b>CMB Analysis</b></p>
     <ol>
         <li>What is the predicted impact on the birefringence angle bias/uncertainty from beam systematics?</li>
-        <ul><li>Draft Link: <a href="CV2023b"></a></li></ul>
+        <ul>
+            <li>The plan here is to establish an upper limit by crossing beam sims with Type 8 and real sims and then fitting angles to them.</li>
+            <li>Draft Link: <a href="CV2023b"></a></li></ul>
         <li>
             How certain are we that we've got the sign of the birefringence angle correct?
         </li>
-        <ul>This requires reconciling the math with what we're actually doing in the code and so far I've only found one inconsistency.</ul>
+        <ul>This requires reconciling theory with what we're actually doing in the code and so far I've only found one inconsistency.</ul>
 
 
     </ol>
@@ -124,7 +133,7 @@
         These two parallel approaches are intended to be cross-checks of one another, but if we've done everything right then either approach should spit out the same number for our birefringence constraint.
 </p>
     <p>
-        In either case, we expect that the angles going into TOD and Map making ($\alpha_{TOD}$, $\alpha_{MAP}$ resp.) are the same for both the sims and real data. That way, the excess angle resulting from cosmic birefringence, $\beta$ (in keeping with the naming convention in the literature), is just the difference between the angle fit from the real spectra, $\alpha_{real}$, and the mean angle from the sims, $\bar{\alpha}_{sims}$.
+        In either case, we expect that the angle going into TOD-making (&alpha;<sub>TOD</sub>) will be the same for both the sims and real data and likewise for the angle the goes into map-making (&alpha;<sub>MAP</sub>). That way, the excess angle resulting from cosmic birefringence, $\beta$ (in keeping with the naming convention in the literature), is just the difference between the angle fit from the real spectra, $\alpha_{real}$, and the mean angle from the sims, $\bar{\alpha}_{sims}$.
     </p>
 
     \begin{equation}
@@ -143,7 +152,6 @@
     <h3>Unblinding Plots</h3>
 
     <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from Approach 1 as the sims for Approach 2 still need to be completed.</p>
-
     <p>
         Before we even look at angles, I want to first look at the spectra as we normally do for our <b><i>r</i></b> analysis in order to ensure nothing obviously crazy is happening.
         The pager below shows the plots found in our typical final pagers with two major exceptions
@@ -152,6 +160,7 @@
     <li>My real data won't be debiased since we only care about EB/TB.</li>
 </ol>
     </p>
+
 
 
     <figure>
@@ -272,7 +281,7 @@
     \end{equation}
 
 <p>
-    I chose 2&sigma; specifically because I've done a majority of this analysis by myself. I am confident in my abilities that the chances I've seriously messed up something is on the order of one in 20, but not necessarily less than one in 100 (i.e. 2.5&sigma;).
+    I chose 2&sigma; specifically because I've done a majority of this analysis by myself. I am confident in my abilities to say that the chances I've seriously messed up something in the analysis is realistically probably no worse than one in 20, but not necessarily as good as one in 100 (i.e. 2.5&sigma;).
 </p>
 
     <p>If our value of &beta; satisfies Eq. \ref{eq:sigthresh}, then we will finish the paper establishing some nice bounds on isotropic birefringence.</p>
@@ -283,7 +292,7 @@
     My major counterpoint to this argument is that I've been solely responsible for most of the parts of this very complicated analysis and while we have no reason to believe that &beta;=0 would be a result from some systematics I've missed, I think that a significant detection of &beta; should at least warrant getting some other eyes on all of the little details that went into the result.
     </p>
 <p>
-    That said, I propose that if &beta;&ne;0 to greater than the 2.5&sigma; threshold, then we pause releasing the paper until we can
+    That said, I propose that if &beta;&ne;0 to greater than the 2&sigma; threshold, then we pause releasing the paper until we can
     <ol type="A">
     <li>Have at least one other person who isn't me, Clara, or John independently go through the entire analysis</li>
     <li>Maybe get another RPS observation as an independent cross check.</li>
@@ -297,11 +306,6 @@
 
 </section>
 
-
-
-<section><h2>Conclusions</h2>
-
-</section>
 
 <hr>
 
@@ -466,10 +470,10 @@
             "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
             "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
             "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
-            "Isotropic Polarization Rotation Analysis 9: An RPS Angle Subset Jack",
-            "Isotropic Polarization Rotation Analysis 10: T&rightarrow;P leakage systematics",
-            "Summary of RPS Angle Cross Checks with the ISAAC",
-            "2022 RPS Analysis: Observations and Pointing Systematics",
+            "Isotropic Polarization Rotation Analysis 9: An RPS Angle Subset Jack(draft)",
+            "Isotropic Polarization Rotation Analysis 10: T&rightarrow;P leakage systematics(draft)",
+            "Summary of RPS Angle Cross Checks with the ISAAC(draft)",
+            "2022 RPS Analysis: Observations and Pointing Systematics(draft)",
             "IPR Analysis Paper",
         ];
         // Debug
