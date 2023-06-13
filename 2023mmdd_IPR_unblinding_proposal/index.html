@@ -40,11 +40,11 @@
 <hr>
 
 <p>
-    This posting is part of a series which comprises the IPR analysis on BICEP3, see <a href="#references">previous postings</a> for more on this.
+    This posting is part of a series which comprises the IPR analysis on BICEP3, see <a href="#references">previous postings</a> for more on this. You can find a link to the paper here: <a href="IPRpaper"></a>.
 </p>
 
 <p>
-    This posting covers our strategy for unblinding our birefringence analysis.
+    This posting covers our strategy for unblinding our isotropic birefringence analysis.
 I first summarize the remaining threads that we need to close before unblinding can happen.
     I then go over the null tests we need to pass.
 </p>
@@ -79,10 +79,11 @@ I first summarize the remaining threads that we need to close before unblinding 
             </ul>
 
         <li>
-            What is the total uncertainty contribution to the birefringence angle from the instrumental calibration? I.E. what is the total uncertainty on the overall angle predicted by our signal+noise RPS sims?
+            What is the total uncertainty contribution to the birefringence angle from the instrumental calibration?
         </li>
         <ul>
-            <li>This is being derived from RPS signal (i.e. modulation curves) plus noise sims which I have been documenting in my thesis, but will ultimately be described in the paper.</li>
+            <li>I'm currently working on creating RPS signal (i.e. modulation curves) plus noise sims in order to derive the uncertainties from the instrumental calibration.
+                I have been documenting this in my thesis, but it will ultimately be described in the paper.</li>
             <li>Included in this should be a summary of the error budget which is being developed in the Table 2 of the paper.<a href="IPRpaper"></a></li>
         </ul>
     </ol>
@@ -241,17 +242,25 @@ I first summarize the remaining threads that we need to close before unblinding 
 
     <p>
         Next, we'll actually look at the histograms of &beta; for fitting to both bin-ranges.
-        The standard deviation of the histograms give us the statistical uncertainty from CMB analysis, but we still need to include the systematic uncertainty from the sims (e.g. alternate dust models and beams) and the uncertainty from the instrumental calibration so I've included some black dotted lines to indicate the location of the 2&sigma; calculated from the total error (which I plan to add in quadrature).
+        To give a clear visual indication of a detection, I've included some dotted vertical lines which will represent the N-sigma detection threshold (more on that in &sect;3.2) calculated from N times the total uncertainty, &sigma;<sub>&beta;</sub>.
+        The total uncertainty will comprise the stat/sys uncertainty from the CMB analysis (&sigma;<sub>CMB,stat</sub>, &sigma;<sub>CMB,sys</sub> resp.) and the sys/stat uncertainty from the instrumental calibration (&sigma;<sub>INST,stat</sub>, &sigma;<sub>INST,sys</sub> resp.) all added in quadrature:
+
+        \begin{equation}
+        \sigma^2_\beta = \sigma^2_{CMB,stat}+\sigma^2_{CMB,sys}+\sigma^2_{INST,stat}+\sigma^2_{INST,sys}
+        \end{equation}
     </p>
+        <p>The standard deviation of the histograms give us &sigma;<sub>CMB,stat</sub>, but for our we still need to finalize the systematic uncertainty from the CMB analysis (&sigma;<sub>CMB,sys</sub> from e.g. alternate dust models and beams) and the stat/sys uncertainties from the instrumental calibration.
+    </p>
+
 
     <figure>
         <img src="figs\unblinded_hists_6606_test.png">
         <figcaption>
-            Histograms of &beta; for Approach 1. The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines will show the 2&sigma; error bars from the statistical and systematic uncertainty added in quadrature.
+            Histograms of &beta; for Approach 1. The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines will show the 1&sigma; error bars from the total uncertainty.
         </figcaption>
     </figure>
 
-    <p>Finally, I'll also include a table of &beta; with the final statistical and systematic uncertainties which will include any error we get from the instrumental calibration that aren't already accounted for in the sims.</p>
+    <p>Finally, I'll also include a table summarizing &beta; and the final statistical and systematic uncertainties.</p>
 
 
    <h3>Detection Criteria and Consequences</h3>
@@ -278,9 +287,15 @@ I first summarize the remaining threads that we need to close before unblinding 
     That said, I propose that if &beta;&ne;0 to greater than the 2&sigma; threshold, then we pause releasing the paper until we can
     <ol type="A">
     <li>Have at least one other person who isn't me, Clara, or John independently go through the entire analysis</li>
-    <li>Maybe get another RPS observation as an independent cross check.</li>
-
-</ol>
+    <li>Include more CMB data (up to 2022)</li>
+    <li>Get another RPS observation as an independent cross check</li>
+     <ul>
+         <li>Hardware/Software upgrades</li>
+         <li>Repeat of the same RPS observations on B3</li>
+         <li>B3 near-field observations with RPS on DSL mast</li>
+         <li>RPS Observations on other receivers</li>
+     </ul>
+    </ol>
 </p>
 
     <p>
