@@ -46,10 +46,11 @@
 <p>
     This posting covers our strategy for unblinding our isotropic birefringence analysis.
 I first summarize the remaining threads that we need to close before unblinding can happen.
-    I then go over the null tests we need to pass.
+    I then go over the null tests and consistency checks we need to pass.
 </p>
 <p>
-    I discuss two approaches that we will take when actually unblinding the data and give an example of the plots we will use. Finally, I go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess birefringence angle.
+    I discuss two approaches that we will take to derive an isotropic polarisation rotation angle from 
+    BICEP3 data. I give an example of the plots we will use in each of these approaches. Finally, I go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess birefringence angle.
 </p>
 
 <hr>
@@ -61,7 +62,19 @@ I first summarize the remaining threads that we need to close before unblinding 
     </p>
 
     <p>
-        A link is provided if a draft posting exists for it already.
+        A link is provided if a draft posting exists for it already. Once these various threads are finalised, we will update with links to published postings.
+        This list only adresses questions that we have already identified - as we finalise this analysis, it is of course possible that we encounter new questions that require more work. In that case, we will hold unblinding until we have resolved any issue we encounter.
+    </p>
+
+    <p>
+        The main goal of the analysis we conduct on simulations before we unblind is to estimate our uncertainty budget, both statistical and systematic. 
+        The total uncertainty will comprise the stat/sys uncertainty from the CMB analysis (&sigma;<sub>CMB,stat</sub>, &sigma;<sub>CMB,sys</sub> resp.) and the sys/stat uncertainty from the instrumental calibration (&sigma;<sub>INST,stat</sub>, &sigma;<sub>INST,sys</sub> resp.) all added in quadrature:
+
+        \begin{equation}
+        \sigma^2_\beta = \sigma^2_{CMB,stat}+\sigma^2_{CMB,sys}+\sigma^2_{INST,stat}+\sigma^2_{INST,sys}
+        \end{equation}
+
+        Each of the threads listed here contributes to one of these error budgets, and we need to have nearly final estimates of those before we unblind.
     </p>
 
     <p><b>Instrumental Calibration</b></p>
@@ -103,7 +116,7 @@ I first summarize the remaining threads that we need to close before unblinding 
 
 
     <p>
-        This seems like a lot but, as you can see, most of these threads have postings associated with them and are close to being closed.
+       For all of these threads, work is already well underway in most cases. Provided we don't encounter unanticipated difficulties in tying those off, we should be able to proceed to the next step which is consistency tests.
     </p>
 
 </section>
@@ -111,7 +124,10 @@ I first summarize the remaining threads that we need to close before unblinding 
 <section>
     <h2>Consistency Tests</h2>
     <p>
-        Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the real data as we do for our standard <i><b>r</b></i> analysis as well as an additional consistency test which will help boost our confidence in the RPS-derived angles. All of these jacks will need to pass in order to go ahead with unblinding.
+        Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the real data as we do for our standard <i><b>r</b></i> analysis, with a particular focus on EB.
+        We will also apply the angle estimator to jacks, and make sure that we also get null results for $\alpha$.
+        We will also conduct additional consistency test which will help boost our confidence in the RPS-derived angles. 
+        All of these jacks will need to pass in order to go ahead with unblinding.
     </p>
     <p>
         So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back an rerunning them. Information on the extra consistency test, which I call a &Delta;&alpha; test, can be found in this draft posting: <a href="JAC2023g"></a>.
@@ -242,12 +258,8 @@ I first summarize the remaining threads that we need to close before unblinding 
 
     <p>
         Next, we'll actually look at the histograms of &beta; for fitting to both bin-ranges.
-        To give a clear visual indication of a detection, I've included some dotted vertical lines which will represent the N-sigma detection threshold (more on that in &sect;3.2) calculated from N times the total uncertainty, &sigma;<sub>&beta;</sub>.
-        The total uncertainty will comprise the stat/sys uncertainty from the CMB analysis (&sigma;<sub>CMB,stat</sub>, &sigma;<sub>CMB,sys</sub> resp.) and the sys/stat uncertainty from the instrumental calibration (&sigma;<sub>INST,stat</sub>, &sigma;<sub>INST,sys</sub> resp.) all added in quadrature:
+        To give a clear visual indication of a detection, I've included some dotted vertical lines which will represent the N-sigma detection threshold (more on that in &sect;3.2) calculated from N times the total uncertainty, &sigma;<sub>&beta;</sub>, as defined in section 1.
 
-        \begin{equation}
-        \sigma^2_\beta = \sigma^2_{CMB,stat}+\sigma^2_{CMB,sys}+\sigma^2_{INST,stat}+\sigma^2_{INST,sys}
-        \end{equation}
     </p>
         <p>The standard deviation of the histograms give us &sigma;<sub>CMB,stat</sub>, but for our we still need to finalize the systematic uncertainty from the CMB analysis (&sigma;<sub>CMB,sys</sub> from e.g. alternate dust models and beams) and the stat/sys uncertainties from the instrumental calibration.
     </p>
