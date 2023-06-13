@@ -1394,7 +1394,13 @@
     </p>
     <p>
         This is pretty strong evidence for physical fluctuations in the mirror orientation being the dominant source of the measured differences between CMB-derived and RPS-derived pointing which are coherent across the focal plane on timescales faster than a single RPS schedule (~13 hours).
+        When allowing the mirror free, the scatter on the FPU angle is 0.012&deg; when only fitting the angle and goes up to 0.026&deg; when fitting both the angle and translation.
     </p>
+
+    <b>Q: How does this compare to the uncertainty prediction from naive error propagation?</b>
+    <p>In previous work, I performed a basic error propagation on pointing model inputs by running fake detector centers through the pointing model with ideal parameters and then with maximally offset input parameters one-by-one and comparing the output projection angle of the focal plane between the two (see Table 4 of my <a href="Cornelison_Research_Project_Report.pdf" target="_blank">Research Exam Report</a>).</p>
+    <p>I do that again here for the mirror roll, assuming a scatter of 0.012&deg; from the S.Dev. of the histogram of mirror roll above when Mirror=Free, and get an uncertainty of 0.020&deg; -- Right in the middle of the two values I outlined above.</p>
+
 
 <h3>Q: Why did I choose to fit at the per-rasterset level?</h3>
 
