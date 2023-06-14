@@ -4,30 +4,22 @@
 <head>
     <meta charset="utf-8">
     <title>IPR: Unblinding Strategy</title>
+
+
 </head>
 
 <body>
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>-->
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<div id="dirlist"></div>
 
-<h3><a href=2023mmdd_IPR_unblinding_proposal/index.html>Isotropic Polarization Rotation Analysis: Unblinding Strategy</a><h3>
 
 <script type="text/javascript">
-//requiring path and fs modules
-const path = require('path');
-const fs = require('fs');
-//joining path of directory 
-const directoryPath = path.join(__dirname, 'Documents');
-//passsing directoryPath and callback function
-fs.readdir(directoryPath, function (err, files) {
-    //handling error
-    if (err) {
-        return console.log('Unable to scan directory: ' + err);
-    } 
-    //listing all files using forEach
-    files.forEach(function (file) {
-        // Do whatever you want to do with the file
-        console.log(file); 
-    });
-});
-</script>
 
+$(function(){
+$("#dirlist").load("./dirlist.html");
+});
+
+
+</script>
 </body>
