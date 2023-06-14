@@ -73,8 +73,8 @@ I first summarize the remaining threads that we need to close before unblinding 
     </p>
 
     <p>
-        A link is provided if a draft posting exists for it already. Once these various threads are finalised, we will update with links to published postings.
-        This list only addresses questions that we have already identified - as we finalise this analysis, it is of course possible that we encounter new questions that require more work. In that case, we will hold unblinding until we have resolved any issue we encounter.
+        A link is provided if a draft posting exists for it already. Once these various threads are finalized, we will update with links to published postings.
+        This list only addresses questions that we have already identified - as we finalize this analysis, it is of course possible that we encounter new questions that require more work. In that case, we will hold unblinding until we have resolved any issue we encounter.
     </p>
 
     <p><b>Instrumental Calibration</b></p>
@@ -125,7 +125,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     <h2>Consistency Tests</h2>
     <p>
         Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the real data as we do for our standard <i><b>r</b></i> analysis, with a particular focus on EB.
-        So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back an rerunning them.
+        So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back and rerunning them.
         </p>
 
     <p>
@@ -144,7 +144,7 @@ I first summarize the remaining threads that we need to close before unblinding 
    </p>
 
     <p>
-        We'll first validate these tests on fake data (i.e. a sim realization) before actually conducting them on real data.
+        We'll first validate these tests on fake data (i.e. a sim realization in lieu of real) before actually conducting them on real data.
         As with our main analysis, our passing requirement on &chi; and &chi;<sup>2</sup> will be 0.01 < &chi;<sup>(2)</sup> < 0.99 and any failures will require investigation/resolution before moving forward.
     </p>
 
@@ -182,18 +182,18 @@ I first summarize the remaining threads that we need to close before unblinding 
     \end{split}
     \end{equation}
 
-    <p>I plan on presenting constraints with angles fit to Type 8 (L-LCDM+Noise+Dust) EB spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, I intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from the "Reanalysis" fitting to all 14 bins</b>. To use the higher bins will require a confirmation that the beam uncertainties are sufficiently small, but we're currently working on that.
+    <p>We plan on presenting constraints with angles fit to Type 8 (L-LCDM+Noise+Dust) EB spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, we intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from the "Reanalysis" fitting to all 14 bins</b>. To use the higher bins will require a confirmation that the beam uncertainties are sufficiently small, but we're currently working on that.
     </p>
 
     <h3>Unblinding Plots</h3>
 
-    <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from "Legacy" as the sims for "Reanalysis" still need to be completed.</p>
+    <p>The following plots are what we'll be looking at when we officially unblind -- we're currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from "Legacy" as the sims for "Reanalysis" still need to be completed.</p>
     <p>
-        Before we even look at angles, I want to first look at the spectra as we normally do for our <b><i>r</i></b> analysis in order to ensure nothing obviously crazy is happening.
+        Before we even look at angles, we'll of course look first at the spectra as we normally do for our <b><i>r</i></b> analysis in order to ensure nothing obviously crazy is happening.
         The pager below shows the plots found in our typical final pagers with two major differences.
         <ol>
-    <li>I use Type 8 (L-LCDM+Noise+Dust) sims instead of Type 7's (L-LCDM+Noise)</li>
-    <li>My real data won't be debiased since we only care about EB/TB.</li>
+    <li>We use Type 8 (L-LCDM+Noise+Dust) sims instead of Type 7's (L-LCDM+Noise)</li>
+    <li>The real data won't be debiased since we only care about EB/TB.</li>
 </ol>
     </p>
 
@@ -287,7 +287,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     <figure>
         <img src="figs\unblinded_hists_6606_test.png">
         <figcaption>
-            Histograms of &beta; for "Legacy". The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines will show the 1&sigma; error bars from the total uncertainty.
+            Histograms of &beta; for "Legacy". The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines will show the 2&sigma; error bars from the total uncertainty.
         </figcaption>
     </figure>
 
@@ -374,12 +374,14 @@ Table of results, final uncertainties, and detection significance (using fake da
 
     <h4>What happens if we've detected something?</h4>
     <p>One could pose the argument that if we are confident enough to publish a &beta;=0 constraint, then we should be confident enough to publish a &beta;&ne;0 constraint.
-    My major counterpoint to this argument is that I've been solely responsible for most of the parts of this very complicated analysis and while we have no reason to believe that &beta;=0 would be a result from some systematics I've missed, I think that a significant detection of &beta; should at least warrant getting some other eyes on all of the little details that went into the result.
+        The major counterpoint to this argument is that we (James and Clara) have been solely responsible for the entirety of this very complicated analysis.
+        While we have no reason to believe that &beta;=0 would be a result from some systematics we might've missed, a significant detection of non-zero &beta; on the other hand would imply that we've discovered some brand new physics.
+        That, at the very least, should warrant some other eyes on all of the little details that went into the result.
     </p>
 <p>
-    That said, I propose that if &beta;&ne;0 to greater than the 2&sigma; threshold, then we pause releasing the paper until we can
+    That said, we propose that if &beta;&ne;0 to greater than the 2&sigma; threshold, then we pause releasing the paper until we can do at least A and possibly B and/or C:
     <ol type="A">
-    <li>Have at least one other person (preferably other than Clara or John) independently go through the entire analysis</li>
+    <li>Have other people independently go through the entire analysis</li>
     <li>Include more CMB data (up to 2022)</li>
     <li>Get another RPS observation as an independent cross check</li>
      <ul>
