@@ -567,7 +567,7 @@ ax.XTick = linspace(min(scheds)-1,max(scheds)+1,length(scheds)+2);
 ax.XTickLabel(2:end-1) = xlabs;
 ax.XTickLabel([1, end]) = {'',''};
 
-saveas(fig,'C:\Users\James\Documents\GitHub\postings\2023mmdd_isaac_data\figs\angle_fit_vs_actual_plot','png')
+%saveas(fig,'C:\Users\James\Documents\GitHub\postings\2023mmdd_isaac_data\figs\angle_fit_vs_actual_plot','png')
 
 %% Look the jig data
 
@@ -780,8 +780,10 @@ t.Padding = 'compact';
 t.TileSpacing = 'compact';
 
 vals = [12, 20, 27, 34];
+vals = [20,12,34,27];
 valttls = {'No Backlash, No Homing','No Backlash, With Homing','With Backlash, No homing','With Backlash, With Homing'};
-edges = linspace(-1,1,30)*0.2;
+edges = linspace(-1,1,20)*0.2;
+
 
 for valind = 1:length(vals)
 nexttile()
@@ -795,11 +797,12 @@ bar(edges,N,'histc');
 grid on;
 ttl = '';
 ylbl = '';
-if valind == 1
+if valind == 2
     ttl = 'No Homing';
-    ylbl = 'No Backlash';
-elseif valind == 2
+    
+elseif valind == 1
     ttl = 'With Homing';
+    ylbl = 'No Backlash';
 elseif valind ==3
     ylbl = 'With Backlash';
 end

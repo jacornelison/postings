@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>In-Lab Angle Measurements using the RPS and ISAAC</h1>
+    <h1>In-Lab Angle Measurements using the RPS and ISAAC (Draft)</h1>
 
     <time datetime="2022-02-14" class="published updated">
         2023 mmm dd
@@ -40,12 +40,17 @@
 <hr>
 
 <p>
-    This goes over the set up of the angle measurements between the ISAAC and RPS both at Pole and here at Harvard. Currently, I can derive the angle of the ISAAC's polarization angle WRT gravity with an accuracy of ~<0.2&deg;. I don't yet fully understand the limitations of this measurement, but I do believe I have evidence that the backlash in the rotation stage, by sheer coincidence of the weight distribution of the BSNS, does not significantly affect the homing repeatability. I also show evidence that, to me, suggests the the backlash had not developed until after the RPS observation campaign was over.
+    This goes over the set up of the angle measurements between the ISAAC and RPS both at Pole and here at Harvard. Currently, I can derive the angle of the ISAAC's polarization angle WRT gravity with an accuracy of O(0.2&deg;), the limitations of which I don't fully understand.
+</p>
+    <p>
+        That said, I noticed that the repeatability of the in-lab measurements don't improve when homing is turned off and backlash between the gears is present.
+        I compare in-lab measurements with and without homing to observations of BICEP3 with and without homing.
+        I find that, while the angle scatter for in-lab measurements doesn't improve when homing is turned off, the scatter on the BICEP3 data does improve when homing is turned off which I believe is evidence that the backlash in the stage had not developed during the RPS observation campaign. See <a href="#backlash">Section 1.2</a> for more details on this.
 </p>
 
 <hr>
 
-<section><h2>Experimental Set Up</h2>
+<section><h2 id="setup">Benchtop Experimental Set Up</h2>
 
     <p>Summary:</p>
     <ul>
@@ -89,6 +94,26 @@
 <p>
     The idea here is that, if we've got everything right, then the $\phi$ we fit from the modulation curves should be equal to $\phi_{actual}$ to within uncertainty.
 </p>
+    <p>
+        Measurements were taken both at Pole inside MAPO (both on a benchtop and the roof) and at Harvard on a custom alignment jig. The figures below show the setups.
+    </p>
+
+    <figure>
+        <img src="figs/rps_isaac_roof.jpg" width="100%">
+        <figcaption>
+            Set up of the RPS-ISAAC measurements on the MAPO roof at Pole.
+        </figcaption>
+    </figure>
+
+
+    <figure>
+        <img src="figs/rps_isaac_jig.jpg" width="100%">
+        <figcaption>
+            Set up of the RPS-ISAAC measurements on the jig at Harvard.
+        </figcaption>
+    </figure>
+
+
 
     <hr>
 
@@ -97,7 +122,11 @@
     </p>
 
     <p>
-        At Pole, I used the Starrett bubble level to level the RPS and ISAAC before the measurements. At Harvard, I purposefully didn't level them until later to verify that they tilts could properly be accounted for.
+        At Pole, I used the Starrett bubble level to level the RPS and ISAAC before the measurements. At Harvard, I purposefully didn't level them until later to verify that the tilts could properly be accounted for.
+        When I did level them, I used the same Starrett level I used at Pole (I bring it with me when I deploy).
+    </p>
+    <p>
+        For the plot below, it might be useful to open it in another window to see things more clearly.
     </p>
 
     <figure>
@@ -114,9 +143,102 @@
         </figcaption>
     </figure>
 
+
+    <h3 id="conclusions">My Conclusions so far</h3>
+    <p>
+        Looking at just the means of measurements (the blue dots in Figure 1.3), my ability to back out the known angle of the ISAAC is accurate to O(0.2&deg;) but it isn't clear to me what the limiting factor is here.
+    </p>
+    <p>
+        Any minor change to the apparatus results in a significant, repeatable offset to the angle we estimate from the modulation curves.
+    </p>
+    <p>Things I've thought about:
+        <ol>
+        <li><b>Tilts:</b> Paying attention to the tilts (red dots/yellow x's), I am able to show that I'm accounting for the tilts correctly.</li>
+        <li><b>Multipath:</b> During the very last measurement ("D 1m, BY-ff 2cm, Baffled"), I added eccosorb to the set up and saw no changes which lends evidence that multipath effects are not a significant contributor.</li>
+        <li>
+            <b>Alignment:</b> I've tried testing the hypothesis that the measurement at this distance is limited by the alignment precision by simulating mod curves with more complex pointing geometry. My model however doesn't predict the offsets we see here.
+        </li>
+    </ol>
+    </p>
+    <p>
+        At any rate, if it <i>is</i> an alignment issue, at least in terms of translation, we expect the effect to decrease as a function of distance and, with the RPS a distance of 200m during normal observation, I expect any bias we see as a result of transformation offsets to be negligible.
+         That isn't necessarily true, however, azimuthal or elevation misaligment. Fortunately, the tags on the side of the RPS box ensures that azimuthal misalignment keeps us to <0.5&deg;.
+        For elevation, I admittedly don't have nearly as strong of a prior.
+    </p>
+
+    <h3 id="backlash">Can we check for evidence of backlash on BICEP3 obs through homing measurements?</h3>
+<p>
+    Another interesting note is the no-homing vs. homing distributions for the at-Harvard measurements. Specifically, that there's virtually no difference between the two whereas it was very obvious when we weren't homing in earlier measurements when we had no backlash.
+    <!--I can imagine a scenario where, at command angles where the rotational torque on the RPS is sufficiently small, what side of the backlash the source falls on is somewhat randomized and that will result in an increased uncertainty whether or not we're homing.-->
+</p>
+
+    <p>
+        I compare distributions of pol angles on BICEP3 with and without homing to check for evidence of backlash occurring during the campaign.
+        On the last day of the campaign, I took a number of diagnostic measurements, including a set of 10 observations that did not home between measurements.
+        If backlash developed sometime during the campaign, we should expect to see no difference between the Type 9 observations that homed before every measurement and this dataset without homing.
+        In the plot below, I show histograms of both the Pol-0 and Pol-90 detectors with- and without homing. We can see that the distribution without homing is roughly 20% smaller than when we are homing.
+    </p>
+<p>
+    According to the ISAAC measurements we should expect the difference in scatter between homing on and off to be larger, but I find it plausible that we're simply running up against the intrinsic statistical limit of the measurement on BICEP3.
+</p>
+    <!--
+    <p>
+        A test we could do would be to fix the backlash (or add more of it) and take some more measurements with and without homing. This of course would mean losing the original grid calibration, but I don't think we actually need it anymore.
+    </p>
+-->
+
+<figure class="table">
+    <table class="results">
+        <tr>
+            <th></th>
+            <th colspan="2">&sigma;<sub>&phi;</sub> [Deg]</th>
+        </tr>
+        <tr>
+            <th>RX</th>
+            <th>Homing Off</th>
+            <th>Homing On</th>
+        </tr>
+        <tr>
+            <td>ISAAC (No Backlash)</td>
+            <td>0.014</td>
+            <td>0.075</td>
+        </tr>
+        <tr>
+            <td>ISAAC (With Backlash)</td>
+            <td>0.091</td>
+            <td>0.082</td>
+        </tr>
+        <tr>
+            <td>BICEP3 (A/B)</td>
+            <td>0.057 / 0.072</td>
+            <td>0.084 / 0.095</td>
+        </tr>
+    </table>
+    <figcaption>
+        Table of angle scatter for ISAAC / BICEP3 measurements with and without homing between measurements.
+    </figcaption>
+</figure>
+
+
+
+    <figure>
+        <img src="figs/homing_hists_b3_and_isaac.png" width="100%">
+        <figcaption>
+        Histograms from which the Table 1.1 &sigma;'s were derived.
+        </figcaption>
+    </figure>
+
+    <h3>Why isn't the homing repeatability affected by backlash?</h3>
+    <p>
+        We can also see that the means on the distributions are consistent to 0.01&deg;, so it appears the homing repeatability is unaffected by the backlash. In the hypothesis that the backlash is unconstrained (i.e. not directionally driven), this means that when the RPS is around the homing switch, the rotational torque must always be in the same direction, forcing the stage to consistently be on one side of the backlash. Looking at the RPS in Fig 1.2 above (which was commanded to 0&deg;), we can see at angles near zero that the torque on the stage is strongly in the counterclockwise direction (if you're the ISAAC looking toward the RPS) due to the uneven weight distribution of the BSNS, which supports my hypothesis.
+    </p>
+
+
+
+    <h3 id="notes">Measurement Notes</h3>
     <p>
         Notes on the Pole Measurements
-        <ul>
+    <ul>
         <li>Before installing the fine homing switch:
             <ul>
                 <li>
@@ -167,7 +289,7 @@
 
             </ul>
         </li>
-        </ul>
+    </ul>
     </p>
 
     <p>Notes on the in-lab measurements at Harvard.
@@ -191,61 +313,13 @@
             For the last few measurements, I offset the ISAAC by a couple centimeters to examine the effect.
         </li>
         <li>
-          For the very last measurement set I collected, I added a bunch of eccosorb around the jig to try and mitigate reflections and saw no significant change.
+            For the very last measurement set I collected, I added a bunch of eccosorb around the jig to try and mitigate reflections and saw no significant change.
         </li>
     </ul>
 
     </p>
 
-    <figure>
-        <img src="figs/rps_isaac_jig.jpg" width="100%">
-        <figcaption>
-            Set up of the RPS-ISAAC measurements on the jig at Harvard.
-        </figcaption>
-    </figure>
 
-
-    <h3>My Conclusions so far</h3>
-    <p>
-        Any minor change to the apparatus results in a significant, repeatable offset to the angle we estimate from the modulation curves.
-        I was able to show that I'm accounting for the tilts correctly and after adding eccosorb to the jig set up and seeing no changes, I think we have evidence that multipath effects are also not a significant contributor.
-        I've tried testing the hypothesis that the measurement at this distance is limited by the alignment by simulating mod curves with a complex pointing geometry, but my current model doesn't create any offsets at this level.
-    </p>
-    <p>
-        At any rate, if it <i>is</i> an alignment issue, at least in terms of linear translation, we expect the effect to decrease as a function of distance and, with the RPS a distance of 200m during normal observation, I expect any bias we see as a result of transformation offsets to be negligible.
-        For azimuthal or elevation misaligment, however, that isn't necessarily true. Fortunately, the tags on the side of the RPS box ensures that azimuthal misalignment keeps us to <0.5&deg;. For elevation, I admittedly don't have nearly as strong of a prior.
-    </p>
-
-    <h3>Can we check for evidence of backlash on BICEP3 obs through homing measurements?</h3>
-<p>
-    Another interesting note is the no-homing vs. homing distributions for the at-Harvard measurements. Specifically, that there's virtually no difference between the two whereas it was very obvious when we weren't homing in earlier measurements. I can imagine a scenario where, at command angles where the rotational torque on the RPS is sufficiently small, what side of the backlash the source falls on is somewhat randomized and that will result in an increased uncertainty whether or not we're homing.
-</p>
-   <p>
-        A test we could do to confirm this would be to fix the backlash (or add more of it) and take some more measurements with and without homing. This of course would mean losing the original grid calibration, but I don't think we actually need it anymore.
-    </p>
-
-    <p>
-        If the argument above is correct, then we can compare distributions of pol angles on BICEP3 with and without homing to check for evidence of backlash occurring during the campaign.
-        On the last day of the campaign, I took a number of diagnostic measurements, including a set of 10 Type 9 observations that did not home between rasterset.
-        If backlash developed sometime during the campaign, we should expect to see no difference between the Type 9 observations that homed before every measurement and this dataset without homing.
-        In the plot below, I show histograms of both the Pol-0 and Pol-90 detectors with- and without homing. We can see that the distribution without homing is roughly 20% smaller than when we are homing.
-    </p>
-<p>
-    This isn't very strong evidence because we expect from our first ISAAC measurements that we were able to get down to a precision of ~0.01&deg; when not homing. However, I find it plausible that the non-homing $\sigma_\phi$ could be lower, but we're simply running up against the intrinsic statistical limit of the measurement on BICEP3.
-</p>
-
-
-    <figure>
-        <img src="figs/type9_homing_hists.png" width="70%">
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
-    <h3>Why isn't the homing repeatability affected by backlash?</h3>
-    <p>
-        We can also see that the means on the distributions are consistent to 0.01&deg;, so it appears the homing repeatability is unaffected by the backlash. In the hypothesis that the backlash is unconstrained (i.e. not directionally driven), this means that when the RPS is around the homing switch, the rotational torque must always be in the same direction, forcing the stage to consistently be on one side of the backlash. Looking at the RPS in Fig 1.2 above (which was commanded to 0&deg;), we can see at angles near zero that the torque on the stage is strongly in the counterclockwise direction (if you're the ISAAC looking toward the RPS) due to the uneven weight distribution of the BSNS, which supports my hypothesis.
-    </p>
 
 
 </section>
