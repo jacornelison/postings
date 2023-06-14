@@ -49,8 +49,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     I then go over the null tests and consistency checks we need to pass.
 </p>
 <p>
-    I discuss two approaches that we will take to derive an isotropic polarisation rotation angle from 
-    BICEP3 data. I give an example of the plots we will use in each of these approaches. Finally, I go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess birefringence angle.
+    I discuss two different ways at which we will look at results and I give an example of the plots we will use in each of these approaches. Finally, I go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess birefringence angle.
 </p>
 
 <hr>
@@ -58,23 +57,24 @@ I first summarize the remaining threads that we need to close before unblinding 
 <section>
     <h2>Questions that still need answers</h2>
     <p>
-        Before we talk about unblinding, I wanted to summarize the remaining open threads that need to reviewed and concluded.
+        Before we talk about looking at real data, we first need to finish filling out our uncertainty budget.
+        The total uncertainty will comprise the stat/sys uncertainty from the CMB analysis (&sigma;<sub>CMB,stat</sub>, &sigma;<sub>CMB,sys</sub> resp.) and the sys/stat uncertainty from the instrumental calibration (&sigma;<sub>INST,stat</sub>, &sigma;<sub>INST,sys</sub> resp.) all added in quadrature:
+
+        \begin{equation}
+        \sigma^2_{tot} = \sigma^2_{CMB,stat}+\sigma^2_{CMB,sys}+\sigma^2_{INST,stat}+\sigma^2_{INST,sys}
+        \end{equation}
+
+    From <a href="JAC2023f"></a>, we have &sigma;<sub>CMB,stat</sub>=0.112&deg;(0.078&deg;) for 9(14) bandpowers.
+        We still need to finalize the uncertainties for &sigma;<sub>CMB,sys</sub>, &sigma;<sub>INST,stat</sub>, and &sigma;<sub>INST,sys</sub>.
+
+    </p>
+    <p>
+        Each of the threads listed here contributes to one of these error budgets and we need to have final estimates of those before we look at the birefringence angle.
     </p>
 
     <p>
         A link is provided if a draft posting exists for it already. Once these various threads are finalised, we will update with links to published postings.
-        This list only adresses questions that we have already identified - as we finalise this analysis, it is of course possible that we encounter new questions that require more work. In that case, we will hold unblinding until we have resolved any issue we encounter.
-    </p>
-
-    <p>
-        The main goal of the analysis we conduct on simulations before we unblind is to estimate our uncertainty budget, both statistical and systematic. 
-        The total uncertainty will comprise the stat/sys uncertainty from the CMB analysis (&sigma;<sub>CMB,stat</sub>, &sigma;<sub>CMB,sys</sub> resp.) and the sys/stat uncertainty from the instrumental calibration (&sigma;<sub>INST,stat</sub>, &sigma;<sub>INST,sys</sub> resp.) all added in quadrature:
-
-        \begin{equation}
-        \sigma^2_\beta = \sigma^2_{CMB,stat}+\sigma^2_{CMB,sys}+\sigma^2_{INST,stat}+\sigma^2_{INST,sys}
-        \end{equation}
-
-        Each of the threads listed here contributes to one of these error budgets, and we need to have nearly final estimates of those before we unblind.
+        This list only addresses questions that we have already identified - as we finalise this analysis, it is of course possible that we encounter new questions that require more work. In that case, we will hold unblinding until we have resolved any issue we encounter.
     </p>
 
     <p><b>Instrumental Calibration</b></p>
@@ -125,25 +125,44 @@ I first summarize the remaining threads that we need to close before unblinding 
     <h2>Consistency Tests</h2>
     <p>
         Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the real data as we do for our standard <i><b>r</b></i> analysis, with a particular focus on EB.
-        We will also apply the angle estimator to jacks, and make sure that we also get null results for $\alpha$.
-        We will also conduct additional consistency test which will help boost our confidence in the RPS-derived angles. 
-        All of these jacks will need to pass in order to go ahead with unblinding.
+        So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back an rerunning them.
+        </p>
+
+    <p>
+        We will also conduct an additional consistency test (called a &Delta;&alpha; test) where we split the data based on polarization angle and compare the differences in the angles which will help boost our confidence in the RPS-derived angles (see the draft posting <a href="JAC2023g"></a>). As with our normal jacks, we can calculate &chi; and &chi;<sup>2</sup> metrics
+
+
+    \begin{align}
+    &\chi = \frac{(\Delta\alpha_{real}-\Delta\bar{\alpha}_{sims})}{\sigma_{tot}}\\
+    \end{align}
+
+    where &sigma;<sub>tot</sub> in this case still uses &sigma;<sub>CMB,sys</sub>, &sigma;<sub>INST,stat</sub>, and &sigma;<sub>INST,sys</sub>, but gets &sigma;<sub>CMB,stat</sub> from the jack sims.
+
     </p>
     <p>
-        So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back an rerunning them. Information on the extra consistency test, which I call a &Delta;&alpha; test, can be found in this draft posting: <a href="JAC2023g"></a>.
+        It should be trivial to apply the &Delta;&alpha; test to regular jacks -- fitting an &alpha; to jack EB and making sure that it is consistent with sims -- so we plan on doing that as well.
+   </p>
+
+    <p>
+        We'll first validate these tests on fake data (i.e. a sim realization) before actually conducting them on real data.
+        As with our main analysis, our passing requirement on &chi; and &chi;<sup>2</sup> will be 0.01 < &chi;<sup>(2)</sup> < 0.99 and any failures will require investigation/resolution before moving forward.
     </p>
 
 </section>
 
 <section>
-    <h2>Unblinding Strategy</h2>
+    <h2>Birefringence Results</h2>
+    <p>
+        Finally, after finalizing the error budget and having the real data pass all consistency tests, we can look at our final science results.
+    </p>
     <p>
         Our constraint should take the form of a single number with error bars but there are multiple ways to go about getting that number and we've decided on two in order to have some cross checks.
     </p>
 
     <ul>
-        <li><b>Approach 1 (Sernum 6606):</b> Creating sims with the same configuration in which we expect the real BICEP3 data used for BK18 to be. I.E. the TOD's are made with angles I have measured from the RPS, but the maps are made using ideal polarization angles.</li>
-        <li><b>Approach 2 (Sernum 6621):</b> Creating sim TOD's with the RPS-derived angles and then creating both real and sim maps with the RPS-derived polarization angles.</li>
+        <li><b>Legacy Result (Sernum 6606):</b> Using the real BICEP3 dataset as it was used in BK18 (but without the EB-nulling, obviously). Sims are created to reflect this configuration by using RPS-derived pol angles to create the sim TOD's but using ideal angles to create the maps.</li>
+        <li><b>Reanalysis Result (Sernum 6621):</b> Reanalysing the real data using RPS-derived polarization angles to make maps. In contrast to the Legacy Result, sims will use RPS-derived angles in both TOD- and mapmaking.
+            Creating sim TOD's with the RPS-derived angles and then creating both real and sim maps with the RPS-derived polarization angles.</li>
     </ul>
 
     <p>
@@ -163,12 +182,12 @@ I first summarize the remaining threads that we need to close before unblinding 
     \end{split}
     \end{equation}
 
-    <p>I plan on presenting constraints with angles fit to Type 8 (L-LCDM+Noise+Dust) EB spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, I intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from Approach 2 fitting to all 14 bins</b>. To use the higher bins will require a confirmation that the beam uncertainties are sufficiently small, but we're currently working on that.
+    <p>I plan on presenting constraints with angles fit to Type 8 (L-LCDM+Noise+Dust) EB spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, I intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from the "Reanalysis" fitting to all 14 bins</b>. To use the higher bins will require a confirmation that the beam uncertainties are sufficiently small, but we're currently working on that.
     </p>
 
     <h3>Unblinding Plots</h3>
 
-    <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from Approach 1 as the sims for Approach 2 still need to be completed.</p>
+    <p>The following plots are what I'll be looking at when we officially unblind -- I'm currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from "Legacy" as the sims for "Reanalysis" still need to be completed.</p>
     <p>
         Before we even look at angles, I want to first look at the spectra as we normally do for our <b><i>r</i></b> analysis in order to ensure nothing obviously crazy is happening.
         The pager below shows the plots found in our typical final pagers with two major differences.
@@ -183,7 +202,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     <figure>
         <img alt="Name pager" id="finalpager" src="#" width="50%"/>
         <figcaption>
-            Example "Final Pager" for Approach 1. To remain blinded, all "real" data are just realization 1 from the sims.
+            Example "Final Pager" for the "Legacy" sims. To remain blinded, all "real" data are just realization 1 from the sims.
         </figcaption>
         <script type="text/javascript">
             function fcn(params){
@@ -268,7 +287,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     <figure>
         <img src="figs\unblinded_hists_6606_test.png">
         <figcaption>
-            Histograms of &beta; for Approach 1. The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines will show the 1&sigma; error bars from the total uncertainty.
+            Histograms of &beta; for "Legacy". The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines will show the 1&sigma; error bars from the total uncertainty.
         </figcaption>
     </figure>
 
@@ -281,7 +300,7 @@ I first summarize the remaining threads that we need to close before unblinding 
 
     \begin{equation}
     \label{eq:sigthresh}
-    \frac{|\beta|}{\sigma_{\beta}} \le 2
+    \frac{|\beta|}{\sigma_{tot}} \le 2
     \end{equation}
 
 <p>
@@ -298,7 +317,7 @@ I first summarize the remaining threads that we need to close before unblinding 
 <p>
     That said, I propose that if &beta;&ne;0 to greater than the 2&sigma; threshold, then we pause releasing the paper until we can
     <ol type="A">
-    <li>Have at least one other person who isn't me, Clara, or John independently go through the entire analysis</li>
+    <li>Have at least one other person (preferably other than Clara or John) independently go through the entire analysis</li>
     <li>Include more CMB data (up to 2022)</li>
     <li>Get another RPS observation as an independent cross check</li>
      <ul>
@@ -315,7 +334,49 @@ I first summarize the remaining threads that we need to close before unblinding 
     </p>
 
 </section>
+<section>
+    <h2>Summary</h2>
 
+    <ol>
+        <li>
+            <b>Resolve remaining questions and form final uncertainties.</b>
+        </li>
+
+        <ol>
+            <li>Instrumental Calibration</li>
+            <ol>
+                <li>Independent cross checks on absolute RPS angle.</li>
+                <li>Uncertainty coming from the pointing model.</li>
+                <li>Compute total &sigma;<sub>INST,stat</sub>/&sigma;<sub>INST,sys</sub>.</li>
+            </ol>
+            <li>CMB Analysis</li>
+            <ol>
+                <li>&sigma;<sub>CMB,sys</sub> contribution from beam systematics.</li>
+                <li>Make sure we've got the sign of &beta; (i.e. the B in EB) correct.</li>
+            </ol>
+            </ol>
+        <li>
+            <b>Complete all of the consistency tests.</b>
+        </li>
+
+        <ol>
+            <li>Check the tests using a sim realization in lieu of real data.</li>
+            <li>Regular jacks pass spectral null tests.</li>
+            <li>Regular jacks pass &Delta;&alpha; null tests.</li>
+            <li>Angle subset jack passes spectra test.</li>
+            <li>Angle subset jack passes &Delta;&alpha; test.</li>
+            <li>Complete tests on real data.</li>
+        </ol>
+        <li>
+            <b>Unblind to birefringence angle from "Legacy" and "Reanalysis" data simultanously.</b>
+        </li>
+        <ol>
+            <li>If results are consistent with &beta;=0 within 2&sigma; then we publish constraints.</li>
+            <li>If not, we'll double check the analysis and/or include additional data before publishing.</li>
+        </ol>
+    </ol>
+
+</section>
 
 <hr>
 
