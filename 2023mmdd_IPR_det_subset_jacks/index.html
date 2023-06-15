@@ -3,7 +3,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <head>
     <meta charset="utf-8">
-    <title>IPR 8: Angle Split Jack</title>
+    <title>IPR #: Angle Split Jack</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis 8: An RPS Angle Subset Jack</h1>
+    <h1>Isotropic Polarization Rotation Analysis #: &Delta;&alpha; jacks (Draft)</h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         2023 mmm dd
@@ -130,154 +130,41 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
     For the most part, the output angle is consistent the naive uniform average of the input angles. I do see some deviation which appears to increase as the angles get lower which is readily apparent in the CMB only sims, but gets washed out in the variance of the Lensed BMC+Noise+Dust sims such that it's less than a sigma from the mean. In either case, we can't be assured the uniform average of the RPS angles is what we should be expecting anyway, but it is curious that this assumption seems to be more wrong as the input angle gets larger. This is perhaps something worth looking into in the future, but I think it's fine to move forward for now since it's not a very significant effect.
 </p>
 
-    <h3>&Delta;&alpha; Plots</h3>
-
-    <p>The pager below shows the resulting differences between the 'Low','Mid', and 'High' data subsets. Our realizations are seeded which means that any serial number's realization 1 sees the same CMB as realization 1 of any other serial number, so I calculate the &Delta;&alpha; on a realization-by-realization basis. I.E. for 'Low' minus 'Mid', say, the distribution of &Delta;&alpha;'s is computed by subtracting the angle fit from sernum 6608's 1st realization from sernum 6607's 1st realization and so on.</p>
-
-    <figure>
-        <img alt="Name pager" id="diffpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>
-        <figcaption>
-            The errorbars are the 1-&sigma; standard deviations of the distributions.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#diffpager",
-                {
-                    'Signal Type|sig1': ['L-LCDM+N+Dust|8'],
-                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],
-
-                },
-                function(params) {
-                    return 'figs/alpha_diff_plots_type_'+params.sig1+'_bins_'+params.bin1+'.png';
-                });
-            pager.setparams({
-                'sig1': '8',
-                'bin1': '2_10',
-
-            });
-        </script>
-    </figure>
-
-<p>
-If we imagine a scenario where the ideal angles we currently use for CMB analysis are actually correct, then &Delta;&alpha; would be zero for all cases, which is a scenario we would hope to cause a failure of these tests. In the table below, I show the resulting pte's for such a case using the L-LCDM+N+D (Type-8) using our typical 9 bandpowers where the PTE's are calculated as:
-</p>
-
-    \begin{equation}
-    \text{PTE} = \left.1-\text{normcdf}\left(\frac{\Delta\alpha_\text{real}-\left<\Delta\alpha_{\text{sims}}\right>}{\sigma_{\Delta\alpha,\text{sims}}}\right)\right|_{\Delta\alpha,\text{real}=0}
-    \end{equation}
-
-<p>
-    Where a PTE<0.5 implies $\Delta\alpha_\text{real}\lt\left<\Delta\alpha_\text{sims}\right>$ and PTE>0.5 for $\Delta\alpha_\text{real}\gt\left<\Delta\alpha_\text{sims}\right>$.
-</p>
+    <h3>Calculating &Delta;&alpha;</h3>
     <p>
-    Only the low-minus-high &Delta;&alpha; values fail according to our typical requirements (0.01 < PTE < 0.99).
+        We want to take the differences between the 'Low','Mid', and 'High' data subsets.
+        Our realizations are seeded which means that any serial number's realization 1 sees the same CMB as realization 1 of any other serial number, so I calculate the &Delta;&alpha; on a realization-by-realization basis.
+        I.E. for 'Low' minus 'Mid', say, the distribution of &Delta;&alpha;'s is computed by subtracting the angle fit from sernum 6608's 1st realization from sernum 6607's 1st realization and so on:
+
+        \begin{equation}
+        &Delta;&alpha;_{LM,i} = &alpha;_{low,i} - &alpha;_{mid,i}
+        \end{equation}
+
+
 </p>
 
-    <figure class="table">
-        <table class="results">
-            <tr>
-                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-10, Type 8 sims</th>
-            </tr>
-            <tr>
-                <th></th>
-                <th>Low-Mid</th>
-                <th>Mid-High</th>
-                <th>Low-High</th>
-            </tr>
-            <tr>
-                <td>B2016</td>
-                <td>0.235</td>
-                <td>0.188</td>
-                <td>0.054</td>
-            </tr>
-            <tr>
-                <td>B2017</td>
-                <td>0.193</td>
-                <td>0.065</td>
-                <td>0.015</td>
-            </tr>
-            <tr>
-                <td>B2018</td>
-                <td>0.169</td>
-                <td>0.107</td>
-                <td>0.011</td>
-            </tr>
-            <tr>
-                <td>17+18</td>
-                <td>0.102</td>
-                <td>0.031</td>
-                <td>0.001</td>
-            </tr>
-        </table>
-        <figcaption>
-            Table of PTE's for the case where the real angles in the CMB data are what's currently being used (i.e. a difference angle of zero) and we're fitting over 9 bandpowers.
-        </figcaption>
-    </figure>
 
-    <p>
-        I also show a table for fits that include 14 bandpowers. Other values become marginal with the increased constraining power, but the low-minus-high value is still the only one that I would confidently say provides a sufficient failure.
-    </p>
-
-    <figure class="table">
-        <table class="results">
-            <tr>
-                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-15, Type 8 sims</th>
-            </tr>
-            <tr>
-                <th></th>
-                <th>Low-Mid</th>
-                <th>Mid-High</th>
-                <th>Low-High</th>
-            </tr>
-            <tr>
-                <td>B2016</td>
-                <td>0.158</td>
-                <td>0.131</td>
-                <td>0.028</td>
-            </tr>
-            <tr>
-                <td>B2017</td>
-                <td>0.072</td>
-                <td>0.054</td>
-                <td>0.003</td>
-            </tr>
-            <tr>
-                <td>B2018</td>
-                <td>0.093</td>
-                <td>0.089</td>
-                <td>0.001</td>
-            </tr>
-            <tr>
-                <td>17+18</td>
-                <td>0.027</td>
-                <td>0.012</td>
-                <td>0.000</td>
-            </tr>
-        </table>
-        <figcaption>
-            Table of PTE's for the case where the real angles in the CMB data are what's currently being used (i.e. a difference angle of zero) and we're fitting over 14 bandpowers.
-        </figcaption>
-    </figure>
+    <h3>Plots</h3>
+    <b><p>What plots do we want to look at?</p></b>
+<p>
+    I have a couple of ideas, but am open to suggestions.
+</p>
 
 
-</section>
-
-
-<!--<section>-->
-<!--    <h2>Comparing to the Real CMB Data</h2>-->
-<!--    <p>-->
-<!--        This part is fairly straightforward. I create maps from real CMB data using only detectors corresponding to each subset. The real maps are DP1102 (rg+dp+meas diff ellipt) and matrix purified with the B18 matrix. I fit angles to the EB spectra of each of the 3 subsets and, without looking at the angles, do the subtractions between them. The real data compared to the sims are shown in the plot below (real data are the X's).-->
-<!--    </p>-->
+<!--    <h4>&Delta;&alpha; Plots</h4>-->
+<!--    <p>Just plotting &Delta;&alpha; for each subset. The dots are the mean of sims and the error bars are the 1&sigma; standard deviation of the sims. The X's would be real data, but in this case I'm just using the first realization to show what the real data would look like on the plot.</p>-->
 
 <!--    <figure>-->
-<!--        <img alt="Name pager" id="realdiffpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>-->
+<!--        <img alt="Name pager" id="diffpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>-->
 <!--        <figcaption>-->
-<!--            &delta;&alpha; distributions of real data compared to sims. The errorbars are the 1-&sigma; standard deviations of the sims.-->
+<!--            The errorbars are the 1-&sigma; standard deviations of the distributions.-->
 <!--        </figcaption>-->
 <!--        <script type="text/javascript">-->
-<!--            pager.link("#realdiffpager",-->
+<!--            pager.link("#diffpager",-->
 <!--                {-->
 <!--                    'Signal Type|sig1': ['L-LCDM+N+Dust|8'],-->
 <!--                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],-->
+
 
 <!--                },-->
 <!--                function(params) {-->
@@ -291,101 +178,95 @@ If we imagine a scenario where the ideal angles we currently use for CMB analysi
 <!--        </script>-->
 <!--    </figure>-->
 
-<!--    <p>-->
-<!--        All of the real &Delta;&alpha;'s are all within 2 &sigma; of the sims, which isn't really informative except for the 2-year coadd as discussed in the previous section. What I do find interesting is how different the real B2017 and B2018 Low-Mid and Mid-High &Delta;&alpha;'s are from each other.-->
-<!--    </p>-->
+<h4>Final-like &chi; / &chi;<sup>2</sup> plots</h4>
+    <p>Akin to the &chi; and &chi;<sup>2</sup> plots done in our final pagers, we can calculate them here except instead of summing over bandpowers, we can sum over the three different &Delta;&alpha;'s.</p>
+
+\begin{align}
+    &\chi = \sum^{[LM,MH,LH]}_{i}{\frac{\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>}{\sigma_{sims,i}}}\\
+    &\chi^2 = \sum^{[LM,MH,LH]}_{i}{\frac{(\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>)^2}{\sigma^2_{sims,i}}}\\
+    \end{align}
+
+    <figure>
+        <img alt="Name pager" id="flikepager" src="#" onerror=this.src="figs/blank.png" width="80%"/>
+        <figcaption>
+            &chi; and &chi;<sup>2</sup> plots (see below for the legends). The "real" data here is realization 1 from the sims.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#flikepager",
+                {
+                    'Signal Type|sig1': ['L-LCDM+N+Dust|8'],
+                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],
+                    'Year|year' : ['2016|f','2017|g','2018|h','17+18|gh'],
+
+                },
+                function(params) {
+                    return 'figs/final_like_plots_daught_'+params.year+'_type_'+params.sig1+'_bins_'+params.bin1+'_with_real.png';
+                });
+            pager.setparams({
+                'sig1': '8',
+                'bin1': '2_10',
+                'year': 'gh',
+            });
+        </script>
+    </figure>
 
 
+    <p>    Below is the legend for each of the plots.</p>
+    <b>&Delta;&alpha; Plots</b>
 
-<!--    <figure class="table">-->
-<!--        <table class="results">-->
-<!--            <tr>-->
-<!--                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-10, Type 8 sims</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <th></th>-->
-<!--                <th>Low-Mid</th>-->
-<!--                <th>Mid-High</th>-->
-<!--                <th>Low-High</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2016</td>-->
-<!--                <td>0.958</td>-->
-<!--                <td>0.021</td>-->
-<!--                <td>0.394</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2017</td>-->
-<!--                <td>0.813</td>-->
-<!--                <td>0.010</td>-->
-<!--                <td>0.135</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2018</td>-->
-<!--                <td>0.067</td>-->
-<!--                <td>0.829</td>-->
-<!--                <td>0.344</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>17+18</td>-->
-<!--                <td>0.344</td>-->
-<!--                <td>0.284</td>-->
-<!--                <td>0.164</td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <figcaption>-->
-<!--            Table of PTE's for real CMB spectra fit to &ell;-bins 2 through 10.-->
-<!--        </figcaption>-->
-<!--    </figure>-->
+    <ul>
+        <li><span style="color:gray;">thin gray</span> :
+            s+n+d simulations with ΛCDM lensed scalars as signal (sim type 8)</li>
+        <li><span style="color:gray; font-weight:bold;">thick gray</span> :
+            mean of sims (<span style="color:gray;">thin gray</span>)</li>
+        <li><span style="color:red;">red points</span> with <span
+                style="color:blue;">blue error bars</span> :
+            real data, uncertainties from the spread of the s+n
+            sims (<span style="color:gray;">thin gray</span>)</li>
+    </ul>
 
-<!--    <p>-->
-<!--        And the table for fits that include 14 bandpowers.-->
-<!--    </p>-->
+    <b>&chi; plots</b>
+    <ul>
+        <li><span style="color:gray;">thin gray</span> :
+            s+n sims</li>
+<!--        <li><span style="color:red;">thin red</span> :-->
+<!--            1 sigma contours</li>-->
+<!--        <li><span style="color:green;">thin green</span> :-->
+<!--            2 sigma contours</li>-->
+        <li><span style="font-weight:bold;">thick black + markers</span> :
+            real data</li>
+        <li><span style="color:red;">red markers</span> :
+            bins that go into chi2 analysis</li>
+    </ul>
 
-<!--    <figure class="table">-->
-<!--        <table class="results">-->
-<!--            <tr>-->
-<!--                <th colspan="4">PTE's for $\Delta\alpha_{real}=0$ using bins 2-15, Type 8 sims</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <th></th>-->
-<!--                <th>Low-Mid</th>-->
-<!--                <th>Mid-High</th>-->
-<!--                <th>Low-High</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2016</td>-->
-<!--                <td>0.979</td>-->
-<!--                <td>0.024</td>-->
-<!--                <td>0.595</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2017</td>-->
-<!--                <td>0.885</td>-->
-<!--                <td>0.012</td>-->
-<!--                <td>0.111</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>B2018</td>-->
-<!--                <td>0.048</td>-->
-<!--                <td>0.872</td>-->
-<!--                <td>0.223</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>17+18</td>-->
-<!--                <td>0.224</td>-->
-<!--                <td>0.316</td>-->
-<!--                <td>0.107</td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <figcaption>-->
-<!--            Table of PTE's for real CMB spectra fit to &ell;-bins 2 through 15.-->
-<!--        </figcaption>-->
-<!--    </figure>-->
+<!--    <p>Note: The contours mark the simulated bandpower in each bin closest-->
+<!--        to the respective percentile.</p>-->
+
+    <b>&chi; hist</b>
+    <ul>
+        <li><span style="color:red;">red vertical</span> :
+            real data</li>
+        <li><span style="color:blue;">blue</span> :
+            distribution from s+n sims</li>
+    </ul>
+
+    <b>chi2</b>
+    <ul>
+        <li><span style="color:red;">red vertical</span> :
+            real data</li>
+        <li><span style="color:blue;">blue</span> :
+            distribution from s+n sims</li>
+    </ul>
 
 
+    <h3>What should we consider passing?</h3>
+    <p>
 
-<!--</section>-->
+    </p>
+
+
+</section>
+
 
 
 <hr>
@@ -584,6 +465,7 @@ If we imagine a scenario where the ideal angles we currently use for CMB analysi
             "JAC2023e",
             "JAC2023f",
             "CV2023",
+            "JAC2023g"
         ];
 
         // Links
@@ -593,10 +475,11 @@ If we imagine a scenario where the ideal angles we currently use for CMB analysi
             "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
             "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
-            "jcornelison/postings/20230321_IPR_high_ell/",
-            "jcornelison/postings/20230321_IPR_forecasting/",
-            "jcornelison/postings/20230321_IPR_B18_subsets/",
-            "cverges/20221215_alt_dust_sim/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_high_ell/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_forecasting/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR_B18_subsets/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR7_dust/",
+            "bkcmb/analysis_logbook/analysis/2023mmdd_IPR_unblinding_proposal/"
         ];
 
 
@@ -609,6 +492,7 @@ If we imagine a scenario where the ideal angles we currently use for CMB analysi
             "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
             "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
             "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
+            "Isotropic Polarization Rotation Analysis 8: Unblinding Strategy",
         ];
         // Debug
         var posty = document.getElementById("testp");
