@@ -45,20 +45,24 @@
 
 <p>
     This posting covers our strategy for unblinding our isotropic birefringence analysis.
-I first summarize the remaining threads that we need to close before unblinding can happen.
-    I then go over the null tests and consistency checks we need to pass.
+I first summarize the remaining threads that we need to complete in order to finalize our uncertainty budget (<a href="#uncertainty">Section 1</a>).
+    In <a href="#tests">Section 2</a>, I then go over the null tests and consistency checks we need to pass.
 </p>
 <p>
-    I discuss two different ways at which we will look at results and I give an example of the plots we will use in each of these approaches. Finally, I go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess polarisation rotation angle.
+    The two different ways at which we will look at the birefringence results are discussed in <a href="#results">Section 3</a>. I give an example of the plots we will use to look at results in <a href="#plots">Section 3.1</a>. In <a href="#detection">Section 3.2</a>, I then go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess polarisation rotation angle.
 </p>
+<p>
+    Finally, I provide a summary if the steps that comprises our unblinding procedure in <a href="#summary">Section 4</a>.
+</p>
+
 
 <hr>
 
 <section>
-    <h2>Questions that still need answers</h2>
+    <h2 id="uncertainty">Questions that still need answers</h2>
     <p>
         Before we talk about looking at real data, we first need to finish filling out our uncertainty budget.
-        The total uncertainty will comprise the stat/sys uncertainty from the CMB analysis (&sigma;<sub>CMB,stat</sub>, &sigma;<sub>CMB,sys</sub> resp.) and the sys/stat uncertainty from the instrumental calibration (&sigma;<sub>INST,stat</sub>, &sigma;<sub>INST,sys</sub> resp.) all added in quadrature:
+        The total uncertainty will comprise the stat/sys uncertainty from the CMB analysis (&sigma;<sub>CMB,stat</sub>, &sigma;<sub>CMB,sys</sub> resp.) and the stat/sys uncertainty from the instrumental calibration (&sigma;<sub>INST,stat</sub>, &sigma;<sub>INST,sys</sub> resp.) all added in quadrature:
 
         \begin{equation}
         \sigma^2_{tot} = \sigma^2_{CMB,stat}+\sigma^2_{CMB,sys}+\sigma^2_{INST,stat}+\sigma^2_{INST,sys}
@@ -122,7 +126,7 @@ I first summarize the remaining threads that we need to close before unblinding 
 </section>
 
 <section>
-    <h2>Consistency Tests</h2>
+    <h2 id="tests">Consistency Tests</h2>
     <p>
         Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the real data as we do for our standard <i><b>r</b></i> analysis, with a particular focus on EB.
         So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back and rerunning them.
@@ -151,7 +155,7 @@ I first summarize the remaining threads that we need to close before unblinding 
 </section>
 
 <section>
-    <h2>Birefringence Results</h2>
+    <h2 id="results">Birefringence Results</h2>
     <p>
         Finally, after finalizing the error budget and having the real data pass all consistency tests, we can look at our final science results.
     </p>
@@ -185,7 +189,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     <p>We plan on presenting constraints with angles fit to Type 8 (L-LCDM+Noise+Dust) EB spectra both using our typical 9 bandpowers along with an additional 5 (bins 11-15) which should also provide another level of consistency. As of this posting, we intend to report all four results (2 approaches, 2 &ell;-ranges) in a table in the paper, but have <b>our official results be from the "Reanalysis" fitting to all 14 bins</b>. To use the higher bins will require a confirmation that the beam uncertainties are sufficiently small, but we're currently working on that.
     </p>
 
-    <h3>Unblinding Plots</h3>
+    <h3 id="plots">Unblinding Plots</h3>
 
     <p>The following plots are what we'll be looking at when we officially unblind -- we're currently substituting the spectra from realization 1 from the sims in lieu of using the real data. Both of the approaches above will each have a set of their own plots. Right now I'm only showing the plots from "Legacy" as the sims for "Reanalysis" still need to be completed.</p>
     <p>
@@ -356,7 +360,7 @@ Table of results, final uncertainties, and detection significance (using fake da
 </figcaption>
     </figure>
 
-   <h3>Detection Criteria and Consequences</h3>
+   <h3 id="detection">Detection Criteria and Consequences</h3>
     <h4>What constitutes a detection?</h4>
     <p>I'd like to establish a detection threshold of 2&sigma;, i.e. our constraint will be consistent with the null hypothesis if it satisfies:</p>
 
@@ -402,7 +406,7 @@ Table of results, final uncertainties, and detection significance (using fake da
 
 </section>
 <section>
-    <h2>Summary</h2>
+    <h2 id="summary">Summary</h2>
 <p>Below is a summary of the steps we will take between this posting and the posting that will contain our results:</p>
     <ol>
         <li>
@@ -449,6 +453,8 @@ Table of results, final uncertainties, and detection significance (using fake da
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+
+<!--
     <h3>Footnotes</h3>
     <p>Click on the number to return to the main text.</p>
     <div class="footnote">
@@ -456,7 +462,7 @@ Table of results, final uncertainties, and detection significance (using fake da
         <sup><a name="ftn1" href="#sup1">[1]</a></sup>
     </p>
     </div>
-
+-->
     <!--
     <h3>Code</h3>
     <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
@@ -589,8 +595,8 @@ Table of results, final uncertainties, and detection significance (using fake da
             "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
             "bkcmb/analysis_logbook/analysis/20230328_IPR_high_ell/",
             "bkcmb/analysis_logbook/analysis/20230328_IPR_forecasting/",
-            "jcornelison/postings/20230321_IPR_B18_subsets/",
-            "cverges/20221215_alt_dust_sim/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR_B18_subsets/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR7_dust/",
             "jcornelison/postings/2023mmdd_IPR_det_subset_jacks/",
             "cverges/20230428_EB_bmsims/",
             "jcornelison/postings/2023mmdd_isaac_data/",
