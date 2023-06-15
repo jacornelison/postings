@@ -49,7 +49,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     I then go over the null tests and consistency checks we need to pass.
 </p>
 <p>
-    I discuss two different ways at which we will look at results and I give an example of the plots we will use in each of these approaches. Finally, I go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess birefringence angle.
+    I discuss two different ways at which we will look at results and I give an example of the plots we will use in each of these approaches. Finally, I go over detection criteria and what we'll do in the cases in which we do and don't significantly detect an excess polarisation rotation angle.
 </p>
 
 <hr>
@@ -129,7 +129,7 @@ I first summarize the remaining threads that we need to close before unblinding 
         </p>
 
     <p>
-        We will also conduct an additional consistency test (called a &Delta;&alpha; test) where we split the data based on polarization angle and compare the differences in the angles which will help boost our confidence in the RPS-derived angles (see the draft posting <a href="JAC2023g"></a>). As with our normal jacks, we can calculate &chi; and &chi;<sup>2</sup> metrics
+        We will also conduct an additional consistency test (called a &Delta;&alpha; test) where we split the data based on measured detector polarization angles, and compare the differences in the resulting output angles between data subsets. This will help boost our confidence in the RPS-derived angles (see the draft posting <a href="JAC2023g"></a>). As with our normal jacks, we can calculate &chi; and &chi;<sup>2</sup> metrics
 
 
     \begin{align}
@@ -160,7 +160,7 @@ I first summarize the remaining threads that we need to close before unblinding 
     </p>
 
     <ul>
-        <li><b>Legacy Result (Sernum 6606):</b> Using the real BICEP3 dataset as it was used in BK18 (but without the EB-nulling, obviously). Sims are created to reflect this configuration by using RPS-derived pol angles to create the sim TOD's but using ideal angles to create the maps.</li>
+        <li><b>Legacy Result (Sernum 6606):</b> Using the BICEP3 dataset as it was used in BK18 (but without the EB-nulling, obviously). Sims are created to reflect this configuration by using RPS-derived pol angles to create the sim TOD's but using ideal angles to create the maps.</li>
         <li><b>Reanalysis Result (Sernum 6621):</b> Reanalysing the real data using RPS-derived polarization angles to make maps. In contrast to the Legacy Result, sims will use RPS-derived angles in both TOD- and mapmaking.
             Creating sim TOD's with the RPS-derived angles and then creating both real and sim maps with the RPS-derived polarization angles.</li>
     </ul>
@@ -193,7 +193,7 @@ I first summarize the remaining threads that we need to close before unblinding 
         The pager below shows the plots found in our typical final pagers with two major differences.
         <ol>
     <li>We use Type 8 (L-LCDM+Noise+Dust) sims instead of Type 7's (L-LCDM+Noise)</li>
-    <li>The real data won't be debiased since we only care about EB/TB.</li>
+    <li>The real data won't be debiased since we only care about EB.</li>
 </ol>
     </p>
 
@@ -280,7 +280,7 @@ I first summarize the remaining threads that we need to close before unblinding 
         To give a clear visual indication of a detection, I've included some dotted vertical lines which will represent the N-sigma detection threshold (more on that in &sect;3.2) calculated from N times the total uncertainty, &sigma;<sub>&beta;</sub>, as defined in section 1.
 
     </p>
-        <p>The standard deviation of the histograms give us &sigma;<sub>CMB,stat</sub>, but for our we still need to finalize the systematic uncertainty from the CMB analysis (&sigma;<sub>CMB,sys</sub> from e.g. alternate dust models and beams) and the stat/sys uncertainties from the instrumental calibration.
+        <p>The standard deviation of the histograms gives us &sigma;<sub>CMB,stat</sub>, but  we still need to finalize the systematic uncertainty from the CMB analysis (&sigma;<sub>CMB,sys</sub> from alternate dust models and beams mostly), and the stat/sys uncertainties from the instrumental calibration.
     </p>
 
 
