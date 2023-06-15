@@ -68,7 +68,7 @@ I first summarize the remaining threads that we need to complete in order to fin
         \sigma^2_{tot} = \sigma^2_{CMB,stat}+\sigma^2_{CMB,sys}+\sigma^2_{INST,stat}+\sigma^2_{INST,sys}
         \end{equation}
 
-    From <a href="JAC2023f"></a>, we have &sigma;<sub>CMB,stat</sub>=0.112&deg;(0.078&deg;) for 9(14) bandpowers.
+    From <a href="JAC2023f"></a>, we have &sigma;<sub>CMB,stat</sub>=0.078&deg;(0.112&deg;) for 14(9) bandpowers.
         We still need to finalize the uncertainties for &sigma;<sub>CMB,sys</sub>, &sigma;<sub>INST,stat</sub>, and &sigma;<sub>INST,sys</sub>.
 
     </p>
@@ -113,7 +113,7 @@ I first summarize the remaining threads that we need to complete in order to fin
         <li>
             How certain are we that we've got the sign of the birefringence angle correct?
         </li>
-        <ul>This requires reconciling theory with what we're actually doing in the code and so far I've only found one inconsistency.</ul>
+        <ul>This requires reconciling theory with what we're actually doing in the code and which is currently underway.</ul>
 
 
     </ol>
@@ -133,23 +133,12 @@ I first summarize the remaining threads that we need to complete in order to fin
         </p>
 
     <p>
-        We will also conduct an additional consistency test (called a &Delta;&alpha; test) where we split the data based on measured detector polarization angles, and compare the differences in the resulting output angles between data subsets. This will help boost our confidence in the RPS-derived angles (see the draft posting <a href="JAC2023g"></a>). As with our normal jacks, we can calculate &chi; and &chi;<sup>2</sup> metrics
-
-
-    \begin{align}
-    &\chi = \frac{(\Delta\alpha_{real}-\Delta\bar{\alpha}_{sims})}{\sigma_{tot}}\\
-    \end{align}
-
-    where &sigma;<sub>tot</sub> in this case still uses &sigma;<sub>CMB,sys</sub>, &sigma;<sub>INST,stat</sub>, and &sigma;<sub>INST,sys</sub>, but gets &sigma;<sub>CMB,stat</sub> from the jack sims.
-
+        We are also developing an additional test which differences the &alpha;'s between two subsets of data,
+         which will help boost our confidence in the RPS-derived angles (see the draft posting <a href="JAC2023g"></a>)
     </p>
-    <p>
-        It should be trivial to apply the &Delta;&alpha; test to regular jacks -- fitting an &alpha; to jack EB and making sure that it is consistent with sims -- so we plan on doing that as well.
-   </p>
 
     <p>
         We'll first validate these tests on fake data (i.e. a sim realization in lieu of real) before actually conducting them on real data.
-        As with our main analysis, our passing requirement on &chi; and &chi;<sup>2</sup> will be 0.01 < &chi;<sup>(2)</sup> < 0.99 and any failures will require investigation/resolution before moving forward.
     </p>
 
 </section>
@@ -170,7 +159,7 @@ I first summarize the remaining threads that we need to complete in order to fin
     </ul>
 
     <p>
-        These two parallel approaches are intended to be cross-checks of one another, but if we've done everything right then either approach should spit out the same number for our birefringence constraint.
+        These two parallel approaches are intended to be cross-checks of one another, but if we've done everything right then either approach should spit out roughly the same number for our birefringence constraint.
 </p>
     <p>
         In either case, we expect that the angle going into TOD-making (&alpha;<sub>TOD</sub>) will be the same for both the sims and real data and likewise for the angle the goes into map-making (&alpha;<sub>MAP</sub>). That way, the excess angle resulting from cosmic birefringence, $\beta$ (in keeping with the naming convention in the literature), is just the difference between the angle fit from the real spectra, $\alpha_{real}$, and the mean angle from the sims, $\bar{\alpha}_{sims}$.
@@ -431,17 +420,14 @@ Table of results, final uncertainties, and detection significance (using fake da
         </li>
 
         <ol>
-            <li>Check the tests using a sim realization in lieu of real data.</li>
-            <li>Regular jacks pass spectral null tests.</li>
-            <li>Regular jacks pass &Delta;&alpha; null tests.</li>
-            <li>Angle subset jack passes spectra test.</li>
-            <li>Angle subset jack passes &Delta;&alpha; test.</li>
+            <li>Define and validate specific tests we will use.</li>
             <li>Complete tests on real data.</li>
         </ol>
         <li>
             <b>Unblind to birefringence angle from "Legacy" and "Reanalysis" data simultanously.</b>
         </li>
         <ol>
+            <li>Examine the real data spectra for significant artifacts.</li>
             <li>If results are consistent with &beta;=0 within 2&sigma; then we publish constraints.</li>
             <li>If not, we'll double check the analysis and/or include additional data before publishing.</li>
         </ol>
