@@ -48,7 +48,7 @@ fd_2018 = fd;
 fd_2018 = get_pair_params(fd_2018,ind0,ind90);
 [fd_2018, phis_2018, phi_pair_2018, xpols_2018, poleff_pair_2018,~,~,~] = get_pol_params_per_obs(fd_2018,p);
 
-%
+%%
 clc
 load('z:/dev/rps/rps_obs_info.mat')
 %load('z:/dev/rps/rps_beam_fits_type5_withbparam.mat')
@@ -61,7 +61,7 @@ fd = rps_cut_fitdata(fd,p,[]);%,1,figdir);
 fd = get_pair_params(fd,ind0,ind90);
 [fd, phis, phi_pair, xpols, poleff_pair,n1s,n2s,amps] = get_pol_params_per_obs(fd,p,scheds);
 
-%
+%%
 load('z:/pipeline/beammap/viridis_cm.mat')
 load('z:/dev/rps/sch_type5.mat')
 load('z:/dev/rps/pm.mat')
@@ -554,7 +554,7 @@ idx_max = idx(mi,:);
 [~, mi] = min(abs(M)+S);
 idx_min = idx(mi,:);
 
-% Figure 3.2.1 Consistency Checks Part 2
+%% Figure 3.2.1 Consistency Checks Part 2
 
 clc
 V0 = {phi_pair; poleff_pair};
@@ -626,7 +626,7 @@ for valind = 1%1:size(V,1)
             });
 
         fname = sprintf('consistplot_%s_2022_vs_%s.png',valnames{valind},pltnames{pltind});
-        saveas(fig,fullfile(figdir,fname))
+        %saveas(fig,fullfile(figdir,fname))
 
     end
 end
@@ -1134,7 +1134,7 @@ xlim(lims)
 ylim(lims)
 grid on
 cov((Bres(:,idx)),(Bres90(:,idx)))
-
+corrcov(cov((Bres(:,idx)),(Bres90(:,idx))))
 end
 
 pbaspect([1 1 1])
@@ -1143,7 +1143,7 @@ ylabel({'','Pol90'})
 title('Mod Curve fractional residuals')
 
 fname = 'pol90_vs_pol0_mod_curve_res.png';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
 
 
 %% Plot modcurve residuals!?

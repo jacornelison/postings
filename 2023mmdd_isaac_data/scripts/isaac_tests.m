@@ -198,8 +198,7 @@ for fldind = 1:length(flds)
     fd.(flds{fldind}) = [];
 end
 
-reses = {};
-angs = {};
+[reses, angs, modcurves] = deal({});
 rsmax = [];
 thresh = 0.7;
 weighttitles = {'Uniform',sprintf('Amp<%0.1f',thresh),'1/Amp'};
@@ -430,6 +429,7 @@ for prefind = [12:15, 20:42]%20:42
                     end
                     angs{end+1} = a;
                     reses{end+1} = R-rps_get_mod_model(parm,a);
+                    modcurves{end+1} = R;
                 else
                     parms(di,1:length(parm)) = NaN(1,length(parm));
                 end

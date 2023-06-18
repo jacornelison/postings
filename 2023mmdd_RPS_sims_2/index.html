@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Simulating 2022 RPS Data</h1>
+    <h1>RPS Instrumental Calibration Error Budget</h1>
 
     <time datetime="2023-06-13" class="published updated">
         2023 Mmm DD
@@ -41,8 +41,55 @@
 <p>
     Abstract
 </p>
+<ul>
+    <li></li>
+</ul>
+
+
+
+
 <hr>
 
+<section>
+<h2>Propagating Pointing Errors</h2>
+    <p>Errors that enter through inputs for pointing model are first converted into a conservative estimate fo the error on the $\phi_s$.
+    Errors are propagated by calculating $phi_s$ with an ideal value for a given pointing model input, calculating $phi_s$ again with that input offset by the given uncertainty, and then taking the difference between the two values.
+    Since the effect on $phi_s$ can be larger for detectors farther away from the boresight, we calculate $\Delta\phi_s$ over the entire FOV of BICEP3 and use the maximum $\Delta\phi_s$ to avoid underestimating the error.
+    </p>
+    <p>
+
+    </p>
+
+
+</section>
+
+<section>
+    <h2>Simulating Mod Curves</h2>
+        <p>
+            We'll simulate modulation curves using the same function as usual
+        </p>
+
+
+
+    <h3>Cross checks of the sim</h3>
+    <p>
+        Making sure that, under ideal conditions, we can back out of the model what we put into it.
+    </p>
+
+    
+
+    <h3>Including Errors</h3>
+    <p>
+
+    </p>
+
+    <h3>Correlated Amplitude Scaling Noise</h3>
+
+
+    <h3></h3>
+
+
+</section>
 <section>
 
 </section>
