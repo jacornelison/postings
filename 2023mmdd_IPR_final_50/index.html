@@ -2,7 +2,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>B2019 and B2020 Final Pager with 499 realizations — BS</title>
+  <title>IPR Final Pager with 50 realizations</title>
   <!--link rel="stylesheet" type="text/css" href="style.css"-->
   <!-- Load up MathJax for math notation
        Note that for local testing, the http: needs to be prepended.
@@ -24,95 +24,96 @@
 <script src="pager.js"></script>
 
 <header>
-  <h1>B2019 and B2020 Final Pager with 499 realizations</h1>
+  <h1>Isotropic Polarization Rotation Analysis #: Final Pager with 50 Sims (draft)</h1>
 
-  <time datetime="2022-04-20" class="published updated">
-    2022 April 20
+  <time datetime="2023-xx-xx" class="published updated">
+    2023 Mmm dd
   </time> —
-  Baibhav Singari
+  James Cornelison
 </header>
 
 <hr>
-<p>This is the B2019/20 final pager with the complete set of 499 sims. This posting is a followup to <a href="../20211020_B201920_final_99/">B2019/20 first 99 realizations final pager.</a></li> and should be viewed along with the <a href="../20210924_B2019_B2020_mapspager/">B2019/20 maps pager</a>. 
+
+<!--<p>This is the B2019/20 final pager with the complete set of 499 sims. This posting is a followup to <a href="../20211020_B201920_final_99/">B2019/20 first 99 realizations final pager.</a></li> and should be viewed along with the <a href="../20210924_B2019_B2020_mapspager/">B2019/20 maps pager</a>. -->
 
 
-<hr>
+<!--<hr>-->
 
-<section><h2>Final pager</h2>
-  <p>Things to remember:</p>
-<ol>
-<li>
-	No polarization angle rotation has been applied.
-</li>
-<li>
-	No matrix.
-</li>
-<li>The figures for B2016/2017/2018 clicks are taken from <a href="../20201012_B18_3553_final/">B2016,2017,2018 Final Pager without tile 1, 99sims (HH)</a></li>. 
-</ol>
- 
-<p> The variability of the brightest point source in the field is significant in 2019, and it shouldn't be of any surprise that it has resulted in some BB PTE values which have been shown in this posting as jackknife outliers. We had seen a significant contamination in the 1st/2nd half weights jacknife in the <a href="../20210924_B2019_B2020_mapspager/">B32019/20 maps pager</a>, the point source in that case is much brighter than the nominal noise (see 1st/2nd half weights option for Q and U), hence the manifestation as jack outliers.  This particular contamination i.e., magnitude of the difference in polarization of the source in the 2 halfs is not significantly higher than the noise in 2020, so it doesn't result in a jack failure, but it is clearly at a level where it needs to be dealt with in the 2019 data before proceeding further. Jamie discusses the variability of the concerned point source at length in <a href='../20211019_b3_pntsrc_fluxes/'>this posting</a>. Other than the point source which results in a few outliers in BB jackknives in 2019, things look pretty good, atleast in the bandpowers 2-6. 
-<p> I list only the jack outliers seen with the Kendrick pure-B estimator, for the polarization data, i.e., ones seen for EE, BB and EB. As we consider 14 jackknife measures in 2 ranges of bandpower (1-5, 1-9), 2 PTE (χ and χ²) for dp1102, there are a possible suite of 168 jackknife tests per band. Only 6/168 and 4/168 of those for B2019 and B2020 data lie marginally outside the nominal range of \(0.01 \leq \) PTEs \( \leq 0.99\).      
-<p><b>Low/High PTEs Summary</b>
-<ul>
+<!--<section><h2>Final pager</h2>-->
+<!--  <p>Things to remember:</p>-->
+<!--<ol>-->
+<!--<li>-->
+<!--	No polarization angle rotation has been applied.-->
+<!--</li>-->
+<!--<li>-->
+<!--	No matrix.-->
+<!--</li>-->
+<!--<li>The figures for B2016/2017/2018 clicks are taken from <a href="../20201012_B18_3553_final/">B2016,2017,2018 Final Pager without tile 1, 99sims (HH)</a></li>. -->
+<!--</ol>-->
+<!-- -->
+<!--<p> The variability of the brightest point source in the field is significant in 2019, and it shouldn't be of any surprise that it has resulted in some BB PTE values which have been shown in this posting as jackknife outliers. We had seen a significant contamination in the 1st/2nd half weights jacknife in the <a href="../20210924_B2019_B2020_mapspager/">B32019/20 maps pager</a>, the point source in that case is much brighter than the nominal noise (see 1st/2nd half weights option for Q and U), hence the manifestation as jack outliers.  This particular contamination i.e., magnitude of the difference in polarization of the source in the 2 halfs is not significantly higher than the noise in 2020, so it doesn't result in a jack failure, but it is clearly at a level where it needs to be dealt with in the 2019 data before proceeding further. Jamie discusses the variability of the concerned point source at length in <a href='../20211019_b3_pntsrc_fluxes/'>this posting</a>. Other than the point source which results in a few outliers in BB jackknives in 2019, things look pretty good, atleast in the bandpowers 2-6. -->
+<!--<p> I list only the jack outliers seen with the Kendrick pure-B estimator, for the polarization data, i.e., ones seen for EE, BB and EB. As we consider 14 jackknife measures in 2 ranges of bandpower (1-5, 1-9), 2 PTE (χ and χ²) for dp1102, there are a possible suite of 168 jackknife tests per band. Only 6/168 and 4/168 of those for B2019 and B2020 data lie marginally outside the nominal range of \(0.01 \leq \) PTEs \( \leq 0.99\).      -->
+<!--<p><b>Low/High PTEs Summary</b>-->
+<!--<ul>-->
 
-<li><b>2019</b>
-<table>
-<thead style="font-weight:bold;text-align:center;">
-  <tr>
-    <td>Bandpowers 1–5</td>
-    <td>Bandpowers 1–9</td>
-  </tr>
-</thead>
-<tbody style="vertical-align:text-top;">
-  <tr>
-    <td>
-      <ol>
-<li><a href="javascript:update_params({dp:'1102', jack:'3', lmax:'200', figtype:'c3', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB tag split jackknife (χ²)</a> 0.008</li>
-<li><a href="javascript:update_params({dp:'1102', jack:'e', lmax:'200', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB A/B offset, best/worst (χ)</a> - 0.008</li>
-    
-  </ol>
-    </td>
-    <td>
-	<ol>
-<li><a href="javascript:update_params({dp:'1102', jack:'3', lmax:'500', figtype:'c3', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB tag split jackknife (χ²)</a> - 0.004 </li>
-<li><a href="javascript:update_params({dp:'1102', jack:'3', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB tag split jackknife (χ)</a> - 0.002* </li>
-<li><a href="javascript:update_params({dp:'1102', jack:'2', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB scan dir jackknife (χ)</a> - 0.996 </li>
-<li><a href="javascript:update_params({dp:'1102', jack:'e', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB A/B offset, best/worst (χ)</a> - 0.002*</li>
+<!--<li><b>2019</b>-->
+<!--<table>-->
+<!--<thead style="font-weight:bold;text-align:center;">-->
+<!--  <tr>-->
+<!--    <td>Bandpowers 1–5</td>-->
+<!--    <td>Bandpowers 1–9</td>-->
+<!--  </tr>-->
+<!--</thead>-->
+<!--<tbody style="vertical-align:text-top;">-->
+<!--  <tr>-->
+<!--    <td>-->
+<!--      <ol>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'3', lmax:'200', figtype:'c3', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB tag split jackknife (χ²)</a> 0.008</li>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'e', lmax:'200', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB A/B offset, best/worst (χ)</a> - 0.008</li>-->
+<!--    -->
+<!--  </ol>-->
+<!--    </td>-->
+<!--    <td>-->
+<!--	<ol>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'3', lmax:'500', figtype:'c3', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB tag split jackknife (χ²)</a> - 0.004 </li>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'3', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB tag split jackknife (χ)</a> - 0.002* </li>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'2', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB scan dir jackknife (χ)</a> - 0.996 </li>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'e', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2019'});">BB A/B offset, best/worst (χ)</a> - 0.002*</li>-->
 
 
 
-	</ol>
-    </td>
-  </tr>
-<tbody>
-</table>
+<!--	</ol>-->
+<!--    </td>-->
+<!--  </tr>-->
+<!--<tbody>-->
+<!--</table>-->
 
-<li><b>2020</b>
-<table>
-<thead style="font-weight:bold;text-align:center;">
-  <tr>
-    <td>Bandpowers 1–5</td>
-    <td>Bandpowers 1–9</td>
-  </tr>
-</thead>
-<tbody style="vertical-align:text-top;">
-  <tr>
-    <td>
-	<ol>
-	<li>*No jack outliers*</li>
-	</ol>
-    </td>
-    <td>
-      <ol>
-<li><a href="javascript:update_params({dp:'1102', jack:'9', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2020'});">EE inner/outer jackknife (χ)</a> - 0.003* </li>
-<li><a href="javascript:update_params({dp:'1102', jack:'9', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2020'});">EE tile/deck jackknife (χ)</a> - 0.002 </li>
-<li><a href="javascript:update_params({dp:'1102', jack:'1', lmax:'500', figtype:'c3', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2020'});">EE deck jackknife (χ²)</a> - 0.002 </li>
-<li><a href="javascript:update_params({dp:'1102', jack:'4', lmax:'500', figtype:'c3', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2020'});">EB tile jackknife (χ²)</a> - 0.001* </li>
-      </ol>
-    </td>
-  </tr>
-<tbody>
-</table>
+<!--<li><b>2020</b>-->
+<!--<table>-->
+<!--<thead style="font-weight:bold;text-align:center;">-->
+<!--  <tr>-->
+<!--    <td>Bandpowers 1–5</td>-->
+<!--    <td>Bandpowers 1–9</td>-->
+<!--  </tr>-->
+<!--</thead>-->
+<!--<tbody style="vertical-align:text-top;">-->
+<!--  <tr>-->
+<!--    <td>-->
+<!--	<ol>-->
+<!--	<li>*No jack outliers*</li>-->
+<!--	</ol>-->
+<!--    </td>-->
+<!--    <td>-->
+<!--      <ol>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'9', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2020'});">EE inner/outer jackknife (χ)</a> - 0.003* </li>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'9', lmax:'500', figtype:'c4', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2020'});">EE tile/deck jackknife (χ)</a> - 0.002 </li>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'1', lmax:'500', figtype:'c3', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2020'});">EE deck jackknife (χ²)</a> - 0.002 </li>-->
+<!--<li><a href="javascript:update_params({dp:'1102', jack:'4', lmax:'500', figtype:'c3', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2020'});">EB tile jackknife (χ²)</a> - 0.001* </li>-->
+<!--      </ol>-->
+<!--    </td>-->
+<!--  </tr>-->
+<!--<tbody>-->
+<!--</table>-->
 
 <script type="text/javascript">
     function update_params(newparams) {
@@ -131,14 +132,14 @@
     var param = {};
     param.dp='1102';
     param.jack='0';
-    param.lmax='200';
+    param.lmax='500';
     param.figtype='c6';
-    param.pb='_pureB_cm_overfreq';
+    param.pb='';
     param.bpwf='';
     param.simrd='';
     param.cross1='1';
     param.cross2='3';
-    param.version='B2019';
+    param.version='B2017+B2018';
     param.year = '2019';
     param.sim = '99';
 
@@ -229,6 +230,9 @@
             exmap['3'] = 'K2015_220';
 
             break;
+    case 'B2017+B2018':
+      vs = '6606';
+      daughter = 'gh';
         }
 
         // Build map extention to use based on choices.
@@ -242,10 +246,9 @@
             figtype=param.figtype;
         }
 
-        fig.fig1.fname = 'final/' + vs + '/real_' + daughter
-            + '_filtp3_weight3_gs_dp' + param.dp
-            + '_jack' + param.jack + '1'
-            + param.pb + rot + bpwf + param.simrd + '_' + foc + '_'
+        fig.fig1.fname = 'final/' + vs + '/fakefinal_' + daughter
+            + '_jack' + param.jack + '_global_pol_fits_bins_2_10_offdiag_0_normal_repsim_6614xxx8_chi2_'
+            //+ param.pb + rot + bpwf + param.simrd + '_' + foc + '_'
             + param.lmax + '_' + figtype + '.png';
 	fig.chitab.fname = param.year + '/pte_dist_B' + param.year + '_499.png';    
 
@@ -267,8 +270,8 @@
         '1102 rg+dp + meas diff ellipt','1102'
         ];
     pager.pb=['Estimator',
-        'normal','_cm_overfreq',
-        'kendrick','_pureB_cm_overfreq',
+        'normal','',
+        //'kendrick','_pureB_cm_overfreq',
         // 'matrix','_pureB_matrix_cm_overfreq'
         ];
     pager.bpwf=['BPWF',
@@ -317,13 +320,13 @@
     ];
     pager.simrd=['SimType',
         // Row 1
-        'lcdm+noi','',
+        'lcdm+noi+dust','',
         '','',
         // Row 2
 //        'lcdm+noi+r=0.2','_simr',
 //        '','',
         // Row 3
-        'lcdm+noi+dust','_simd'
+        //'lcdm+noi+dust','_simd'
         ];
     pager.lmax=['lmax',
         '200','200',
@@ -340,11 +343,12 @@
         'K_220','3'
         ];
     pager.version=['Version',
-        'B2016','B2016',
-        'B2017','B2017',
-        'B2018','B2018',
-		'B2019','B2019',
-		'B2020','B2020'
+        //'B2016','B2016',
+        //'B2017','B2017',
+        //'B2018','B2018',
+		//'B2019','B2019',
+		//'B2020','B2020'
+            'B2017+B2018','B2017+B2018',
         ];
     pager.year=['Year',
 	'2016','2016',
