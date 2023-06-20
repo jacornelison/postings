@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <title>B2016 2017 2018 Final Pager with 499 realizations — HH</title>
+  <!--link rel="stylesheet" type="text/css" href="style.css"-->
+  <!-- Load up MathJax for math notation
+       Note that for local testing, the http: needs to be prepended.
+       Before publishing to the web server, restore the SSL-agnostic
+       version by ensuring the address starts with just //
+  -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+  </script>
+  <script type="text/javascript"
+      src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+</head>
+
+<body>
+<!-- Include the group's standard pager -->
+<script src="pager.js"></script>
+
+<header>
+  <h1>B2016 2017 2018 Final Pager with 499 realizations, 20200810</h1>
+
+  <time datetime="2020-08-10" class="published updated">
+    2020 Aug 10
+  </time> —
+  HH
+</header>
+
+<hr>
+<p>This is the B2016/17/18 final pager with full 499 sims, with minor updates compare to the 20190717 posting. </p>
+
+<hr>
+
+<section><h2>Final pager</h2>
+  <p>Things to remember:</p>
+<ol>
+<li>
+	No polarization angl rotation has been applied.
+</li>
+<li>
+	No matrix.
+</li>
+</ol>
+
+<p>
+<p><b>Low/High PTEs Summary
+<ul>
+<li><p>2016</b>
+<table>
+<thead style="font-weight:bold;text-align:center;">
+  <tr>
+    <td>Bandpowers 1–5</td>
+    <td>Bandpowers 1–9</td>
+  </tr>
+</thead>
+<tbody style="vertical-align:text-top;">
+  <tr>
+    <td>
+      <ol>
+<li><a href="javascript:update_params({dp:'1102', jack:'3', lmax:'200', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2016'});">EE 1st/2nd half jackknife (χ)</a> - 1.00</li>
+
+<li><a href="javascript:update_params({dp:'1102', jack:'5', lmax:'200', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2016'});">BB phase jackknife (χ)</a> - 0.001</li>
+      </ol>
+    </td>
+    <td>
+      <ol>
+<li><a href="javascript:update_params({dp:'1102', jack:'1', lmax:'500', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', version:'B2016'});">BB deck jackknife (χ)</a> - 0.997</li>
+
+<li><a href="javascript:update_params({dp:'1102', jack:'3', lmax:'500', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', version:'B2016'});">EE 1st/2nd half jackknife (χ)</a> - 0.999</li>
+
+<li><a href="javascript:update_params({dp:'1102', jack:'7', lmax:'500', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', version:'B2016'});">EE alt deck jackknife (χ)</a> - 0.995</li>
+      </ol>
+    </td>
+  </tr>
+<tbody>
+</table>
+
+<li><b>2017</b>
+<table>
+<thead style="font-weight:bold;text-align:center;">
+  <tr>
+    <td>Bandpowers 1–5</td>
+    <td>Bandpowers 1–9</td>
+  </tr>
+</thead>
+<tbody style="vertical-align:text-top;">
+  <tr>
+    <td>
+      <ol>
+<li><a href="javascript:update_params({dp:'1102', jack:'7', lmax:'200', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2017'});">EE alt deck jackknife (χ)</a> - 0.994</li>
+      </ol>
+    </td>
+    <td>
+    </td>
+  </tr>
+<tbody>
+</table>
+
+<li><b>2018</b>
+<table>
+<thead style="font-weight:bold;text-align:center;">
+  <tr>
+    <td>Bandpowers 1–5</td>
+    <td>Bandpowers 1–9</td>
+  </tr>
+</thead>
+<tbody style="vertical-align:text-top;">
+  <tr>
+    <td>
+      <ol>
+<li><a href="javascript:update_params({dp:'1102', jack:'4', lmax:'200', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2018'});">EE tile jackknife (χ)</a> - 0.001</li>
+
+<li><a href="javascript:update_params({dp:'1102', jack:'4', lmax:'200', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2018'});">EE tile jackknife (χ²)</a> - 2e-4</li>
+
+<li><a href="javascript:update_params({dp:'1102', jack:'c', lmax:'200', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', cross1:'1', cross2: '3', version:'B2018'});">EE tile inner/outer jackknife (χ)</a> - 0.002</li>
+      </ol>
+    </td>
+    <td>
+      <ol>
+<li><a href="javascript:update_params({dp:'1102', jack:'4', lmax:'500', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', version:'B2018'});">EE tile jackknife (χ²)</a> - 0.002</li>
+<li><a href="javascript:update_params({dp:'1102', jack:'5', lmax:'500', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', version:'B2018'});">EB phase jackknife (χ)</a> - 0.995</li>
+<li><a href="javascript:update_params({dp:'1102', jack:'d', lmax:'500', figtype:'c1', pb:'_pureB_cm_overfreq', bpwf:'', simrd:'', version:'B2018'});">EB moon jackknife (χ²)</a> - 0.005</li>
+      </ol>
+    </td>
+  </tr>
+<tbody>
+</table>
+
+<script type="text/javascript">
+    function update_params(newparams) {
+        for (key of Object.keys(param)) {
+            if (newparams[key] !== undefined) {
+                param[key] = newparams[key];
+            }
+        }
+        plupdate();
+    }
+    // Parameters that the user can set using the
+    // pager buttons.  These are the options that will
+    // come up by default when the page first loads.
+    // You can define whatever parameters you like,
+    //   param.something='value';
+    var param = {};
+    param.dp='1102';
+    param.jack='0';
+    param.lmax='200';
+    param.figtype='c6';
+    param.pb='_pureB_cm_overfreq';
+    param.bpwf='';
+    param.simrd='';
+    param.cross1='1';
+    param.cross2='3';
+    param.version='B2018';
+    param.year = '2018';
+    param.sim = '499';
+
+
+    function make_fignames() {
+        fig.fig1={};
+	fig.chitab={};
+        var rot = '';
+        var daughter = '';
+        var bpwf = param.bpwf;
+
+        // Deal with choosing cross spectra consistently.
+        var c1 = parseInt(param.cross1);
+        var c2 = parseInt(param.cross2);
+        var c11 = Math.min(c1, c2);
+        var c22 = Math.max(c1, c2);
+
+        // Define map names for all possible crosses
+        var exmap = {};
+        // Allow versions to modify the path and map names used:
+        switch (param.version) {
+          case 'K2014':
+            vs = '1351_d';
+            daughter = 'd';
+
+            exmap['1'] = 'K2014_100';
+            exmap['2'] = 'K2014_150';
+            exmap['3'] = 'null';
+
+            break;
+
+          case 'K2015':
+            vs = '1351';
+            daughter = 'e';
+
+            exmap['1'] = 'K2015_100';
+            exmap['2'] = 'K2015_150';
+            exmap['3'] = 'K2015_220';
+
+            break;
+
+          case 'B2016':
+            vs = '3513';
+            daughter = 'f';
+            rot = '_norot';
+            break;
+
+	  case 'B2017':
+	    vs = '3513';
+	    daughter = 'g';
+            rot = '_norot';
+	    break;
+
+          case 'B2018':
+            vs = '3513';
+            daughter = 'h';
+            rot = '_norot';
+            break;
+
+          case 'K2015_norot':
+            vs = '1351_norot';
+            daughter = 'e';
+
+            // This posting is using unrotated final files, which only
+            // includes an annotation for jack0
+            if (param.jack == '0') {
+                rot = '_norot';
+            }
+
+            exmap['1'] = 'K2015_100';
+            exmap['2'] = 'K2015_150';
+            exmap['3'] = 'K2015_220';
+
+            break;
+        }
+
+        // Build map extention to use based on choices.
+        exname = exmap[c11] + 'x' + exmap[c22];
+
+        foc='final';
+        if (param.figtype[0]=='c') {
+            figtype=param.figtype[1];
+            foc='chi2';
+        } else {
+            figtype=param.figtype;
+        }
+
+        fig.fig1.fname = 'final/' + vs + '/real_' + daughter
+            + '_filtp3_weight3_gs_dp' + param.dp
+            + '_jack' + param.jack + '1'
+            + param.pb + rot + bpwf + param.simrd + '_' + foc + '_'
+            + param.lmax + '_' + figtype + '.png';
+	
+	fig.chitab.fname = param.year + '/pte_dist_B' + param.year + '_202008.png';    
+
+    }
+
+    set_figname_fun(make_fignames);
+
+    // Automatically colorize the buttons as they're pressed
+    //   set_autocolor(1,on_color,off_color)
+    //   set_autocolor(0) to turn off this feature
+    set_autocolor(1,'Red','LightBlue');
+
+    // Check if the user is looking for particular settings
+    get_query_words();
+
+    // Setup for automatic pager button writer
+    pager.dp=['Deproj',
+        '1100 rg+dp','1100',
+        '1102 rg+dp + meas diff ellipt','1102'
+        ];
+    pager.pb=['Estimator',
+        'normal','_cm_overfreq',
+        'kendrick','_pureB_cm_overfreq',
+        // 'matrix','_pureB_matrix_cm_overfreq'
+        ];
+    pager.bpwf=['BPWF',
+        'normal','',
+        // 'direct','_directbpwf'
+        ];
+    pager.figtype=['Figure',
+        // Row 1
+        'raw signal+noise','1',
+        '..after noise debias','2',
+        // Row 2
+        'Filter/beam suppression factors','4',
+        '..after filter/beam correction','6',
+        // Row 3
+        '','',
+        '','',
+        // Row 4
+        'spectra fixed y-axis','c1',
+        'spectra free y-axis','c6',
+        // Row 5
+        'bp devs','c2',
+        'chi2','c3',
+        // Row 6
+        'sum bp devs','c4',
+        'uncertainties','c5'
+        ];
+    pager.jack=['Jack',
+        'none','0',
+        'dk','1',
+        'scan dir','2',
+        '1st/2nd half weights','3',
+        'tile','4',
+        'phase (az)','5',
+        'mux col','6',
+        'alt dk','7',
+        'mux row','8',
+        'tile/dk','9',
+        'FP inner/outer','a',
+        'tile top/bottom','b',
+        'tile inner/outer','c',
+        'moon up/down','d',
+        'diffpoint best/worst','e',
+        '','',
+        '','','','',
+        'experiment','f',
+    ];
+    pager.simrd=['SimType',
+        // Row 1
+        'lcdm+noi','',
+        '','',
+        // Row 2
+//        'lcdm+noi+r=0.2','_simr',
+//        '','',
+        // Row 3
+        'lcdm+noi+dust','_simd'
+        ];
+    pager.lmax=['lmax',
+        '200','200',
+        '500','500'
+        ];
+    pager.cross1=['Cross 1',
+        'K_95','1',
+        'K_150','2',
+        'K_220','3'
+        ];
+    pager.cross2=['Cross 2',
+        'K_95','1',
+        'K_150','2',
+        'K_220','3'
+        ];
+    pager.version=['Version',
+        'B2016','B2016',
+        'B2017','B2017',
+        'B2018','B2018',
+        ];
+    pager.year=['Year',
+	'2016','2016',
+	'2017','2017',
+	'2018','2018',
+	];
+    pager.sim=['rlz',
+	'99','99',
+	'199','199',
+	'299','299',
+	'499','499',
+	];
+  </script>
+
+
+  <style type="text/css">
+    .mainimage {
+      max-width: 1000px;
+      /* Resize the image for IE6 */
+      width: expression(this.width > 1000 ? 1000: true);
+    }
+    table#mapspager a { color: #0000ff; }
+    table#mapspager hr { margin: 8px 0px; }
+    table#mapspager td { vertical-align: middle; }
+    table#mapspager, table#mapspager table { border-spacing: 2px; }
+  </style>
+
+  <table border="1" id="mapspager">
+    <thead style="font-weight:bold; text-align:center;">
+      <tr><td>Figure 1</td><td>Final Pager</td></tr>
+    </thead>
+    <tr>
+      <td valign="top">
+          <script type="text/javascript">
+            auto_pager(['dp','pb','bpwf','figtype','jack','simrd',
+                        'lmax','version'],
+                        'maxcols','2','style','2','figname','fig1');
+          </script>
+      </td>
+      <td align="left" width="900">
+        <a href="javascript:location.href=fig.fig1.link;">
+          <img src="" name="fig1" class="mainimage"
+            onerror="onImgError(this);">
+        </a>
+      </td>
+    </tr>
+  </table>
+
+  <h3>Legend for first half of the "Figure types":</h3>
+    <ul>
+      <li><span style="color:red; font-weight:bold;">Thick red</span> :
+          ΛCDM unlensed scalars, zero for jacks</li>
+      <li><span style="font-weight:bold;">Thick black</span> :
+          Real data</li>
+      <li>Colored : ΛCDM lensed scalars + noise realizations</li>
+    </ul>
+    <p>Note: Noise Debias done with LCDM unlensed scalars realizations</p>
+
+  <h3>Legend for second half of the "Figure types":</h3>
+    <h4>spectra</h4>
+
+    <ul>
+      <li><span style="color:red; font-weight:bold;">thick red</span> for
+          all but BB : ΛCDM unlensed scalars, zero for jacks</li>
+      <li><span style="color:red; font-weight:bold;">thick red</span> for BB
+          : ΛCDM tensors (\(r=0.2\)), zero for jacks</li>
+      <li><span style="color:gray;">thin gray</span> :
+          s+n simulations with ΛCDM lensed scalars as signal (sim type 7),
+          debiased with ΛCDM unlensed scalars (sim type 2) and noise (sim
+          type 6)</li>
+      <li><span style="color:gray; font-weight:bold;">thick gray</span> :
+          mean of sims (<span style="color:gray;">thin gray</span>)</li>
+      <li><span style="color:red;">red points</span> with <span
+          style="color:blue;">blue error bars</span> :
+          real data, debiased with the ΛCDM unlensed scalars and signflip
+          noise (as s+n sims), uncertainties from the spread of the s+n
+          sims (<span style="color:gray;">thin gray</span>)</li>
+    </ul>
+
+    <h4>bp devs</h4>
+    <ul>
+      <li><span style="color:gray;">thin gray</span> :
+          s+n sims</li>
+      <li><span style="color:red;">thin red</span> :
+          1 sigma contours</li>
+      <li><span style="color:green;">thin green</span> :
+          2 sigma contours</li>
+      <li><span style="font-weight:bold;">thick black + markers</span> :
+          real data</li>
+      <li><span style="color:red;">red markers</span> :
+          bins that go into chi2 analysis</li>
+    </ul>
+
+    <p>Note: The contours mark the simulated bandpower in each bin closest
+    to the respective percentile.</p>
+
+    <h4>chi2</h4>
+    <ul>
+      <li><span style="color:red;">red vertical</span> :
+          real data</li>
+      <li><span style="color:blue;">blue</span> :
+          distribution from s+n sims</li>
+      <li><span style="color:green;">green</span> :
+          chi2 probability distribution fitted to <span
+          style="color:blue">blue</span></li>
+    </ul>
+
+    <h4>sum bp devs</h4>
+    <ul>
+      <li><span style="color:red;">red vertical</span> :
+          real data</li>
+      <li><span style="color:blue;">blue</span> :
+          distribution from s+n sims</li>
+    </ul>
+
+    <h4>uncertainties</h4>
+    <ul>
+      <li><span style="color:red;">red</span> :
+          std of s+n sims</li>
+      <li><span style="color:blue;">blue</span> :
+          std of noise-only sims</li>
+    </ul>
+
+    <p>Note: Remember that bandpower is a variance. Hence bandpower error bar
+    is the std of a variance. This means noise and sample fluctuation
+    components straight add, no quadrature — i.e. the difference between blue
+    and red is the signal fluctatution component.</p>
+
+</section>
+
+<section><h2>PTE distributions</h2>
+  <p>The PTE values shown here are based on the Kendrick pure-B estimator.</p>
+
+  <table border="1" id="chitab">
+    <thead style="font-weight:bold; text-align:center;">
+      <tr><td>Figure 2</td><td>Hist. of chi and chi2</td></tr>
+    </thead>
+    <tr>
+      <td valign="top">
+          <script type="text/javascript">
+            auto_pager(['year'],
+                        'maxcols','2','style','2','figname','chitab');
+          </script>
+      </td>
+      <td align="left" width="1200">
+        <a href="javascript:location.href=fig.chitab.link;">
+          <img src="" name="chitab" class="mainimage"
+            onerror="onImgError(this);">
+        </a>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  <p> Below are the tables for the PTEs, the <b>bold numbers</b> indicate the pte are < 0.01 | > 0.99. And number with asterisk (*) is when the real data fall outside of the simulated distribuation, and the PTE is calculated with the theoretical fit.   
+  <h3>B2016 PTE \(\chi\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2016/pte_dist_chi.html"></iframe>
+
+  <h3>B2016 PTE \(\chi^2\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2016/pte_dist_chi2.html"></iframe>
+
+  <h3>B2017 PTE \(\chi\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2017/pte_dist_chi.html"></iframe>
+
+  <h3>B2017 PTE \(\chi^2\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2017/pte_dist_chi2.html"></iframe>
+
+  <h3>B2018 PTE \(\chi\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2018/pte_dist_chi.html"></iframe>
+
+  <h3>B2018 PTE \(\chi^2\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2018/pte_dist_chi2.html"></iframe>
+
+
+</section>
+
+<hr>
+
+<h3>Linked previous postings</h3>
+
+<style type="text/css">
+  /* Also make a postings list align correctly */
+  .postinglist {
+    display: block; /* Fallback */
+    display: table;
+    margin: 0px 40px;
+    font-size: smaller;
+  }
+  .postinglist > * {
+    display: block; /* Fallback */
+    display: table-row;
+  }
+  .postinglist > * > * {
+    display: inline; /* Fallback */
+    display: table-cell;
+    padding: 0.2em 0;
+  }
+  .postinglist > * > *:first-child {
+    font-weight: bold;
+    text-align: right;
+    padding-right: 1em;
+  }
+</style>
+<dl class="postinglist">
+
+  <a class="posting" href="../20200722_inconsistency_b3_sims/">
+    <dt>[20200722_inconsistency_b3_sims]</dt>
+    <dd>Inconsistency in Bicep3 sims number (HH)</dd>
+  </a>
+
+  <a class="posting" href="../20191209_B18_simvar/">
+    <dt>[20191209_B18_simvar]</dt>
+    <dd>Inconsistency in B2017 2018 sim set, fixed (HH)</dd>
+  </a>
+
+  <a class="posting" href="../20191113_B2017_simvar/">
+    <dt>[20191113_B2017_simvar]</dt>
+    <dd>Inconsistency in B2017 sim set (JBW)</dd>
+  </a>
+
+  <a class="posting" href="../20190717_b18_final_499/">
+    <dt>[20190717_b18_final_499]</dt>
+    <dd>Bicep3 b18 final pager (HH)</dd>
+  </a>
+
+</dl>
+
+
+  <script type="text/javascript">
+    plupdate();
+  </script>
+
+
+
+
+</body>
