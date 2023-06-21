@@ -24,7 +24,7 @@
 <script src="pager.js"></script>
 
 <header>
-  <h1>Isotropic Polarization Rotation Analysis #: Final Pager with 50 Sims (draft)</h1>
+  <h1>Isotropic Polarization Rotation Analysis #: Final Pager with 50 Sims (blinded) (draft)</h1>
 
   <time datetime="2023-xx-xx" class="published updated">
     2023 Mmm dd
@@ -33,6 +33,14 @@
 </header>
 
 <hr>
+
+<p>
+  Notes:
+  <ul>
+  <li>No debiasing</li>
+  <li>All jacks are still blinded. "real" data here is RLZ 1 from sims.</li>
+</ul>
+</p>
 
 <!--<p>This is the B2019/20 final pager with the complete set of 499 sims. This posting is a followup to <a href="../20211020_B201920_final_99/">B2019/20 first 99 realizations final pager.</a></li> and should be viewed along with the <a href="../20210924_B2019_B2020_mapspager/">B2019/20 maps pager</a>. -->
 
@@ -142,6 +150,7 @@
     param.version='B2017+B2018';
     param.year = '2019';
     param.sim = '99';
+    param.bins = '10';
 
 
     function make_fignames() {
@@ -233,6 +242,9 @@
     case 'B2017+B2018':
       vs = '6606';
       daughter = 'gh';
+      break;
+
+
         }
 
         // Build map extention to use based on choices.
@@ -247,7 +259,8 @@
         }
 
         fig.fig1.fname = 'final/' + vs + '/fakefinal_' + daughter
-            + '_jack' + param.jack + '_global_pol_fits_bins_2_10_offdiag_0_normal_repsim_6614xxx8_chi2_'
+            + '_jack' + param.jack + '_global_pol_fits_bins_2_'+param.bins
+                +'_offdiag_0_normal_repsim_6614xxx8_chi2_'
             //+ param.pb + rot + bpwf + param.simrd + '_' + foc + '_'
             + param.lmax + '_' + figtype + '.png';
 	fig.chitab.fname = param.year + '/pte_dist_B' + param.year + '_499.png';    
@@ -266,7 +279,7 @@
 
     // Setup for automatic pager button writer
     pager.dp=['Deproj',
-        '1100 rg+dp','1100',
+        //'1100 rg+dp','1100',
         '1102 rg+dp + meas diff ellipt','1102'
         ];
     pager.pb=['Estimator',
@@ -275,19 +288,19 @@
         // 'matrix','_pureB_matrix_cm_overfreq'
         ];
     pager.bpwf=['BPWF',
-        'normal','',
+        'mask','',
         // 'direct','_directbpwf'
         ];
     pager.figtype=['Figure',
         // Row 1
-        'raw signal+noise','1',
-        '..after noise debias','2',
+        //'raw signal+noise','1',
+        //'..after noise debias','2',
         // Row 2
-        'Filter/beam suppression factors','4',
-        '..after filter/beam correction','6',
+        //'Filter/beam suppression factors','4',
+        //'..after filter/beam correction','6',
         // Row 3
-        '','',
-        '','',
+        //'','',
+        //'','',
         // Row 4
         'spectra fixed y-axis','c1',
         'spectra free y-axis','c6',
@@ -315,8 +328,8 @@
         'moon up/down','d',
         'diffpoint best/worst','e',
         '','',
-        '','','','',
-        'experiment','f',
+        //'','','','',
+        //'experiment','f',
     ];
     pager.simrd=['SimType',
         // Row 1
@@ -363,6 +376,10 @@
 	//'299','299',
 	//'499','499',
 	];
+    pager.bins=['bins',
+    '9','10',
+      '14','15',
+    ];
   </script>
 
 
@@ -386,7 +403,7 @@
       <td valign="top">
           <script type="text/javascript">
             auto_pager(['dp','pb','bpwf','figtype','jack','simrd',
-                        'lmax','version'],
+                        'bins','version'],
                         'maxcols','2','style','2','figname','fig1');
           </script>
       </td>
