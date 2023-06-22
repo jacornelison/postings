@@ -653,25 +653,44 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
         </figcaption>
     </figure>
 
-    <!--
-    <h3 id="phivsobs">Overall Pair Angle fluctuation per-Obs</h3>
-
-    <p>We see fluctuations on the per-pair angle averaged over all pairs in a given observation of ~0.04&deg;.
-        Because we have a ~1.5 degree spread in angle across the focal plane, a shift of O(0.04&deg;) is easy to miss unless you subtract the median angle for that pair across all observations before averaging across pairs within a single observation.</p>
-
-    <p>The plot below shows the $\phi_{pair}$ median-subtracted per-pair and then averaged per-observation. The error bars are the 1&sigma; standard deviations of the median-subtracted distributions. </p>
+    <p>
+        When combined into pairs, this effect translates into a scatter on angles of 0.06&deg; but imparts no bias on the mean as seen in the figure below. And of course, when we average further over all ten observations, the resulting uncertainty drops to 0.06/&radic;10 = 0.019&deg;.
+    </p>
 
     <figure>
-        <img src="figs/phi_pair_vs_obs_medsub.png" width="70%">
+        <img src="figs/pair_hist_corrsim.png" width="60%">
         <figcaption>
 
         </figcaption>
+
     </figure>
 
-    <p>The major question that needs to be answered is whether we are confident that the value these angles average down to is the right one. Perhaps it would be best to include this 0.04&deg; fluctuation in our systematic uncertainty just to be safe?</p>
-    <p>So far, I have not been able to find any correlations with these offsets that would point to a particular systematic (correlating with DK angle, for instance).</p>
+        <h3 id="phivsobs">Overall Pair Angle fluctuation per-Obs</h3>
 
--->
+        <p>
+            That said, when we look at A vs. B between each observation we do see some fluctuation in the mean of the whole distribution up to 0.1&deg; which is not predicted by the correlated noise discussed above. The plot below is the same plot as Fig. 4.2 in the previous section, but we're now averaging the A and B detectors per observation. The error bars are the errors-on-the-mean of the distributions.
+        </p>
+
+    <figure>
+        <img src="figs/mean_pol90_vs_pol0_type5.png">
+        <figcaption>
+            Same plot as Fig 4.2 except the distributions are averaged per observation. Error bars are the Error-on-the-means of the distributions.
+        </figcaption>
+    </figure>
+
+    <p>When combined into pairs, this translates to a fluctuation in angle of up to ~0.04&deg;. The plot below shows the $\phi_{pair}$ median-subtracted per-pair and then averaged per-observation. The error bars are the 5&times; the error-on-the-means. </p>
+
+        <figure>
+            <img src="figs/phi_pair_vs_obs_medsub.png" width="70%">
+            <figcaption>
+
+            </figcaption>
+        </figure>
+
+        <p>Unfortunately, I haven't been able to find anything in the data or think of anything that explains this fluctuation. My proposal is to include an addition 0.04&deg; to account for it.</p>
+        <p>So far, I have not been able to find any correlations with these offsets that would point to a particular systematic (correlating with DK angle, for instance).</p>
+
+
 
 </section>
 

@@ -48,7 +48,7 @@ fd_2018 = fd;
 fd_2018 = get_pair_params(fd_2018,ind0,ind90);
 [fd_2018, phis_2018, phi_pair_2018, xpols_2018, poleff_pair_2018,~,~,~] = get_pol_params_per_obs(fd_2018,p);
 
-%%
+%
 clc
 load('z:/dev/rps/rps_obs_info.mat')
 %load('z:/dev/rps/rps_beam_fits_type5_withbparam.mat')
@@ -61,7 +61,7 @@ fd = rps_cut_fitdata(fd,p,[]);%,1,figdir);
 fd = get_pair_params(fd,ind0,ind90);
 [fd, phis, phi_pair, xpols, poleff_pair,n1s,n2s,amps] = get_pol_params_per_obs(fd,p,scheds);
 
-%%
+%
 load('z:/pipeline/beammap/viridis_cm.mat')
 load('z:/dev/rps/sch_type5.mat')
 load('z:/dev/rps/pm.mat')
@@ -359,10 +359,11 @@ end
 %% Angle VS. obs
 %load('z:/dev/rps/rps_phi_final_2022.mat')
 P = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
+L = sum(~isnan(P),2);
 fig = figure(2);
 fig.Position(3:4) = [450 420];
 clf; hold on
-errorbar(1:10,nanmedian(P,2),nanstd(P,[],2),'.','CapSize',0,'LineWidth',1.25)
+errorbar(1:10,nanmedian(P,2),nanstd(P,[],2)./sqrt(L)*5,'.','CapSize',0,'LineWidth',1.25)
 plot(1:10,nanmedian(P,2),'.','MarkerSize',14)
 %plot([-180 180],polyval(C,[-180 180]),'k--')
 
@@ -375,7 +376,7 @@ ylabel({'\phi_{pair}-md(\phi) [Deg]'})
 title({'\phi_{pair} Vs. Obs','Median-subtracted per pair, avg''d per obs'})
 pbaspect([1 1 1])
 fname = 'phi_pair_vs_obs_medsub';
-%saveas(fig,fullfile(figdir,fname),'png')
+saveas(fig,fullfile(figdir,fname),'png')
 
 %% Angle VS. DK overall
 %load('z:/dev/rps/rps_phi_final_2022.mat')
@@ -857,6 +858,44 @@ pbaspect([1 1 1])
 fname = 'pol90_vs_pol0_type5.png';
 %saveas(fig,fullfile(figdir,fname),'png')
 
+%% Plot psi0 vs psi90 but means and with color
+clc
+
+fig = figure(1);
+fig.Position(3:4) = [600 500];
+clf; hold on;
+
+V1 = atand(tand(phis(:,ind0)-nanmedian(phis(:,ind0),1)));
+V2 = atand(tand(phis(:,ind90)-nanmedian(phis(:,ind90),1)));
+legttls = titles;
+%ttls{end+1} = 'Slope=-1';
+lims = [-1 1]*0.12;
+plot(lims,-lims,'--','Color',[1 1 1]*0.75,'LineWidth',1)
+clear z
+for obsind = 1:length(dks)
+    idx = V1(obsind,:)~=0 & V2(obsind,:)~=0;
+    M1 = nanmedian(V1(obsind,idx)');
+    M2 = nanmedian(V2(obsind,idx)');
+    S1 = nanstd(V1(obsind,idx)');
+    S2 = nanstd(V2(obsind,idx)');
+    L = length(find(~isnan(V1(obsind,idx))&~isnan(V2(obsind,idx))));
+    
+    %z(obsind) = plot(V1(obsind,idx)',V2(obsind,idx)','.','MarkerSize',14);%,'Color',cmlines(1,:));
+    z(obsind) = errorbar(M1,M2,S1/sqrt(L),S1/sqrt(L),S2/sqrt(L),S2/sqrt(L),'.','MarkerSize',20,'CapSize',0,'LineWidth',1,'Color',cmlines(obsind,:));
+end
+xlim(lims)
+ylim(lims)
+grid on
+xlabel({'Mean \phi_{d,0}-Md(\phi_{d,0}) [Degrees]',''})
+ylabel({'','Mean \phi_{d,90}-Md(\phi_{d,90}) [Degrees]'})
+%leg = legend(z,legttls);
+%title(leg,'DK''s:')
+title('Mean Pol 90 Vs Pol 0')
+pbaspect([1 1 1])
+
+fname = 'mean_pol90_vs_pol0_type5.png';
+saveas(fig,fullfile(figdir,fname),'png')
+
 %% Now plot the covariance vs DK
 [C D] = deal([]);
 for obsind = 1:length(dks)
@@ -1079,11 +1118,30 @@ text(0.1,0.4,{sprintf('0/90 Cov: %1.3f [Deg^2]',C(1,2))...
 fname = 'pol90_vs_pol0_sim.png';
 %saveas(fig,fullfile(figdir,fname),'png')
 
-%%
+%% Make a histogram of the sim'd per-pair angles
 clf;
 [Ppair,Peff] = calc_pair_diff_pol(Pa,Pb,zeros(size(Pa)),zeros(size(Pb)));
-hist(Ppair)
-std(Ppair)
+%Ppair = nanmean([Pa; Pb],1)-45;
+
+fig = figure(995753);
+fig.Position(3:4) = [600 500];
+clf; hold on;
+
+edges = linspace(-1,1,30)*0.30;
+N = histc(Ppair,edges);
+b = bar(edges, N, 'histc');
+M = mean(Ppair);
+S = std(Ppair);
+L = length(Ppair);
+grid on
+xlim([edges([1 end])])
+title({'Histogram of Pairs fit to Mod Curves',...
+    'with Sim''d Corr. Amp-scaling Noise',...
+    sprintf('M: %0.4f | S: %0.3f | EOM: %0.4f',M,S,S/sqrt(L))...
+    })
+xlabel('\phi_{pair} [Deg]')
+fname = 'pair_hist_corrsim.png';
+saveas(fig,fullfile(figdir,fname),'png')
 
 
 %% Grab the mod curves for A/B dets 
@@ -1199,84 +1257,6 @@ end
 toc
 
 
-%% Angle jacks ... drop this for now.
-% Gotta come up with a better method for this.
-
-mxfev = 100000;
-mxiter = 100000;
-options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
-
-clc
-[jack1, jack2] = deal(NaN(length(fd.ch),5));
-tic;
-for chind = 1:length(fd.ch)
-    %if ~isnan(fd.obsnum(chind)) & ismember(dks(fd.obsnum(chind)),[0,90])
-    ch = fd.ch(chind);
-    A = fd.bparam{chind}(6:end);
-    rot_adj = fd.rot{chind}+fd.phi_s(chind);
-    %rot_adj = fd.rot{chind}-dks(fd.obsnum(chind))+90;
-    %angguess = atand(tand(p.chi(ch)+p.chi_thetaref(ch)));
-    parm0 = [fd.phi(chind),fd.xpol(chind), fd.n1(chind), fd.n2(chind),fd.Amp(chind)];
-    lb = [-20 -1e-6 -1e-6 -1e-6 -1e-5] + parm0;
-    ub = [20 1e-6 1e-6 1e-6 1e-5]+parm0;
-    %lb = [-20 -0.5 -10 -10 -10]+parm0;
-    %ub = [20 0.5 10 10 10]+parm0;
-    guess = parm0;
-
-    if fd.nrots(chind) == 13
-        idx = sign(cosd(rot_adj+45))>0;
-        jack1(chind,:) = lsqcurvefit(@rps_get_mod_model,guess,rot_adj(idx),A(idx),lb,ub,options);
-        jack2(chind,:) = lsqcurvefit(@rps_get_mod_model,guess,rot_adj(~idx),A(~idx),lb,ub,options);
-    end
-    %end
-end
-toc
-scatter(1:length(fd.ch),jack1(:,1)-jack2(:,1),12,fd.dk_cen,'filled')
-
-%% Angle jacks with type 9's ... drop this for now.
-% Gotta come up with a better method for this.
-
-mxfev = 100000;
-mxiter = 100000;
-options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
-
-clc
-[jack1, jack2] = deal(NaN(length(fd_type9.ch),5));
-phi = [];
-tic;
-for chind = 1:length(fd_type9.ch)
-    %if ~isnan(fd_type9.obsnum(chind)) & ismember(dks(fd_type9.obsnum(chind)),[0,90])
-    ch = fd_type9.ch(chind);
-    A = fd_type9.bparam{chind}(6:end);
-    rot_adj = fd_type9.rot{chind}+fd_type9.phi_s(chind);
-    %rot_adj = fd_type9.rot{chind}-dks(fd_type9.obsnum(chind))+90;
-    %angguess = atand(tand(p.chi(ch)+p.chi_thetaref(ch)));
-    parm0 = [fd_type9.phi(chind),fd_type9.xpol(chind), fd_type9.n1(chind), fd_type9.n2(chind),fd_type9.Amp(chind)];
-    lb = [-20 -1e-6 -1e-6 -1e-6 -1e-5] + parm0;
-    ub = [20 1e-6 1e-6 1e-6 1e-5]+parm0;
-    %lb = [-20 -0.5 -10 -10 -10]+parm0;
-    %ub = [20 0.5 10 10 10]+parm0;
-    guess = parm0;
-    phi(end+1) = fd_type9.phi(chind);
-    if fd_type9.nrots(chind) == 37
-
-        idx = sign(cosd(rot_adj+45))>0;
-        idx2 = ~idx;
-        %idx = 2:3:length(rot_adj);
-        %idx2 = 3:3:length(rot_adj);
-        jack1(chind,:) = lsqcurvefit(@rps_get_mod_model,guess,rot_adj(idx),A(idx),lb,ub,options);
-        jack2(chind,:) = lsqcurvefit(@rps_get_mod_model,guess,rot_adj(idx2),A(idx2),lb,ub,options);
-    end
-    %end
-end
-toc
-
-clf; hold on;
-%scatter(1:length(fd_type9.ch),jack1(:,1)-jack2(:,1),12,fd_type9.dk_cen,'filled')
-scatter(1:length(fd_type9.ch),phi'-jack1(:,1),12,'filled','Color',cmlines(1,:))
-scatter(1:length(fd_type9.ch),phi'-jack2(:,1),12,'filled','Color',cmlines(2,:))
-%idx = fd_type9.nrots == 37;
-%scatter(1:length(fd_type9.ch)(idx),fd_type9.phi(idx),12,fd_type9.dk_cen,'filled')
 
 
 %% Calculate phi_s_prime
