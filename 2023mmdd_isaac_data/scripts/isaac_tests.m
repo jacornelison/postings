@@ -198,7 +198,7 @@ for fldind = 1:length(flds)
     fd.(flds{fldind}) = [];
 end
 
-[reses, angs, modcurves] = deal({});
+[reses, angs, modcurves, modstds] = deal({});
 rsmax = [];
 thresh = 0.7;
 weighttitles = {'Uniform',sprintf('Amp<%0.1f',thresh),'1/Amp'};
@@ -261,6 +261,7 @@ for prefind = [12:15, 20:42]%20:42
             end
             for di = 1:length(data)
                 a = unique(data{di}.Angle);
+                a0 = a;
                 [R, Rs, T, T2, TIME, TEMP, ISTILTTEMP, ISTEMP] = deal([]);
                 for ai = 1:length(a)
                     aind = data{di}.Angle == a(ai);
@@ -282,7 +283,7 @@ for prefind = [12:15, 20:42]%20:42
 
                 end
                 %R = R./nanmax(R);
-                Rs = Rs./max(R);
+                Rs = Rs./R;
                 rsmax(end+1) = max(Rs);
                 switch wgtind
                     case 1
@@ -427,9 +428,10 @@ for prefind = [12:15, 20:42]%20:42
                     for fldind = 1:length(flds)
                         eval(sprintf('fd.%s(end+1) = %s;',flds{fldind},vals{fldind}))
                     end
-                    angs{end+1} = a;
+                    angs{end+1} = a0;
                     reses{end+1} = R-rps_get_mod_model(parm,a);
                     modcurves{end+1} = R;
+                    modstds{end+1} = Rs;
                 else
                     parms(di,1:length(parm)) = NaN(1,length(parm));
                 end
@@ -820,7 +822,88 @@ end
 fname = 'isaac_homing_vs_backlash.png';
 exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
 
+%% Look at the actual timestreams
 
 
 
 
+%% Look at mod curves. Again?
+% No. Look at the actual timestreams.
+scheds = [22 23]; % pre-obs
+scheds = [12 20:27 30:35]; % in-lab D=0.5m
+
+fig = figure(1);
+fig.Position(3:4) = [1400 680];
+clc
+clf; hold on;
+clear z
+for obsind = scheds
+    idx = find(fd.schnum==obsind);
+    
+    mc = [];
+    ms = [];
+    a = [];
+    for ind = 1:length(idx)
+        a(:, end+1) = angs{idx(ind)};
+        mc(:,end+1) = modcurves{idx(ind)}./fd.A(idx(ind))/2;
+        ms(:,end+1) = modstds{idx(ind)}; 
+    end
+    a = nanmean(a,2);
+    %aind = inrange(abs(a),85,95);
+    m1 = nanmean(mc,2);
+    m2 = nanmean(ms,2);
+    
+    %s = nanstd(mc,[],2);
+    subplot(2,1,1)
+    hold on
+    plot(NaN,NaN,'b')
+    plot(NaN,NaN,'r')
+    plot(NaN,NaN,'g')
+    plot(NaN,NaN,'m')
+    
+    if obsind <20
+        plot(a,m1,'b.-');
+    elseif obsind <27
+        plot(a,m1,'r.-');
+    elseif obsind <34
+        plot(a,m1,'g.-');
+    else
+        plot(a,m1,'m.-');
+    end
+    
+    subplot(2,1,2)
+    hold on
+    plot(NaN,NaN,'b')
+    plot(NaN,NaN,'r')
+    plot(NaN,NaN,'g')
+    plot(NaN,NaN,'m')
+    
+    if obsind <20
+        plot(a,m2,'b.-');
+    elseif obsind <27
+        plot(a,m2,'r.-');
+    elseif obsind <34
+        plot(a,m2,'g.-');
+    else
+        plot(a,m2,'m.-');
+    end
+    
+end
+subplot(2,1,1)
+grid on
+ylim([0 1.1])
+xlim([-180 180])
+legend({'Pole, No Homing','At Pole,W/ Homing','At Harvard, No Homing','At Harvard, With Homing'},'Location','northeastoutside')
+xlabel('Command Angle')
+ylabel({'Mod Curve Amplitudes'})
+
+subplot(2,1,2)
+grid on
+ylim([0 0.012])
+xlim([-180 180])
+legend({'Pole, No Homing','At Pole,W/ Homing','At Harvard, No Homing','At Harvard, With Homing'},'Location','northeastoutside')
+xlabel('Command Angle')
+ylabel({'Mod Curve Timestream','Fractional Uncertainty'})
+
+fname = 'isaac_modcurves_and_uncert.png';
+exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
