@@ -44,7 +44,7 @@
 </p>
 
 <p>
-The goal of this posting is to demonstrate a procedure to split CMB data into subsets and comparing their angles serves as an important consistency check on the as-measured polarization angles before unblinding.
+The goal of this posting discusses a consistency check on the CMB data unique to our birefringence.
 </p>
 
 <hr>
@@ -52,31 +52,30 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
 <section>
     <h2>Cross-checking RPS Polarization Angles</h2>
     <p>
-        The angle we get from a given EB power spectrum (in the absence of birefringence) comes from the fact that the polarization angles we use to make timestreams differ from those we use to make maps.
-        The real BICEP3 CMB data as it current exists uses some generally ideal values for the polarization angles of the detectors when we turn timestreams into maps.
-        Having no hard prior on what to set them to, the polarization angles are set to the same value.
+        For our "Legacy" results (see <a href="JAC2023g"></a>), the non-zero angle we get from a given EB power spectrum (in the absence of birefringence) comes from the fact that the polarization angles we use to make timestreams differ from those we use to make maps.
+        The real BICEP3 CMB data used in BK18 uses some generally ideal values for the polarization angles of the detectors when we turn timestreams into maps.
+        Having no hard prior on what to set them to, the detectors are set to the same value for the polarization angle.
         On the other hand, the angles I measured with the RPS show a detector-to-detector scatter of ~1 deg.
     </p>
 
     <p>
-        <!--We've come up with a procedure to cross-check that the RPS-derived polarization angles without unblinding ourselves to the birefrinence angle.-->
-        That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in the angle between the different subsets.
+         That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in the angle between the different subsets.
         Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle.
         While it doesn't really give us information on the overall angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the pol angles I measured using the RPS.
     </p>
 
-    <p>The angle we fit to the real data as it currently exists will be a combination of the miscalibration angle of the instrument and any celestial isotropic polarization signals</p>
+    <p>The angle we fit to the real data as it currently exists will be a combination of the miscalibration angle of the instrument, ($\alpha_{B3}=\alpha_{TOD}-\alpha_{MAP}$), and any celestial isotropic polarization signal, &beta;:</p>
 
     \begin{equation}
-    \alpha_\text{obs} = \alpha_\text{B3} + \alpha_\text{IPR}
+    \alpha_\text{obs} = \alpha_\text{B3} + \beta
     \end{equation}
 
-    <p>If we split the data into subsets grouped by angle and subtract the angles fit from those subsets, we are left with only a difference between the instrument angles as the celestial signals should cancel-out.</p>
+    <p>If we split the data into subsets grouped by angle and subtract the angles fit from those subsets, we are left with only a difference between the instrument angles as the celestial signals should cancel-out:</p>
 
     \begin{equation}
     \begin{split}
     \Delta\alpha &= \alpha_{\text{obs},i} - \alpha_{\text{obs},j}\\
-    &= \alpha_{\text{B3},i} + \alpha_\text{IPR} - \alpha_{\text{B3},j} - \alpha_\text{IPR}\\
+    &= \alpha_{\text{B3},i} + \beta - \alpha_{\text{B3},j} - \beta\\
     &= \alpha_{\text{B3},i} - \alpha_{\text{B3},j}\\
     \end{split}
     \end{equation}
@@ -84,21 +83,25 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
     <p>
         The figure below shows how the data could be split up.
         The choice is relatively arbitrary, but limited ultimately by the fact that $\sigma_\alpha$ increases with fewer detectors.
-        In this case, I choose to split the pairs evenly into thirds where the mean difference in global rotation angle between the lower-to-middle and middle-to-upper datasets is expected to be ~0.3&deg;.
+        In this case, I choose to split the pairs evenly into thirds where the mean difference in global rotation angle between the lower-to-middle and middle-to-upper datasets is expected to be ~0.3&deg; as predicted by the RPS measurements.
     </p>
 
     <figure>
         <img src="figs/hist_diffphi.png">
         <figcaption>
-            Histogram of the difference between RPS-derived and CMB-derived pair-diff polarization angles. The colored vertical lines denote the intended grouping of the subsets of data.
+            Histogram of the difference between RPS-derived and ideal pair-diff polarization angles. The colored vertical lines denote the intended grouping of the subsets of data.
         </figcaption>
     </figure>
 
+    <p>
+        I created three subsets of B18 sims, 30 realizations each, based on the detector grouping each with their own serial number ('Low'=6607,'Mid'=6608, and 'High'=6609). I then fit the global rotation angle to the EB spectra of each subset and compare the those angles. Because I have to make the individual years of 2016 through 2018 in order to make the three year coadd, I fit angles to the three years individually as well as the B18 coadded maps.
+    </p>
+
     <h3>Output Angle vs. Expectation</h3>
 
-    <p>
-        I created three subsets of B18 sims, 30 realizations each, based on the detector grouping each with their own serial number ('Low'=6607,'Mid'=6608, and 'High'=6609). I then fit the global rotation angle to the EB spectra of each subset and compare the those angles to the angles I expect. Because I have to make the individual years of 2016 through 2018 in order to make the three year coadd, I fit angles to the three years individually as well as the B18 coadded maps.
-    </p>
+<p>
+    In this section, I confirm that I have correctly split the sims into their respective subsets by comparing mean output angle from the sims to the uniform mean of the angles for the detectors used to make the sim TOD's. While various aspects of the sim creation affect the actual weighting of each detector's angles, I've found that assuming a uniform mean for the input angle is approximately true to within a few percent.
+</p>
 
     <p>
         In the figure below, I show results the unlensed-CMB signal (type 2) and Lense-CMB+Noise+Dust (Type 8), type 2 to look at the subsets without noise and type 8 because that's what we'll ultimately be comparing the real CMB data to. I also include an option for selecting between fitting over our typical 9 bandpowers or fitting up to an &ell;-bin of 15.
@@ -128,7 +131,7 @@ The goal of this posting is to demonstrate a procedure to split CMB data into su
     </figure>
 
 <p>
-    For the most part, the output angle is consistent the naive uniform average of the input angles. I do see some deviation which appears to increase as the angles get lower which is readily apparent in the CMB only sims, but gets washed out in the variance of the Lensed BMC+Noise+Dust sims such that it's less than a sigma from the mean. In either case, we can't be assured the uniform average of the RPS angles is what we should be expecting anyway, but it is curious that this assumption seems to be more wrong as the input angle gets larger. This is perhaps something worth looking into in the future, but I think it's fine to move forward for now since it's not a very significant effect.
+    We can see that output angle is consistent with the naive uniform average of the input angles.
 </p>
 
     <h3>Calculating &Delta;&alpha;</h3>

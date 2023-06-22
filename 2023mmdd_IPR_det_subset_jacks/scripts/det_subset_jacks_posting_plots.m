@@ -214,7 +214,7 @@ load('z:/dev/sims/datasplit_jack_alpha_expected.mat')
 cm = colormap('lines');
 mk = {'-','--',':','-.'};
 ebscaling = 0.87;
-lims = [-1.4 -0.2];
+lims = [-1.3 -0.0];
 
 x = size(Asim);
 count = 0;
@@ -232,7 +232,7 @@ for sigind = 1:length(signums)
     for dind = 1:x(2)
         A0 = squeeze(Asim(:,dind,binind,sigind))/ebscaling;
         S0 = squeeze(Ssim(:,dind,binind,sigind))/ebscaling;
-        Aexp0 = Aexp(:,dind)/ebscaling;
+        Aexp0 = Aexp(:,dind);
         %errorbar(Aexp0,A0,S0,'Marker','.','MarkerSize',14)
         z(dind) = errorbar(Aexp0,A0,S0,'.','MarkerSize',14);
 
@@ -240,9 +240,9 @@ for sigind = 1:length(signums)
     plot(lims,lims,'k--')
     legend(z,{'B2016','B2017','B2018','17+18','16+17+18'},'Location','northwest')
     
-    text(-1.3,-1.05,'Low','Rotation',90)
-    text(-0.95,-0.75,'Mid','Rotation',90)
-    text(-0.55,-0.4,'High','Rotation',90)
+    text(-1.10,-1.05,'Low','Rotation',90)
+    text(-0.80,-0.75,'Mid','Rotation',90)
+    text(-0.45,-0.4,'High','Rotation',90)
 
     xlim(lims)
     ylim(lims)
@@ -269,7 +269,7 @@ cm = colormap('lines');
 mk = {'-','--',':'};
 signums = [2, 8];
 % Loop over signals
-ebscaling = 0.87;
+ebscaling = 0.9;
 lims = [0 3.5];
 daughtoffs = linspace(-1,1,length(daughter1))*0.2;
 
