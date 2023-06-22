@@ -151,7 +151,7 @@ figure {
      * text */
     width: 1200px;
     margin-left: -150px;
-    
+
     /* Figures should span the entire page width even though the body
      * doesn't necessarily span that far. */
     /*width: -webkit-calc(100vw - 10*2 * 32px);*/
