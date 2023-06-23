@@ -1397,15 +1397,20 @@
         When allowing the mirror free, the scatter on the FPU angle is 0.012&deg; when only fitting the angle and goes up to 0.026&deg; when fitting both the angle and translation -- I think this is because adding translation as a free parameter is lowering the overall constraining power on the angle.
     </p>
 
-    <b>Q: How does this compare to the uncertainty prediction from naive error propagation?</b>
-    <p> This 0.012&deg; should be representative of the combination of statistical and systematic uncertainty on the FPU angle.
-        We can see how this compares to the total systematic uncertainty we predict from propagating errors through the pointing model.
+    <h3>Uncertainties from Error Propagation</h3>
+    <p> This 0.012&deg; should be thought of a lower limit of the combination of statistical and systematic uncertainty on the FPU angle.
+        We combine this with with the uncertainty we predict from propagating errors through the pointing model to get the total systematic uncertainty from the pointing model.
+    </p>
+    <p>
         In previous work, I performed a basic error propagation on pointing model inputs by running fake detector centers through the pointing model with ideal parameters and then with maximally offset input parameters one-by-one and comparing the output projection angle of the focal plane between the two (see Table 4 of my <a href="Cornelison_Research_Project_Report.pdf" target="_blank">Research Exam Report</a>).</p>
-    <p>I repeat that exercise here, including errors from starpointing, source and mirror. I get the uncertainty for the starpointing inputs from the repeatability from measurement-to-measurement (i.e. the S.Dev. over a year's worth of starpointings). For the source, the mast is the primary contributor to uncertainty, I assume the uncertainty in elevation is negligible, but the uncertainty in Az can be characterized by the tilt meter from which I get 0.011&deg;. For the mirror, I allow the parameters to be fit per-rasterset and I estimate a &sigma; of 6e-4 / 9e-4 for tilt and roll respectively from resampling with replacement. The individual contributions to &sigma;<sub>FPU</sub> for each input are tabulated below along with a total error of 0.010&deg; -- to compare to our 0.012&deg; scatter from the fits.
+    <p>I repeat that exercise here, including errors from starpointing, source and mirror. I get the uncertainty for the starpointing inputs from the repeatability from measurement-to-measurement (i.e. the S.Dev. over a year's worth of starpointings). For the source, the mast is the primary contributor to uncertainty, I assume the uncertainty in elevation is negligible, but the uncertainty in Az can be characterized by the tilt meter from which I get 0.011&deg;. For the mirror, I allow the parameters to be fit per-rasterset and I estimate a &sigma; of 6e-4 / 9e-4 for tilt and roll respectively from resampling with replacement. The individual contributions to &sigma;<sub>FPU</sub> for each input are tabulated below. The timescales at which the mount, source, and mirror uncertainties contribute is different, but we can be conservative and just add them in quadrature to get a total error of 0.010&deg; which is still very small. Combining with the scatter from the FPU angle fits in quadrature we get 0.016&deg;.
     </p>
 
     <figure class="table">
         <table class="results">
+            <tr>
+                <th colspan="3">Error Propagation</th>
+            </tr>
             <tr>
                 <th>Input</th>
                 <th>&sigma;<sub>input</sub></th>
@@ -1468,26 +1473,11 @@
             </tr>
         </table>
         <figcaption>
-            
+        Total is the &sigma;<sub>FPU</sub> from all inputs added in quadrature.
         </figcaption>
     </figure>
 
 
-<h3>Q: Why did I choose to fit at the per-rasterset level?</h3>
-
-    <p>
-        There is likely an optimum timescale over which to fit mirror parameters, but there are a few which are easier to do because they correspond to a natural quantization of the RPS data.
-        The RPS data are most easily split along four hierarchies which correspond with four different timescales: Across the whole campaign -- ~1 month; per-observation -- ~1.5 days, covering the whole focal plane once; per-schedule -- ~13 hours, covering 1/3 focal plane; and per-rasterset -- ~40 minutes, covering 1/60 focal plane.
-    </p>
-<p>
-    In the quiver plots above, when clicking between the two observations at DK=68, it is obvious to me that the fluctuations are significant between observations so we want to fit on timescales faster than that so I'm left with the option to fit either per-schedule or per-rasterset.</p>
-    <p>
-        The obs at DK=0 makes it easier to see that the observations are broken apart by schedule into vertical columns WRT the mirror with X<sub>m</sub> at ~-5 and +3 delimiting where the schedules are.
-        DK=45 and Dk=-81 show sharp transitions in the residuals between the schedules at X<sub>m</sub>=-5 which rules out long-timescale gradients across the focal plane making another strong argument to fit at least per-schedule.
-    </p>
-    <p>
-        In mirror-fixed coordinates, I always map the focal plane starting in positive Y<sub>m</sub> and moving toward the negative, which means we move forward in time as we move downward along a given column of the residuals. We can see for many observations a significant gradient in the residuals as we scan the column vertically, which tells me that the fluctuations occur faster than the length of a schedule and thus it made most sense to fit at the per-rasterset level.
-</p>
 
 
 </section>
@@ -1497,6 +1487,21 @@
 
 <section class="appendix">
 <h2 class="appendix">Appendix</h2>
+    <h3>Q: Why did I choose to fit at the per-rasterset level?</h3>
+
+    <p>
+        There is likely an optimum timescale over which to fit mirror parameters, but there are a few which are easier to do because they correspond to a natural quantization of the RPS data.
+        The RPS data are most easily split along four hierarchies which correspond with four different timescales: Across the whole campaign -- ~1 month; per-observation -- ~1.5 days, covering the whole focal plane once; per-schedule -- ~13 hours, covering 1/3 focal plane; and per-rasterset -- ~40 minutes, covering 1/60 focal plane.
+    </p>
+    <p>
+        In the quiver plots above, when clicking between the two observations at DK=68, it is obvious to me that the fluctuations are significant between observations so we want to fit on timescales faster than that so I'm left with the option to fit either per-schedule or per-rasterset.</p>
+    <p>
+        The obs at DK=0 makes it easier to see that the observations are broken apart by schedule into vertical columns WRT the mirror with X<sub>m</sub> at ~-5 and +3 delimiting where the schedules are.
+        DK=45 and Dk=-81 show sharp transitions in the residuals between the schedules at X<sub>m</sub>=-5 which rules out long-timescale gradients across the focal plane making another strong argument to fit at least per-schedule.
+    </p>
+    <p>
+        In mirror-fixed coordinates, I always map the focal plane starting in positive Y<sub>m</sub> and moving toward the negative, which means we move forward in time as we move downward along a given column of the residuals. We can see for many observations a significant gradient in the residuals as we scan the column vertically, which tells me that the fluctuations occur faster than the length of a schedule and thus it made most sense to fit at the per-rasterset level.
+    </p>
 
 <!--<h3>Quivers with 4-parameter fits</h3>-->
 <!--    <p>-->
