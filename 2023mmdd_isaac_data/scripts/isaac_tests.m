@@ -208,7 +208,7 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,5)*37*0.0254];
-for prefind = [6 7 9:15, 20:42]%20:42
+for prefind = 19% [6 7 9:15, 20:42]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
