@@ -198,7 +198,7 @@ for fldind = 1:length(flds)
     fd.(flds{fldind}) = [];
 end
 
-[reses, angs, modcurves, modstds] = deal({});
+[reses, angs, modcurves, modstds, ts] = deal({});
 rsmax = [];
 thresh = 0.7;
 weighttitles = {'Uniform',sprintf('Amp<%0.1f',thresh),'1/Amp'};
@@ -208,7 +208,7 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,5)*37*0.0254];
-for prefind = [12:15, 20:42]%20:42
+for prefind = [6 7 9:15, 20:42]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
@@ -252,7 +252,7 @@ for prefind = [12:15, 20:42]%20:42
             end
             [times, chis, itempstd, itempmn] = deal(NaN(length(data)));
             [mod_curve, res] = deal(NaN(length(unique(data{1}.Angle)),length(data)));
-
+            
 
             if plotmodcurve
                 fig = figure(prefind);
@@ -261,12 +261,18 @@ for prefind = [12:15, 20:42]%20:42
             end
             for di = 1:length(data)
                 a = unique(data{di}.Angle);
+                if 0%prefind == 12
+                    aloop = 1:2:length(a);
+                    a = a(aloop);
+                else
+                    aloop = 1:length(a);
+                end
                 a0 = a;
                 [R, Rs, T, T2, TIME, TEMP, ISTILTTEMP, ISTEMP] = deal([]);
                 for ai = 1:length(a)
                     aind = data{di}.Angle == a(ai);
-                    R = [R; mean(sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2))];
-                    Rs = [Rs; std(sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2))];
+                    R = [R; mean((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))];
+                    Rs = [Rs; std((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))];
                     T = [T; median(polyval(rpscal,data{di}.Tilt(aind)))];
                     TIME = [TIME; mean(data{di}.Time(aind))];
                     TEMP = [TEMP; mean(data{di}.Temp(aind))];
@@ -280,10 +286,13 @@ for prefind = [12:15, 20:42]%20:42
                     catch
                         T2 = 0;
                     end
-
+                    if ai==1 & di==1
+                        ts{end+1} = sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2);
+                    end
                 end
+                
                 %R = R./nanmax(R);
-                Rs = Rs./R;
+                %Rs = Rs./R;
                 rsmax(end+1) = max(Rs);
                 switch wgtind
                     case 1
@@ -305,7 +314,6 @@ for prefind = [12:15, 20:42]%20:42
                     homeangle = 0;
                 end
 
-
                 % We're measuring the angle of the ISAAC WRT gravity:
                 % Clockwise looking at ISAAC is positive
                 % RPS has opposite parity
@@ -319,7 +327,7 @@ for prefind = [12:15, 20:42]%20:42
                 % So the ISAAC angle in the RPS coordinate system is
                 % flipped sign.
                 a_isaac = -1*mean(isaac_tilt - isaac_grid);
-                               
+                             
                 
                 mod_curve(:,di) = R;
 
@@ -514,28 +522,33 @@ s(1) = errorbar(scheds,phi,pstd,'.','Color',cmlines(1,:),'LineWidth',1,'MarkerSi
 
 
 %plot(fd.schnum(ind),fd.phi_isaac(ind),'^','MarkerSize',10)
-plot([1 1]*4.5,[-1 0.5],'k--','LineWidth',2)
-plot([1 1]*11.5,[-1 1],'k--','LineWidth',2)
+plot([1 1]*4.5+5,[-1 0.5],'k--','LineWidth',2)
+plot([1 1]*11.5+5,[-1 1],'k--','LineWidth',2)
 ylim([-0.6 1])
 grid on
 xlim([min(scheds)-1,max(scheds)+1])
 
 % Show where we homed during the harvard measurements
-plot([11.8 18.2], [1 1]*-0.5,':','LineWidth',2,'Color',[1 1 1]*0.5)
-text(12.75,-0.45,'Homed once at beginning of dataset','FontSize',13)
-plot([18.8 27.2], [1 1]*-0.5,':','LineWidth',2,'Color',[1 1 1]*0.5)
-text(20.95,-0.45,'Homed before every measurement','FontSize',13)
+plot([11.8 18.2]+5, [1 1]*-0.5,':','LineWidth',2,'Color',[1 1 1]*0.5)
+text(12.75+5,-0.45,'Homed once at beginning of dataset','FontSize',13)
+plot([18.8 27.2]+5, [1 1]*-0.5,':','LineWidth',2,'Color',[1 1 1]*0.5)
+text(20.95+5,-0.45,'Homed before every measurement','FontSize',13)
 
 
 ax = gca();
 legend(s,{'\phi_{fit} minus \phi_{actual}','ISAAC Tilt Angle','RPS Tilt Angle'},...
     'location','northwest','FontSize',13)
-text(4.5,0.65,'Pole Measurements','FontSize',16)
-text(1.25,0.45,'No Fine Homing Sw.','FontSize',13)
-text(6.5,0.45,'Added Fine Homing Sw.','FontSize',13)
-text(16.5,0.85,'2022 Measurements at Harvard','FontSize',16)
+text(4.5+2,0.65,'Pole Measurements','FontSize',16)
+text(1.25+2,0.45,'No Fine Homing Sw.','FontSize',13)
+text(6.5+5,0.45,'Added Fine Homing Sw.','FontSize',13)
+text(16.5+5,0.85,'2022 Measurements at Harvard','FontSize',16)
 ylabel('Angle [Degrees]')
 xlabs = {...
+    'Indoor, Homed Each',...    
+    'Indoor, Homed Once',...
+    'Outdoor,Homed Once',...
+    'Outdoor,Homed Once',...
+    'Outdoor,Homed Once',...
     'Outdoor,Homed Once',...
     'Outdoor,Homed Each',...
     'Outdoor,Homed Each',...
@@ -569,7 +582,7 @@ ax.XTick = linspace(min(scheds)-1,max(scheds)+1,length(scheds)+2);
 ax.XTickLabel(2:end-1) = xlabs;
 ax.XTickLabel([1, end]) = {'',''};
 
-%saveas(fig,'C:\Users\James\Documents\GitHub\postings\2023mmdd_isaac_data\figs\angle_fit_vs_actual_plot','png')
+saveas(fig,'C:\Users\James\Documents\GitHub\postings\2023mmdd_isaac_data\figs\angle_fit_vs_actual_plot','png')
 
 %% Look the jig data
 
@@ -824,6 +837,11 @@ exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
 
 %% Look at the actual timestreams
 
+scheds = [12 20];
+
+figure(21344)
+clf; hold on;
+plot(ts{10})
 
 
 
@@ -831,6 +849,7 @@ exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
 % No. Look at the actual timestreams.
 scheds = [22 23]; % pre-obs
 scheds = [12 20:27 30:35]; % in-lab D=0.5m
+scheds = [12 20 21 27 28];
 
 fig = figure(1);
 fig.Position(3:4) = [1400 680];
@@ -845,7 +864,7 @@ for obsind = scheds
     a = [];
     for ind = 1:length(idx)
         a(:, end+1) = angs{idx(ind)};
-        mc(:,end+1) = modcurves{idx(ind)}./fd.A(idx(ind))/2;
+        mc(:,end+1) = modcurves{idx(ind)};%;./fd.A(idx(ind))/2;
         ms(:,end+1) = modstds{idx(ind)}; 
     end
     a = nanmean(a,2);
@@ -891,7 +910,7 @@ for obsind = scheds
 end
 subplot(2,1,1)
 grid on
-ylim([0 1.1])
+%ylim([0 1.1])
 xlim([-180 180])
 legend({'Pole, No Homing','At Pole,W/ Homing','At Harvard, No Homing','At Harvard, With Homing'},'Location','northeastoutside')
 xlabel('Command Angle')
@@ -899,11 +918,11 @@ ylabel({'Mod Curve Amplitudes'})
 
 subplot(2,1,2)
 grid on
-ylim([0 0.012])
+%ylim([0 0.012])
 xlim([-180 180])
 legend({'Pole, No Homing','At Pole,W/ Homing','At Harvard, No Homing','At Harvard, With Homing'},'Location','northeastoutside')
 xlabel('Command Angle')
 ylabel({'Mod Curve Timestream','Fractional Uncertainty'})
 
-fname = 'isaac_modcurves_and_uncert.png';
-exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
+%fname = 'isaac_modcurves_and_uncert.png';
+%exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
