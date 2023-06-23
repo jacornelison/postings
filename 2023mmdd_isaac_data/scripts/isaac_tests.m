@@ -208,7 +208,7 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,5)*37*0.0254];
-for prefind = 19% [6 7 9:15, 20:42]%20:42
+for prefind = [6 7 9:15, 20:42]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
@@ -849,7 +849,7 @@ plot(ts{10})
 % No. Look at the actual timestreams.
 scheds = [22 23]; % pre-obs
 scheds = [12 20:27 30:35]; % in-lab D=0.5m
-scheds = [12 20 21 27 28];
+scheds = [12 20 21];% 27 28];
 
 fig = figure(1);
 fig.Position(3:4) = [1400 680];
@@ -914,7 +914,7 @@ grid on
 xlim([-180 180])
 legend({'Pole, No Homing','At Pole,W/ Homing','At Harvard, No Homing','At Harvard, With Homing'},'Location','northeastoutside')
 xlabel('Command Angle')
-ylabel({'Mod Curve Amplitudes'})
+ylabel({'Mod Curve Amplitudes (mV?)'})
 
 subplot(2,1,2)
 grid on
@@ -922,7 +922,7 @@ grid on
 xlim([-180 180])
 legend({'Pole, No Homing','At Pole,W/ Homing','At Harvard, No Homing','At Harvard, With Homing'},'Location','northeastoutside')
 xlabel('Command Angle')
-ylabel({'Mod Curve Timestream','Fractional Uncertainty'})
+ylabel({'Mod Curve Timestream','S.Dev.'})
 
-%fname = 'isaac_modcurves_and_uncert.png';
-%exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
+fname = 'isaac_modcurves_and_uncert_nonorm.png';
+exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
