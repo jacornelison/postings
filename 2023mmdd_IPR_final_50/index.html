@@ -147,7 +147,7 @@
     param.simrd='';
     param.cross1='1';
     param.cross2='3';
-    param.version='B2017+B2018';
+    param.version='Legacy B2017+B2018';
     param.year = '2019';
     param.sim = '99';
     param.bins = '10';
@@ -239,10 +239,15 @@
             exmap['3'] = 'K2015_220';
 
             break;
-    case 'B2017+B2018':
+    case 'Legacy B2017+B2018':
       vs = '6606';
       daughter = 'gh';
       break;
+
+    case 'Reanalysis B2017+B2018':
+            vs = '6621';
+            daughter = 'gh';
+            break;
 
 
         }
@@ -361,7 +366,8 @@
         //'B2018','B2018',
 		//'B2019','B2019',
 		//'B2020','B2020'
-            'B2017+B2018','B2017+B2018',
+            'Legacy B2017+B2018','Legacy B2017+B2018',
+      'Reanalysis B2017+B2018','Reanalysis B2017+B2018',
         ];
     pager.year=['Year',
 	'2016','2016',
