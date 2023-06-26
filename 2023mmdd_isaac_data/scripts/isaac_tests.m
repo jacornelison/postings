@@ -869,8 +869,8 @@ for obsind = scheds
     end
     a = nanmean(a,2);
     %aind = inrange(abs(a),85,95);
-    m1 = nanmean(mc,2);
-    m2 = nanmean(ms,2);
+    m1 = nanmedian(mc,2);
+    m2 = nanmedian(ms,2);
     
     %s = nanstd(mc,[],2);
     subplot(2,1,1)
@@ -925,4 +925,4 @@ xlabel('Command Angle')
 ylabel({'Mod Curve Timestream','S.Dev.'})
 
 fname = 'isaac_modcurves_and_uncert_nonorm.png';
-exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
+%exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)

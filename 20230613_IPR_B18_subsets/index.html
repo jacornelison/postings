@@ -35,9 +35,16 @@
         2023 June 13
     </time> —
     J. Cornelison
+    <p>
+        <font color="red">
+            Updated 27 Jun 2023: Included standard purification performance plot (Figure 1.2).
+        </font>
+    </p>
 </header>
 
 <hr>
+
+
 
 \(
 \newcommand{\Cl}{\mathcal{C}_\ell}
@@ -171,6 +178,14 @@ We do, however, see an increase in &sigma;<sub>&alpha;</sub> of ~15% in L-LCDM+N
     <li><b>Unlensed-LCDM:</b>
         Without purification, there isn't much change here and we'd only expect there to be if we were significantly reducing our coverage which we're not. When we purify, the spectra at the same within a factor of two for the most part. CMB+Lensing click looks much better than this and while I'm not 100% certain, I think this is just due to the fact that we've removed all the B modes and we're now just seeing small numbers being divided by other small numbers with low SNR.
     </li>
+
+    <figure>
+        <img src="figs/pure_performance_plot.png" width="100%">
+        <figcaption>
+            A typical matrix purification performance plot (see Fig 3 of this <a href="http://bicep.rc.fas.harvard.edu/bkcmb/analysis_logbook/analysis/20201221_bk18mm_final/">Final Pager</a> for another example). The unlensed-ΛCDM simulations by construction contain no BB power in the input maps, but E-to-B mixing in map making and [unpurified] power spectrum estimation produces non-zero BB power. Purification removes most of the E-to-B leakage, and the residual power in the unlensed-ΛCDM BB spectra gives a measure of the purification matrix performance.
+        </figcaption>
+    </figure>
+
     <li><b>Lensed-LCDM:</b> Now that we have a high-SNR of B modes from lensing, the difference between purified spectra is only 1% or so, which tells us that the purification matrix isn't running into any issues with the reduced data or detectors.</li>
     <li><b>Noise:</b> Whether we're purifying or not, we can see the BB-power has increased on the order of 40%. If we assume the contribution of each detector to the survey weight is the same then the expected change to Noise-BB from the combination of losing B2016 and having fewer detectors for the other years to be a simple scaling of their survey weights, W (see <a href="https://docs.google.com/spreadsheets/d/1k0uw5trXj5N3v-jLQMe3Z-CW_Q16NRae6zwKBb0Pxtg/edit#gid=0" target="_blank">CMB Pol Comparison GSheets</a>), by the percentage of detectors ($\%_{det}$) we're actually using:
 

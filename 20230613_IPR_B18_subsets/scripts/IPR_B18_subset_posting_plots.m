@@ -11,7 +11,7 @@ set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
 set(groot,'defaultAxesFontSize',12)
 
-figdir = fullfile('C:','Users','James','Documents','GitHub','postings','20230321_IPR_B18_subsets','figs','');
+figdir = fullfile('C:','Users','James','Documents','GitHub','postings','20230613_IPR_B18_subsets','figs','');
 
 cmlines = colormap('lines');
 
@@ -222,4 +222,70 @@ W = [116151 214792 219441]; % survey weights
 perc_dets = [0 0.9 0.92];
 W = [116151 214792 219441]; % Survey weights
 sqrt(0.096^2*sum(W)/sum(W.*perc_dets))
+
+%% Create "purification performance" plots
+
+clc
+%load('z:/dev/sims/final/3553/real_fgh_inpmodel.mat')
+psname = sprintf('z:/dev/sims/6622_gh_global_pol_fits_bins_2_10_offdiag_0%s_cross_normal_repsim_6614xxx8.mat','_matrix');
+load(psname)
+aps6622 = polstruct2aps(ps);
+psname = sprintf('z:/dev/sims/6614_fgh_global_pol_fits_bins_2_10_offdiag_0%s_cross_normal_repsim_6614xxx8.mat','_matrix');
+load(psname)
+aps6614 = polstruct2aps(ps);
+
+fig = figure(801082);
+fig.Position(3:4) = [800 400]*1.25;
+clf; %hold on;
+t = tiledlayout(1,2);
+t.Padding = 'compact';
+t.TileSpacing = 'compact';
+
+nexttile(1);
+hold on;
+clear z
+z(1) = plot(NaN,NaN,'r','LineWidth',1.5);
+z(2) = plot(NaN,NaN,'*-','Color',cmlines(1,:));
+z(3) = plot(NaN,NaN,'^-','Color',cmlines(3,:));
+
+plot(aps6622(3).l,squeeze(mean(aps6622(3).Cs_l(:,4,:),3)),'r','LineWidth',1.5)
+plot(aps6622(1).l,squeeze(mean(aps6622(1).Cs_l(:,4,:),3)),'*-','Color',cmlines(1,:))
+plot(aps6614(1).l,squeeze(mean(aps6614(1).Cs_l(:,4,:),3)),'^-','Color',cmlines(3,:))
+
+legend(z,{'Lensing','B2017+B2018-sub','B18'},'Location','southeast')
+ax = gca;
+ax.YScale = 'log';
+ylim(ax,[1e-6 1e-1])
+grid on
+ylabel('$D_\ell^{BB}\;[\mu$K${}^2]$','Interpreter','Latex')
+xlabel('Multipole $\ell$','Interpreter','Latex')
+title('Mean of purified unlensed $\Lambda$CDM BB Spectra','Interpreter','Latex')
+pbaspect([1 1 1])
+
+
+nexttile(2);
+hold on;
+clear z
+z(1) = plot(NaN,NaN,'*-','Color',cmlines(1,:));
+z(2) = plot(NaN,NaN,'^-','Color',cmlines(3,:));
+
+plot(aps6622(1).l,squeeze(std(aps6622(1).Cs_l(:,4,:),[],3)),'*-','Color',cmlines(1,:))
+plot(aps6614(1).l,squeeze(std(aps6614(1).Cs_l(:,4,:),[],3)),'^-','Color',cmlines(3,:))
+
+legend(z,{'B2017+B2018-sub','B18'},'Location','southeast')
+ax = gca;
+ax.YScale = 'log';
+ylim(ax,[1e-6 1e-1])
+grid on
+ylabel('$\sigma(D_\ell^{BB})\;[\mu$K${}^2]$','Interpreter','Latex')
+xlabel('Multipole $\ell$','Interpreter','Latex')
+title('S.Dev. of purified unlensed $\Lambda$CDM BB Spectra','Interpreter','Latex')
+pbaspect([1 1 1])
+
+fname = 'pure_performance_plot.png';
+saveas(fig,fullfile(figdir,fname),'png')
+
+
+
+
 
