@@ -344,4 +344,44 @@ for resind = 1:4
     end
 end
 
+%% Bootstrap the mirror fits to get an error
+
+Niter = 100;
+
+mirrparms = NaN(length(unqsch),19,Niter,2);
+skiplist = false(10,19);
+for iterind = 1:Niter
+    
+    fd0 = fd;
+    [fd0.mirr_tilt, fd0.mirr_roll] = deal(NaN(size(fd0.ch)));
+    for schedind = 1:length(unqsch)
+        for rowind = 1:19
+            idx = find(logical(fd0.schnum==unqsch(schedind) & fd0.rowind==rowind));
+            if isempty(idx) %|| skiplist(schedind,rowind)
+                continue
+            end
+            L = length(idx);
+            chind = randi(L,L,1);
+            p0 = p;
+            fd_rast = structcut(fd0,idx(chind));
+
+            mirror0 = rps_fit_mirror(fd_rast,rpsopt,p,'');
+            %fd0.mirr_tilt(idx) = mirror0.tilt;
+            %fd0.mirr_roll(idx) = mirror0.roll;
+            %if mirror0.tilt==0 || mirror.tilt==0
+                %skiplist(schedind,rowind) = true;
+            %else
+            mirrparms(schedind,rowind,iterind,:) = [mirror0.tilt mirror0.roll];
+            %end
+        end
+    end
+    
+end
+
+
+save('z:/dev/rps/mirrparms_bootstrap.mat','mirrparms')
+%fd = fd0;
+
+
+
 
