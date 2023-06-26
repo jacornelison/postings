@@ -170,75 +170,11 @@
         var exmap = {};
         // Allow versions to modify the path and map names used:
         switch (param.version) {
-          case 'K2014':
-            vs = '1351_d';
-            daughter = 'd';
+    case 'BK B2017+B2018':
+      vs = '6614';
+      daughter = 'gh';
+      break;
 
-            exmap['1'] = 'K2014_100';
-            exmap['2'] = 'K2014_150';
-            exmap['3'] = 'null';
-
-            break;
-
-          case 'K2015':
-            vs = '1351';
-            daughter = 'e';
-
-            exmap['1'] = 'K2015_100';
-            exmap['2'] = 'K2015_150';
-            exmap['3'] = 'K2015_220';
-
-            break;
-
-          case 'B2016':
-            vs = '3553';
-            daughter = 'f';
-            rot = '_norot';
-            
-    		param.pb='_pureB_overfreq';
-			break;
-
-	  case 'B2017':
-	    vs = '3553';
-	    daughter = 'g';
-            rot = '_norot';
-        param.pb='_pureB_overfreq';
-	    break;
-
-          case 'B2018':
-            vs = '3553';
-            daughter = 'h';
-            rot = '_norot';
-    		param.pb='_pureB_overfreq';
-   			break;
-	  case 'B2019':
-            vs = '3513';
-            daughter = 'i';
-    		param.pb='_pureB_cm_overfreq';
-            rot = '_norot';
-            break;
-    case 'B2020':
-            vs = '3513';
-            daughter = 'j';
-            rot = '_norot';
-    		param.pb='_pureB_cm_overfreq';
-            break;
-
-          case 'K2015_norot':
-            vs = '1351_norot';
-            daughter = 'e';
-
-            // This posting is using unrotated final files, which only
-            // includes an annotation for jack0
-            if (param.jack == '0') {
-                rot = '_norot';
-            }
-
-            exmap['1'] = 'K2015_100';
-            exmap['2'] = 'K2015_150';
-            exmap['3'] = 'K2015_220';
-
-            break;
     case 'Legacy B2017+B2018':
       vs = '6606';
       daughter = 'gh';
@@ -263,11 +199,22 @@
             figtype=param.figtype;
         }
 
-        fig.fig1.fname = 'final/' + vs + '/fakefinal_' + daughter
-            + '_jack' + param.jack + '_global_pol_fits_bins_2_'+param.bins
-                +'_offdiag_0_normal_repsim_6614xxx8_chi2_'
-            //+ param.pb + rot + bpwf + param.simrd + '_' + foc + '_'
-            + param.lmax + '_' + figtype + '.png';
+        if (param.figtype[0]=='a'){
+          var matname = '';
+          if (param.pb=='matrix_'){
+            matname = '_matrix';
+          };
+          fig.fig1.fname = 'figs/angle_hist_'+vs+'_'+daughter+ '_jack' + param.jack
+                  +'_bins_2_' + param.bins + matname + '.png';
+        } else {
+          fig.fig1.fname = 'final/' + vs + '/fakefinal_' + daughter
+                  + '_jack' + param.jack + '_global_pol_fits_bins_2_'+param.bins
+                  +'_offdiag_0_'+param.pb+'normal_repsim_6614xxx8_chi2_'
+                  //+ param.pb + rot + bpwf + param.simrd + '_' + foc + '_'
+                  + param.lmax + '_' + figtype + '.png';
+        }
+
+
 	fig.chitab.fname = param.year + '/pte_dist_B' + param.year + '_499.png';    
 
     }
@@ -289,6 +236,7 @@
         ];
     pager.pb=['Estimator',
         'normal','',
+            'matrix','matrix_',
         //'kendrick','_pureB_cm_overfreq',
         // 'matrix','_pureB_matrix_cm_overfreq'
         ];
@@ -314,7 +262,9 @@
         'chi2','c3',
         // Row 6
         'sum bp devs','c4',
-        'uncertainties','c5'
+        'uncertainties','c5',
+      '','','','',
+      'angle','a',
         ];
     pager.jack=['Jack',
         'none','0',
@@ -366,8 +316,9 @@
         //'B2018','B2018',
 		//'B2019','B2019',
 		//'B2020','B2020'
-            'Legacy B2017+B2018','Legacy B2017+B2018',
-      'Reanalysis B2017+B2018','Reanalysis B2017+B2018',
+      'BK B2017+B2018','BK B2017+B2018',
+      'Legacy B2017+B2018','Legacy B2017+B2018',
+            'Reanalysis B2017+B2018','Reanalysis B2017+B2018',
         ];
     pager.year=['Year',
 	'2016','2016',
@@ -528,7 +479,7 @@
   </table>
 
   <p>
-  <p> Below are the tables for the PTEs, the <b>bold numbers</b> indicate the pte are < 0.01 or > 0.99. And number with asterisk (*) is when the real data fall outside of the simulated distribuation, and the PTE is calculated with the theoretical fit.   
+  <p> Below are the tables for the PTEs, the <b>bold numbers</b> indicate the pte are < 0.01 or > 0.99. And number with asterisk (*) is when the real data fall outside of the simulated distribuation, and the PTE is calculated with the theoretical fit.
   <h3>B2019 PTE \(\chi\) tables</h3>
   <iframe style="width:100%; height:300px;" src="2019/pte_dist_chi.html"></iframe>
 
@@ -544,6 +495,38 @@
 
 
 </section>
+
+<section>
+
+
+<!--  <figure>-->
+<!--    <img alt="Name pager" id="finalalphapager" src="#" width="50%"/>-->
+<!--    <figcaption>-->
+<!--      Example "Final Pager" for the "Legacy" sims. To remain blinded, all "real" data are just realization 1 from the sims.-->
+<!--    </figcaption>-->
+<!--    <script type="text/javascript">-->
+<!--      function fcn(params){-->
+<!--        return 'figs/'+params.val+'_6606_gh_bins_2_'+params.bins+'.png';-->
+<!--      }-->
+
+<!--      pager.link("#finalalphapager",-->
+<!--              {-->
+<!--                'Version|aver' : ['BK B'],-->
+<!--                'Figure|val' : ['spectra','chi2','BP Dev|bpdev','Sum BP Dev|bphist'],-->
+<!--                'N Bins|bins' : ['9|10','14|15'],-->
+<!--                'Jack|jack' : ['0'],-->
+<!--              },-->
+<!--              fcn);-->
+<!--      pager.setparams({-->
+<!--        'val' : 'spectra',-->
+<!--        'bins': '10',-->
+<!--        'jack' : '0',-->
+<!--      });-->
+<!--    </script>-->
+<!--  </figure>-->
+
+</section>
+
 
 <hr>
 
