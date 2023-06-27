@@ -157,65 +157,14 @@ To discuss: <a href="#abanticorr">A/B anticorrelations</a>
     <h4>Pair-Difference Polarization Angles</h4>
 
     <p>
-        It is also useful to calculate the "pair-difference" polarization angle and polarization efficiency:
-<!--        In practice, the contribution of the cross-polar response to this angle is very small so the per-pair polarization angle can be approximated by:-->
-<!--    </p>-->
-<!--    \begin{equation}-->
-<!--    \phi_{pair}\sim\frac{\phi_A+\phi_B-90}{2}-->
-<!--    \end{equation}-->
-
-
-    <p>We start with a Stokes vector aligned with +Q:</p>
-
-    \begin{equation}
-    S =
-    \begin{bmatrix}
-    I \\
-    Q \\
-    U \\
-    \end{bmatrix}
-    =
-    \begin{bmatrix}
-    1 \\
-    1 \\
-    0 \\
-    \end{bmatrix}
-    \end{equation}
-
-    <p>and rotate Q into U by the per-detector polarization angle $\phi$</p>
-
-    \begin{equation}
-    S_{rot} = R(\phi)S
-    \end{equation}
-
-    <p>Where R is the rotation matrix</p>
-
-    \begin{equation}
-    R(\phi) =
-    \begin{bmatrix}
-    1 & 0 & 0 \\
-    0 & \cos(2\phi) & -\sin(2\phi) \\
-    0 & \sin(2\phi) & \cos(2\phi) \\
-    \end{bmatrix}
-    \end{equation}
-
-<p>The pair-combined Stokes vector is the sum of the rotated vectors from A and B detectors as well as two additional terms to account for cross-polar response which are orthogonal to their respective A/B terms and scaled by $\epsilon$</p>
-
-    \begin{equation}
-    S_{total} = \left[R(\phi_A)+R(\phi_B+\frac{\pi}{2})+\epsilon_A R(\phi_A+\frac{\pi}{2})+ \epsilon_B R(\phi_B)\right]S
-    \end{equation}
-
-    <p>
-        and the effective per-pair polarization angle $\phi_{pair}$ and polarization efficiency
-     $\epsilon_{pair}$ is simply
+        It is also useful to calculate the "pair-difference" polarization angle and polarization efficiency.
     </p>
-    \begin{equation}\label{eq:phiq}
-    \begin{split}
-    &\phi_{pair} = \frac{1}{2}\tan^{-1}\frac{S_3}{S_2}\\
-    &\\
-    &\epsilon_{pair} = \frac{\sqrt{S_2^2+S_3^2}}{S_1}
-    \end{split}
+
+    \begin{equation}
+    \phi_{pair} = \frac{\phi_A+\phi_B-90}{2}+\frac{1}{2}\tan^{-1}\left(\frac{\gamma_A-\gamma_B}{\gamma_A+\gamma_B}\frac{\sin(\Delta\phi)}{\cos(\Delta\phi)}\right)
     \end{equation}
+
+    <p>Where $\Delta\phi=\phi_A-(\phi_B-90^\circ)$ is the measure of non-orthogonality between the detectors, and $\gamma = \frac{1-\epsilon}{1+\epsilon}$.</p>
 
 <h3>RPS Observations</h3>
 
