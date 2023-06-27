@@ -37,8 +37,18 @@
 <p>
   Notes:
   <ul>
-  <li>No debiasing</li>
-  <li>All jacks are still blinded. "real" data here is RLZ 1 from sims.</li>
+  <li>The two simsets we'll be using for the birefringence results are 2017+2018 coadds called "Legacy" and "Reanalysis". For comparison, I've included a "BK" click which is the 2-year coadd jacks of the sims/real used in BK18.</li>
+  <li>In addition to regular final plots, I show an additional figure of angle fits to the jack EB spectra. Angles for a given jack are fit in two ways:</li>
+  <ul>
+    <li>angle (EE/BB Jack #) -- Uses the jack's EE/BB spectra as the input model to the estimator.</li>
+    <ul><li>This looks for leakage signals in the jacks itself that might've rotated into EB.</li></ul>
+    <li>angle (EE/BB Jack 0) -- Uses Type 8 Jack0 EE/BB spectra as the input model to the estimator.</li>
+    <ul><li>This looks for excess signal in the Jack EB that might resemble rotation of CMB EE.</li></ul>
+    <li>The spectra used to do the fits are shown along with the angle histograms.</li>
+  </ul>
+  <li>Jacks are debiased.</li>
+  <li>Jacks show real data.</li>
+  <li>I still need to make the PTE tables.</li>
 </ul>
 </p>
 
@@ -139,7 +149,7 @@
     //   param.something='value';
     var param = {};
     param.dp='1102';
-    param.jack='0';
+    param.jack='1';
     param.lmax='500';
     param.figtype='c6';
     param.pb='';
@@ -184,8 +194,6 @@
             vs = '6621';
             daughter = 'gh';
             break;
-
-
         }
 
         // Build map extention to use based on choices.
@@ -199,13 +207,18 @@
             figtype=param.figtype;
         }
 
-        if (param.figtype[0]=='a'){
+        if (param.figtype[0]=='a') {
           var matname = '';
-          if (param.pb=='matrix_'){
+          if (param.pb == 'matrix_') {
             matname = '_matrix';
-          };
+          }
+          ;
+          var custinpname = '';
+          if (param.figtype[1] == '2'){
+            custinpname = '_custinpmod';
+          }
           fig.fig1.fname = 'figs/angle_hist_'+vs+'_'+daughter+ '_jack' + param.jack
-                  +'_bins_2_' + param.bins + matname + '.png';
+                  +'_bins_2_' + param.bins + matname + custinpname +'.png';
         } else {
           fig.fig1.fname = 'final/' + vs + '/final_' + daughter
                   + '_jack' + param.jack + '_global_pol_fits_bins_2_'+param.bins
@@ -236,7 +249,6 @@
         ];
     pager.pb=['Estimator',
         'normal','',
-            'matrix','matrix_',
         //'kendrick','_pureB_cm_overfreq',
         // 'matrix','_pureB_matrix_cm_overfreq'
         ];
@@ -264,10 +276,11 @@
         'sum bp devs','c4',
         'uncertainties','c5',
       '','','','',
-      'angle','a',
+        'angle (EE/BB Jack#)','a1',
+            'angle (EE/BB Jack0)','a2',
         ];
     pager.jack=['Jack',
-        'none','0',
+        '','',
         'dk','1',
         'scan dir','2',
         '1st/2nd half weights','3',
@@ -317,6 +330,7 @@
 		//'B2019','B2019',
 		//'B2020','B2020'
       'BK B2017+B2018','BK B2017+B2018',
+            "","",
       'Legacy B2017+B2018','Legacy B2017+B2018',
             'Reanalysis B2017+B2018','Reanalysis B2017+B2018',
         ];
@@ -373,15 +387,15 @@
     </tr>
   </table>
 
-  <h3>Legend for first half of the "Figure types":</h3>
-    <ul>
-      <li><span style="color:red; font-weight:bold;">Thick red</span> :
-          ΛCDM unlensed scalars, zero for jacks</li>
-      <li><span style="font-weight:bold;">Thick black</span> :
-          Real data</li>
-      <li>Colored : ΛCDM lensed scalars + noise realizations</li>
-    </ul>
-    <p>Note: Noise Debias done with LCDM unlensed scalars realizations</p>
+<!--  <h3>Legend for first half of the "Figure types":</h3>-->
+<!--    <ul>-->
+<!--      <li><span style="color:red; font-weight:bold;">Thick red</span> :-->
+<!--          ΛCDM unlensed scalars, zero for jacks</li>-->
+<!--      <li><span style="font-weight:bold;">Thick black</span> :-->
+<!--          Real data</li>-->
+<!--      <li>Colored : ΛCDM lensed scalars + noise realizations</li>-->
+<!--    </ul>-->
+<!--    <p>Note: Noise Debias done with LCDM unlensed scalars realizations</p>-->
 
   <h3>Legend for second half of the "Figure types":</h3>
     <h4>spectra</h4>
@@ -492,41 +506,7 @@
   <h3>B2020 PTE \(\chi^2\) tables</h3>
   <iframe style="width:100%; height:300px;" src="2020/pte_dist_chi2.html"></iframe>
 
-
-
 </section>
-
-<section>
-
-
-<!--  <figure>-->
-<!--    <img alt="Name pager" id="finalalphapager" src="#" width="50%"/>-->
-<!--    <figcaption>-->
-<!--      Example "Final Pager" for the "Legacy" sims. To remain blinded, all "real" data are just realization 1 from the sims.-->
-<!--    </figcaption>-->
-<!--    <script type="text/javascript">-->
-<!--      function fcn(params){-->
-<!--        return 'figs/'+params.val+'_6606_gh_bins_2_'+params.bins+'.png';-->
-<!--      }-->
-
-<!--      pager.link("#finalalphapager",-->
-<!--              {-->
-<!--                'Version|aver' : ['BK B'],-->
-<!--                'Figure|val' : ['spectra','chi2','BP Dev|bpdev','Sum BP Dev|bphist'],-->
-<!--                'N Bins|bins' : ['9|10','14|15'],-->
-<!--                'Jack|jack' : ['0'],-->
-<!--              },-->
-<!--              fcn);-->
-<!--      pager.setparams({-->
-<!--        'val' : 'spectra',-->
-<!--        'bins': '10',-->
-<!--        'jack' : '0',-->
-<!--      });-->
-<!--    </script>-->
-<!--  </figure>-->
-
-</section>
-
 
 <hr>
 
