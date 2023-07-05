@@ -35,6 +35,7 @@
         2023 June 13
     </time> —
     J. Cornelison and C. Vergès
+    <p><font color="#228b22">Updated: 05 July 2023</font></p>
 </header>
 
 <hr>
@@ -90,13 +91,28 @@ I first summarize the remaining threads that we need to complete in order to fin
         <li>
             What cross checks do we have on the calibration of the wire grid to gravity?
         </li>
-        <ul><li>This is quantified through an in-lab measurement I did at pole and at Harvard last year. Draft Link: <a href="JAC2023h"></a></li></ul>
+        <ul>
+            <li>This is quantified through an in-lab measurement I did at pole and at Harvard last year. Draft Link: <a href="JAC2023h"></a></li>
+            <font color="#228b22">
+            <li>Updates:</li>
+            <ul>
+                <li>Through benchtop measurements we find that there is insufficient evidence that can determine whether the 0.06&deg; backlash measured in <a href="JAC2023j"></a> was present during the RPS campaign. As a result, we choose to adopt an additional 0.06&deg; systematic uncertainty that will be added in quadrature</li>
+            <li>We also find a large uncertainty on the absolute angle on the benchtop of ~0.2&deg; that we suspect is due to alignment issues between the RPS and benchtop calibrator. Efforts are ongoing to determine if this uncertainty can be isolated to an intrinsic systematic of the benchtop measurements or an actual systematic we'll have to include in the RPS analysis.</li>
+            </ul>
+            </font>
+        </ul>
 
         <li>
             What cross checks do we have for tracking the orientation of the focal plane?
         </li>
             <ul>
                 <li>This draft posting <a href="JAC2023i"></a> wraps up the systematics investigation into the pointing model in which we discuss the uncertainty on the FPU angle.</li>
+                <font color="#228b22">
+                <li>Update:</li>
+                <ul>
+                    <li>We have summarized the contribution to &sigma;<sub>sys</sub> from the pointing model inputs in &sect;B.2 and &sect;C.2 in the paper <a href="IPRpaper"></a> -- the total contribution pointing is O(0.01&deg;)</li>
+                </ul>
+                </font>
             </ul>
 
         <li>
@@ -114,18 +130,27 @@ I first summarize the remaining threads that we need to complete in order to fin
         <ul>
             <li>We are looking into the impact of undeprojected beam residuals (using beam sims)
                 which could lead to a bias on the birefringecen angle., We are also 
-                evaluating the impact of uncertainties on $B_\ell$ at high $\ell$. The later is particularly
+                evaluating the impact of uncertainties on $B_\ell$ at high $\ell$. The latter is particularly
                 important if we want to include 5 more bins (see below).
             </li>
-            <li>Draft Link: <a href="CV2023b"></a></li></ul>
+            <li>Draft Link: <a href="CV2023b"></a></li>
+            <font color="#228b22">
+            <li>Update: </li>
+                <ul>
+                    <li>
+                        In the posting above we find a modest-but-acceptable contribution of uncertainty from beam systemtics. Since the beam systematics affect in a multiplicative way, as opposed to additive, we find this impacts our "Legacy" results which do no de-rotate maps such that the power in EB is minimized. Internal review of the conlusions and consequences of the posting is ongoing.
+                    </li>
+                </ul>
+
+            </font>
+
+        </ul>
+
         <li>
             How certain are we that we've got the sign of the birefringence angle correct?
         </li>
         <ul>This requires reconciling theory with what we're actually doing in the code and which is currently underway.</ul>
-
-
     </ol>
-
 
     <p>
        For all of these threads, work is already well underway in most cases. Provided we don't encounter unanticipated difficulties in tying those off, we should be able to proceed to the next step which is consistency tests.
@@ -133,12 +158,19 @@ I first summarize the remaining threads that we need to complete in order to fin
 
 </section>
 
+
+
+
+
 <section>
     <h2 id="tests">Consistency Tests</h2>
     <p>
         Before we unblind, we'll perform the same consistency tests (i.e. jackknives) on the real data as we do for our standard <i><b>r</b></i> analysis, with a particular focus on EB.
         So far, I've been skipping the creation of the standard jacks when making sims to save time, but now I'm going back and rerunning them.
         </p>
+    <font color="#228b22">
+        <p>Update: All standard jackknives have been created and they can be found here: <a href="JAC2023k"></a>. Review of the results are in progress.</p>
+    </font>
 
     <p>
         We are also developing an additional test which differences the &alpha;'s between two subsets of data,
@@ -148,6 +180,10 @@ I first summarize the remaining threads that we need to complete in order to fin
     <p>
         We'll first validate these tests on fake data (i.e. a sim realization in lieu of real) before actually conducting them on real data.
     </p>
+
+    <font color="#228b22">
+        <p>Update: the draft posting <a href="JAC2023g"></a> now contains the plots I propose to use for the "&Delta;&alpha;" jacks. We are still blinded to these jacks until we can A. agree these metrics are sufficient and B. We do not need to have all of the threads in section 1 above completed before looking at the jacks on real data.</p>
+    </font>
 
 </section>
 
@@ -578,6 +614,8 @@ Table of results, final uncertainties, and detection significance (using fake da
             "JAC2023h",
             "JAC2023i",
             "IPRpaper",
+            "JAC2023j",
+            "JAC2023k",
         ];
 
         // Links
@@ -596,6 +634,8 @@ Table of results, final uncertainties, and detection significance (using fake da
             "jcornelison/postings/2023mmdd_isaac_data/",
             "jcornelison/postings/2022mmdd_rps_pointing/",
             "https://www.overleaf.com/read/pnnzqscqtpsn",
+            "bkcmb/analysis_logbook/analysis/20230214_rps_grid_cal/",
+            "jcornelison/postings/2023mmdd_IPR_final_50/index.html"
         ];
 
 
@@ -613,6 +653,8 @@ Table of results, final uncertainties, and detection significance (using fake da
             "Summary of RPS Angle Cross Checks with the ISAAC(draft)",
             "2022 RPS Analysis: Observations and Pointing Systematics(draft)",
             "IPR Analysis Paper",
+            "RPS Analysis: Polarizing Wire Grid Angle Calibration",
+            "Isotropic Polarization Rotation Analysis: Final Pager with 50 Sims (blinded)(draft)",
         ];
         // Debug
         var posty = document.getElementById("testp");

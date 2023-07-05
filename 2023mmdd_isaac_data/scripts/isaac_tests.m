@@ -151,6 +151,8 @@ prefix = {...
     'isaac_cal_jig_july23_with_home_aligncheck_m1deg_1';...
     'isaac_cal_jig_july23_with_home_aligncheck_m2deg_1';...
     'isaac_cal_jig_july23_with_home_aligncheck_m1deg_2';...
+    'isaac_cal_jig_july23_with_home_aligncheck_0deg_3';...
+    'isaac_cal_jig_july23_with_home_aligncheck_0p5deg_1';...
     };
 
 labs = {...;
@@ -209,6 +211,8 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 26", align-check -1deg';... % 53
     'On Alignment Jig, Homing, Dist = 26", align-check -2deg';... % 54
     'On Alignment Jig, Homing, Dist = 26", align-check -1deg';... % 55
+    'On Alignment Jig, Homing, Dist = 26", align-check +0deg';... % 56
+    'On Alignment Jig, Homing, Dist = 26", align-check +0.5deg';... % 57
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -1011,8 +1015,8 @@ end
 
 %% Plot dPhi 
 
-schnums = [47:55];
-offs = [0 1 2 0 1 2 -1 -2 -1];
+schnums = [47:57];
+offs = [0 1 2 0 1 2 -1 -2 -1 0 0.5];
 
 fig = figure(173476);
 fig.Position(3:4) = [500 450];
@@ -1021,7 +1025,8 @@ clf; hold on;
 for schind = 1:length(schnums)
     idx = find(fd.schnum==schnums(schind));
     dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(repmat(offs(schind),1,length(idx)),dP,'.','Color',cmlines(schind,:))
+    %dP = fd.tilt(idx);
+    plot(repmat(offs(schind),1,length(idx)),dP,'.','Color',cmlines(schind,:),'MarkerSize',14)
     
 end
 
@@ -1032,4 +1037,4 @@ ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('Alignment Offset')
 title('Angle Bias vs. Alignment Offset')
 fname = 'dp_vs_aligment';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
