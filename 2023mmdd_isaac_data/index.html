@@ -50,6 +50,69 @@
 
 <hr>
 
+<section>
+    <h2>In-Lab measurements from this week</h2>
+
+    <p>
+
+    </p>
+
+
+    <figure>
+        <img src="figs/dp_vs_aligment.png" width="60%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
+
+    <p>Histograms and mod curve residuals for ISAAC Measurements</p>
+    <figure>
+        <img alt="Name pager" id="histmodpager" src="#" height="400px"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+            var vallist = new Array(52);
+            for (var ii=1; ii<=52; ++ii) {
+                vallist[ii] = ii;
+            }
+
+            var valopt = new Pager.DataList(vallist);
+            valopt.toString = function() {
+                var val = this.list[this.idx].toString();
+                while (val.length < 1) { val = "0"+val; }
+                return val;
+            }
+            valopt.fromString = function(val) {
+                return parseInt(val);
+            }
+
+            pager.link("#histmodpager",
+                {
+                    'Plot|plt' : ['hist|hists/angle_hists_','Residuals|reses/reses_'],
+                    'Measurement|n' : valopt,
+                    //'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
+                },
+                function(params) {
+                    //return 'figs/testquiver_'+params.parm+'_'+params.v+params.coord+'.png';
+                    return 'figs/'+params.plt+params.n+'.png';
+                });
+            pager.setparams({
+                'plt' : 'hists/angle_hists_',
+                'n': '44',
+                //'coord' : '',
+
+            });
+        </script>
+    </figure>
+
+
+
+
+</section>
+
 <section><h2 id="setup">Benchtop Experimental Set Up</h2>
 
     <p>Summary:</p>

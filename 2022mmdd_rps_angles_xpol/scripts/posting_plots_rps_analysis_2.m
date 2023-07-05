@@ -381,11 +381,13 @@ saveas(fig,fullfile(figdir,fname),'png')
 %% Angle VS. DK overall
 %load('z:/dev/rps/rps_phi_final_2022.mat')
 P = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
+L = sum(~isnan(P),2);
 fig = figure(2);
 fig.Position(3:4) = [450 420];
 clf; hold on
-C = polyfitweighted(dks,nanmean(P,2)',1,nanstd(P,[],2)');
-errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:),[],2),'CapSize',0)
+[b bi] = sort(dks);
+
+errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:)./sqrt(L(bi))*5,[],2),'CapSize',0)
 plot(dks(bi),nanmean(P(bi,:),2),'.','MarkerSize',14)
 %plot([-180 180],polyval(C,[-180 180]),'k--')
 
@@ -398,7 +400,47 @@ ylabel({'\phi_{pair}-md(\phi) [Deg]'})
 title({'\phi_{pair} Vs. Dk','Median-subtracted per pair, avg''d per obs'})
 pbaspect([1 1 1])
 fname = 'phi_pair_vs_dk_medsub';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
+
+%% Angle vs time
+fd.phi_pair_ms = NaN(size(fd.ch));
+for chind = 1:2640
+    idx = find(fd.ch==chind);
+    if isempty(idx)
+        continue
+    end
+    fd.phi_pair_ms(idx) = fd.phi_pair(idx)-nanmedian(fd.phi_pair(idx));
+end
+fd.phi_pair_ms(fd.phi_pair_ms==0) = NaN;
+
+t = datenum(mjd2datestr(fd.t),'yyyy-mmm-dd:HH:MM:SS');
+t29 = datenum('211229','yymmdd');
+
+[pavg, tavg] = deal([]);
+for tind = min(t):0.04:max(t)
+    idx = inrange(t,tind-0.01,tind+0.01,[1 0]);
+    tavg(end+1) = tind;
+    pavg(end+1) = nanmedian(fd.phi_pair_ms(idx));
+end
+
+fig = figure(2);
+fig.Position(3:4) = [750 420];
+clf; hold on
+plot(tavg,pavg,'.')
+%plot(t,fd.dk_cen,'.','MarkerSize',14)
+plot([1,1]*t29,[-1 1]*100,'r')
+
+grid on
+lims = [-1 1]*0.15;
+ylim(lims)
+%xlim([-180 180])
+datetick('x','yy-mmm-dd','keeplimits')
+xlabel('Dk [Deg]')
+ylabel({'\phi_{pair}-md(\phi) [Deg]'})
+title({'\phi_{pair} Vs. Dk','Median-subtracted per pair, avg''d per obs'})
+%pbaspect([1 1 1])
+
+
 
 
 %%
@@ -1481,18 +1523,52 @@ phi_smedsub = phi_s + repmat(dks',1,2640);
 phi_smedsub = phi_smedsub - repmat(nanmedian(phi_smedsub,1),10,1);
 phi_smedsub(phi_smedsub==0) = NaN;
 
-%%
+%% Compare RPS18 to RPS22 with/without mirror-fitting
+
+unqsch = unique(fd.schnum);
+
+mirror = struct;
+mirror.height = 1.4952;
+mirror.tilt = nanmean(fd.mirr_tilt);
+mirror.roll = nanmean(fd.mirr_roll);
+
+source = struct();
+source.distance = 195.5;
+source.azimuth = -177.5221;
+source.elevation = 2.678;
+source.height = source.distance*tand(source.elevation);
+
+fd.phi_mconst = fd.phi-fd.phi_s;
+for schind = 1:length(unqsch)
+    for rowind = 1:19
+        idx = find(fd.schnum==unqsch(schind) & fd.rowind==rowind);
+        if isempty(idx)
+            continue
+        end
+        fd_rast = structcut(fd,idx);
+        [x,y,phis] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,fd_rast.dk_cen,model,'bicep3',mirror,source,[]);
+        fd.phi_mconst(idx) = fd.phi_mconst(idx)+phis';
+    end
+end
+
+%
+fd_mconst = fd;
+fd_mconst.phi = fd.phi_mconst;
+fd_mconst = get_pair_params(fd_mconst,ind0,ind90);
+[fd_mconst, phis_mconst, phi_pair_mconst, xpols_mconst, poleff_pair_mconst,n1s_mconst,n2s_mconst,amps_mconst] = get_pol_params_per_obs(fd_mconst,p,scheds);
+
+%
+
 fig = figure(1345);
-clf;
 
-plot(sqrt(xmedsub.^2+ymedsub.^2),'.')
-%xlim([-1 1]*2)
+clf; hold on;
+plot(nanmean(phi_pair_2018,1),nanmean(phi_pair,1),'.')
+plot(nanmean(phi_pair_2018,1),nanmean(phi_pair_mconst,1),'.')
+lims = [-4 0.5];
+plot(lims,lims,'k--')
+xlim(lims)
+ylim(lims)
 grid on
-%plot(xmedsub,phimedsub,'.')
-%plot(x','.')
-
-
-
 
 
 %% End of main function

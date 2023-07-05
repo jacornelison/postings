@@ -299,9 +299,10 @@ for mirrind = 1:length(mirr_fit)
             
             
         end
+
         sgtitle(sprintf('Mirror: %s | Xform Fit: %s',mirr_fit{mirrind},res_ttls{resind}))
         fname = sprintf('hist_finalcheck_mirr_%s_fit_%s',mirr_fit{mirrind},res_names{resind});
-        saveas(fig,fullfile(figdir,fname),'png')
+        %saveas(fig,fullfile(figdir,fname),'png')
     end
 end
 
@@ -316,33 +317,89 @@ for schedind = 1:length(unqsch)
     end
 end
 
-%% Make histograms per resolution (WIP)
+%% Try making the paper plot:
+% Show that letting the mirror be a free parameter accounts for both the
+% rotation and translation in the residuals.
 
 
-for resind = 1:4
-    fd0 = fd;
-    p0 = p;
-    % make mirr-fixed obs angles
-    r = reshape(p0.r(fd0.ch),size(fd.ch));
-    th = reshape(p0.theta(fd0.ch),size(fd.ch))-fd0.dk_cen;
-    [fd0.x0, fd0.y0] = pol2cart(th*pi/180,r);
 
-    switch resind
-        case 1 % Overall
-            fd_rast = fd0;
-            mirror0 = mirror;
-            [x,y,phi_s] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,...
-                        fd_rast.dk_cen,model,'bicep3',mirror0,source,[]);
-            [th, r] = cart2pol(x,y);
+lims = {[-1 1]*0.1-0.07 [-1 1]*0.4 [-1 1]*0.1 [-1 1]*0.1};
+res = 30;
 
-        case 2 % Per Obs
+parmnames = {...
+    'roll',...
+    'ang',...
+    'xtrans',...
+    'sres',...
+    };
 
-        case 3 % Per Schedule
+parmttls = {...
+    'Mirror Roll [Deg]',...
+    'FPU Angle [Deg]',...
+    'X_m Translation [Deg]',...
+    'X_m Residuals [Deg]',...
+    };
 
-        case 4 % Per Rasterset
+fig = figure(736491);
+%fig.Position = [400 500];
+clf;
+t = tiledlayout(2,3);
+t.Padding = 'compact';
+t.TileSpacing = 'compact';
 
+ylabs = {'Mirror Fixed','Mirror Free'};
+usemirr = [2,1];
+usecases = [4,1];
+useparms = [2,3,4; 1,0,4];
+count = 0;
+for rowind = 1:2
+    for colind = 1:3
+        count = count+1;
+        parmind = useparms(rowind,colind);
+        mirrind = usemirr(rowind);
+        resind = usecases(rowind);
+
+        if parmind == 4
+            V = squeeze(res_array(:,mirrind,resind,1));
+        elseif parmind==0
+            continue
+        else
+            V = squeeze(fit_array(:,mirrind,resind,parmind));
+            V = V(inrange(V,lim(1),lim(2)));
+        end
+        lim = lims{parmind};
+        M = nanmean(V);
+        S = nanstd(V);
+        L = length(V(~isnan(V)));
+
+        nexttile(count)
+        hold on
+
+        if 1
+            edges = linspace(lims{parmind}(1),lims{parmind}(2),res);
+            N = histc(V,edges);
+            bar(edges,N,'histc')
+        else
+            hist(V,res)
+        end
+        xlim(lims{parmind})
+        grid on
+        title({...
+            sprintf('M: %1.2E | S: %1.2E',M,S),...
+            })
+        xlabel(parmttls{parmind})
+        if colind ==1
+            ylabel(ylabs{rowind},'FontSize',14)
+        end
+        pbaspect([1 1 1])
     end
+
 end
+sgtitle({'Effect on Beam Center Residuals','from Mirror Fluctuations'})
+fname = 'mirror_fit_residuals.pdf';
+exportgraphics(fig,fullfile(figdir,fname),"Resolution",600)
+
+
 
 %% Bootstrap the mirror fits to get an error
 

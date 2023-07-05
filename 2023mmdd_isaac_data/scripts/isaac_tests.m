@@ -52,7 +52,7 @@ isaac_tilt_cal = polyfit(inc_tilt_meter,inc_readout,1);
 fprintf('ISAAC 24 Dec 2021: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
 plot(inc_tilt_meter,inc_readout,'r^')
 xlabel('Tilt meter [V]')
-ylabel('Cal''d Tilt [^o]')
+ylabel('Cal''d Tilt [Deg]')
 grid on
 %legend()
 
@@ -139,6 +139,16 @@ prefix = {...
     'isaac_cal_jig_withhome_7';... % 31 Jul 2022 @ 37"; homed. Zeroed ISAAC
     'isaac_cal_jig_withhome_8';... % 31 Jul 2022 @ 37"; homed. Added baffling.
     'isaac_cal_jig_offsets_1';... 28 Jul 2022 @ 40; homed. Ella moving around at 40"
+    'isaac_cal_jig_july23_nohome_1';... 03 July 2023 @ 26". Removed Isaac LNA, added absorber.
+    'isaac_cal_jig_july23_nohome_2';... 04 July 2023 @ 26". Removed Isaac LNA, added absorber.
+    'isaac_cal_jig_july23_with_home_1';... 04 July 2023 @ 26". Homing
+    'isaac_cal_jig_july23_with_home_aligncheck_0_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_1deg_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_2deg_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_0deg_2';...
+    'isaac_cal_jig_july23_with_home_aligncheck_1deg_2';...
+    'isaac_cal_jig_july23_with_home_aligncheck_2deg_2';...
+    'isaac_cal_jig_july23_with_home_aligncheck_m1deg_1';...
     };
 
 labs = {...;
@@ -185,6 +195,16 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 37", zeroed isaac';... % 41
     'On Alignment Jig, Homing, Dist = 37", added baffling';... % 42
     'On Alignment Jig, Homing, Dist = 40", offsets';... % 43
+    'On Alignment Jig, No Homing, Dist = 26", No LNA';... % 44
+    'On Alignment Jig, No Homing, Dist = 26", No LNA, 5.45 homing';... % 45
+    'On Alignment Jig, Homing, Dist = 26"';... % 46
+    'On Alignment Jig, Homing, Dist = 26", align-check +0deg';... % 47
+    'On Alignment Jig, Homing, Dist = 26", align-check +1deg';... % 48
+    'On Alignment Jig, Homing, Dist = 26", align-check +2deg';... % 49
+    'On Alignment Jig, Homing, Dist = 26", align-check +0deg';... % 50
+    'On Alignment Jig, Homing, Dist = 26", align-check +1deg';... % 51
+    'On Alignment Jig, Homing, Dist = 26", align-check +2deg';... % 52
+    'On Alignment Jig, Homing, Dist = 26", align-check -1deg';... % 53
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -203,12 +223,13 @@ rsmax = [];
 thresh = 0.7;
 weighttitles = {'Uniform',sprintf('Amp<%0.1f',thresh),'1/Amp'};
 weightnames = {'uniform','threshold','one_on_r'};
+cmlines = colormap('lines');
 
 fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,5)*37*0.0254];
-for prefind = [6 7 9:15, 20:42]%20:42
+for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
@@ -308,6 +329,10 @@ for prefind = [6 7 9:15, 20:42]%20:42
                 itempmn(di) = nanmean(ISTILTTEMP);
                 if ismember(prefind, [6:18])
                     homeangle = 0.77;
+                elseif ismember(prefind,44)
+                    % Wasn't paying attention to homing position when I put
+                    % the RPS back together in Jul 2023
+                    homeangle = 5.454545*2;
                 elseif ismember(prefind,[20,22:length(prefix)])
                     homeangle = 5.454545;
                 else
@@ -436,7 +461,7 @@ for prefind = [6 7 9:15, 20:42]%20:42
                     for fldind = 1:length(flds)
                         eval(sprintf('fd.%s(end+1) = %s;',flds{fldind},vals{fldind}))
                     end
-                    angs{end+1} = a0;
+                    angs{end+1} = a;
                     reses{end+1} = R-rps_get_mod_model(parm,a);
                     modcurves{end+1} = R;
                     modstds{end+1} = Rs;
@@ -584,10 +609,10 @@ ax.XTickLabel([1, end]) = {'',''};
 
 saveas(fig,'C:\Users\James\Documents\GitHub\postings\2023mmdd_isaac_data\figs\angle_fit_vs_actual_plot','png')
 
-%% Look the jig data
+%% Look the other jig data
 
 vals = {fd.temp*1000, fd.istemp*1000, fd.istilttemp*100+273.15};
-vals = {fd.N1,fd.N2}
+%vals = {fd.N1,fd.N2}
 %vals = {fd.A};
 fig = figure(10);
 clf; hold on;
@@ -926,3 +951,79 @@ ylabel({'Mod Curve Timestream','S.Dev.'})
 
 fname = 'isaac_modcurves_and_uncert_nonorm.png';
 %exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
+
+%% Make a pager for histograms
+
+unqsch = unique(fd.schnum);
+for schind = 1:length(unqsch)
+    idx = fd.schnum==unqsch(schind);
+    fdsch = structcut(fd,idx);
+    dP = fdsch.phi-fdsch.phi_isaac;
+    M = nanmean(dP);
+    S = nanstd(dP);
+    L = length(find(~isnan(dP)));
+    fig = figure(7385029);
+    fig.Position(3:4) = [500 450];
+    clf; hold on;
+
+    hist(dP)
+    grid on
+    xlabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+    ylabel('N')
+    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
+    title({strrep(labs{unqsch(schind)},'_','\_'), ...
+        sprintf('%s UTC',t),...
+        sprintf('M= %0.3f $|$ SDev= %0.3f $|$ N= %i',M,S,L)})
+    pbaspect([1 1 1])
+    fname = sprintf('angle_hists_%i',unqsch(schind));
+    saveas(fig,fullfile(figdir,'hists',fname),'png')
+end
+
+
+%% Make a pager for Mod Curve Residuals
+
+unqsch = unique(fd.schnum);
+for schind = 1:length(unqsch)
+    idx = find(fd.schnum==unqsch(schind));
+    fdsch = structcut(fd,idx);
+    fig = figure(2875829);
+    fig.Position(3:4) = [600 350];
+    clf; hold on;
+    
+    for modind = 1:length(idx)
+        plot(angs{idx(modind)},reses{idx(modind)},'.-','MarkerSize',14)
+    end
+    grid on
+    ylabel('$A_{meas}-A_{model}$ (Volts)','FontSize',14)
+    xlabel('Stage Angle WRT Gravity')
+    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
+    title({strrep(labs{unqsch(schind)},'_','\_'), ...
+        sprintf('%s UTC',t)})
+    fname = sprintf('reses_%i',unqsch(schind));
+    saveas(fig,fullfile(figdir,'reses',fname),'png')
+
+end
+
+%% Plot dPhi 
+
+schnums = [47:53];
+offs = [0 1 2 0 1 2 -1];
+
+fig = figure(173476);
+fig.Position(3:4) = [500 450];
+clf; hold on;
+
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(repmat(offs(schind),1,length(idx)),dP,'.','Color',cmlines(schind,:))
+    
+end
+
+grid on
+xlim([-1 1]*3)
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('Alignment Offset')
+title('Angle Bias vs. Alignment Offset')
+fname = 'dp_vs_aligment';
+saveas(fig,fullfile(figdir,fname),'png')
