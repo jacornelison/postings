@@ -150,6 +150,7 @@ prefix = {...
     'isaac_cal_jig_july23_with_home_aligncheck_2deg_2';...
     'isaac_cal_jig_july23_with_home_aligncheck_m1deg_1';...
     'isaac_cal_jig_july23_with_home_aligncheck_m2deg_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_m1deg_2';...
     };
 
 labs = {...;
@@ -207,6 +208,7 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 26", align-check +2deg';... % 52
     'On Alignment Jig, Homing, Dist = 26", align-check -1deg';... % 53
     'On Alignment Jig, Homing, Dist = 26", align-check -2deg';... % 54
+    'On Alignment Jig, Homing, Dist = 26", align-check -1deg';... % 55
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -1009,8 +1011,8 @@ end
 
 %% Plot dPhi 
 
-schnums = [47:54];
-offs = [0 1 2 0 1 2 -1 -2];
+schnums = [47:55];
+offs = [0 1 2 0 1 2 -1 -2 -1];
 
 fig = figure(173476);
 fig.Position(3:4) = [500 450];
