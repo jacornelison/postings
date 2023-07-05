@@ -149,6 +149,7 @@ prefix = {...
     'isaac_cal_jig_july23_with_home_aligncheck_1deg_2';...
     'isaac_cal_jig_july23_with_home_aligncheck_2deg_2';...
     'isaac_cal_jig_july23_with_home_aligncheck_m1deg_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_m2deg_1';...
     };
 
 labs = {...;
@@ -205,6 +206,7 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 26", align-check +1deg';... % 51
     'On Alignment Jig, Homing, Dist = 26", align-check +2deg';... % 52
     'On Alignment Jig, Homing, Dist = 26", align-check -1deg';... % 53
+    'On Alignment Jig, Homing, Dist = 26", align-check -2deg';... % 54
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -228,12 +230,13 @@ cmlines = colormap('lines');
 fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
-dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,5)*37*0.0254];
+dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
         isaaccal = isaac_tilt_cals_all{end-2};
+
     elseif ismember(prefind,[19:21 24:26])
         rpscal = rps_tilt_cals_all{end-2};
         isaaccal = isaac_tilt_cals_all{end-2};
@@ -1006,8 +1009,8 @@ end
 
 %% Plot dPhi 
 
-schnums = [47:53];
-offs = [0 1 2 0 1 2 -1];
+schnums = [47:54];
+offs = [0 1 2 0 1 2 -1 -2];
 
 fig = figure(173476);
 fig.Position(3:4) = [500 450];
@@ -1019,6 +1022,7 @@ for schind = 1:length(schnums)
     plot(repmat(offs(schind),1,length(idx)),dP,'.','Color',cmlines(schind,:))
     
 end
+
 
 grid on
 xlim([-1 1]*3)
