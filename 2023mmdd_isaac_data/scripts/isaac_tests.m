@@ -153,6 +153,11 @@ prefix = {...
     'isaac_cal_jig_july23_with_home_aligncheck_m1deg_2';...
     'isaac_cal_jig_july23_with_home_aligncheck_0deg_3';...
     'isaac_cal_jig_july23_with_home_aligncheck_0p5deg_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_0p25deg_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_m0p25deg_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_m0p125deg_1';...
+    'isaac_cal_jig_july23_with_home_with_LNA_1';... Reinstalled the LNA to look at noise again.
     };
 
 labs = {...;
@@ -213,6 +218,11 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 26", align-check -1deg';... % 55
     'On Alignment Jig, Homing, Dist = 26", align-check +0deg';... % 56
     'On Alignment Jig, Homing, Dist = 26", align-check +0.5deg';... % 57
+    'On Alignment Jig, Homing, Dist = 26", align-check +0.25deg';... % 58
+    'On Alignment Jig, Homing, Dist = 26", align-check -0.25deg';... % 59
+    'On Alignment Jig, Homing, Dist = 26", align-check -0.5deg';... % 60
+    'On Alignment Jig, Homing, Dist = 26", align-check -0.125deg';... % 61
+    'On Alignment Jig, Homing, Dist = 26", Noise Check'; ... % 62
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -237,7 +247,7 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
-for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 34:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
@@ -963,6 +973,49 @@ fname = 'isaac_modcurves_and_uncert_nonorm.png';
 
 %% Make a pager for histograms
 
+fig = figure(723459);
+    fig.Position(3:4) = [1000 400];
+    clf; hold on;
+t = tiledlayout(1,3);
+t.Padding = 'compact';
+t.TileSpacing = 'compact';
+
+ttls = {'Old','New','New, No LNA'};
+unqsch = unique(fd.schnum);
+scheds = [34, 62, 46];
+for schind = 1:length(scheds)
+    idx = fd.schnum==scheds(schind);
+    fdsch = structcut(fd,idx);
+    dP = fdsch.phi-fdsch.phi_isaac;
+    M = nanmean(dP);
+    S = nanstd(dP);
+    L = length(find(~isnan(dP)));
+    
+    nexttile()
+    hold on
+    lims = [-1 1]*0.4;
+    edges = linspace(lims(1),lims(2),60);
+    N = histc(dP,edges);
+    bar(edges,N,'histc');
+    %hist(dP)
+    grid on
+    xlim(lims)
+    xlabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+    ylabel('N')
+    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
+    title({ttls{schind}, ...
+        sprintf('%s UTC',t),...
+        sprintf('M= %0.3f $|$ SDev= %0.3f $|$ N= %i',M,S,L)}, ...
+        'FontSize',10)
+    pbaspect([1 1 1])
+    
+end
+fname = 'angle_hist_LNA_compare';
+saveas(fig,fullfile(figdir,'hists',fname),'png')
+
+
+%% Make a pager for histograms
+
 unqsch = unique(fd.schnum);
 for schind = 1:length(unqsch)
     idx = fd.schnum==unqsch(schind);
@@ -1015,26 +1068,30 @@ end
 
 %% Plot dPhi 
 
-schnums = [47:57];
-offs = [0 1 2 0 1 2 -1 -2 -1 0 0.5];
+offs = [0 1 2 0 1 2 -1 -2 -1 0 0.5 0.25 -0.25 -0.5 -0.125];
+schnums = [47:62];
+cmlines = distinguishable_colors(length(schnums));
 
 fig = figure(173476);
-fig.Position(3:4) = [500 450];
+fig.Position(3:4) = [700 250];
 clf; hold on;
 
+[offs_all dp_all] = deal([]);
 for schind = 1:length(schnums)
     idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
     dP = fd.phi(idx)-fd.phi_isaac(idx);
-    %dP = fd.tilt(idx);
-    plot(repmat(offs(schind),1,length(idx)),dP,'.','Color',cmlines(schind,:),'MarkerSize',14)
-    
+    plot(O,dP,'.','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
 end
 
-
 grid on
-xlim([-1 1]*3)
+xlim([-1 1]*2.5)
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('Alignment Offset')
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title('Angle Bias vs. Alignment Offset')
 fname = 'dp_vs_aligment';
-%saveas(fig,fullfile(figdir,fname),'png')
+saveas(fig,fullfile(figdir,fname),'png')

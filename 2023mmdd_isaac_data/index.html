@@ -53,29 +53,66 @@
 <section>
     <h2>In-Lab measurements from this week</h2>
 
+
+    <h3>Checking ISAAC Noise and Angle Scatter</h3>
+
+    <ul>
+        <li>ISAAC was powered on and saw fluctuations of ~1.5% over 5 minutes in the timestreams. Consistent with measurements from July 2022.
+        <li>New Lock-In settings: Input-> Differential -- ~1.5%</li>
+        <li>Switch from ISAAC to lone PacMil diode with 15dB horn -- &sigma;<sub>A</sub>~0.5%</li>
+        <li>Removing the LNA from the ISAAC. Just a PacMil diode now. -- &sigma;<sub>A</sub>~0.5%.</li>
+        <li>Adding AN75 to the inside of the ISAAC chassis: &sigma;<sub>A</sub>~0.2%</li>
+        <ul><li>I added aluminum-backed HR-5 around the horn, but didn't think to added absorber to the interior until now).</li></ul>
+        <li>Installing RPS and ISAAC on the jig: &sigma;<sub>A</sub>~0.04%</li>
+        <ul>
+            <li>New Lock-In settings: Input-> A only; Ground->Ground</li>
+        </ul>
+    </ul>
+
+<p>I took new angle measurements with and without the LNA installed, shown in the plot below. Note that of the new measurements, the "No LNA" was taken first and then the LNA was reinstalled and measurements taken again, showing good reproducability of the increased scatter on the angle.</p>
+
+    <figure>
+        <img src="figs/hists/angle_hist_LNA_compare.png" width="80%">
+        <figcaption>
+            Left: Example distribution from July 2022; Middle: New measurement July 2023 with LNA; Right: After removing LNA and adding eccosorb inside chassis.
+        </figcaption>
+    </figure>
+
+    <h3>Angle Bias Vs. RPS alignment</h3>
+<p>
+With the LNA removed from the ISAAC, I conducted some more measurements, rotating the RPS through a range of alignment offsets in Azimuth, shown in Figure 1.2.
+</p>
     <p>
+    Notes:
+    <ul>
+    <li>Each color in the figure represents an independent set of 10 modulation curve measurements.</li>
+    <li>After setting up the ISAAC, it was not handled in any way throughout the entirety of these measurements.</li>
+    <li>The RPS and ISAAC were fixed at a distance of ~0.5m.</li>
+    <li>The RPS was not leveled in the plane of the wire grid -- I found it difficult to maintain level and repeatably change the alignment, so I just opted to not level it.</li>
+    <li>The ISAAC was leveled to within <0.1&deg; in the plane of its wire grid.</li>
+    <li>With Figure 2.2 as a reference, an alignment of >0&deg; has the RPS pointing toward the window.</li>
+</ul>
 
     </p>
 
-
     <figure>
-        <img src="figs/dp_vs_aligment.png" width="60%">
+        <img src="figs/dp_vs_aligment.png" width="80%">
         <figcaption>
 
         </figcaption>
     </figure>
 
 
-    <p>Histograms and mod curve residuals for ISAAC Measurements</p>
+    <p>Extra plots: Histograms and mod curve residuals for ISAAC Measurements</p>
     <figure>
-        <img alt="Name pager" id="histmodpager" src="#" height="400px"/>
+        <img alt="Name pager" id="histmodpager" src="#" height="600px"/>
         <figcaption>
 
         </figcaption>
         <script type="text/javascript">
 
-            var vallist = new Array(55);
-            for (var ii=1; ii<=55; ++ii) {
+            var vallist = new Array(62);
+            for (var ii=1; ii<=62; ++ii) {
                 vallist[ii] = ii;
             }
 
