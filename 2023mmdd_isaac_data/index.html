@@ -58,7 +58,11 @@
 
     <ul>
         <li>ISAAC was powered on and saw fluctuations of ~1.5% over 5 minutes in the timestreams. Consistent with measurements from July 2022.
-        <li>New Lock-In settings: Input-> Differential -- ~1.5%</li>
+        <li>New Lock-In settings:</li>
+        <ul>
+            <li>Input-> Differential -- &sigma;<sub>A</sub>~1.5%</li>
+            <li>Chop Freq->91Hz; Sync filter-> on; 60&120Hz band filters-> on: &sigma;<sub>A</sub>~1.5%</li>
+        </ul>
         <li>Switch from ISAAC to lone PacMil diode with 15dB horn -- &sigma;<sub>A</sub>~0.5%</li>
         <li>Removing the LNA from the ISAAC. Just a PacMil diode now. -- &sigma;<sub>A</sub>~0.5%.</li>
         <li>Adding AN75 to the inside of the ISAAC chassis: &sigma;<sub>A</sub>~0.2%</li>
@@ -85,6 +89,7 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
     <p>
     Notes:
     <ul>
+    <li>Measuring alignment: The RPS base plate is secured to the jig by a smaller aluminum adapter plate. With a steel ruler, I calculated the alignment offset by measuring the distance of one of the edges RPS base plate to the edge of the adapter plate at two different locations. The alignment offset is the arctan of the difference of the measurements divided by the separation (6"). After some practice, I was able to get the precision to within 0.01" or ~0.1&deg;.</li>
     <li>Each color in the figure represents an independent set of 10 modulation curve measurements.</li>
     <li>After setting up the ISAAC, it was not handled in any way throughout the entirety of these measurements.</li>
     <li>The RPS and ISAAC were fixed at a distance of ~0.5m.</li>
@@ -101,7 +106,6 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
 
         </figcaption>
     </figure>
-
 
     <p>Extra plots: Histograms and mod curve residuals for ISAAC Measurements</p>
     <p>Measurement 44 marks the start of the measurements taken in July 2023. 27 to 43 were taken in July 2022. Any before 27 were taken at Pole.</p>
