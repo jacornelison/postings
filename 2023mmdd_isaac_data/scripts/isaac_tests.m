@@ -994,7 +994,7 @@ for schind = 1:length(scheds)
     nexttile()
     hold on
     lims = [-1 1]*0.4;
-    edges = linspace(lims(1),lims(2),60);
+    edges = linspace(lims(1),lims(2),30);
     N = histc(dP,edges);
     bar(edges,N,'histc');
     %hist(dP)
