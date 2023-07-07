@@ -1061,6 +1061,7 @@ for schind = 1:length(unqsch)
     t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
     title({strrep(labs{unqsch(schind)},'_','\_'), ...
         sprintf('%s UTC',t)})
+    ylim([-1 1]*0.1)
     fname = sprintf('reses_%i',unqsch(schind));
     saveas(fig,fullfile(figdir,'reses',fname),'png')
 
