@@ -1067,9 +1067,9 @@ for schind = 1:length(unqsch)
 end
 
 %% Plot dPhi 
-
+clc
 offs = [0 1 2 0 1 2 -1 -2 -1 0 0.5 0.25 -0.25 -0.5 -0.125];
-schnums = [47:62];
+schnums = [47:61];
 cmlines = distinguishable_colors(length(schnums));
 
 fig = figure(173476);
@@ -1094,4 +1094,4 @@ ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title('Angle Bias vs. Alignment Offset')
 fname = 'dp_vs_aligment';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
