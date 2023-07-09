@@ -73,7 +73,6 @@ fd_notilt = FD.fd; clear FD;
 fd_notilt = get_pair_params(fd_notilt,ind0,ind90);
 [fd_notilt, phis_nt, phi_pair_nt, xpols_nt, poleff_pair_nt,~,~,~] = get_pol_params_per_obs(fd_notilt,p,scheds);
 
-
 cmlines = colormap('lines');
 
 [fd.theta, fd.r] = pol2cart(fd.x,fd.y);
@@ -401,6 +400,46 @@ title({'\phi_{pair} Vs. Dk','Median-subtracted per pair, avg''d per obs'})
 pbaspect([1 1 1])
 fname = 'phi_pair_vs_dk_medsub';
 %saveas(fig,fullfile(figdir,fname),'png')
+
+%% Angle VS. DK, no medsub, only chans in all obs
+idx = sum(~isnan(phi_pair),1)>=10;
+idx = true(1,2640);
+%P = phi_pair;
+P = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
+P(:,~idx) = NaN;
+L = sum(~isnan(P),2);
+fig = figure(2);
+fig.Position(3:4) = [450 420];
+clf; hold on
+[b bi] = sort(dks);
+
+if 1 % Error bars: Error on mean
+    errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:)./sqrt(L(bi)),[],2),'.','CapSize',0)
+else % Error bars: S Dev
+    errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:),[],2),'CapSize',0)
+end
+plot(dks(bi),nanmean(P(bi,:),2),'.','MarkerSize',14)
+%plot([-180 180],polyval(C,[-180 180]),'k--')
+
+grid on
+lims = [-1 1]*0.085;
+%ylim([-2.46 -2.32])
+xlim([-100 180])
+xlabel('Dk [Deg]')
+ylabel({'$\phi_{pair}$ [Deg]'})
+title({'$\phi_{pair}$ Vs. Dk'})
+pbaspect([1 1 1])
+fname = 'phi_pair_vs_dk_only_allobs_chans';
+%saveas(fig,fullfile(figdir,fname),'png')
+
+%%
+idx = sum(~isnan(phi_pair),1)>=8;
+fig = figure(3);
+clf; hold on;
+[prx, pry] = pol2cart(p.theta*pi/180,p.r);
+plot(prx,pry,'b.')
+plot(prx(idx),pry(idx),'r.')
+grid on
 
 %% Angle vs time
 fd.phi_pair_ms = NaN(size(fd.ch));

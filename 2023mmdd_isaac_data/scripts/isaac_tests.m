@@ -247,7 +247,7 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
-for prefind = 34:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 44:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
@@ -281,6 +281,7 @@ for prefind = 34:length(prefix)%[6 7 9:15, 20:42 44]%20:42
     for fitind = 2%1:length(fitnames)
         %fittype=fitnames{fitind};
         fittype = 'lsq';
+        fittype = 'basic';
         %fittype = 'complex';
         for wgtind = 1%1:3
 
@@ -387,11 +388,13 @@ for prefind = 34:length(prefix)%[6 7 9:15, 20:42 44]%20:42
                     %fittype = 'lsq';
                     switch fittype
                         case 'basic'
-                            modfunc = @(ang,e,A) A/2*(cosd(2*(a-ang))-(e+1)/(e-1))+(0*cosd(a-T)+0*sind(a-T));
-                            chifun = @(x) sum((R-modfunc(x(1),x(2),x(3))).^2);
-                            parm = fminsearch(chifun,[0.75,0,max(R)]);
-                            %plot(a,R-modfunc(parm(1),parm(2),parm(3)))
-                            res(:,di) = R-modfunc(parm(1),parm(2),parm(3));
+                            lb = lb([1 2 end]);
+                            ub = ub([1 2 end]);
+                            modfunc = @(p,ang) p(3)*(cosd(2*(ang-p(1)))-(p(2)+1)/(p(2)-1));
+                            
+                            parm = lsqcurvefit(modfunc,[0,0,1]+1e-6,a,R,lb,ub,options);
+                            res(:,di) = R-modfunc(parm,a);
+                            parm = [parm(1) parm(2) 0 0 parm(3)];
                         case 'fmin'
                             fittype
                             modfunc = @(ang,e,A,N1,N2) A/2*(cosd(2*(a-ang))-(e+1)/(e-1)).*(N1*cosd(a)+N2*sind(a)+1);
@@ -406,14 +409,10 @@ for prefind = 34:length(prefix)%[6 7 9:15, 20:42 44]%20:42
                             parm = lsqcurvefit(@rps_get_mod_model,guess,a,R,lb,ub,options);
                             res(:,di) = R-rps_get_mod_model(parm,a);
                         case 'lsq'
-
                             chifunc = @(p) w.*(R-rps_get_mod_model(p,a));
                             parm = lsqnonlin(chifunc,guess,lb,ub,options);
                             res(:,di) = R-rps_get_mod_model(parm,a);
                         case 'complex'
-                            
-                            
-                            
                             MIRROR = false;
                             PLOT = false;
                             source = struct();
@@ -1053,7 +1052,7 @@ for schind = 1:length(unqsch)
     clf; hold on;
     
     for modind = 1:length(idx)
-        plot(angs{idx(modind)},reses{idx(modind)},'.-','MarkerSize',14)
+        plot(angs{idx(modind)},reses{idx(modind)}/fdsch.A(modind),'.-','MarkerSize',14)
     end
     grid on
     ylabel('$A_{meas}-A_{model}$ (Volts)','FontSize',14)
@@ -1066,6 +1065,32 @@ for schind = 1:length(unqsch)
     saveas(fig,fullfile(figdir,'reses',fname),'png')
 
 end
+
+%% Make a pager for Mod Curves
+
+unqsch = unique(fd.schnum);
+for schind = 1:length(unqsch)
+    idx = find(fd.schnum==unqsch(schind));
+    fdsch = structcut(fd,idx);
+    fig = figure(2875829);
+    fig.Position(3:4) = [600 350];
+    clf; hold on;
+    
+    for modind = 1:length(idx)
+        plot(angs{idx(modind)},modcurves{idx(modind)},'.-','MarkerSize',14)
+    end
+    ylim([0 1]*nanmedian(fdsch.A*2)*1.5)
+    grid on
+    ylabel('$A_{meas}$ (Volts)','FontSize',14)
+    xlabel('Stage Angle WRT Gravity')
+    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
+    title({strrep(labs{unqsch(schind)},'_','\_'), ...
+        sprintf('%s UTC',t)})
+    fname = sprintf('mod_curves_%i',unqsch(schind));
+    saveas(fig,fullfile(figdir,'mod_curves',fname),'png')
+
+end
+
 
 %% Plot dPhi 
 clc
