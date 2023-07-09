@@ -378,28 +378,30 @@ fname = 'phi_pair_vs_obs_medsub';
 saveas(fig,fullfile(figdir,fname),'png')
 
 %% Angle VS. DK overall
+% If we're median subtracting, then we shouldn't be taking the error on the
+% mean...
 %load('z:/dev/rps/rps_phi_final_2022.mat')
-P = phi_pair-repmat(nanmedian(phi_pair,1),10,1);
+P = phi_pair-repmat(nanmean(phi_pair,1),10,1);
 L = sum(~isnan(P),2);
 fig = figure(2);
 fig.Position(3:4) = [450 420];
 clf; hold on
 [b bi] = sort(dks);
 
-errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:)./sqrt(L(bi))*5,[],2),'CapSize',0)
+errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:),[],2),'.','CapSize',0)
 plot(dks(bi),nanmean(P(bi,:),2),'.','MarkerSize',14)
 %plot([-180 180],polyval(C,[-180 180]),'k--')
 
 grid on
 lims = [-1 1]*0.085;
 ylim(lims)
-xlim([-180 180])
-xlabel('Dk [Deg]')
-ylabel({'\phi_{pair}-md(\phi) [Deg]'})
-title({'\phi_{pair} Vs. Dk','Median-subtracted per pair, avg''d per obs'})
+xlim([-100 180])
+xlabel('Boresight Rotation [Deg]')
+ylabel({'$\phi_{pair}-\langle\phi_{pair}\rangle$ [Deg]'})
+title({'$\phi_{pair}$ Vs. Boresight Rotation','Mean-subtracted per pair'})
 pbaspect([1 1 1])
 fname = 'phi_pair_vs_dk_medsub';
-%saveas(fig,fullfile(figdir,fname),'png')
+saveas(fig,fullfile(figdir,fname),'png')
 
 %% Angle VS. DK, no medsub, only chans in all obs
 idx = sum(~isnan(phi_pair),1)>=10;
@@ -413,10 +415,10 @@ fig.Position(3:4) = [450 420];
 clf; hold on
 [b bi] = sort(dks);
 
-if 1 % Error bars: Error on mean
+if 0 % Error bars: Error on mean
     errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:)./sqrt(L(bi)),[],2),'.','CapSize',0)
 else % Error bars: S Dev
-    errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:),[],2),'CapSize',0)
+    errorbar(dks(bi),nanmean(P(bi,:),2),nanstd(P(bi,:),[],2),'.','CapSize',0)
 end
 plot(dks(bi),nanmean(P(bi,:),2),'.','MarkerSize',14)
 %plot([-180 180],polyval(C,[-180 180]),'k--')
@@ -950,7 +952,7 @@ V1 = atand(tand(phis(:,ind0)-nanmedian(phis(:,ind0),1)));
 V2 = atand(tand(phis(:,ind90)-nanmedian(phis(:,ind90),1)));
 legttls = titles;
 %ttls{end+1} = 'Slope=-1';
-lims = [-1 1]*0.12;
+lims = [-1 1]*0.25;
 plot(lims,-lims,'--','Color',[1 1 1]*0.75,'LineWidth',1)
 clear z
 for obsind = 1:length(dks)
@@ -962,16 +964,17 @@ for obsind = 1:length(dks)
     L = length(find(~isnan(V1(obsind,idx))&~isnan(V2(obsind,idx))));
     
     %z(obsind) = plot(V1(obsind,idx)',V2(obsind,idx)','.','MarkerSize',14);%,'Color',cmlines(1,:));
-    z(obsind) = errorbar(M1,M2,S1/sqrt(L),S1/sqrt(L),S2/sqrt(L),S2/sqrt(L),'.','MarkerSize',20,'CapSize',0,'LineWidth',1,'Color',cmlines(obsind,:));
+    %z(obsind) = errorbar(M1,M2,S1/sqrt(L),S1/sqrt(L),S2/sqrt(L),S2/sqrt(L),'.','MarkerSize',20,'CapSize',0,'LineWidth',1,'Color',cmlines(obsind,:));
+    z(obsind) = errorbar(M1,M2,S1,S1,S2,S2,'.','MarkerSize',20,'CapSize',0,'LineWidth',1,'Color',cmlines(obsind,:));
 end
 xlim(lims)
 ylim(lims)
 grid on
-xlabel({'Mean \phi_{d,0}-Md(\phi_{d,0}) [Degrees]',''})
-ylabel({'','Mean \phi_{d,90}-Md(\phi_{d,90}) [Degrees]'})
+xlabel({'Mean$(\phi_{d,0}-\bar{\phi}_{d,0})$ [Degrees]',''})
+ylabel({'','Mean$(\phi_{d,90}-\bar{\phi}_{d,90})$ [Degrees]'})
 %leg = legend(z,legttls);
 %title(leg,'DK''s:')
-title('Mean Pol 90 Vs Pol 0')
+title({'Mean Pol 90 Vs Pol 0','Averaged Per-Pair'})
 pbaspect([1 1 1])
 
 fname = 'mean_pol90_vs_pol0_type5.png';

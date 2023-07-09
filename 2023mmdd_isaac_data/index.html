@@ -108,6 +108,17 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
         </figcaption>
     </figure>
 
+    <p>
+        Same thing as above, but now I move the RPS closer to maintain a constant peak amplitude. These are measurements 63 to 69 in the mod_curve/histogram pager.
+    </p>
+
+    <figure>
+        <img src="figs/dp_vs_aligment_const_amp.png" width="80%">
+        <figcaption>
+
+        </figcaption>
+    </figure>
+
     <p>Extra plots: Histograms and mod curve residuals for ISAAC Measurements</p>
     <p>Measurement 44 marks the start of the measurements taken in July 2023. 27 to 43 were taken in July 2022. Any before 27 were taken at Pole.</p>
     <figure>
@@ -117,8 +128,8 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
         </figcaption>
         <script type="text/javascript">
 
-            var vallist = new Array(62);
-            for (var ii=1; ii<=62; ++ii) {
+            var vallist = new Array(69);
+            for (var ii=6; ii<=69; ++ii) {
                 vallist[ii] = ii;
             }
 
@@ -143,7 +154,7 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
                     return 'figs/'+params.plt+params.n+'.png';
                 });
             pager.setparams({
-                'plt' : 'hists/angle_hists_',
+                'plt' : 'mod_curves/mod_curves_',
                 'n': '44',
                 //'coord' : '',
 
