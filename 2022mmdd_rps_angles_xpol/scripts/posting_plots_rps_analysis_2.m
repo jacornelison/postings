@@ -36,6 +36,14 @@ load('z:/dev/rps/sch_type9.mat')
 fd_type9 = get_pair_params(fd_type9,ind0,ind90);
 [fd_type9, ~,~,~,~] = get_pol_params_per_obs(fd_type9,p);
 
+%%
+% Load type 6 data
+fd_type6 = load('z:/dev/rps/rps_beam_fits_type6_10july2023_rerun.mat');
+fd_type6 = fd_type6.fd;
+fd_type6 = rps_cut_fitdata(fd_type6,p,p_ind,false);
+fd_type6 = get_pair_params(fd_type6,ind0,ind90);
+[fd_type6, phis_6, phi_pair_6,~,~] = get_pol_params_per_obs(fd_type6,p);
+%%
 
 % Load 2018 data
 load('z:/dev/rps/rps_beam_fits_cut_2018.mat')
@@ -1611,6 +1619,88 @@ plot(lims,lims,'k--')
 xlim(lims)
 ylim(lims)
 grid on
+
+%% Look at type 6's
+phi0 = atand(tand(p.chi_thetaref+p.chi))';
+
+
+fig = figure(659386);
+fig.Position(3:4) = [700 350];
+clf; hold on;
+t = tiledlayout(2,3);
+t.Padding = 'compact';
+
+nexttile(); hold on;
+plot(phis(9,ind0),phis_6(1,ind0),'.')
+plot([-1 1]*10,[-1 1]*10,'k--')
+xlabel('$\phi_{0}$ Type 5')
+ylabel('$\phi_{0}$ Type 6')
+lims = [-4 -1];
+xlim(lims)
+ylim(lims)
+grid on
+pbaspect([1 1 1])
+
+nexttile(); hold on;
+plot(phis(9,ind90),phis_6(1,ind90),'.')
+plot([-1 1]*10+90,[-1 1]*10+90,'k--')
+xlabel('$\phi_{90}$ Type 5')
+ylabel('$\phi_{90}$ Type 6')
+lims = [-4 -1]+90;
+xlim(lims)
+ylim(lims)
+grid on
+pbaspect([1 1 1])
+
+nexttile(); hold on;
+plot(phi_pair(9,:),phi_pair_6(1,:),'.')
+plot([-1 1]*10,[-1 1]*10,'k--')
+xlabel('$\phi_{pair}$ Type 5')
+ylabel('$\phi_{pair}$ Type 6')
+lims = [-4 -1];
+xlim(lims)
+ylim(lims)
+grid on
+pbaspect([1 1 1])
+
+V = phis(9,ind0)-phis_6(1,ind0);
+M = nanmean(V); S = nanstd(V); L = length(find(~isnan(V)));
+nexttile(); hold on;
+edges = linspace(-1,1,30)*0.4;
+N = histc(V,edges);
+bar(edges,N,'histc')
+xlim(edges([1 end]))
+xlabel({'$\phi_{0}$','Type 5 - Type 6'})
+grid on
+pbaspect([1 1 1])
+title(sprintf('M= %0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
+
+V = phis(9,ind90)-phis_6(1,ind90);
+M = nanmean(V); S = nanstd(V); L = length(find(~isnan(V)));
+nexttile(); hold on;
+edges = linspace(-1,1,30)*0.4;
+N = histc(V,edges);
+bar(edges,N,'histc')
+xlim(edges([1 end]))
+xlabel({'$\phi_{90}$','Type 5 - Type 6'})
+grid on
+pbaspect([1 1 1])
+title(sprintf('M= %0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
+
+V = phi_pair(9,:)-phi_pair_6(1,:);
+M = nanmean(V); S = nanstd(V); L = length(find(~isnan(V)));
+nexttile(); hold on;
+edges = linspace(-1,1,30)*0.4;
+N = histc(V,edges);
+bar(edges,N,'histc')
+xlim(edges([1 end]))
+xlabel({'$\phi_{pair}$','Type 5 - Type 6'})
+grid on
+pbaspect([1 1 1])
+title(sprintf('M= %0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
+
+fname = 'angcompare_type5_vs_type6';
+saveas(fig,fullfile(figdir,fname),'png')
 
 
 %% End of main function

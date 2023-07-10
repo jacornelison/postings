@@ -3,7 +3,7 @@
 
 clc
 %close all
-figure(5)
+%figure(5)
 clf; hold on;
 level_cal = 85/3600.; % degrees per tick
 
@@ -86,7 +86,6 @@ plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'b+')
 grid on
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
 isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
-
 
 %
 %clc
@@ -299,281 +298,201 @@ for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     end
     isaaccal(1) = 0.3;
-    %rpscal(1) = 0.28;
+    %rpscal(1) = 0.3;
+    
     d = dir(fullfile(direct,[prefix{prefind} '_scan*']));
     data = {};
     for di = 1:length(d)
         if ~ismember(prefind, [8:21 22:26])
-            %disp(d(di).name)
             data{di} = load_lj_data(fullfile(direct,d(di).name));
         else
-            %disp([prefix{prefind} sprintf('_scan_%i_loop_1.csv',di-1)])
             data{di} = load_lj_data(fullfile(direct,[prefix{prefind} ...
                 sprintf('_scan_%i_loop_1.csv',di-1)]));
         end
     end
-    for fitind = 2%1:length(fitnames)
-        fittype = 'lsq';
-        for wgtind = 1%1:3
 
-            lock_cal = 50/10; %mV per V
-            if strcmp(fittype,'complex')
-                parms = NaN(length(data),7);
-            else
+    fittype = 'lsq';
+    fitind = find(ismember(fitnames,'lsq'));
+    % Change the weighting if we want.
+    for wgtind = 1%1:3
+
+        % Complex fit requires more parameters
+        if strcmp(fittype,'complex')
+            parms = NaN(length(data),7);
+        else
             parms = NaN(length(data),5);
-            end
-            [times, chis, itempstd, itempmn] = deal(NaN(length(data)));
-            [mod_curve, res] = deal(NaN(length(unique(data{1}.Angle)),length(data)));
-            
-
-            if plotmodcurve
-                fig = figure(prefind);
-                fig.Position(3:4) = [1000,300];
-                clf; hold on;
-            end
-            for di = 1:length(data)
-                a = unique(data{di}.Angle);
-                if 0%prefind == 12
-                    aloop = 1:2:length(a);
-                    a = a(aloop);
-                else
-                    aloop = 1:length(a);
-                end
-                a0 = a;
-                [R, Rs, T, T2, TIME, TEMP, ISTILTTEMP, ISTEMP] = deal([]);
-                for ai = 1:length(a)
-                    aind = data{di}.Angle == a(ai);
-                    R = [R; mean((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))];
-                    Rs = [Rs; std((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))];
-                    T = [T; median(polyval(rpscal,data{di}.Tilt(aind)))];
-                    TIME = [TIME; mean(data{di}.Time(aind))];
-                    TEMP = [TEMP; mean(data{di}.Temp(aind))];
-                    if prefind>7
-                        ISTEMP = [ISTEMP; data{di}.ISTemp(aind)];
-                        ISTILTTEMP = [ISTILTTEMP; data{di}.ISTiltTemp(aind)];
-                    end
-
-                    try
-                        T2 = [T2; median(polyval(isaaccal,data{di}.ISTilt(aind)))];
-                    catch
-                        T2 = 0;
-                    end
-                    if ai==1 & di==1
-                        ts{end+1} = sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2);
-                    end
-                end
-                
-                %R = R./nanmax(R);
-                %Rs = Rs./R;
-                rsmax(end+1) = max(Rs);
-                switch wgtind
-                    case 1
-                        w = 1;
-                        %w = 1./Rs.^2;
-                    case 2
-                        w = R<0.7*max(R);
-                    case 3
-                        w = 1./(R+1)-min(1./(R+1));
-                end
-
-                itempstd(di) = nanstd(ISTILTTEMP);
-                itempmn(di) = nanmean(ISTILTTEMP);
-                if ismember(prefind, [6:18])
-                    homeangle = 0.77;
-                elseif ismember(prefind,44)
-                    % Wasn't paying attention to homing position when I put
-                    % the RPS back together in Jul 2023
-                    homeangle = 5.454545*2;
-                elseif ismember(prefind,[20,22:length(prefix)])
-                    homeangle = 5.454545;
-                else
-                    homeangle = 0;
-                end
-
-                % We're measuring the angle of the ISAAC WRT gravity:
-                % Clockwise looking at ISAAC is positive
-                % RPS has opposite parity
-                % Angle_out = RPS_angle - RPS tilt - RPS grid horz. + ISAAC Tilt + ISAAC grid horz.
-                rps_tilt = T;
-                rps_grid = homeangle;
-                isaac_tilt = T2;
-                isaac_grid = 0.19;%0.17;
-                a = a + rps_tilt - rps_grid;% + isaac_tilt + isaac_grid;
-                % ISAAC grid and tiltmeter are set up the same as the RPS
-                % So the ISAAC angle in the RPS coordinate system is
-                % flipped sign.
-                a_isaac = -1*mean(isaac_tilt - isaac_grid);
-                             
-                
-                mod_curve(:,di) = R;
-
-                mxfev = 100000;
-                mxiter = 100000;
-                options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
-                lb = [-20 -0.5 -10 -10 0];
-                ub = [20 0.5 10 10 1e6];
-                meanguess = 0;%0;
-                for nind = 1%1:3
-
-                    guess = [meanguess,0.002*0,0,0,nanmax(R)/2];
-                    %fittype = 'lsq';
-                    switch fittype
-                        case 'basic'
-                            lb = lb([1 2 end]);
-                            ub = ub([1 2 end]);
-                            modfunc = @(p,ang) p(3)*(cosd(2*(ang-p(1)))-(p(2)+1)/(p(2)-1));
-                            
-                            parm = lsqcurvefit(modfunc,[0,0,1]+1e-6,a,R,lb,ub,options);
-                            res(:,di) = R-modfunc(parm,a);
-                            parm = [parm(1) parm(2) 0 0 parm(3)];
-                        case 'fmin'
-                            fittype
-                            modfunc = @(ang,e,A,N1,N2) A/2*(cosd(2*(a-ang))-(e+1)/(e-1)).*(N1*cosd(a)+N2*sind(a)+1);
-                            chifun = @(x) sum((R-modfunc(x(1),x(2),x(3),x(4),x(5))).^2);
-
-                            chifun = @(x) sum(w.*(R-rps_get_mod_model(x,a)).^2);
-
-                            parm = fminsearch(chifun,guess,options);
-                            res(:,di) = R-modfunc(parm(1),parm(2),parm(3),parm(4),parm(5));
-
-                        case 'lsq0'
-                            if 1
-                                parm = lsqcurvefit(@rps_get_mod_model,guess,a,R,lb,ub,options);
-                                res(:,di) = R-rps_get_mod_model(parm,a);
-                            else
-                                idx = logical([1 1 0 0 0 1 1 1 0 0 0 1 1]);
-                                parm = lsqcurvefit(@rps_get_mod_model,guess,a(idx),R(idx),lb,ub,options);
-                                res(:,di) = R-rps_get_mod_model(parm,a);
-                            end
-                        case 'lsq'
-                            %w = [1 0 0 1 0 0 1 0 0 1 0 0 1]';
-                            %w = 1;
-                            chifunc = @(p) (w.*(R-rps_get_mod_model(p,a)));
-                            parm = lsqnonlin(chifunc,guess,lb,ub,options);
-                            res(:,di) = R-rps_get_mod_model(parm,a);
-                        case 'complex'
-                            MIRROR = false;
-                            PLOT = false;
-                            source = struct();
-                            source.azimuth = 0;
-                            source.elevation = 0;
-                            source.distance = dists(prefind); % meters
-                            source.height = source.distance*tand(source.elevation); % meters;
-                            source.type = 'other';
-                            B3 = [1,0,0];
-                            B1 = [0,0,1];
-                            A = [0,0,0];
-                            
-                            if 0
-                                lb = [-10 -0.5 -10 -10 -10 -10 0 -0.5 -0.5];
-                                ub = [10 0.5 10 10 10 10 10 0.5 0.5];
-                                guess = [0,0,0,0,0,0,1,0,0];
-
-                                modfunc = @(p) rps_get_mod_model_vectors(p(1:7),a,[0,p(8),p(9)],B3,B1,source,false,false);
-                                chifunc = @(p) w.*(R-modfunc(p)');
-                            else
-                                lb = [-10 -0.5 -10 -10 -10 -10 0];
-                                ub = [10 0.5 10 10 10 10 10];
-                                guess = [0,0,0,0,0,0,1];
-                                chifunc = @(p) ( 1.*(R-rps_get_mod_model_vectors(p,a',A,B3,B1,source,MIRROR,PLOT)') );
-                            end
-                            try
-
-                                parm = lsqnonlin(chifunc,guess+1E-6,lb,ub,options);
-                            catch
-                                parm = NaN(1,7);
-                            end
-                            res(:,di) = chifunc(parm);
-                            parm(1) = -parm(1);
-                    end
-                    
-                    parms(di,1:length(parm)) = parm;
-                    
-                    times(di) = mean(TIME);
-                    meanguess = nanmean(parms(:,1));
-                    if plotmodcurve
-                        
-                        fig = figure(prefind);
-                        %plot(a,R)
-                        ind1 = 1:7;
-                        ind2 = 7:13;
-                        plot(res(:,di))
-                        %plot(R)
-                        %ylim([-1 1]*0.01)
-                        %plot(R(ind1)-R(ind2));
-                        %ylim([-1 1]*0.04)
-                        %xlim([-1 1]*190)
-                        %ylim([-0.1,6])
-                        xlabel('Angle (^o)')
-                        ylabel('Lock-In X (Volts)')
-                        grid on
-                        title(labs{prefind})
-
-                    end
-                    %plot(a,res(:,di))
-
-                end
-
-                if abs(R(1)-R((length(R)+1)/2))<0.2
-                    for fldind = 1:length(flds)
-                        eval(sprintf('fd.%s(end+1) = %s;',flds{fldind},vals{fldind}))
-                    end
-                    angs{end+1} = a;
-                    reses{end+1} = R-rps_get_mod_model(parm,a);
-                    modcurves{end+1} = R;
-                    modstds{end+1} = Rs;
-                else
-                    parms(di,1:length(parm)) = NaN(1,length(parm));
-                end
-
-            end
-
-%             % cuts
-%             switch prefind
-%                 case 19
-%                     ind = [4:6 8:size(parms,1)];
-%                 case 23
-%                     ind = 2:size(parms,1);
-%                 case 26
-%                     ind = [1, 3:size(parms,1)];
-%                 otherwise
-%                     ind = 1:size(parms,1);
-%             end
-%             parms = parms(ind,:);
-
-            if 0
-                lims = {[-0.5 1.5] [0 1]*0.06};
-                offs = {0 0};
-                titles = {'\phi [Degrees]','\epsilon'};
-                fig = figure(2);
-                fig.Position(3:4) = [560*2 420];
-                clf; hold on;
-
-                for parmind = 1:2
-                    subplot(1,2,parmind)
-                    resolution = 20;
-                    edges = lims{parmind}(1):diff(lims{parmind})/resolution:lims{parmind}(2)+offs{parmind};
-                    N = histc(parms(:,parmind),edges);
-                    bar(edges,N,'histc')
-                    xlim(lims{parmind}+offs{parmind})
-                    xlabel(titles{parmind});
-                    ylabel('N')
-                    title({labs{prefind},...
-                        sprintf('Mean=%0.3f STD=%0.3f N=%02d, %s',nanmean(parms(:,parmind)),nanstd(parms(:,parmind)),length(data),weighttitles{wgtind})})
-                    grid on
-                end
-
-                saveas(fig,fullfile(figdir,sprintf('isaac_cal_%03d_%s_%s.png',prefind,weightnames{wgtind},fittype)))
-            end
         end
+        [times, chis, itempstd, itempmn] = deal(NaN(length(data)));
+        [mod_curve, res] = deal(NaN(length(unique(data{1}.Angle)),length(data)));
+
+        % Load the data
+        for di = 1:length(data)
+            a = unique(data{di}.Angle);
+            [R, Rs, T, T2, TIME, TEMP, ISTILTTEMP, ISTEMP] = deal([]);
+            for ai = 1:length(a)
+                aind = data{di}.Angle == a(ai);
+                R = [R; mean((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))];
+                Rs = [Rs; std((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))];
+                T = [T; median(polyval(rpscal,data{di}.Tilt(aind)))];
+                TIME = [TIME; mean(data{di}.Time(aind))];
+                TEMP = [TEMP; mean(data{di}.Temp(aind))];
+                if prefind>7
+                    ISTEMP = [ISTEMP; data{di}.ISTemp(aind)];
+                    ISTILTTEMP = [ISTILTTEMP; data{di}.ISTiltTemp(aind)];
+                end
+
+                try
+                    T2 = [T2; median(polyval(isaaccal,data{di}.ISTilt(aind)))];
+                catch
+                    T2 = 0;
+                end
+                if ai==1 & di==1
+                    ts{end+1} = sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2);
+                end
+            end
+
+            %R = R./nanmax(R);
+            %Rs = Rs./R;
+            rsmax(end+1) = max(Rs);
+            %
+            switch wgtind
+                case 1
+                    w = 1;
+                case 2
+                    w = R<0.7*max(R);
+                case 3
+                    w = 1./(R+1)-min(1./(R+1));
+            end
+
+            itempstd(di) = nanstd(ISTILTTEMP);
+            itempmn(di) = nanmean(ISTILTTEMP);
+            if ismember(prefind, [6:18])
+                homeangle = 0.77;
+            elseif ismember(prefind,44)
+                % Wasn't paying attention to homing position when I put
+                % the RPS back together in Jul 2023
+                homeangle = 5.454545*2;
+            elseif ismember(prefind,[20,22:length(prefix)])
+                homeangle = 5.454545;
+            else
+                homeangle = 0;
+            end
+
+            % We're measuring the angle of the ISAAC WRT gravity:
+            % Clockwise looking at ISAAC is positive
+            % RPS has opposite parity
+            rps_tilt = T;
+            rps_grid = homeangle;
+            a = a + rps_tilt - rps_grid;
+
+            % ISAAC grid and tiltmeter are set up the same as the RPS
+            % So the ISAAC angle in the RPS coordinate system is
+            % flipped sign.
+            isaac_tilt = T2;
+            isaac_grid = 0.19;
+            a_isaac = -1*mean(isaac_tilt - isaac_grid);
+            mod_curve(:,di) = R;
+
+            mxfev = 100000;
+            mxiter = 100000;
+            options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
+            lb = [-20 -0.5 -10 -10 0];
+            ub = [20 0.5 10 10 1e6];
+
+            guess = [1e-6,1e-6,0,0,nanmax(R)/2];
+            %fittype = 'lsq';
+            % A million ways to fit:
+            switch fittype
+                case 'basic' % Don't fit collimation params
+                    lb = lb([1 2 end]);
+                    ub = ub([1 2 end]);
+                    modfunc = @(p,ang) p(3)*(cosd(2*(ang-p(1)))-(p(2)+1)/(p(2)-1));
+
+                    parm = lsqcurvefit(modfunc,[0,0,1]+1e-6,a,R,lb,ub,options);
+                    res(:,di) = R-modfunc(parm,a);
+                    parm = [parm(1) parm(2) 0 0 parm(3)];
+                case 'fmin' % Fminsearch is garbage.
+                    modfunc = @(ang,e,A,N1,N2) A/2*(cosd(2*(a-ang))-(e+1)/(e-1)).*(N1*cosd(a)+N2*sind(a)+1);
+                    chifun = @(x) sum((R-modfunc(x(1),x(2),x(3),x(4),x(5))).^2);
+
+                    chifun = @(x) sum(w.*(R-rps_get_mod_model(x,a)).^2);
+
+                    parm = fminsearch(chifun,guess,options);
+                    res(:,di) = R-modfunc(parm(1),parm(2),parm(3),parm(4),parm(5));
+
+                case 'lsq0' % LSQ works better for some reason. And doesn't require compiling like matmin.
+                    parm = lsqcurvefit(@rps_get_mod_model,guess,a,R,lb,ub,options);
+                    res(:,di) = R-rps_get_mod_model(parm,a);
+
+                case 'lsq' % LSQ but choose your own chi-sq. Allows weighting.
+                    chifunc = @(p) (w.*(R-rps_get_mod_model(p,a)));
+                    parm = lsqnonlin(chifunc,guess,lb,ub,options);
+                    res(:,di) = R-rps_get_mod_model(parm,a);
+                case 'complex' % A mod curve model with complicated geometry considerations.
+                    MIRROR = false;
+                    PLOT = false;
+                    source = struct();
+                    source.azimuth = 0;
+                    source.elevation = 0;
+                    source.distance = dists(prefind); % meters
+                    source.height = source.distance*tand(source.elevation); % meters;
+                    source.type = 'other';
+                    B3 = [1,0,0];
+                    B1 = [0,0,1];
+                    A = [0,0,0];
+
+                    if 0
+                        lb = [-10 -0.5 -10 -10 -10 -10 0 -0.5 -0.5];
+                        ub = [10 0.5 10 10 10 10 10 0.5 0.5];
+                        guess = [0,0,0,0,0,0,1,0,0];
+
+                        modfunc = @(p) rps_get_mod_model_vectors(p(1:7),a,[0,p(8),p(9)],B3,B1,source,false,false);
+                        chifunc = @(p) w.*(R-modfunc(p)');
+                    else
+                        lb = [-10 -0.5 -10 -10 -10 -10 0];
+                        ub = [10 0.5 10 10 10 10 10];
+                        guess = [0,0,0,0,0,0,1];
+                        chifunc = @(p) ( 1.*(R-rps_get_mod_model_vectors(p,a',A,B3,B1,source,MIRROR,PLOT)') );
+                    end
+                    try
+
+                        parm = lsqnonlin(chifunc,guess+1E-6,lb,ub,options);
+                    catch
+                        parm = NaN(1,7);
+                    end
+                    res(:,di) = chifunc(parm);
+                    parm(1) = -parm(1);
+            end
+
+            parms(di,1:length(parm)) = parm;
+            times(di) = mean(TIME);
+
+            % Do a shitty cut.... do we still need this?
+            if abs(R(1)-R((length(R)+1)/2))<0.2
+                for fldind = 1:length(flds)
+                    eval(sprintf('fd.%s(end+1) = %s;',flds{fldind},vals{fldind}))
+                end
+                angs{end+1} = a;
+                reses{end+1} = R-rps_get_mod_model(parm,a);
+                modcurves{end+1} = R;
+                modstds{end+1} = Rs;
+            else
+                parms(di,1:length(parm)) = NaN(1,length(parm));
+            end
+
+        end
+
     end
+
     fprintf('%i: %s\nAngle: %0.3f +/- %0.3f\n',prefind,labs{prefind},nanmean(parms(:,1))-a_isaac,nanstd(parms(:,1)))
-    fprintf('Eff: %0.4f +/- %0.4f\n',nanmean(parms(:,2)),nanstd(parms(:,2)))
+    %fprintf('Eff: %0.4f +/- %0.4f\n',nanmean(parms(:,2)),nanstd(parms(:,2)))
     obsnum = obsnum+1;
 end
 
-
-%% Look the jig data
+% Analysis done.
+% Plot all the things!
+%% Plot a history of measurements
+% Only uses measurements 6 to 42
 
 cmlines = colormap('lines');
 
@@ -599,9 +518,6 @@ s(2) = plot(fd.obsnum(ind),-1*fd.istilt(ind),'x','Color',cmlines(3,:),'MarkerSiz
 s(3) = plot(fd.obsnum(ind),fd.tilt(ind),'.','MarkerSize',16,'Color',cmlines(2,:));
 %s(1) = scatter(fd.schnum(ind),fd.phi(ind)-fd.phi_isaac(ind),14,cmlines(1,:));%,'filled');
 s(1) = errorbar(scheds,phi,pstd,'.','Color',cmlines(1,:),'LineWidth',1,'MarkerSize',16);
-%s.MarkerFaceAlpha = 0.7;
-%s.MarkerEdgeAlpha = 1;
-
 
 %plot(fd.schnum(ind),fd.phi_isaac(ind),'^','MarkerSize',10)
 plot([1 1]*4.5+5,[-1 0.5],'k--','LineWidth',2)
@@ -1263,4 +1179,4 @@ ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'})
 fname = 'dp_vs_alignment_new_dist';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
