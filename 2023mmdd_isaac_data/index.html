@@ -101,23 +101,36 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
 
     </p>
 
-    <figure>
-        <img src="figs/dp_vs_aligment.png" width="80%">
-        <figcaption>
-
-        </figcaption>
-    </figure>
-
     <p>
-        Same thing as above, but now I move the RPS closer to maintain a constant peak amplitude. These are measurements 63 to 69 in the mod_curve/histogram pager.
+        We now have three measurement sets. The first is the one we've already discussed. We went back to the benchtop and confirmed that the point at which we acquired a nearly zero bias was also the location of the peak of the RPS's beam.
+    </p>
+    <p>
+        The second set is the same as the first except I moved the RPS forward ever so slightly such that the peak amplitude was constant across all alignment offsets.
+    </p>
+    <p>
+        From the first measurement set, we have some indication that optically peaking up the RPS's and ISAAC's beams might improve our accuracy on extracting the correct angle, so I attempted to peak the RPS and ISAAC beams both in Azimuth and Elevation. I had found however that we were already pretty close to the max amplitude (~<1%) for both the RPS and ISAAC and in both directions. Instead, I chose to space them further apart and, making sure they were still peaked-up, take another small set of alignment measurements.
     </p>
 
     <figure>
-        <img src="figs/dp_vs_aligment_const_amp.png" width="80%">
+        <img alt="Name pager" id="dpvsalignpager" src="#" width="80%"/>
         <figcaption>
 
         </figcaption>
+        <script type="text/javascript">
+            pager.link("#dpvsalignpager",
+                {
+                    'Meas. Set|case' : ['1: Dist ~0.5m|','2: Const. Amp|_const_amp','3: Dist ~1m|_new_dist'],
+                },
+                function(params) {
+
+                    return 'figs/dp_vs_alignment'+params.case+'.png';
+                });
+            pager.setparams({
+                'case' : [''],
+            });
+        </script>
     </figure>
+
 
     <p>Extra plots: Histograms and mod curve residuals for ISAAC Measurements</p>
     <p>Measurement 44 marks the start of the measurements taken in July 2023. 27 to 43 were taken in July 2022. Any before 27 were taken at Pole.</p>
@@ -128,8 +141,8 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
         </figcaption>
         <script type="text/javascript">
 
-            var vallist = new Array(69);
-            for (var ii=6; ii<=69; ++ii) {
+            var vallist = new Array(78);
+            for (var ii=6; ii<=78; ++ii) {
                 vallist[ii] = ii;
             }
 

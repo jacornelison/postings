@@ -158,13 +158,23 @@ prefix = {...
     'isaac_cal_jig_july23_with_home_aligncheck_m0p5deg_1';...
     'isaac_cal_jig_july23_with_home_aligncheck_m0p125deg_1';...
     'isaac_cal_jig_july23_with_home_with_LNA_1';... Reinstalled the LNA to look at noise again.
-    'isaac_cal_jig_july23_constamp_0deg_1';...
+    'isaac_cal_jig_july23_constamp_0deg_1';... % Alignment test, but this time I kept a constant peak amplitude
     'isaac_cal_jig_july23_constamp_1deg_1';...
     'isaac_cal_jig_july23_constamp_2deg_1';...
     'isaac_cal_jig_july23_constamp_1deg_2';...
     'isaac_cal_jig_july23_constamp_0deg_2';...
     'isaac_cal_jig_july23_constamp_m1deg_1';...
     'isaac_cal_jig_july23_constamp_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_1deg_2';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_all_peaked_m2deg_1';...
     };
 
 labs = {...;
@@ -237,6 +247,16 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 26", cont-amp +0deg';... % 67
     'On Alignment Jig, Homing, Dist = 26", cont-amp -1deg';... % 68
     'On Alignment Jig, Homing, Dist = 26", cont-amp -2deg';... % 69
+    'On Alignment Jig, Homing, Dist = 43", +0deg';... % 70
+    'On Alignment Jig, Homing, Dist = 43", +0.5deg';... % 71
+    'On Alignment Jig, Homing, Dist = 43", +1deg';... % 72
+    'On Alignment Jig, Homing, Dist = 43", +1.5deg';... % 73
+    'On Alignment Jig, Homing, Dist = 43", +2deg';... % 74
+    'On Alignment Jig, Homing, Dist = 43", +1deg';... % 75
+    'On Alignment Jig, Homing, Dist = 43", +0deg';... % 76
+    'On Alignment Jig, Homing, Dist = 43", -0.5deg';... % 77
+    'On Alignment Jig, Homing, Dist = 43", -1deg';... % 78
+    'On Alignment Jig, Homing, Dist = 43", -2deg';... % 79
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -261,7 +281,7 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
-for prefind = 63:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
@@ -1078,7 +1098,11 @@ for schind = 1:length(unqsch)
     ylabel('$A_{meas}-A_{model}$ (Volts)','FontSize',14)
     xlabel('Stage Angle WRT Gravity')
     t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
-    title({strrep(labs{unqsch(schind)},'_','\_'), ...
+    ttl = labs{unqsch(schind)};
+    ttl = strrep(ttl,'_','\_');
+    ttl = strrep(ttl,'%','\%');
+    ttl = strrep(ttl,'<','$<$');
+    title({ttl, ...
         sprintf('%s UTC',t)})
     ylim([-1 1]*0.1)
     fname = sprintf('reses_%i',unqsch(schind));
@@ -1104,7 +1128,11 @@ for schind = 1:length(unqsch)
     ylabel('$A_{meas}$ (Volts)','FontSize',14)
     xlabel('Stage Angle WRT Gravity')
     t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
-    title({strrep(labs{unqsch(schind)},'_','\_'), ...
+    ttl = labs{unqsch(schind)};
+    ttl = strrep(ttl,'_','\_');
+    ttl = strrep(ttl,'%','\%');
+    ttl = strrep(ttl,'<','$<$');
+    title({ttl, ...
         sprintf('%s UTC',t)})
     fname = sprintf('mod_curves_%i',unqsch(schind));
     saveas(fig,fullfile(figdir,'mod_curves',fname),'png')
@@ -1130,7 +1158,10 @@ for schind = 1:length(unqsch)
     ylabel('$\Delta A_{meas}/A_0$ (Volts)','FontSize',14)
     %xlabel('Stage Angle WRT Gravity')
     t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
-    title({strrep(labs{unqsch(schind)},'_','\_'), ...
+    ttl = labs{unqsch(schind)};
+    ttl = strrep(ttl,'_','\_');
+    ttl = strrep(ttl,'%','\%');
+    title({ttl, ...
         sprintf('%s UTC',t)})
     fname = sprintf('diff_mod_curves_%i',unqsch(schind));
     saveas(fig,fullfile(figdir,'mod_curves',fname),'png')
@@ -1145,11 +1176,10 @@ schnums = [47:61];
 cmlines = distinguishable_colors(length(schnums));
 
 fig = figure(173476);
-fig = figure(173477);
 fig.Position(3:4) = [700 250];
 clf; hold on;
 
-[offs_all dp_all] = deal([]);
+[offs_all dp_all,dp_mn] = deal([]);
 for schind = 1:length(schnums)
     idx = find(fd.schnum==schnums(schind));
     O = repmat(offs(schind),1,length(idx));
@@ -1159,43 +1189,78 @@ for schind = 1:length(schnums)
     %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
     offs_all = [offs_all O];
     dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
 end
-
+%plot(offs,dp_mn,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
+ylim([-0.5 0.2])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title('Angle Bias vs. Alignment Offset')
-fname = 'dp_vs_aligment';
-%saveas(fig,fullfile(figdir,fname),'png')
+title({'Angle Bias vs. Alignment Offset',''})
+fname = 'dp_vs_alignment';
+saveas(fig,fullfile(figdir,fname),'png')
 
 %% Plot dPhi vs alignment offset -- with constant amplitude
 clc
 offs = [0 1 2 1 0 -1 -2];
 schnums = [63:69];
-cmlines = distinguishable_colors(length(schnums));
-
-fig = figure(173477);
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(174357);
 fig.Position(3:4) = [700 250];
 clf; hold on;
 
-[offs_all dp_all] = deal([]);
+[offs_all dp_all,dp_mn] = deal([]);
 for schind = 1:length(schnums)
     idx = find(fd.schnum==schnums(schind));
     O = repmat(offs(schind),1,length(idx));
     dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(schind,:),'MarkerSize',10)
+    plot(O,dP,'.','Color',cmlines(schind,:),'MarkerSize',14)
     %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
     %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
     offs_all = [offs_all O];
     dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
 end
-
+plot(offs,dp_mn,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset','Constant Peak Amplitude'})
-fname = 'dp_vs_aligment_const_amp';
+fname = 'dp_vs_alignment_const_amp';
+saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot dPhi vs alignment offset -- peaked up distance 1m
+clc
+offs = [0 0.5 1 1.5 2 1 0 -0.5 -1 -2];
+schnums = [70:79];
+cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173477);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.5 0.2])
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'})
+fname = 'dp_vs_alignment_new_dist';
 saveas(fig,fullfile(figdir,fname),'png')
