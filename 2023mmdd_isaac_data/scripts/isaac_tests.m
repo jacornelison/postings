@@ -1256,7 +1256,7 @@ title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Moving'})
 fname = 'dp_vs_alignment_isaac_move';
 saveas(fig,fullfile(figdir,fname),'png')
 
-%%
+%% Dphi vs eccosorb test
 
 schnums = [90:97];
 idx = ismember(fd.schnum,schnums);

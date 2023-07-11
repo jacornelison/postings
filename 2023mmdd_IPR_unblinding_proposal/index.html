@@ -133,12 +133,13 @@ I first summarize the remaining threads that we need to complete in order to fin
                 evaluating the impact of uncertainties on $B_\ell$ at high $\ell$. The latter is particularly
                 important if we want to include 5 more bins (see below).
             </li>
-            <li>Draft Link: <a href="CV2023b"></a></li>
+            <li>Published posting: <a href="CV2023b"></a></li>
             <font color="#228b22">
             <li>Update: </li>
                 <ul>
                     <li>
-                        In the posting above we find a modest-but-acceptable contribution of uncertainty from beam systemtics. Since the beam systematics affect in a multiplicative way, as opposed to additive, we find this impacts our "Legacy" results which do no de-rotate maps such that the power in EB is minimized. Internal review of the conlusions and consequences of the posting is ongoing.
+                        We find a modest-but-acceptable contribution of uncertainty from beam systemtics. From undeprojected residuals, we include a conservative &sigma;<sub>sys</sub> of 0.04&deg; (0.1&deg;) for 14(9) bandpowers in our error budget.</li>
+                    <li>Since the B<sub>&ell;</sub> affect the angle uncertainty in a multiplicative way, as opposed to additive, we are motivated to derotate our "Legacy" maps before fitting angles to them to avoid incurring up to a 10% additional uncertainty.
                     </li>
                 </ul>
 
@@ -329,6 +330,11 @@ I first summarize the remaining threads that we need to complete in order to fin
     </figure>
 
     <p>Finally, I'll also include a table summarizing &beta; and the final statistical and systematic uncertainties.</p>
+<p>
+    <font color="#228b22">
+        Numbers in green have been updated since this posting was presented.
+    </font>
+</p>
 
     <figure class="table">
         <table class="results">
@@ -353,37 +359,37 @@ I first summarize the remaining threads that we need to complete in order to fin
             </tr>
             <tr>
                 <td>Legacy, 9BP</td>
-                <td class="cstart">0.05</td>
+                <td class="cstart">--</td>
                 <td class="cstart">0.11</td>
+                <td><font color="#228b22">0.11</font></td>
+                <td class="cstart"><font color="#228b22">0.02</font></td>
                 <td>--</td>
                 <td class="cstart">--</td>
-                <td>--</td>
-                <td class="cstart">0.5</td>
             </tr>
             <tr>
                 <td>Legacy, 14BP</td>
-                <td class="cstart">0.04</td>
+                <td class="cstart">--</td>
                 <td class="cstart">0.08</td>
+                <td><font color="#228b22">0.04</font></td>
+                <td class="cstart"><font color="#228b22">0.02</font></td>
                 <td>--</td>
                 <td class="cstart">--</td>
-                <td>--</td>
-                <td class="cstart">0.6</td>
             </tr>
             <tr>
                 <td>Reanalysis, 9BP</td>
                 <td class="cstart">--</td>
-                <td class="cstart">--</td>
-                <td>--</td>
-                <td class="cstart">--</td>
+                <td class="cstart"><font color="#228b22">0.11</font></td>
+                <td><font color="#228b22">0.11</font></td>
+                <td class="cstart"><font color="#228b22">0.02</font></td>
                 <td>--</td>
                 <td class="cstart">--</td>
             </tr>
             <tr>
                 <td>Reanalysis, 14BP</td>
                 <td class="cstart">--</td>
-                <td class="cstart">--</td>
-                <td>--</td>
-                <td class="cstart">--</td>
+                <td class="cstart"><font color="#228b22">0.07</font></td>
+                <td><font color="#228b22">0.04</font></td>
+                <td class="cstart"><font color="#228b22">0.02</font></td>
                 <td>--</td>
                 <td class="cstart">--</td>
             </tr>
@@ -630,7 +636,7 @@ Table of results, final uncertainties, and detection significance (using fake da
             "bkcmb/analysis_logbook/analysis/20230613_IPR_B18_subsets/",
             "bkcmb/analysis_logbook/analysis/20230613_IPR7_dust/",
             "jcornelison/postings/2023mmdd_IPR_det_subset_jacks/",
-            "cverges/20230428_EB_bmsims/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR9_beams/",
             "jcornelison/postings/2023mmdd_isaac_data/",
             "jcornelison/postings/2022mmdd_rps_pointing/",
             "https://www.overleaf.com/read/pnnzqscqtpsn",
@@ -649,12 +655,12 @@ Table of results, final uncertainties, and detection significance (using fake da
             "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
             "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
             "Isotropic Polarization Rotation Analysis: An RPS Angle Subset Jack(draft)",
-            "Isotropic Polarization Rotation Analysis: T&rightarrow;P leakage systematics(draft)",
+            "Isotropic Polarization Rotation Analysis: Beam Effects",
             "Summary of RPS Angle Cross Checks with the ISAAC(draft)",
             "2022 RPS Analysis: Observations and Pointing Systematics(draft)",
             "IPR Analysis Paper",
             "RPS Analysis: Polarizing Wire Grid Angle Calibration",
-            "Isotropic Polarization Rotation Analysis: Final Pager with 50 Sims (blinded)(draft)",
+            "Isotropic Polarization Rotation Analysis: Final Pager with 50 Sims (blinded)",
         ];
         // Debug
         var posty = document.getElementById("testp");
