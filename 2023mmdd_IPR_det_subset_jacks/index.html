@@ -54,20 +54,8 @@ The goal of this posting discusses a consistency check on the CMB data unique to
 
 <section>
     <h2>Cross-checking RPS Polarization Angles</h2>
-    <p>
-        For our "Legacy" results (see <a href="JAC2023g"></a>), the non-zero angle we get from a given EB power spectrum (in the absence of birefringence) comes from the fact that the polarization angles we use to make timestreams differ from those we use to make maps.
-        The real BICEP3 CMB data used in BK18 uses some generally ideal values for the polarization angles of the detectors when we turn timestreams into maps.
-        Having no hard prior on what to set them to, the detectors are set to the same value for the polarization angle.
-        On the other hand, the angles I measured with the RPS show a detector-to-detector scatter of ~1 deg.
-    </p>
 
-    <p>
-         That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in the angle between the different subsets.
-        Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle.
-        While it doesn't really give us information on the overall angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the pol angles I measured using the RPS.
-    </p>
-
-    <p>The angle we fit to the real data as it currently exists will be a combination of the miscalibration angle of the instrument, ($\alpha_{B3}=\alpha_{TOD}-\alpha_{MAP}$), and any celestial isotropic polarization signal, &beta;:</p>
+    <p>The angle we fit to real CMB spectra without EB nulling will be a combination of the miscalibration angle of the instrument, ($\alpha_{B3}=\alpha_{TOD}-\alpha_{MAP}$), and any celestial isotropic polarization signal, &beta;:</p>
 
     \begin{equation}
     \alpha_\text{obs} = \alpha_\text{B3} + \beta
@@ -82,6 +70,19 @@ The goal of this posting discusses a consistency check on the CMB data unique to
     &= \alpha_{\text{B3},i} - \alpha_{\text{B3},j}\\
     \end{split}
     \end{equation}
+
+    <p>
+        For our "Legacy" results (see <a href="JAC2023g"></a>), the non-zero angle we get from a given EB power spectrum (in the absence of birefringence) comes from the fact that the polarization angles we use to make timestreams differ from those we use to make maps.
+        The real BICEP3 CMB data used in BK18 uses some generally ideal values for the polarization angles of the detectors when we turn timestreams into maps.
+        Having no hard prior on what to set them to, the detectors are set to the same value for the polarization angle.
+        On the other hand, the angles I measured with the RPS show a detector-to-detector scatter of ~1 deg.
+    </p>
+
+    <p>
+         That means that I should be able to split our real coadded maps into subsets based on the angle we expect from our RPS-derived polarization angles and then compare the <i>difference</i> in the angle between the different subsets.
+        Since we're looking only at relative differences, we keep ourselves blind to the absolute birefringence angle.
+        While it doesn't really give us information on the overall angle, having a confirmation that I got the relative angles correct lends confidence that there isn't something glaringly wrong in the pol angles I measured using the RPS.
+    </p>
 
     <p>
         The figure below shows how the data could be split up.

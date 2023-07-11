@@ -24,10 +24,10 @@
 <script src="pager.js"></script>
 
 <header>
-  <h1>Isotropic Polarization Rotation Analysis #: Final Pager with 50 Sims (blinded) (draft)</h1>
+  <h1>Isotropic Polarization Rotation Analysis 10: Final Pager with 50 Sims (blinded) (draft)</h1>
 
   <time datetime="2023-xx-xx" class="published updated">
-    2023 Mmm dd
+    2023 July 11
   </time> —
   James Cornelison
 </header>
@@ -35,9 +35,14 @@
 <hr>
 
 <p>
+  This posting is part of a series which comprises the IPR analysis, see <a href="#references">previous postings</a> for more on this.
+</p>
+
+<p>
   Notes:
   <ul>
   <li>The two simsets we'll be using for the birefringence results are 2017+2018 coadds called "Legacy" and "Reanalysis". For comparison, I've included a "BK" click which is the 2-year coadd jacks of the sims/real used in BK18.</li>
+  <li>As shown in <a href="CV2023b"></a>, we'll incur a relatively large systematic from undeprojected beam residuals, so I derotate the "Legacy" sims to mitigate that.</li>
   <li>In addition to regular final plots, I show an additional figure of angle fits to the jack EB spectra. Angles for a given jack are fit in two ways:</li>
   <ul>
     <li>angle (EE/BB Jack #) -- Uses the jack's EE/BB spectra as the input model to the estimator.</li>
@@ -46,10 +51,19 @@
     <ul><li>This looks for excess signal in the Jack EB that might resemble rotation of CMB EE.</li></ul>
     <li>The spectra used to do the fits are shown along with the angle histograms.</li>
   </ul>
-  <li>Jacks are debiased.</li>
-  <li>Jacks show real data.</li>
+  <li>Spectra are debiased.</li>
+  <li>Jack0 is still blinded (showing rlz 1 from sims)</li>
+  <li>Non-zero jacks show real data.</li>
   <li>I still need to make the PTE tables.</li>
 </ul>
+</p>
+
+
+<p>
+I find that, for the most part, the jacks from the new sims are not significantly different from those of BK18. Some jacks show an improvement (ex: chi-sq DK, Alt DK, phase), and we also see some jacks get worse (ex: chi-sq scan dir, Mux Col, tile/DK). Note: We do see some jacks improve in our analysis such that they would no longer be considered failing in our r-analysis (ex: alt DK), but at not point do we see jacks that do get worse get so bad that they'd be considered failing.
+</p>
+<p>
+  The metrics between our two approaches are quite consistent -- usually within a few percent of each other.
 </p>
 
 <!--<p>This is the B2019/20 final pager with the complete set of 499 sims. This posting is a followup to <a href="../20211020_B201920_final_99/">B2019/20 first 99 realizations final pager.</a></li> and should be viewed along with the <a href="../20210924_B2019_B2020_mapspager/">B2019/20 maps pager</a>. -->
@@ -476,45 +490,6 @@
 
 </section>
 
-<section><h2>PTE distributions</h2>
-  <p>The PTE values shown here are based on the Kendrick pure-B estimator.</p>
-
-  <table border="1" id="chitab">
-    <thead style="font-weight:bold; text-align:center;">
-      <tr><td>Figure 2</td><td>Hist. of chi and chi2</td></tr>
-    </thead>
-    <tr>
-      <td valign="top">
-          <script type="text/javascript">
-            auto_pager(['year'],
-                        'maxcols','2','style','2','figname','chitab');
-          </script>
-      </td>
-      <td align="left" width="1200">
-        <a href="javascript:location.href=fig.chitab.link;">
-          <img src="" name="chitab" class="mainimage"
-            onerror="onImgError(this);">
-        </a>
-      </td>
-    </tr>
-  </table>
-
-  <p>
-  <p> Below are the tables for the PTEs, the <b>bold numbers</b> indicate the pte are < 0.01 or > 0.99. And number with asterisk (*) is when the real data fall outside of the simulated distribuation, and the PTE is calculated with the theoretical fit.
-  <h3>B2019 PTE \(\chi\) tables</h3>
-  <iframe style="width:100%; height:300px;" src="2019/pte_dist_chi.html"></iframe>
-
-  <h3>B2019 PTE \(\chi^2\) tables</h3>
-  <iframe style="width:100%; height:300px;" src="2019/pte_dist_chi2.html"></iframe>
-
-  <h3>B2020 PTE \(\chi\) tables</h3>
-  <iframe style="width:100%; height:300px;" src="2020/pte_dist_chi.html"></iframe>
-
-  <h3>B2020 PTE \(\chi^2\) tables</h3>
-  <iframe style="width:100%; height:300px;" src="2020/pte_dist_chi2.html"></iframe>
-
-</section>
-
 <hr>
 
 <h3>Linked previous postings</h3>
@@ -542,20 +517,210 @@
     padding-right: 1em;
   }
 </style>
-<dl class="postinglist">
-
-  <a class="posting" href="../20210924_B2019_B2020_mapspager/">
-    <dt>[20210924_B2019_B2020_mapspager]</dt>
-    <dd>B2019/B2020 Maps Pager, Real and Realization 001 Simulations</dd>
-  </a>
 
 
-  <a class="posting" href="../20210131_B18_pointingshift_final_pager/">
-    <dt>[20210131_B18_pointingshift_final_pager]</dt>
-    <dd>B2016-B2018 Final Pager Based on Corrected Pointing</dd>
-  </a>
+<h3>References</h3>
 
-</dl>
+<p id="references"></p>
+
+
+<script type="text/javascript">
+
+  // This my way of making shorthand links.
+  // We'll make a couple arrays with the 'tag' and href information
+  // and then look through each anchor element for the specified tag.
+  // The anchors should then just look like: <a href="tagname"></a>
+  // and the script will automatically fill in the hyperlings and text.
+
+
+  var posting_dir = window.location.href; // What's the current url?
+
+  var bkurl = "bicep.rc.fas.harvard.edu";
+  var spurl = "bicep.usap.gov";
+
+  // These are the possible places to find postings
+  // The strings are for if you post your posting in that directory.
+  var sitemap = {
+    jcornelison: "../../../",   // /jcornelison/postings/
+    cverges: "../../../",
+    bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+    bicep3: "../../../",        //
+    bicep_array: "../../../",   //
+    bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+    keck  : "",                 // keck/analysis_logbook/analysis/
+    spuder: "",                 // ~spuder/hieno_analysis_logboo
+    bicep1: "",                 // ~bicep1/analysis_logbook_north/
+    general_projects:"",
+  };
+  // Logbook Site map:
+  // personal:www/jcornelison/postings/
+  // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+  // keck:    www/keck/analysis_logbook/analysis/
+  // BICEP3:  www/bicep3/analysis_logbook/
+  // BA:      www/bicep_array/analysis_logbook/
+  // We shouldn't be posting in these, but still have postings.
+  // bicep2:
+  // keck:    www/keck/analysis_logbook/analysis/
+  // spuder:  www/~spuder/hieno_analysis_logbook/
+  // bicep1:  www/~bicep1/analysis_logbook_north/
+
+  // Shorthand tags
+  var tags = [
+    "JAC2023a",
+    "JAC2023b",
+    "JAC2023c",
+    "JAC2023d",
+    "JAC2023e",
+    "JAC2023f",
+    "CV2023",
+    "JAC2023g",
+    "CV2023b",
+  ];
+
+  // Links
+  // Truncate the link down to the www directory in which it lies if you can.
+  // This ensures that we can view the linked postings at Pole without the internet.
+  var hrefs = [
+    "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+    "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+    "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+    "bkcmb/analysis_logbook/analysis/20230328_IPR_high_ell/",
+    "bkcmb/analysis_logbook/analysis/20230328_IPR_forecasting/",
+    "bkcmb/analysis_logbook/analysis/20230613_IPR_B18_subsets/",
+    "bkcmb/analysis_logbook/analysis/20230613_IPR7_dust/",
+    "bkcmb/analysis_logbook/analysis/2023mmdd_IPR_unblinding_proposal/",
+    "bkcmb/analysis_logbook/analysis/20230711_IPR9_beams/",
+  ];
+
+
+  // Posting titles
+  var desc = [
+    "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+    "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+    "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+    "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
+    "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
+    "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
+    "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
+    "Isotropic Polarization Rotation Analysis 8: Unblinding Strategy",
+    "Isotropic Polarisation Rotation Analysis 9: Beam effects",
+  ];
+  // Debug
+  var posty = document.getElementById("testp");
+
+
+  var preface = "";
+  var keys = Object.keys(sitemap);
+  // If we're not at pole or bicep, just post the full URL
+  // If we are, go back to the www directory.
+  if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+          posting_dir.match(new RegExp(spurl))!=spurl){
+    preface = "http://" + bkurl+"/";
+  }
+  else {
+    for (key in keys){
+      if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+        preface = sitemap[keys[key]];
+      };
+    };
+
+  };
+
+  // Add the prefixes we can.
+  // Only add prefixes to directories in the sitemap so we don't break
+  // external references.
+  for (ref in hrefs) {
+    for (key in keys) {
+
+      // If there's a match, at the prefix and move on.
+      if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+        hrefs[ref] = preface+hrefs[ref];
+        break;
+      }
+    };
+  };
+
+  // posty.innerHTML = preface;
+
+  // Make a list of references
+  var post = document.getElementById("references");
+  var msg = "<table>";
+  for (var tag in tags){
+    msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+  };
+  msg = msg+ "</table>";
+  post.innerHTML = msg;
+
+  // Look through all the hyperlinks and insert the proper links to the postings
+  var links = document.getElementsByTagName("A");
+  for (var link in links){
+    for (var tag in tags){
+      if (links[link].href.endsWith(tags[tag])){
+        links[link].text = "("+tags[tag]+")";
+        links[link].href = hrefs[tag];
+        links[link].target = "_blank";
+      }
+    }
+  }
+
+</script>
+
+<!--<dl class="postinglist">-->
+
+<!--  <a class="posting" href="../20210924_B2019_B2020_mapspager/">-->
+<!--    <dt>[20210924_B2019_B2020_mapspager]</dt>-->
+<!--    <dd>B2019/B2020 Maps Pager, Real and Realization 001 Simulations</dd>-->
+<!--  </a>-->
+
+
+<!--  <a class="posting" href="../20210131_B18_pointingshift_final_pager/">-->
+<!--    <dt>[20210131_B18_pointingshift_final_pager]</dt>-->
+<!--    <dd>B2016-B2018 Final Pager Based on Corrected Pointing</dd>-->
+<!--  </a>-->
+
+<!--</dl>-->
+
+
+<section><h2>PTE distributions</h2>
+  <p>Ignore this section for now....</p>
+  <p>The PTE values shown here are based on the Kendrick pure-B estimator.</p>
+
+  <table border="1" id="chitab">
+    <thead style="font-weight:bold; text-align:center;">
+    <tr><td>Figure 2</td><td>Hist. of chi and chi2</td></tr>
+    </thead>
+    <tr>
+      <td valign="top">
+        <script type="text/javascript">
+          auto_pager(['year'],
+                  'maxcols','2','style','2','figname','chitab');
+        </script>
+      </td>
+      <td align="left" width="1200">
+        <a href="javascript:location.href=fig.chitab.link;">
+          <img src="" name="chitab" class="mainimage"
+               onerror="onImgError(this);">
+        </a>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  <p> Below are the tables for the PTEs, the <b>bold numbers</b> indicate the pte are < 0.01 or > 0.99. And number with asterisk (*) is when the real data fall outside of the simulated distribuation, and the PTE is calculated with the theoretical fit.
+  <h3>B2019 PTE \(\chi\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2019/pte_dist_chi.html"></iframe>
+
+  <h3>B2019 PTE \(\chi^2\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2019/pte_dist_chi2.html"></iframe>
+
+  <h3>B2020 PTE \(\chi\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2020/pte_dist_chi.html"></iframe>
+
+  <h3>B2020 PTE \(\chi^2\) tables</h3>
+  <iframe style="width:100%; height:300px;" src="2020/pte_dist_chi2.html"></iframe>
+
+</section>
+
 
 
   <script type="text/javascript">

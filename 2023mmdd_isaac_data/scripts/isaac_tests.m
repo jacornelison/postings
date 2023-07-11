@@ -174,6 +174,17 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_all_peaked_m0p5deg_1';...
     'isaac_cal_jig_july23_with_homing_all_peaked_m1deg_1';...
     'isaac_cal_jig_july23_with_homing_all_peaked_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_align_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_eccosorb_no_absorb_1';...
     };
 
 labs = {...;
@@ -256,6 +267,17 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 43", -0.5deg';... % 77
     'On Alignment Jig, Homing, Dist = 43", -1deg';... % 78
     'On Alignment Jig, Homing, Dist = 43", -2deg';... % 79
+    'On Alignment Jig, Homing, Dist = 43", 0deg ISAAC Offset';... % 80
+    'On Alignment Jig, Homing, Dist = 43", 0.5deg ISAAC Offset';... % 81
+    'On Alignment Jig, Homing, Dist = 43", 1deg ISAAC Offset';... % 82
+    'On Alignment Jig, Homing, Dist = 43", 1.5deg ISAAC Offset';... % 83
+    'On Alignment Jig, Homing, Dist = 43", 2deg ISAAC Offset';... % 84
+    'On Alignment Jig, Homing, Dist = 43", -2deg ISAAC Offset';... % 85
+    'On Alignment Jig, Homing, Dist = 43", -1.5deg ISAAC Offset';... % 86
+    'On Alignment Jig, Homing, Dist = 43", -1deg ISAAC Offset';... % 87
+    'On Alignment Jig, Homing, Dist = 43", -0.5deg ISAAC Offset';... % 88
+    'On Alignment Jig, Homing, Dist = 43", 0deg ISAAC Offset';... % 89
+    'On Alignment Jig, Homing, Dist = 43", Absorber test, no absorber';... 90
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -280,7 +302,7 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
-for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 90%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
@@ -493,7 +515,7 @@ end
 % Plot all the things!
 %% Plot a history of measurements
 % Only uses measurements 6 to 42
-
+% specifically: [6 7 9:15, 20:42 44]
 cmlines = colormap('lines');
 
 fig = figure(2+wgtind);
@@ -1180,3 +1202,37 @@ xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'})
 fname = 'dp_vs_alignment_new_dist';
 %saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot dPhi vs alignment offset -- peaked up distance 1m -- ISAAC Moving
+clc
+offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
+schnums = [80:89];
+cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173477);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.5 0.2])
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('ISAAC Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Moving'})
+fname = 'dp_vs_alignment_isaac_move';
+%saveas(fig,fullfile(figdir,fname),'png')
+
+

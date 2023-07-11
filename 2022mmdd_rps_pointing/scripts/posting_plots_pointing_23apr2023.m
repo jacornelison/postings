@@ -321,8 +321,6 @@ end
 % Show that letting the mirror be a free parameter accounts for both the
 % rotation and translation in the residuals.
 
-
-
 lims = {[-1 1]*0.1-0.07 [-1 1]*0.4 [-1 1]*0.1 [-1 1]*0.1};
 res = 30;
 
@@ -400,7 +398,6 @@ fname = 'mirror_fit_residuals.pdf';
 exportgraphics(fig,fullfile(figdir,fname),"Resolution",600)
 
 
-
 %% Bootstrap the mirror fits to get an error
 
 Niter = 100;
@@ -439,6 +436,286 @@ end
 save('z:/dev/rps/mirrparms_bootstrap.mat','mirrparms')
 %fd = fd0;
 
+%% Compare angle fits of type-11's
+
+load('z:/dev/rps/rps_phi_final_2022.mat') % RPS 2022 analysis data products
+load('z:/dev/rps/rps_obs_info.mat') % which sch goes to which dk/obs
+load('z:/dev/rps/pm.mat') % starpointing params
+load('z:/dev/rps/fpu_data_obs.mat') % pointing from 2022
+
+%% Type 5 first
+unqsch = unique(fd.schnum);
+[prx, pry] = pol2cart(p.theta*pi/180,p.r);
+fd0 = fd;
+fd0.x = NaN(size(fd0.x));
+fd0.y = NaN(size(fd0.x));
+rf = [1 0 0 0];
+[angs5, tilts5, rolls5] = deal([]);
+clc
+for schind = 1:length(unqsch)
+
+    for rowind = 1:max(fd0.rowind)
+
+        idx = fd0.schnum == unqsch(schind) & ismember(fd0.rowind,rowind);
+        if isempty(find(idx))
+            continue
+        end
+        fd_rast = structcut(fd0,idx);
+
+        mirror0 = rps_fit_mirror(fd_rast,rpsopt,p,'');
+        fd0.mirr_tilt(idx) = mirror0.tilt;
+        fd0.mirr_roll(idx) = mirror0.roll;
+
+        % Apply the new mirror params and fit an angle from residuals
+        [x,y,~] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,...
+            fd_rast.dk_cen,model,'bicep3',mirror0,source,[]);
+
+        fd_rast.x = reshape(x,size(fd_rast.ch));
+        fd_rast.y = reshape(y,size(fd_rast.ch));
+
+        % Convert to quasi-mirror-centered-coords:
+        % Quasi because we're just subtracting DK
+        p0 = p;
+        [th, r] = cart2pol(fd_rast.x,fd_rast.y);
+        th = th-nanmean(fd_rast.dk_cen)*pi/180;
+        [fd_rast.x, fd_rast.y] = pol2cart(th,r);
+        [fd0.x(idx), fd0.y(idx)] = pol2cart(th,r);
+
+        p0.theta = p0.theta-nanmean(fd_rast.dk_cen);
+
+        % Fit xformation params to residuals
+        fpu = fit_fpu_angle_and_scaling_from_xy(fd_rast,p0,'',rf);
+        angs5(end+1) = fpu.angle;
+        tilts5(end+1) = mirror0.tilt;
+        rolls5(end+1) = mirror0.roll;
+    end
+end
+
+
+% The idea is to fit over more of the focal plane:
+% Instead of on rasterset per row, now we've got one rasterset
+load('z:/dev/rps/rps_beam_fits_type11_10july2023_cut.mat')
+unqsch = unique(fd_type11.schnum);
+[prx, pry] = pol2cart(p.theta*pi/180,p.r);
+fd0 = fd_type11;
+fd0.x = NaN(size(fd0.x));
+fd0.y = NaN(size(fd0.x));
+rf = [1 0 0 0];
+[angs, tilts, rolls] = deal([]);
+clc
+for schind = 1:length(unqsch)
+    
+%    plot(prx,pry,'b.')
+    for rowind = 1:3:max(fd0.rowind)
+
+        idx = fd0.schnum == unqsch(schind) & ismember(fd0.rowind,rowind:(rowind+2));
+        if isempty(find(idx))
+            continue
+        end
+        fd_rast = structcut(fd0,idx);
+
+        mirror0 = rps_fit_mirror(fd_rast,rpsopt,p,'');
+        fd0.mirr_tilt(idx) = mirror0.tilt;
+        fd0.mirr_roll(idx) = mirror0.roll;
+
+        % Apply the new mirror params and fit an angle from residuals
+        [x,y,~] = beam_map_pointing_model(fd_rast.az_cen,fd_rast.el_cen,...
+            fd_rast.dk_cen,model,'bicep3',mirror0,source,[]);
+
+        fd_rast.x = reshape(x,size(fd_rast.ch));
+        fd_rast.y = reshape(y,size(fd_rast.ch));
+
+        % Convert to quasi-mirror-centered-coords:
+        % Quasi because we're just subtracting DK
+        p0 = p;
+        [th, r] = cart2pol(fd_rast.x,fd_rast.y);
+        th = th-nanmean(fd_rast.dk_cen)*pi/180;
+        [fd_rast.x, fd_rast.y] = pol2cart(th,r);
+        [fd0.x(idx), fd0.y(idx)] = pol2cart(th,r);
+
+        p0.theta = p0.theta-nanmean(fd_rast.dk_cen);
+
+        % Fit xformation params to residuals
+        fpu = fit_fpu_angle_and_scaling_from_xy(fd_rast,p0,'',rf);
+        angs(end+1) = fpu.angle;
+        tilts(end+1) = mirror0.tilt;
+        rolls(end+1) = mirror0.roll;
+    end
+end
 
 
 
+%% Plot the histograms
+
+fig = figure(135543);
+fig.Position(3:4) = [1000 700];
+clf; hold on;
+t = tiledlayout(2,3);
+t.Padding = 'compact';
+
+V = tilts5;
+nexttile(); hold on;
+hist(V)
+grid on
+xlabel('Mirror Tilt [Deg]')
+M = nanmean(V); S = nanstd(V); L = length(V);
+title({...
+    sprintf('M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L)...
+    })
+pbaspect([1 1 1])
+
+V = rolls5;
+nexttile(); hold on;
+hist(V)
+grid on
+xlabel('Mirror Roll [Deg]')
+M = nanmean(V); S = nanstd(V); L = length(V);
+title({...
+    sprintf('M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L)...
+    })
+pbaspect([1 1 1])
+
+V = angs5;
+nexttile(); hold on;
+hist(V)
+grid on
+xlabel('Residual FPU Angle [Deg]')
+M = nanmean(V); S = nanstd(V); L = length(V);
+title({...
+    sprintf('M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L)...
+    })
+pbaspect([1 1 1])
+sgtitle('Type 5 vs Type 11 FPU angle fits, Mirror fit per-rasterset')
+
+% Type 11
+V = tilts;
+nexttile(); hold on;
+hist(V)
+grid on
+xlabel('Mirror Tilt [Deg]')
+M = nanmean(V); S = nanstd(V); L = length(V);
+title({...
+    sprintf('M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L)...
+    })
+pbaspect([1 1 1])
+
+V = rolls;
+nexttile(); hold on;
+hist(V)
+grid on
+xlabel('Mirror Roll [Deg]')
+M = nanmean(V); S = nanstd(V); L = length(V);
+title({...
+    sprintf('M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L)...
+    })
+pbaspect([1 1 1])
+
+V = angs;
+nexttile(); hold on;
+hist(V)
+grid on
+xlabel('Residual FPU Angle [Deg]')
+M = nanmean(V); S = nanstd(V); L = length(V);
+title({...
+    sprintf('M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L)...
+    })
+pbaspect([1 1 1])
+sgtitle('Type 5 vs Type 11 FPU angle fits, Mirror fit per-rasterset')
+
+fname = 'type5_vs_type11_mirror_fpu_ang_compare';
+saveas(fig,fullfile(figdir,fname),'png')
+
+
+%% Plot the quivers, beam residual hists
+
+fig = figure(76583634);
+fig.Position(3:4) = [840 800];
+clf; hold on;
+t = tiledlayout(2,2);
+t.Padding = 'compact';
+
+dks11 = [0 0 90 68 23];
+scheds11 = [1 2 4 5 6];
+obs11 = 3;
+obs5 = find(dks==dks11(obs11));
+obs5 = obs5(1);
+
+% Quivers
+nexttile(1,[1,2]); hold on;
+scaling = 40;
+idx11 = fd0.schnum==scheds11(obs11);
+idx5 = ismember(fd.schnum,scheds{obs5}) & ismember(fd.ch,fd0.ch(idx11));
+% Type 5 first
+[prx5, pry] = pol2cart((p.theta-nanmean(fd.dk_cen(idx5)))*pi/180,p.r);
+[th, r] = cart2pol(fd.x(idx5),fd.y(idx5));
+th = th-nanmean(fd.dk_cen(idx5))*pi/180;
+[x, y] = pol2cart(th,r);
+dp5 = ([prx(fd.ch(idx5)), pry(fd.ch(idx5))]-[x' y']);
+quiv([prx(fd.ch(idx5)),pry(fd.ch(idx5))],dp5*scaling,0)
+
+% Now type 11
+[prx, pry] = pol2cart((p.theta-nanmean(fd0.dk_cen(idx11)))*pi/180,p.r);
+dp11 = ([prx(fd0.ch(idx11)), pry(fd0.ch(idx11))]-[fd0.x(idx11)' fd0.y(idx11)']);
+quiv([prx(fd0.ch(idx11)),pry(fd0.ch(idx11))],dp11*scaling,0)
+grid on
+xlim([-1 1]*15)
+ylim([-1 1]*5)
+pbaspect([2 1 1])
+xlabel('Mirror-Fixed X')
+ylabel('Mirror-Fixed Y')
+legend({'Type 5','Type 11'})
+title(sprintf('Quiver plot of Beam Center Residuals, x%i Scaling',scaling))
+
+nexttile(3,[1 1]); hold on;
+V = dp11(:,1);
+M = nanmean(V); S = nanstd(V); L = length(V);
+ttl11 = sprintf('Type11:M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L);
+N = histc(V,edges);
+b = bar(edges,N,'histc');
+b.FaceColor = cmlines(2,:);
+V = dp5(:,1);
+M = nanmean(V); S = nanstd(V); L = length(V);
+ttl5 = sprintf('Type 5:M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L);
+edges = linspace(-1,1,15)*0.03;
+N = histc(V,edges);
+b = bar(edges,N,'histc');
+b.FaceColor = cmlines(1,:);
+title({...
+    ttl5,...
+    ttl11})
+xlabel('X-residuals [Deg]')
+grid on
+pbaspect([1 1 1])
+
+nexttile(4,[1 1]); hold on;
+V = dp5(:,2);
+M = nanmean(V); S = nanstd(V); L = length(V);
+ttl5 = sprintf('Type 5:M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L);
+edges = linspace(-1,1,15)*0.03;
+N = histc(V,edges);
+b = bar(edges,N,'histc');
+b.FaceColor = cmlines(1,:);
+V = dp11(:,2);
+M = nanmean(V); S = nanstd(V); L = length(V);
+ttl11 = sprintf('Type11:M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L);
+N = histc(V,edges);
+b = bar(edges,N,'histc');
+b.FaceColor = cmlines(2,:);
+V = dp5(:,2);
+M = nanmean(V); S = nanstd(V); L = length(V);
+ttl5 = sprintf('Type 5:M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L);
+edges = linspace(-1,1,15)*0.03;
+N = histc(V,edges);
+b = bar(edges,N,'histc');
+b.FaceColor = cmlines(1,:);
+xlabel('Y-residuals [Deg]')
+title({...
+    ttl5,...
+    ttl11})
+grid on
+pbaspect([1 1 1])
+
+sgtitle('Comparison of Type 5 and Type 11 Beam-Center Residuals')
+
+fname = 'type5_vs_type11_beamcen_compare';
+saveas(fig,fullfile(figdir,fname),'png')

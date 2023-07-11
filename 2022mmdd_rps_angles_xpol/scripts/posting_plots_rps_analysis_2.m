@@ -36,13 +36,21 @@ load('z:/dev/rps/sch_type9.mat')
 fd_type9 = get_pair_params(fd_type9,ind0,ind90);
 [fd_type9, ~,~,~,~] = get_pol_params_per_obs(fd_type9,p);
 
-%%
 % Load type 6 data
 fd_type6 = load('z:/dev/rps/rps_beam_fits_type6_10july2023_rerun.mat');
 fd_type6 = fd_type6.fd;
 fd_type6 = rps_cut_fitdata(fd_type6,p,p_ind,false);
 fd_type6 = get_pair_params(fd_type6,ind0,ind90);
 [fd_type6, phis_6, phi_pair_6,~,~] = get_pol_params_per_obs(fd_type6,p);
+
+%% Load type 11 data
+fd_type11 = load('z:/dev/rps/rps_beam_fits_type11_10july2023_rerun.mat');
+fd_type11 = fd_type11.fd;
+fd_type11 = rps_cut_fitdata(fd_type11,p,p_ind,false);
+fd_type11 = get_pair_params(fd_type11,ind0,ind90);
+[fd_type11, phis_11, phi_pair_11,~,~] = get_pol_params_per_obs(fd_type11,p);
+
+
 %%
 
 % Load 2018 data
@@ -488,8 +496,6 @@ xlabel('Dk [Deg]')
 ylabel({'\phi_{pair}-md(\phi) [Deg]'})
 title({'\phi_{pair} Vs. Dk','Median-subtracted per pair, avg''d per obs'})
 %pbaspect([1 1 1])
-
-
 
 
 %%
@@ -1238,7 +1244,7 @@ saveas(fig,fullfile(figdir,fname),'png')
 
 %% Grab the mod curves for A/B dets 
 
-[Amodel Adata] = deal({});
+[Amodel, Adata] = deal({});
 fig = figure(1);
 fig.Position(3:4) = [600 500];
 clf; hold on;
@@ -1620,9 +1626,9 @@ xlim(lims)
 ylim(lims)
 grid on
 
-%% Look at type 6's
-phi0 = atand(tand(p.chi_thetaref+p.chi))';
+%% Compare Type 6's to Type 5's
 
+phi0 = atand(tand(p.chi_thetaref+p.chi))';
 
 fig = figure(659386);
 fig.Position(3:4) = [700 350];
@@ -1702,6 +1708,92 @@ title(sprintf('M= %0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
 fname = 'angcompare_type5_vs_type6';
 saveas(fig,fullfile(figdir,fname),'png')
 
+%% Compare Type 11's to Type 5's
+
+
+obs1 = [1 1 7 10 3];
+obs2 = [1:5];
+
+for obsind = 4%1:length(obs1)
+fig = figure(8472901);
+fig.Position(3:4) = [700 350];
+clf; hold on;
+t = tiledlayout(2,3);
+t.Padding = 'compact';
+
+nexttile(); hold on;
+plot(phis(obs1(obsind),ind0),phis_11(obs2(obsind),ind0),'.')
+plot([-1 1]*10,[-1 1]*10,'k--')
+xlabel('$\phi_{0}$ Type 5')
+ylabel('$\phi_{0}$ Type 11')
+lims = [-4 -1];
+xlim(lims)
+ylim(lims)
+grid on
+pbaspect([1 1 1])
+
+nexttile(); hold on;
+plot(phis(obs1(obsind),ind90),phis_11(obs2(obsind),ind90),'.')
+plot([-1 1]*10+90,[-1 1]*10+90,'k--')
+xlabel('$\phi_{90}$ Type 5')
+ylabel('$\phi_{90}$ Type 11')
+lims = [-4 -1]+90;
+xlim(lims)
+ylim(lims)
+grid on
+pbaspect([1 1 1])
+
+nexttile(); hold on;
+plot(phi_pair(obs1(obsind),:),phi_pair_11(obs2(obsind),:),'.')
+plot([-1 1]*10,[-1 1]*10,'k--')
+xlabel('$\phi_{pair}$ Type 5')
+ylabel('$\phi_{pair}$ Type 11')
+lims = [-4 -1];
+xlim(lims)
+ylim(lims)
+grid on
+pbaspect([1 1 1])
+
+V = phis(obs1(obsind),ind0)-phis_11(obs2(obsind),ind0);
+M = nanmean(V); S = nanstd(V); L = length(find(~isnan(V)));
+nexttile(); hold on;
+edges = linspace(-1,1,30)*0.4;
+N = histc(V,edges);
+bar(edges,N,'histc')
+xlim(edges([1 end]))
+xlabel({'$\phi_{0}$','Type 5 - Type 11'})
+grid on
+pbaspect([1 1 1])
+title(sprintf('M= %0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
+
+V = phis(obs1(obsind),ind90)-phis_11(obs2(obsind),ind90);
+M = nanmean(V); S = nanstd(V); L = length(find(~isnan(V)));
+nexttile(); hold on;
+edges = linspace(-1,1,30)*0.4;
+N = histc(V,edges);
+bar(edges,N,'histc')
+xlim(edges([1 end]))
+xlabel({'$\phi_{90}$','Type 5 - Type 11'})
+grid on
+pbaspect([1 1 1])
+title(sprintf('M= %0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
+
+V = phi_pair(obs1(obsind),:)-phi_pair_11(obs2(obsind),:);
+M = nanmean(V); S = nanstd(V); L = length(find(~isnan(V)));
+nexttile(); hold on;
+edges = linspace(-1,1,30)*0.4;
+N = histc(V,edges);
+bar(edges,N,'histc')
+xlim(edges([1 end]))
+xlabel({'$\phi_{pair}$','Type 5 - Type 11'})
+grid on
+pbaspect([1 1 1])
+title(sprintf('M= %0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
+
+fname = 'angcompare_type5_vs_type11';
+%saveas(fig,fullfile(figdir,fname),'png')
+
+end
 
 %% End of main function
 function [fd, phis, phi_pair, xpol, poleffs,n1s,n2s,amps] = get_pol_params_per_obs(fd,p,obscell)
