@@ -102,15 +102,30 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
     </p>
 
     <p>
-        We now have three measurement sets. The first is the one we've already discussed. We went back to the benchtop and confirmed that the point at which we acquired a nearly zero bias was also the location of the peak of the RPS's beam.
-    </p>
-    <p>
-        The second set is the same as the first except I moved the RPS forward ever so slightly such that the peak amplitude was constant across all alignment offsets.
-    </p>
-    <p>
-        From the first measurement set, we have some indication that optically peaking up the RPS's and ISAAC's beams might improve our accuracy on extracting the correct angle, so I attempted to peak the RPS and ISAAC beams both in Azimuth and Elevation. I had found however that we were already pretty close to the max amplitude (~<1%) for both the RPS and ISAAC and in both directions. Instead, I chose to space them further apart and, making sure they were still peaked-up, take another small set of alignment measurements.
-    </p>
+        Notes on the measurement sets in Figure 1.2:
+        <ol>
+    <li>
+        <b>Dist ~0.5m: </b>The first is the one we've already discussed. We went back to the benchtop and confirmed that the point at which we acquired a nearly zero bias was also the location of the peak of the RPS's beam.
+    </li>
+    <li>
+        <b>Const. Amp:</b> The second set is the same as the first except I moved the RPS forward ever so slightly such that the peak amplitude was constant across all alignment offsets.
+    </li>
+    <li>
+        <b>Dist ~1.0m:</b> From the first measurement set, we have some indication that optically peaking up the RPS's and ISAAC's beams might improve our accuracy on extracting the correct angle, so I attempted to peak the RPS and ISAAC beams both in Azimuth and Elevation. I had found however that we were already pretty close to the max amplitude (~<1%) for both the RPS and ISAAC and in both directions. Instead, I chose to space them further apart and, making sure they were still peaked-up, take another small set of alignment measurements.
+    </li>
+    <li>
+        <b>ISAAC Moved:</b> Instead of changing the alignment of the RPS, we instead change the alignment of the ISAAC. The bias changes as a function of alignment, but not as strongly as when we move the RPS. What exactly is this telling us?
+    </li>
+    <li>
+        <b>Adding Eccosorb:</b> Keeping the RPS and ISAAC fixed in alignment, we add AN-75 eccosorb to various parts jig to test for external reflections being an issue. Each sample corresponds to a single sheet of AN-75 being moved to a different location on the jig -- Annie took pictures which can be found in our <a href="https://drive.google.com/drive/u/0/folders/15eWYCNlH_2vc0TOaqG9IjTn6ciMG8UNP" target="_blank">CMB@CfA Google Drive folder</a>. If external reflections are an issue, we expect that adding eccosorb will pull the biased angle toward zero so we first made sure that we measured a significant angle bias before we started adding eccosorb.
+    </li>
+    <li>
+        <b>Flipped ISAAC Horn:</b> Annie and I opened the ISAAC and flipped the RF chain (Horn+Diode) by 180&deg; and took more RPS-alignment measurements at ~1m. Flipping between clicks 3 and 6, the pattern flips pretty cleanly around X=0&deg; which I think is strong evidence that the pattern is following the horn's orientation. This is definitely good motivation to try swapping out the horn on the ISAAC.
+    </li>
+</ol>
 
+    </p>
+    
     <figure>
         <img alt="Name pager" id="dpvsalignpager" src="#" width="80%"/>
         <figcaption>
