@@ -199,6 +199,16 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_eccosorb_table_isaac_up_1';...
     'isaac_cal_jig_july23_with_homing_eccosorb_fully_blocked_1';...
     'isaac_cal_jig_july23_with_homing_eccosorb_both_sides_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_0deg_1';...
     };
 
 labs = {...;
@@ -299,6 +309,16 @@ labs = {...;
     'On Alignment Jig, Homing, Dist = 43", Absorber test, table isaac up';... 95
     'On Alignment Jig, Homing, Dist = 43", Absorber test, fully blocked';... 96
     'On Alignment Jig, Homing, Dist = 43", Absorber test, both sides';... 97
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align +0.0deg';... 98
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align +0.5deg';... 99
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align +1.0deg';... 100
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align +1.5deg';... 101
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align +2.0deg';... 102
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align -2.0deg';... 103
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align -1.5deg';... 104
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align -1.0deg';... 105
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align -0.5deg';... 106
+    'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align +0.0deg';... 107
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -323,7 +343,7 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
-for prefind = 80:97%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 98:107%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
@@ -1276,3 +1296,34 @@ title({'Angle Bias vs. Eccosorb',''})
 fname = 'dp_vs_alignment_eccosorb';
 saveas(fig,fullfile(figdir,fname),'png')
 
+%% Plot dPhi vs alignment offset -- Horn Flipped 180 deg
+clc
+offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
+schnums = [98:107];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173477);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.5 0.2])
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Flipped 180deg'})
+fname = 'dp_vs_alignment_horn_flipped';
+saveas(fig,fullfile(figdir,fname),'png')
