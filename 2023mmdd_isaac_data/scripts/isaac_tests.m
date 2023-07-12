@@ -6,12 +6,10 @@ set(groot,'defaultAxesFontSize',12)
 addpath('z:/pipeline/util/')
 %% Tilt Cals
 
-
-
 clc
 %close all
 %figure(5)
-clf; hold on;
+%clf; hold on;
 level_cal = 85/3600.; % degrees per tick
 
 rps_tilt_cals_all = {};
@@ -22,25 +20,25 @@ rps_tilt_ticks = [0 1 2 1 0 0];
 rps_tilt_meter = [0.113 0.210 0.302 0.204 0.111 0.110]; % in Volts
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
 fprintf('RPS 03 Dec 2021: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'b.')
+%plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'b.')
 
 
 rps_tilt_ticks = [0 2 1 0 -1 -2 -1];
 rps_tilt_meter = [0.1360 0.2610 0.1840 0.1160 0.0345 -0.0445 0.0390];
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
 fprintf('RPS 16 Dec 2021: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'bx')
+%plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'bx')
 
 isaac_tilt_ticks = [0 2 0 1 -1 -2 0];
 isaac_tilt_meter = [0.553 0.681 0.558 0.615 0.479 0.407 0.569]+0*(0.644-0.553); % in Volts
 isaac_tilt_cal = polyfit(isaac_tilt_meter,level_cal*isaac_tilt_ticks,1);
 fprintf('ISAAC 9 Dec 2021: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
-plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'r.')
+%plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'r.')
 isaac_tilt_ticks = [0 -1 -2 -2 -2 -1 0 1 2 1 0];
 isaac_tilt_meter = [0.5585 0.4890 0.3885 0.3925 0.3975 0.4725 0.5485 0.6180 0.7180 0.6380 0.5485];
 isaac_tilt_cal = polyfit(isaac_tilt_meter,level_cal*isaac_tilt_ticks,1);
 fprintf('ISAAC 16 Dec 2021: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
-plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'rx')
+%plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'rx')
 
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
 isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
@@ -50,17 +48,17 @@ inc_tilt_meter = [0.247,0.405,0.550,0.184];
 inc_readout = [-0.04 -0.01 +0.03 -0.06]+0.055;
 rps_tilt_cal = polyfit(inc_tilt_meter,inc_readout,1);
 fprintf('RPS 24 Dec 2021: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(inc_tilt_meter,inc_readout,'b^')
+%plot(inc_tilt_meter,inc_readout,'b^')
 
 % isaac
 inc_tilt_meter = [0.602,0.276,0.250,0.632,0.315,0.515];
 inc_readout = -1*[-0.03 +0.06 +0.08 -0.03 +0.04 -0.03]+0.055;
 isaac_tilt_cal = polyfit(inc_tilt_meter,inc_readout,1);
 fprintf('ISAAC 24 Dec 2021: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
-plot(inc_tilt_meter,inc_readout,'r^')
-xlabel('Tilt meter [V]')
-ylabel('Cal''d Tilt [Deg]')
-grid on
+%plot(inc_tilt_meter,inc_readout,'r^')
+%xlabel('Tilt meter [V]')
+%ylabel('Cal''d Tilt [Deg]')
+%grid on
 %legend()
 
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
@@ -70,9 +68,9 @@ isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 rps_tilt_ticks = [0 -1 -2 -1 0 1 2 1 0];
 rps_tilt_meter = [0.0413 -0.0368 -0.1160 -0.0368 0.0467 0.1074 0.1929 0.1166 0.04684];
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
-fprintf('RPS 21 Jun 2022: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'bo')
-grid on
+%fprintf('RPS 21 Jun 2022: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
+%plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'bo')
+%grid on
 %rps_tilt_cals_all{end+1} = rps_tilt_cal;
 
 %clf; hold on;
@@ -82,19 +80,19 @@ isaac_tilt_meter = [0.4718 0.4054 0.314 0.389 0.458 0.545 0.5714];
 isaac_inc_readout = [-0.05 -0.04 -0.09 -0.06 -0.03 0.01 0.01];
 isaac_tilt_cal = polyfit(isaac_tilt_meter,level_cal*isaac_tilt_ticks,1);
 fprintf('ISAAC 25 Jun 2022: %f deg/V %+0.2fdeg\n', isaac_tilt_cal(1),isaac_tilt_cal(2))
-plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'r+')
+%plot(isaac_tilt_meter,level_cal*isaac_tilt_ticks,'r+')
 
 rps_tilt_ticks = [0 1 2 1 0 -1 -2 -2 -1 0 0 -2 -2 -1 -1 1 1 2 2];
 rps_tilt_meter = [0.0278 0.119 0.2049 0.1208 0.051 -0.039 -0.118 -0.153 -0.035 0.068 0.026 -0.0987 -0.132 -0.051 -0.019 0.109 0.141 0.1875 0.216];
 rps_inc_readout = [-0.02 -0.01 +0.02 -0.02 -0.05 -0.06 -0.09 -0.09 -0.07 -0.02 -0.02 -0.1 -0.1 -0.06 -0.07];
 rps_tilt_cal = polyfit(rps_tilt_meter,level_cal*rps_tilt_ticks,1);
 fprintf('RPS 25 Jun 2022: %f deg/V %+0.2fdeg\n', rps_tilt_cal(1),rps_tilt_cal(2))
-plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'b+')
-grid on
+%plot(rps_tilt_meter,level_cal*rps_tilt_ticks,'b+')
+%grid on
 rps_tilt_cals_all{end+1} = rps_tilt_cal;
 isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 
-%
+% Load and fit the data.
 %clc
 addpath('z:/pipeline/beammap/')
 gitdir = fullfile('C:','Users','James','Documents','');
@@ -148,7 +146,7 @@ prefix = {...
     'isaac_cal_jig_july23_nohome_1';... 03 July 2023 @ 26". Removed Isaac LNA, added absorber.
     'isaac_cal_jig_july23_nohome_2';... 04 July 2023 @ 26". Removed Isaac LNA, added absorber.
     'isaac_cal_jig_july23_with_home_1';... 04 July 2023 @ 26". Homing
-    'isaac_cal_jig_july23_with_home_aligncheck_0_1';...
+    'isaac_cal_jig_july23_with_home_aligncheck_0_1';... % Moving through a range of alignments on the RPS
     'isaac_cal_jig_july23_with_home_aligncheck_1deg_1';...
     'isaac_cal_jig_july23_with_home_aligncheck_2deg_1';...
     'isaac_cal_jig_july23_with_home_aligncheck_0deg_2';...
@@ -209,6 +207,21 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_horn_flipped_m1deg_1';...
     'isaac_cal_jig_july23_with_homing_horn_flipped_m0p5deg_1';...
     'isaac_cal_jig_july23_with_homing_horn_flipped_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_horn_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_horn_0p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_horn_1deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_horn_1p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_horn_2deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_horn_0deg_3';...
     };
 
 labs = {...;
@@ -319,11 +332,27 @@ labs = {...;
     'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align -1.0deg';... 105
     'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align -0.5deg';... 106
     'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align +0.0deg';... 107
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.0deg';... 108
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.5deg';... 109
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.0deg';... 110
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.5deg';... 111
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +2.0deg';... 112
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align -2.0deg';... 113
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align -1.5deg';... 114
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align -1.0deg';... 115
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align -0.5deg';... 116
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.0deg';... 117
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.5deg';... 118
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.0deg';... 119
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.5deg';... 120
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +2.0deg';... 121
+    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.0deg';... 122
     };
 if ~exist('meanguess','var')
     meanguess = 0;
 end
 
+% Create the struct that all the fit data (fd) will go into.
 fd = struct();
 flds = {'schnum','rownum','phi','eps','N1','N2','A','time','tilt','istilt','temp','istemp','istilttemp','wgt','fitind','phi_isaac','obsnum'};
 vals = {'prefind','di','parm(1)','parm(2)','parm(3)','parm(4)','parm(5)','nanmean(TIME)',...
@@ -343,12 +372,14 @@ fitnames = {'fmin','lsq','complex'};
 plotmodcurve = 0;
 obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
-for prefind = 98:107%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
+% Loop over the file names and fit.
+for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+
+    % Tilt Calibrations
     if ismember(prefind,[1:18])
         rpscal = rps_tilt_cals_all{end-2};
         isaaccal = isaac_tilt_cals_all{end-2};
-
     elseif ismember(prefind,[19:21 24:26])
         rpscal = rps_tilt_cals_all{end-2};
         isaaccal = isaac_tilt_cals_all{end-2};
@@ -358,7 +389,6 @@ for prefind = 98:107%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
     elseif ismember(prefind,[27:length(prefix)])
         rpscal = rps_tilt_cals_all{end};
         isaaccal = isaac_tilt_cals_all{end};
-
     end
     isaaccal(1) = 0.3;
     %rpscal(1) = 0.3;
@@ -464,6 +494,7 @@ for prefind = 98:107%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
             guess = [1e-6,1e-6,0,0,nanmax(R)/2];
             %fittype = 'lsq';
+
             % A million ways to fit:
             switch fittype
                 case 'basic' % Don't fit collimation params
@@ -645,7 +676,7 @@ ax.XTickLabel([1, end]) = {'',''};
 
 saveas(fig,'C:\Users\James\Documents\GitHub\postings\2023mmdd_isaac_data\figs\angle_fit_vs_actual_plot','png')
 
-%% Look the other jig data
+%% Look the other jig data for diagnostics
 
 vals = {fd.temp*1000, fd.istemp*1000, fd.istilttemp*100+273.15};
 %vals = {fd.N1,fd.N2}
@@ -665,7 +696,7 @@ end
 grid on
 
 %% Look at time between measurements
-
+% You can tell when we're homing and when we're not.
 dt = NaN(1,max(fd.obsnum));
 for obsind = 5:max(fd.obsnum)
     idx = find(fd.obsnum==obsind);
@@ -675,31 +706,6 @@ end
 
 fig = figure(91824);
 plot(dt)
-
-%% Calc angle from uneven stage heating.
-
-cme = 2.34e-5;
-dA = 0.1;
-dT = tand(dA)./cme;
-fprintf('dT: %2.1f\n',dT)
-
-%% Compare non-homing to homing
-
-fig = figure(1423);
-%fig.Position(3:4) = [560 650];
-clf;
-t = tiledlayout(1,2);
-t.TileSpacing = 'compact';
-t.Padding = 'compact';
-
-nexttile()
-hist(pstd(12:18))
-
-nexttile()
-hist(pstd(19:27))
-
-
-
 
 %% Sigma angle vs Attenuation
 
@@ -729,6 +735,7 @@ ax2.XScale = 'log';
 xlim(ax2,sqrt(d0^2./10.^(-[-5 60]/10)))
 xlabel(ax2,'Effective Distance [meters]','Position',[23.7138 0.65 -1]);
 ax2.XColor = 'b';
+
 %% B3 Obs
 labs = {'B3 Obs, with homing',...
     'B3 Obs, with homing, reseat connector',...
@@ -895,15 +902,6 @@ end
 
 fname = 'isaac_homing_vs_backlash.png';
 exportgraphics(fig,fullfile(figdir,fname),'Resolution',1200)
-
-%% Look at the actual timestreams
-
-scheds = [12 20];
-
-figure(21344)
-clf; hold on;
-plot(ts{10})
-
 
 
 %% Look at mod curves. Again?
@@ -1152,6 +1150,7 @@ end
 clc
 offs = [0 1 2 0 1 2 -1 -2 -1 0 0.5 0.25 -0.25 -0.5 -0.125];
 schnums = [47:61];
+addpath('z:/dev/')
 cmlines = distinguishable_colors(length(schnums));
 
 fig = figure(173476);
@@ -1174,6 +1173,7 @@ end
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
+ylim([-0.45 0.45])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset',''})
@@ -1206,6 +1206,7 @@ plot(offs,dp_mn,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
+ylim([-0.45 0.45])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset','Constant Peak Amplitude'})
@@ -1216,13 +1217,13 @@ saveas(fig,fullfile(figdir,fname),'png')
 clc
 offs = [0 0.5 1 1.5 2 1 0 -0.5 -1 -2];
 schnums = [70:79];
-cmlines = distinguishable_colors(length(schnums));
+%cmlines = distinguishable_colors(length(schnums));
 cmlines = colormap('lines');
 fig = figure(173477);
 fig.Position(3:4) = [700 250];
 clf; hold on;
 
-[offs_all dp_all,dp_mn] = deal([]);
+[offs_all, dp_all,dp_mn] = deal([]);
 for schind = 1:length(schnums)
     idx = find(fd.schnum==schnums(schind));
     O = repmat(offs(schind),1,length(idx));
@@ -1238,17 +1239,18 @@ plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
+ylim([-0.45 0.45])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'})
 fname = 'dp_vs_alignment_new_dist';
-%saveas(fig,fullfile(figdir,fname),'png')
+saveas(fig,fullfile(figdir,fname),'png')
 
 %% Plot dPhi vs alignment offset -- peaked up distance 1m -- ISAAC Moving
 clc
 offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
 schnums = [80:89];
-cmlines = distinguishable_colors(length(schnums));
+%cmlines = distinguishable_colors(length(schnums));
 cmlines = colormap('lines');
 fig = figure(173477);
 fig.Position(3:4) = [700 250];
@@ -1270,6 +1272,7 @@ plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
+ylim([-0.45 0.45])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('ISAAC Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Moving'})
@@ -1288,6 +1291,7 @@ clf; hold on;
 plot(1:length(dP),dP,'.','MarkerSize',14)
 plot(1:length(dP),dP)
 ylim([-0.5 0.2])
+ylim([-0.45 0.45])
 xlim([0 9])
 grid on
 xlabel('Measurement Number')
@@ -1322,8 +1326,43 @@ plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
+ylim([-0.45 0.45])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Flipped 180deg'})
 fname = 'dp_vs_alignment_horn_flipped';
 saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot dPhi vs alignment offset -- New 15dB Horn
+clc
+offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0 0.5 1.0 1.5 2.0 0];
+schnums = [108:122];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173477);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.45 0.45])
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','New 15dB Horn'})
+fname = 'dp_vs_alignment_new_horn';
+saveas(fig,fullfile(figdir,fname),'png')
+
+
