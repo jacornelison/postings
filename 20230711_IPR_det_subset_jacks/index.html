@@ -183,9 +183,21 @@ The goal of this posting discusses a consistency check on the CMB data unique to
     <p>Akin to the &chi; and &chi;<sup>2</sup> plots done in our final pagers, we can calculate them here except instead of summing over bandpowers, we can sum over the three different &Delta;&alpha;'s.</p>
 
 \begin{align}
-    &\chi = \sum^{[LM,MH,LH]}_{i}{\frac{\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>}{\sigma_{sims,i}}}\\
-    &\chi^2 = \sum^{[LM,MH,LH]}_{i}{\frac{(\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>)^2}{\sigma^2_{sims,i}}}\\
+    &\chi = \sum^{[LM,MH,LH]}_{i}{\frac{\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>}{\sigma_{\chi,i}}}\\
+    &\chi^2 = \sum^{[LM,MH,LH]}_{i}{\frac{(\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>)^2}{\sigma^2_{\chi,i}}}\\
     \end{align}
+
+    <p>
+        Where &sigma;<sub>&chi;</sub> is the combination of uncertainty from both the CMB analysis and the RPS analysis. From <a href="CV2023b"></a>, we now know we need scale our uncertainties coming from sims by 10%(5%) for 14(9) bandpowers since our angles are non-zero.
+    </p>
+
+    \begin{equation}
+    \sigma_{\chi}^2 = (\sigma_{sims}(1+\epsilon))^2 + \sigma_{RPS}^2
+    \end{equation}
+    <p>
+        Where &epsilon; is the 10% or 5% scaling factor from B<sub>&ell;</sub> uncertainties.
+    </p>
+
 
     <figure>
         <img alt="Name pager" id="flikepager" src="#" onerror=this.src="figs/blank.png" width="80%"/>
