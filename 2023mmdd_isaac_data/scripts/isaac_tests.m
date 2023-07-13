@@ -206,7 +206,7 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_horn_flipped_m1p5deg_1';...
     'isaac_cal_jig_july23_with_homing_horn_flipped_m1deg_1';...
     'isaac_cal_jig_july23_with_homing_horn_flipped_m0p5deg_1';...
-    'isaac_cal_jig_july23_with_homing_horn_flipped_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_horn_flipped_0deg_2';...
     'isaac_cal_jig_july23_with_homing_small_horn_0deg_1';...
     'isaac_cal_jig_july23_with_homing_small_horn_0p5deg_1';...
     'isaac_cal_jig_july23_with_homing_small_horn_1deg_1';...
@@ -222,6 +222,21 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_small_horn_1p5deg_2';...
     'isaac_cal_jig_july23_with_homing_small_horn_2deg_2';...
     'isaac_cal_jig_july23_with_homing_small_horn_0deg_3';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_0p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_1deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_1p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_2deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_0deg_3';...
     };
 
 labs = {...;
@@ -347,6 +362,21 @@ labs = {...;
     'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.5deg';... 120
     'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +2.0deg';... 121
     'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.0deg';... 122
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 123
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 124
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 125
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 126
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 127
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 128
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 129
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 130
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 131
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 132
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 133
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 134
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 135
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 136
+    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 137
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -374,7 +404,7 @@ obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 
 % Loop over the file names and fit.
-for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 108:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     % Tilt Calibrations
     if ismember(prefind,[1:18])
@@ -1334,6 +1364,7 @@ fname = 'dp_vs_alignment_horn_flipped';
 saveas(fig,fullfile(figdir,fname),'png')
 
 %% Plot dPhi vs alignment offset -- New 15dB Horn
+lims = [-1 1]*0.7;
 clc
 offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0 0.5 1.0 1.5 2.0 0];
 schnums = [108:122];
@@ -1358,11 +1389,42 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.45 0.45])
+ylim(lims)
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','New 15dB Horn'})
 fname = 'dp_vs_alignment_new_horn';
 saveas(fig,fullfile(figdir,fname),'png')
 
+%% Plot dPhi vs alignment offset -- New 15dB Horn
+clc
+offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0 0.5 1.0 1.5 2.0 0];
+schnums = [123:137];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173478);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim(lims)
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','New 15dB Horn Flipped'})
+fname = 'dp_vs_alignment_new_horn_flipped';
+saveas(fig,fullfile(figdir,fname),'png')
 
