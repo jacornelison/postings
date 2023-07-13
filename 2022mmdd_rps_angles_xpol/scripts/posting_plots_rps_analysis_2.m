@@ -43,7 +43,7 @@ fd_type6 = rps_cut_fitdata(fd_type6,p,p_ind,false);
 fd_type6 = get_pair_params(fd_type6,ind0,ind90);
 [fd_type6, phis_6, phi_pair_6,~,~] = get_pol_params_per_obs(fd_type6,p);
 
-%% Load type 11 data
+% Load type 11 data
 fd_type11 = load('z:/dev/rps/rps_beam_fits_type11_10july2023_rerun.mat');
 fd_type11 = fd_type11.fd;
 fd_type11 = rps_cut_fitdata(fd_type11,p,p_ind,false);
@@ -51,7 +51,7 @@ fd_type11 = get_pair_params(fd_type11,ind0,ind90);
 [fd_type11, phis_11, phi_pair_11,~,~] = get_pol_params_per_obs(fd_type11,p);
 
 
-%%
+%
 
 % Load 2018 data
 load('z:/dev/rps/rps_beam_fits_cut_2018.mat')
@@ -397,6 +397,11 @@ saveas(fig,fullfile(figdir,fname),'png')
 % If we're median subtracting, then we shouldn't be taking the error on the
 % mean...
 %load('z:/dev/rps/rps_phi_final_2022.mat')
+set(groot,'defaulttextinterpreter','latex');
+set(groot, 'defaultAxesTickLabelInterpreter','latex');
+set(groot, 'defaultLegendInterpreter','latex');
+set(groot,'defaultAxesFontSize',12)
+
 P = phi_pair-repmat(nanmean(phi_pair,1),10,1);
 L = sum(~isnan(P),2);
 fig = figure(2);
@@ -417,7 +422,9 @@ ylabel({'$\phi_{pair}-\langle\phi_{pair}\rangle$ [Deg]'})
 title({'$\phi_{pair}$ Vs. Boresight Rotation','Mean-subtracted per pair'})
 pbaspect([1 1 1])
 fname = 'phi_pair_vs_dk_medsub';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
+fname = 'phi_pair_vs_dk_medsub.pdf';
+exportgraphics(fig,fullfile(figdir,fname),"Resolution",600)
 
 %% Angle VS. DK, no medsub, only chans in all obs
 idx = sum(~isnan(phi_pair),1)>=10;
@@ -1707,6 +1714,12 @@ title(sprintf('M= %0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
 
 fname = 'angcompare_type5_vs_type6';
 saveas(fig,fullfile(figdir,fname),'png')
+
+%% Type 6 vs type 5 mod curves
+
+
+
+
 
 %% Compare Type 11's to Type 5's
 
