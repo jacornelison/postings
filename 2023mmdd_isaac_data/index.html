@@ -162,10 +162,11 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
 
     <p>Extra plots: Histograms and mod curve residuals for ISAAC Measurements</p>
     <p>Measurement 44 marks the start of the measurements taken in July 2023. 27 to 43 were taken in July 2022. Any before 27 were taken at Pole.</p>
+
     <figure>
         <img alt="Name pager" id="histmodpager" src="#" height="600px"/>
         <figcaption>
-
+            <b>Mod Curve/Residuals:</b> The top plot is the mod curve. The bottom plot compares real residuals to ideal residuals. The <b><font color="blue">Blue</font></b> line is the real residuals. The <b><font color="Red">Red</font></b> line is subtracting a mod curve with a fixed angle (the known ISAAC Angle). The <b><font color="#e1da00">Yellow</font></b> line is a model mod curve at a fixed angle minus another ideal mod curve with with the same input angle plus the measured angle bias seen from the real data. The idea is that Red will agree with Yellow if the bias is truly consistent with the angle changing. Red will agree with Blue if the angle is not significantly contributing to the pattern in the residuals.
         </figcaption>
         <script type="text/javascript">
 
@@ -186,7 +187,7 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
 
             pager.link("#histmodpager",
                 {
-                    'Plot|plt' : ['Mod Curves|mod_curves/mod_curves_','Residuals|reses/reses_','hist|hists/angle_hists_'],
+                    'Plot|plt' : ['Mod Curves/Residuals|mod_curves/mod_curve_and_residuals_','hist|hists/angle_hists_'],
                     'Measurement|n' : valopt,
                     //'Coord|coord' : ['Inst Fixed|','Mirror Fixed|_mirror'],
                 },
@@ -195,8 +196,8 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
                     return 'figs/'+params.plt+params.n+'.png';
                 });
             pager.setparams({
-                'plt' : 'mod_curves/mod_curves_',
-                'n': '44',
+                'plt' : 'mod_curves/mod_curve_and_residuals_',
+                'n': '102',
                 //'coord' : '',
 
             });

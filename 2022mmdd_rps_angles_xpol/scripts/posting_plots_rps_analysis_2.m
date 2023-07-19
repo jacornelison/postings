@@ -6,6 +6,10 @@ addpath('z:/pipeline/beammap')
 addpath('z:/pipeline/util')
 addpath('z:/dev/diff_polarization/')
 addpath('z:/dev')
+set(groot,'defaulttextinterpreter','latex');
+set(groot, 'defaultAxesTickLabelInterpreter','latex');
+set(groot, 'defaultLegendInterpreter','latex');
+set(groot,'defaultAxesFontSize',12)
 figdir = fullfile('C:','Users','James','Documents','GitHub','postings','2022mmdd_rps_angles_xpol','figs','');
 
 %% Then this
@@ -1807,6 +1811,124 @@ fname = 'angcompare_type5_vs_type11';
 %saveas(fig,fullfile(figdir,fname),'png')
 
 end
+
+%% Look at fits for type 9, high resolution
+
+%
+clc
+Nrot = 37;
+fdh = structcut(fd_type9,fd_type9.nrots==Nrot);
+
+% All, 1st set, 2nd set, 3rd set:
+angidx = {1:Nrot, 1:3:Nrot, 2:3:Nrot, 3:3:Nrot, 4:3:Nrot};
+[parms0, parms] = deal(NaN(length(angidx),length(fdh.ch),5));
+
+
+
+for angind = 1:length(angidx)
+
+    for chind = 1:length(fdh.ch)
+        rot = fdh.rot{chind}(angidx{angind});
+        Ameas = fdh.bparam{chind}(5+angidx{angind});
+        phi_s = fdh.phi_s(chind);
+        guess = [fdh.phi(chind) fdh.xpol(chind) fdh.n1(chind) fdh.n2(chind) fdh.Amp(chind)];
+        
+        if ~ispc
+            freepar.free = [1 1 1 1 1];
+            freepar.lb = [-20 -1 -1e4 -1e4 0];
+            freepar.ub = [110 1e4 1e4 1e4];
+
+            % Estimate parameters
+            [aparam, aerr, agof, astat, acov] = matmin('nanchisq',...
+                guess, freepar,	'rps_get_mod_model',Ameas,1,rot+phi_s);
+        else
+           mxfev = 100000;
+            mxiter = 100000;
+            options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
+            lb = [-20 -1e4 -1e4 -1e4 0];
+            ub = [110 1e4 1e4 1e4 1e6];
+
+            chifunc = @(p) (1.*(Ameas-rps_get_mod_model(p,rot+phi_s)));
+            parm = lsqnonlin(chifunc,guess,lb,ub,options);
+            parm(1) = atand(tand(parm(1)));
+        end
+        parms0(angind,chind,:) = [atand(tand(p.chi_thetaref(fdh.ch(chind))+p.chi(fdh.ch(chind)))) 0 0 0 fdh.Amp(chind)];
+        parms(angind,chind,:) = parm;
+    end
+        
+end
+
+
+for parmind = 1%:5
+        i0 = find(ismember(fdh.ch,ind0));
+        i90 = find(ismember(fdh.ch,ind90));
+
+        if 0
+        % Figure stuff
+        fig = figure(325512);
+        fig.Position(3:4) = [1000 300];
+        clf; hold on;
+        t = tiledlayout(2,length(angidx));
+        t.Padding = 'compact';
+        t.TileSpacing = 'compact';
+        
+        for angind = 1:length(angidx)
+        % Hists? These look lame.
+        
+        V = atand(tand(parms0(angind,i0,parmind)-parms(angind,i0,parmind)));
+        M = nanmean(V);
+        S = nanstd(V);
+        L = length(find(~isnan(V)));
+        nexttile(angind)
+        edges = linspace(-1,1,25)*0.2+0.1;
+        N = histc(V,edges);
+        bar(edges,N,'histc');
+        grid on
+        title(...
+            sprintf('M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
+
+        
+        V = atand(tand(parms0(angind,i90,parmind)-parms(angind,i90,parmind)));
+        M = nanmean(V);
+        S = nanstd(V);
+        L = length(find(~isnan(V)));
+        nexttile(angind+5)
+        edges = linspace(-1,1,25)*0.2+1.3;
+        N = histc(V,edges);
+        bar(edges,N,'histc');
+        grid on
+        title(...
+            sprintf('M=%0.3f $|$ S=%0.3f $|$ N=%i',M,S,L))
+        end
+        end
+        % Just a scatter plot
+        fig = figure(325513);
+        fig.Position(3:4) = [560 660];
+        clf; hold on;
+        t = tiledlayout(1,1);
+        t.Padding = 'compact';
+        t.TileSpacing = 'compact';
+        
+        nexttile()
+        hold on;
+        plot(repmat([1:length(angidx)]',1,length(i0)),squeeze(parms0(:,i0,parmind)-parms(:,i0,parmind)),'.','Color',cmlines(1,:),'MarkerSize',14)
+        plot(repmat([1:length(angidx)]',1,length(i90)),squeeze(parms0(:,i90,parmind)-parms(:,i90,parmind)),'.','Color',cmlines(2,:),'MarkerSize',14)
+        grid on
+        xlim([0 6])
+        ylim([-0.5 2.0])
+        ax = gca;
+        ax.XTick = 0:6;
+        ax.XTickLabels = {'','All Angles (1 : 1 : 37)','Indices 1 : 3 : 37','2 : 3 : 37','3 : 3 : 37','4 : 3 : 37',''};
+        ax.XTickLabelRotation = 60;
+        pbaspect([1 1 1])
+        title({'Type 9: Pol Angle vs. Angle Samples','Stepped -180 to 180 in 10-Deg increments'})
+        ylabel('$\phi_d$ [Degree]')
+        legend({'Pol 0','Pol 90'})
+        fname = 'phi_vs_nrots';
+        saveas(fig,fullfile(figdir,fname),'png')
+end
+
+
 
 %% End of main function
 function [fd, phis, phi_pair, xpol, poleffs,n1s,n2s,amps] = get_pol_params_per_obs(fd,p,obscell)

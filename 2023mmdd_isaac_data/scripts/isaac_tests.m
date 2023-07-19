@@ -3,7 +3,7 @@ set(groot,'defaulttextinterpreter','latex');
 set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
 set(groot,'defaultAxesFontSize',12)
-addpath('z:/pipeline/util/')
+
 %% Tilt Cals
 
 clc
@@ -94,14 +94,21 @@ isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 
 % Load and fit the data.
 %clc
+if ~ispc
 addpath('~/Documents/kovac_lab/rps_benchtests/rsynced_from_cannon/beammap/')
 addpath('~/Documents/kovac_lab/rps_benchtests/rsynced_from_cannon/util/')
 gitdir = fullfile('/','home','annie','Documents','kovac_lab','rps_benchtests');
-%figdir = fullfile(gitdir,'GitHub','postings','2021mmdd_isaac_test','figs');
-figdir = fullfile(gitdir,'figs');
-direct = fullfile(gitdir,'rps_cal','data');
 %direct = fullfile(gitdir,'rps_cal','modified_data', 'even_angles');
 %direct = fullfile(gitdir,'rps_cal','modified_data', 'odd_angles');
+figdir = fullfile(gitdir,'figs');
+else
+    addpath('z:/pipeline/util/')
+    addpath('z:/pipeline/beammap/')
+    gitdir = fullfile('c:/','Users','James','Documents','GitHub');
+    figdir = fullfile(gitdir,'postings','2023mmdd_isaac_data','figs');
+end
+
+direct = fullfile(gitdir,'rps_cal','data');
 prefix = {...
     'isaac_cal_1_with_home_';... %0dB
     'isaac_cal_1_no_home_';... %0dB
@@ -500,7 +507,7 @@ obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 
 % Loop over the file names and fit.
-for prefind = 70:length(prefix)%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 44:122%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     % Tilt Calibrations
     if ismember(prefind,[1:18])
@@ -1613,3 +1620,87 @@ title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and w
 fname = 'dp_vs_alignment_no_shroud';
 saveas(fig,fullfile(figdir,fname),'png')
 
+%% Combine Mod curves and Compare as-fit residuals 
+
+clc
+unqsch = unique(fd.schnum);
+for schind = 1:length(unqsch)
+    idx = find(fd.schnum==unqsch(schind));
+    fdsch = structcut(fd,idx);
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    fig = figure(2875828);
+    fig.Position(3:4) = [800 550];
+    clf; hold on;
+    t = tiledlayout(2,1);
+    t.Padding = 'compact';
+    t.TileSpacing = 'compact';
+    
+    nexttile(1); hold on;
+    for modind = 1:length(idx)
+        plot(angs{idx(modind)},modcurves{idx(modind)},'.-','MarkerSize',14)
+    end
+    ylim([0 1]*4.5)
+    %ylim([0 1]*0.5)
+    grid on
+    ylabel('$A_{meas}$ (Volts)','FontSize',14)
+    %xlabel('Stage Angle WRT Gravity')
+    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
+    ttl = labs{unqsch(schind)};
+    ttl = strrep(ttl,'_','\_');
+    ttl = strrep(ttl,'%','\%');
+    ttl = strrep(ttl,'<','$<$');
+    title({ttl, ...
+        sprintf('%s UTC',t)})
+
+    nexttile(2); hold on;
+    for modind = 1:length(idx)
+        parm0 = [fdsch.phi_isaac(modind) fdsch.eps(modind) fdsch.N1(modind) fdsch.N2(modind) fdsch.A(modind)];
+        idealres = rps_get_mod_model(parm0,angs{idx(modind)})...
+            - rps_get_mod_model(parm0-[dP(modind) 0 0 0 0],angs{idx(modind)});
+        plot(angs{idx(modind)},idealres/fdsch.A(modind),'.-','MarkerSize',14,'Color',cmlines(3,:))
+        fixedres = modcurves{idx(modind)} - rps_get_mod_model(parm0,angs{idx(modind)});
+        plot(angs{idx(modind)},fixedres/fdsch.A(modind),'.-','MarkerSize',14,'Color',cmlines(2,:))
+        plot(angs{idx(modind)},reses{idx(modind)}/fdsch.A(modind),'.-','MarkerSize',14,'Color',cmlines(1,:))
+    end
+    ylim([-1 1]*0.03)
+    %ylim([0 1]*0.5)
+    legend({'Ideal Offset','Angle Fixed','Real Residuals'},'Location','northeastoutside')
+    grid on
+    ylabel('$(A_{meas}-A_{model})/A_{max}$','FontSize',10)
+    xlabel('Stage Angle WRT Gravity')
+    
+    fname = sprintf('mod_curve_and_residuals_%i',unqsch(schind));
+    saveas(fig,fullfile(figdir,'mod_curves',fname),'png')
+
+end
+
+
+%% Make plots for tilt meters (WIP)
+
+unqsch = unique(fd.schnum);
+for schind = 1:length(unqsch)
+    idx = find(fd.schnum==unqsch(schind));
+    fdsch = structcut(fd,idx);
+    fig = figure(2875828);
+    fig.Position(3:4) = [600 350];
+    clf; hold on;
+    
+    for modind = 1:length(idx)
+        plot(angs{idx(modind)},modcurves{idx(modind)},'.-','MarkerSize',14)
+    end
+    ylim([0 1]*4.5)
+    %ylim([0 1]*0.5)
+    grid on
+    ylabel('$A_{meas}$ (Volts)','FontSize',14)
+    xlabel('Stage Angle WRT Gravity')
+    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
+    ttl = labs{unqsch(schind)};
+    ttl = strrep(ttl,'_','\_');
+    ttl = strrep(ttl,'%','\%');
+    ttl = strrep(ttl,'<','$<$');
+    title({ttl, ...
+        sprintf('%s UTC',t)})
+    fname = sprintf('mod_curves_%i',unqsch(schind));
+    saveas(fig,fullfile(figdir,'mod_curves',fname),'png')
+
+end
