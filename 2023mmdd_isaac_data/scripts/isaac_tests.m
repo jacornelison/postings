@@ -94,11 +94,14 @@ isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 
 % Load and fit the data.
 %clc
-addpath('z:/pipeline/beammap/')
-gitdir = fullfile('C:','Users','James','Documents','');
+addpath('~/Documents/kovac_lab/rps_benchtests/rsynced_from_cannon/beammap/')
+addpath('~/Documents/kovac_lab/rps_benchtests/rsynced_from_cannon/util/')
+gitdir = fullfile('/','home','annie','Documents','kovac_lab','rps_benchtests');
 %figdir = fullfile(gitdir,'GitHub','postings','2021mmdd_isaac_test','figs');
-figdir = fullfile(gitdir,'GitHub','postings','2023mmdd_isaac_data','figs');
-direct = fullfile(gitdir,'GitHub','rps_cal','data','');
+figdir = fullfile(gitdir,'figs');
+direct = fullfile(gitdir,'rps_cal','data');
+%direct = fullfile(gitdir,'rps_cal','modified_data', 'even_angles');
+%direct = fullfile(gitdir,'rps_cal','modified_data', 'odd_angles');
 prefix = {...
     'isaac_cal_1_with_home_';... %0dB
     'isaac_cal_1_no_home_';... %0dB
@@ -237,6 +240,52 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_small_flipped_1p5deg_2';...
     'isaac_cal_jig_july23_with_homing_small_flipped_2deg_2';...
     'isaac_cal_jig_july23_with_homing_small_flipped_0deg_3';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_0p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_1deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_1p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_2deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_0deg_3';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_m0p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_m1deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_m1p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_m2deg_2';...
+    'isaac_cal_jig_july23_with_homing_small_flipped_isaac_0deg_4';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_0in_1';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_0p5in_1';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_1in_1';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_1p5in_1';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_1in_2';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_0p5in_2';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_0in_2';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_m0p5in_1';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_m1in_1';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_m1p5in_1';...
+    'isaac_cal_jig_july23_with_homing_translate_isaac_0in_3';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_0p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_1deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_1p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_2deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_0deg_3';...
     };
 
 labs = {...;
@@ -347,36 +396,82 @@ labs = {...;
     'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align -1.0deg';... 105
     'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align -0.5deg';... 106
     'On Jig, Homing, Dist = 43", Horn Flipped 180, RPS align +0.0deg';... 107
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.0deg';... 108
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.5deg';... 109
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.0deg';... 110
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.5deg';... 111
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +2.0deg';... 112
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align -2.0deg';... 113
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align -1.5deg';... 114
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align -1.0deg';... 115
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align -0.5deg';... 116
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.0deg';... 117
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.5deg';... 118
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.0deg';... 119
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +1.5deg';... 120
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +2.0deg';... 121
-    'On Jig, Homing, Dist = 43", 15dB Horn, RPS align +0.0deg';... 122
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 123
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 124
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 125
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 126
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 127
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 128
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 129
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 130
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 131
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 132
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 133
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 134
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 135
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 136
-    'On Jig, Homing, Dist = 43", 15dB Horn Flipped, RPS align +0.0deg';... 137
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +0.0deg';... 108
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +0.5deg';... 109
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +1.0deg';... 110
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +1.5deg';... 111
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +2.0deg';... 112
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align -2.0deg';... 113
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align -1.5deg';... 114
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align -1.0deg';... 115
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align -0.5deg';... 116
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +0.0deg';... 117
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +0.5deg';... 118
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +1.0deg';... 119
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +1.5deg';... 120
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +2.0deg';... 121
+    'On Jig, Homing, Dist = 43", Small Horn, RPS align +0.0deg';... 122
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +0.0deg';... 123
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +0.5deg';... 124
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +1.0deg';... 125
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +1.5deg';... 126
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +2.0deg';... 127
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align -2.0deg';... 128
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align -1.5deg';... 129
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align -1.0deg';... 130
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align -0.5deg';... 131
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +0.0deg';... 132
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +0.5deg';... 133
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +1.0deg';... 134
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +1.5deg';... 135
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +2.0deg';... 136
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, RPS align +0.0deg';... 137
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +0.0deg';... 138
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +0.5deg';... 139
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +1.0deg';... 140
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +1.5deg';... 141
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +2.0deg';... 142
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align -2.0deg';... 143
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align -1.5deg';... 144
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align -1.0deg';... 145
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align -0.5deg';... 146
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +0.0deg';... 147
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +0.5deg';... 148
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +1.0deg';... 149
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +1.5deg';... 150
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +2.0deg';... 151
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +0.0deg';... 152
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align -0.5deg';... 153
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align -1.0deg';... 154
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align -1.5deg';... 155
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align -2.0deg';... 156
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, ISAAC align +0.0deg';... 157
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC +0.0in';... 158
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC +0.5in';... 159
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC +1.0in';... 160
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC +1.5in';... 161
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC +1.0in';... 162
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC +0.5in';... 163
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC +0.0in';... 164
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC -0.5in';... 165
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC -1.0in';... 166
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC -1.5in';... 167
+    'On Jig, Homing, Dist = 43", Small Horn Flipped, Moved ISAAC +0.0in';... 168
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +0.0deg';... 169
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +0.5deg';... 170
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +1.0deg';... 171
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +1.5deg';... 172
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +2.0deg';... 173
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align -2.0deg';... 174
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align -1.5deg';... 175
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align -1.0deg';... 176
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align -0.5deg';... 177
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +0.0deg';... 178
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +0.5deg';... 179
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +1.0deg';... 180
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +1.5deg';... 181
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +2.0deg';... 182
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +0.0deg';... 183
     };
 if ~exist('meanguess','var')
     meanguess = 0;
@@ -391,6 +486,7 @@ for fldind = 1:length(flds)
     fd.(flds{fldind}) = [];
 end
 
+
 [reses, angs, modcurves, modstds, ts] = deal({});
 rsmax = [];
 thresh = 0.7;
@@ -404,7 +500,7 @@ obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 
 % Loop over the file names and fit.
-for prefind = 108:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 70:length(prefix)%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     % Tilt Calibrations
     if ismember(prefind,[1:18])
@@ -439,7 +535,7 @@ for prefind = 108:length(prefix)%[6 7 9:15, 20:42 44]%20:42
     % Change the weighting if we want.
     for wgtind = 1%1:3
 
-        % Complex fit requires more parameters
+        % Complex fit requires more parameters (probably don't use)
         if strcmp(fittype,'complex')
             parms = NaN(length(data),7);
         else
@@ -454,7 +550,7 @@ for prefind = 108:length(prefix)%[6 7 9:15, 20:42 44]%20:42
             [R, Rs, T, T2, TIME, TEMP, ISTILTTEMP, ISTEMP] = deal([]);
             for ai = 1:length(a)
                 aind = data{di}.Angle == a(ai);
-                R = [R; mean((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))];
+                R = [R; mean((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))]; % could replace with mean(X) if we know we're peaked up 
                 Rs = [Rs; std((sqrt(data{di}.X(aind).^2+data{di}.Y(aind).^2)))];
                 T = [T; median(polyval(rpscal,data{di}.Tilt(aind)))];
                 TIME = [TIME; mean(data{di}.Time(aind))];
@@ -519,10 +615,10 @@ for prefind = 108:length(prefix)%[6 7 9:15, 20:42 44]%20:42
             mxfev = 100000;
             mxiter = 100000;
             options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
-            lb = [-20 -0.5 -10 -10 0];
+            lb = [-20 -0.5 -10 -10 0]; % angle, xpol, collimation x2, amplitude
             ub = [20 0.5 10 10 1e6];
 
-            guess = [1e-6,1e-6,0,0,nanmax(R)/2];
+            guess = [1e-6,1e-6,0,0,nanmax(R)/2]; % old fminsearch didn't leave zero if given zero as a guess
             %fittype = 'lsq';
 
             % A million ways to fit:
@@ -1123,7 +1219,7 @@ unqsch = unique(fd.schnum);
 for schind = 1:length(unqsch)
     idx = find(fd.schnum==unqsch(schind));
     fdsch = structcut(fd,idx);
-    fig = figure(2875829);
+    fig = figure(2875828);
     fig.Position(3:4) = [600 350];
     clf; hold on;
     
@@ -1131,6 +1227,7 @@ for schind = 1:length(unqsch)
         plot(angs{idx(modind)},modcurves{idx(modind)},'.-','MarkerSize',14)
     end
     ylim([0 1]*4.5)
+    %ylim([0 1]*0.5)
     grid on
     ylabel('$A_{meas}$ (Volts)','FontSize',14)
     xlabel('Stage Angle WRT Gravity')
@@ -1180,7 +1277,6 @@ end
 clc
 offs = [0 1 2 0 1 2 -1 -2 -1 0 0.5 0.25 -0.25 -0.5 -0.125];
 schnums = [47:61];
-addpath('z:/dev/')
 cmlines = distinguishable_colors(length(schnums));
 
 fig = figure(173476);
@@ -1203,7 +1299,6 @@ end
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
-ylim([-0.45 0.45])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset',''})
@@ -1236,7 +1331,6 @@ plot(offs,dp_mn,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
-ylim([-0.45 0.45])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset','Constant Peak Amplitude'})
@@ -1247,40 +1341,7 @@ saveas(fig,fullfile(figdir,fname),'png')
 clc
 offs = [0 0.5 1 1.5 2 1 0 -0.5 -1 -2];
 schnums = [70:79];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173477);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all, dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim([-0.5 0.2])
-ylim([-0.45 0.45])
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'})
-fname = 'dp_vs_alignment_new_dist';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- peaked up distance 1m -- ISAAC Moving
-clc
-offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
-schnums = [80:89];
-%cmlines = distinguishable_colors(length(schnums));
+cmlines = distinguishable_colors(length(schnums));
 cmlines = colormap('lines');
 fig = figure(173477);
 fig.Position(3:4) = [700 250];
@@ -1302,7 +1363,38 @@ plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
-ylim([-0.45 0.45])
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'})
+fname = 'dp_vs_alignment_new_dist';
+%saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot dPhi vs alignment offset -- peaked up distance 1m -- ISAAC Moving
+clc
+offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
+schnums = [80:89];
+cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173477);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.5 0.2])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('ISAAC Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Moving'})
@@ -1321,7 +1413,6 @@ clf; hold on;
 plot(1:length(dP),dP,'.','MarkerSize',14)
 plot(1:length(dP),dP)
 ylim([-0.5 0.2])
-ylim([-0.45 0.45])
 xlim([0 9])
 grid on
 xlabel('Measurement Number')
@@ -1356,21 +1447,19 @@ plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
 ylim([-0.5 0.2])
-ylim([-0.45 0.45])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Flipped 180deg'})
 fname = 'dp_vs_alignment_horn_flipped';
 saveas(fig,fullfile(figdir,fname),'png')
 
-%% Plot dPhi vs alignment offset -- New 15dB Horn
-lims = [-1 1]*0.7;
+%% Plot dPhi vs alignment offset -- New, small horn
 clc
-offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0 0.5 1.0 1.5 2.0 0];
+offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
 schnums = [108:122];
 %cmlines = distinguishable_colors(length(schnums));
 cmlines = colormap('lines');
-fig = figure(173477);
+fig = figure(173478);
 fig.Position(3:4) = [700 250];
 clf; hold on;
 
@@ -1389,16 +1478,16 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim(lims)
+ylim([-0.5 0.2])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','New 15dB Horn'})
-fname = 'dp_vs_alignment_new_horn';
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn'})
+fname = 'dp_vs_alignment_small_horn';
 saveas(fig,fullfile(figdir,fname),'png')
 
-%% Plot dPhi vs alignment offset -- New 15dB Horn
+%% Plot dPhi vs alignment offset -- Small horn, flipped
 clc
-offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0 0.5 1.0 1.5 2.0 0];
+offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
 schnums = [123:137];
 %cmlines = distinguishable_colors(length(schnums));
 cmlines = colormap('lines');
@@ -1421,10 +1510,106 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim(lims)
+ylim([-0.5 0.2])
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','New 15dB Horn Flipped'})
-fname = 'dp_vs_alignment_new_horn_flipped';
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn, flipped'})
+fname = 'dp_vs_alignment_small_horn';
+saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot dPhi vs alignment offset -- Small horn, flipped, rotating ISAAC
+clc
+offs = [0 0.5 1 1.5 2 -2:0.5:2 0 -0.5 -1 -1.5 -2 0];
+schnums = [138:157];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173477);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.45 0.45])
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('ISAAC Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','15dB horn, flipped, rotating ISAAC'})
+fname = 'dp_vs_alignment_small_horn_rot_isaac_allangles';
+saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot translation vs alignment offset -- Small horn, flipped, moving ISAAC
+clc
+offs = [0.0 -0.65 -1.33 -2.0 -1.34 -0.67 0 0.67 1.33 1.99 0];
+schnums = [158:168];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173477);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.7 0.4])
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('Equivalent RPS angle [Degrees]')
+title({'Angle Bias vs. Translation Offset, Distance of $\sim1$m','15dB horn, flipped, moving ISAAC'})
+fname = 'dp_vs_alignment_moving_isaac';
+saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot dPhi vs alignment offset -- Removed RPS shroud
+clc
+offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
+schnums = [169:183];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173478);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.5 0.2]-6.9)
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and wire grid removed'})
+fname = 'dp_vs_alignment_no_shroud';
 saveas(fig,fullfile(figdir,fname),'png')
 
