@@ -662,6 +662,13 @@ idx_max = idx(mi,:);
 [~, mi] = min(abs(M.*sqrt(N)./S));
 [~, mi] = min(abs(M)+S);
 idx_min = idx(mi,:);
+% We should actually be taking mean STD from these.
+% There's a bimodal distribution. I assume the higher STD is due to
+% systematics.
+Smean = mean(S(S<0.04));
+[m,~] = max(S(S<=Smean));
+idx_min = idx(find(ismember(S,m)),:);
+
 
 %% Figure 3.2.1 Consistency Checks Part 2
 
@@ -676,7 +683,7 @@ lims2 = {[-1 1]*0.4,[-1 1]*0.4, [-1 1]*0.4, [-1 1]*2;
 ttls = {'2022','2022','2018','B18 FPU Data'};
 pltnames = {'2022_min','2022_max','2018','fpu'};
 valnames = {'phi','xpol'};
-valunits = {'\phi_{pair} [Degrees]','1-Poleff'};
+valunits = {'$\phi_{pair}$ [Degrees]','1-Poleff'};
 
 for valind = 1%1:size(V,1)
 
@@ -730,12 +737,12 @@ for valind = 1%1:size(V,1)
         M = nanmean(V1-V2);
         S = nanstd(V1-V2);
         title({...
-            sprintf('%s minus %s',V1ttl,V2ttl),...
-            sprintf('M: %0.4f | S: %0.4f | N: %03i | EOM: %0.4f',M,S,Nchans,S./sqrt(Nchans))...
+            '',...
+            sprintf('M: %0.4f $|$ S: %0.4f $|$ N: %03i $|$ EOM: %0.4f',M,S,Nchans,S./sqrt(Nchans))...
             });
-
-        fname = sprintf('consistplot_%s_2022_vs_%s.png',valnames{valind},pltnames{pltind});
-        %saveas(fig,fullfile(figdir,fname))
+        xlabel(sprintf('%s minus %s',V1ttl,V2ttl))
+        fname = sprintf('consistplot_%s_2022_vs_%s.png',valnames{valind},pltnames{pltind})
+        saveas(fig,fullfile(figdir,fname))
 
     end
 end
