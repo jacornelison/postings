@@ -173,7 +173,7 @@ Interesting Notes:
     <li>
         As noted in Christo's posting, the mixing matrix scales the maps by sin/cos of 2 times some angle $\phi$. The angle in this case is the angle measured from a given detector's copolar axis to the copolar axis of the RPS's wire grid which in turn is a function of the command angle of the RPS's rotation stage &zeta; which I calculate as
         $$
-        \phi = &zeta;-DK+90+DA+\phi_d
+        \phi = &zeta;-DK+90-DA+\phi_d
         $$
         Where DK is the Deck angle, DA is the drum angle, and $\phi_d$ is the angle measured from the &theta;=0 axis of the focal plane to the copolar axis of the detector measured from the RPS analysis.
     </li>
@@ -315,6 +315,9 @@ Interesting Notes:
     Here I demonstrate a composite map of all detectors across the entire center tile (Tile 11) comprising a total of 43 pairs. Again, I conserve the sign of the amplitude and we cross from positive to negative at 10<sup>-7</sup>.
 </p>
 
+    <p>
+        The Airey rings in Q can be seen all the way out to ~3&deg;, perhaps farther if you squint.
+    </p>
 
     <figure>
         <img alt="Name pager" id="tilemappager" src="#" width="100%"/>
@@ -340,7 +343,7 @@ Interesting Notes:
     </figure>
 
 <p>
-    Below is a slice along x' and y' for each map. At ~xp/yp=15&deg;, T drops to negative -- possibly a shelf buddy?
+    Below is a slice along x' and y' for each map. T levels out at ~-35dB compared to composite beams in <a href="TSG2020"></a> but Q and U hit a noise floor of ~10<sup>-5</sup>.
 </p>
 
     <figure>
@@ -536,6 +539,7 @@ Interesting Notes:
 
         // Shorthand tags
         var tags = [
+            "TSG2020",
             "CV2021",
             "CG2021",
             "TSG2021",
@@ -547,6 +551,7 @@ Interesting Notes:
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
+            "bkcmb/analysis_logbook/analysis/20200831_ffbm_30deg_map/",
             "bkcmb/analysis_logbook/analysis/20211216_beam_terminology/#measurements",
             "bicep3/analysis_logbook/20210826_sing_det_pol_beammaps/",
             "bkcmb/analysis_logbook/analysis/20210907_ffbm_pipeline/#Composites",
@@ -557,6 +562,7 @@ Interesting Notes:
 
         // Posting titles
         var desc = [
+            "Analysis of BICEP3 r=30 Composite FFBMs, including Buddy Beams",
             "BK Standard Beam Terminology",
             "Single Detector TQU Beammaps BSNS2018",
             "FFBM Pipeline Overview and Data Product Directory",
