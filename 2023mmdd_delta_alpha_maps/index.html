@@ -33,12 +33,13 @@
 <body text="#000000" bgcolor="#ffffff">
 <center>
 <H2>Polarization Rotation Sims Pager</H2>
-<H3>2020 Nov 01 - J. Cornelison</H3>
+<H3>2023 Jul 27 - J. Cornelison</H3>
 </center>
 <hr>
 <h3>Introduction</h3>
-
-<br>
+<p>
+    Something.
+</p>
 
 <hr>
 
@@ -46,7 +47,7 @@
 <p>
 <h3>Pager</h3>
 <p>
-  I compare the real and Type 5 maps created by me to the maps created by Howard back in 2020 <a href="../../../bkcmb/analysis_logbook/analysis/20201010_B18_mapspager/">20201010_B18_mapspager</a>. Everything looks very close for the most part -- there is a very slight difference in coverage and I'm not sure why.
+
 </p>
 
 <SCRIPT SRC="pager.js"></SCRIPT>
@@ -104,11 +105,11 @@ function make_fignames() {
 
   if (param.rx=='3'){
     param.base = '3553';
-    param.dp = '1100';
-    param.year='h';
-    apyear = 'B2018_95';
-    overfreq = '';
-    norot = '';
+    // param.dp = '1100';
+    // param.year='h';
+    // apyear = 'B2018_95';
+    // overfreq = '';
+    // norot = '';
   }
 if (param.rx=='1') {
     if (param.subset == 'lower') {
@@ -138,6 +139,9 @@ if (param.rx=='2') {
 if (param.year=='g'){
     apyear = 'B2017';
 }
+if (param.year=='f'){
+        apyear = 'B2016';
+   }
 
 
 
@@ -186,7 +190,7 @@ pager.subset=['Subset',
     'Lower','lower',
     'Middle','middle',
     'Upper','upper'];
-pager.year = ['Year','2017','g','2018','h','2017+2018','gh'];
+pager.year = ['Year','2016','f','2017','g','2018','h','2017+2018','gh'];
 pager.cscale=['Color scale','fixed','_fcs','free',''];
 pager.rot=['PolRot','None','h'];
 
