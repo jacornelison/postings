@@ -37,7 +37,7 @@
 </center>
 <hr>
 <h3>Introduction</h3>
-A rerun of the B2018 Type 5 sims, to make sure I can run the sim pipeline correctly.
+
 <br>
 
 <hr>
@@ -59,18 +59,18 @@ A rerun of the B2018 Type 5 sims, to make sure I can run the sim pipeline correc
 // You can define whatever parameters you like,
 //   param.something='value';
 param.cscale='_fcs'
-param.type0='';
 param.type1='T';
 param.estimator='';
 param.type2='map';
-param.type3='0015';
+param.type3='0018';
 param.dp='1100';
 param.jack='0';
-param.rx='B2018';
+param.rx='1';
 param.rx2=param.rx;
-param.dgt='h';
 param.base='6600';
 param.rot='h';
+param.year = 'h';
+param.subset='lower';
 
 // This function sets the figure names.  You can call the
 // figures anything you like,
@@ -79,83 +79,69 @@ param.rot='h';
 //   fig.somename.link='url_to_link_to';
 // If not specified, the 'link' value is the same as 'fname'.
 function make_fignames() {
-  fig.fig1={};
-  dirapp = param.type0;
+    var apyear='B2018';
+    var coaddtype='1';
+    param.dp = '1100';
+    var norot = '';
+    var overfreq = '_overfreq';
 
-//  base='1351';
-  coaddtype='1';
-//  if (param.rx!='B2' && param.rx!='Keck'){
-//    rxadd='_'+param.rx;
-//  }
-//   if (param.rot==''){
-//     param.dgt='h';
-//     param.base='1351';
-//   }
-  if (param.rot==''){
-    param.dgt='h';
-    param.base='6600';
-  }
-
-  if (param.rot=='DSC'){
-    param.dgt='DSC';
-    param.base='1863';
-  }
-
-  if (param.rot=='0.14'){
-    param.dgt='s0p14';
-    param.base='1864';
-  }
-  if (param.rot=='1.00'){
-    param.dgt='s1p00';
-    param.base='1865';
-  }
-  if (param.rot=='5.00'){
-    param.dgt='s5p00';
-    param.base='1866';
-  }
-
-  if (param.rot=='10.00'){
-    param.dgt='s10p00';
-    param.base='1867';
-  }
-
-
+    fig.fig1={};
 
   est = param.estimator;
-  if (param.type1.indexOf('B')==-1){
-    est='';
-  }
-  fix='';
-  
-  if(param.type0!=''){
-    param.type3='real';
-  }
- // if(param.dp=='1102'){
- //   param.type3='real';
- // }
-
-
-  var overfreq = '';
-  var norot = "";
-  if (param.rx=='B2018_95'){
-    param.base = '3553';
-  }
-  if (param.rx=='B2018'){
-    param.base = '6600';
-    overfreq = '_overfreq';
-
+  // if (param.type1=='B'){
+  //   coaddtype = '';
+  // }
 
     if (param.type3=='real'){
-      norot = '_norot';
-    }
-    else{
-      norot = ''
+        param.dp = '1102';
+        norot = '_norot';
     }
 
+
+  if (param.year=='gh'){
+      coaddtype='';
   }
 
+  if (param.rx=='3'){
+    param.base = '3553';
+    param.dp = '1100';
+    param.year='h';
+    apyear = 'B2018_95';
+    overfreq = '';
+    norot = '';
+  }
+if (param.rx=='1') {
+    if (param.subset == 'lower') {
+        param.base = '6607';
+    }
+    if (param.subset == 'middle') {
+        param.base = '6608';
+    }
+    if (param.subset == 'upper') {
+        param.base = '6609';
+    }
+}
 
-  fig.fig1.fname='reduc_plotcomap_pager/'+param.base+dirapp+'/'+param.type3+'_'+param.dgt+fix+'_filtp3_weight3_gs_dp'+param.dp+'_jack'+param.jack+coaddtype+'_cm'+overfreq+norot+'_'+param.type1+est+'_'+param.type2+'_'+param.rx+param.cscale+'.png';
+if (param.rx=='2') {
+    if (param.subset == 'lower') {
+        param.base = '6626';
+    }
+    if (param.subset == 'middle') {
+        param.base = '6627';
+    }
+    if (param.subset == 'upper') {
+        param.base = '6628';
+    }
+}
+
+
+if (param.year=='g'){
+    apyear = 'B2017';
+}
+
+
+
+  fig.fig1.fname='reduc_plotcomap_pager/'+param.base+'/'+param.type3+'_'+param.year+'_filtp3_weight3_gs_dp'+param.dp+'_jack'+param.jack+coaddtype+'_cm'+overfreq+norot+'_'+param.type1+est+'_'+param.type2+'_'+apyear+param.cscale+'.png';
 
 }
 
@@ -183,10 +169,7 @@ get_query_words();
 // %  xxx9 - the sum of 4+5+6 
 
 
-pager.type3=['Sim Type/Real','Real','real','Lensed LCDM (type2)','0015'];
-//pager.dp=['Deproj','0000 none','0000','1000 relgain (rg)','1000','0100 diff point (dp)','0100','1100 dp+rg','1100','1110 rg+dp + diff beamwidth','1110','1101 rg+dp + diff ellipt. (de)','1101','1111 all four','1111'];
-pager.dp=['Deproj','1100 dp+rg','1100'];
-//pager.type0=['Type0','poly subtracted','psub','ground subtracted','gsub','deprojected (Pol only)','dsub','remaining signal',''];
+pager.type3=['Sim Type/Real','Real','real','L-LCDM+N+D (type2)','0018'];
 pager.estimator=['Estimator','normal','','Kendrick','_kendrick','Matrix','_matrix']
 pager.type1=['Type1',
   'T','T','Q','Q','U','U',
@@ -194,15 +177,17 @@ pager.type1=['Type1',
 pager.type2=['Type2','map','map','1/varmap','noi','apmap','apmap',
              'spec(lin)','speclin','','','',''];
 pager.jack=['Jack',
-            'none','0','dk','1','scan dir','2','1st/2nd half weights','3',
-	    'tile','4','phase (az)','5','mux col','6','alt dk','7',
-	    'mux row','8','tile/dk','9','FP inner/outer',
-	    'a','tile top/bottom','b','tile inner/outer','c','moon up/down','d','diffpoint best/worst','e'];
+            'none','0'];
 pager.rx=['Version',
-          'B2018_James','B2018','B2018_Howard','B2018_95'
-]; 
-pager.cscale=['Color scale','fixed','_fcs','free','']
-//,'0','_rx0','1','_rx1','2','_rx2','3','_rx3','4','_rx4'];
+    'Legacy','1',
+    'Reanalysis','2',
+    'BK','3'];
+pager.subset=['Subset',
+    'Lower','lower',
+    'Middle','middle',
+    'Upper','upper'];
+pager.year = ['Year','2017','g','2018','h','2017+2018','gh'];
+pager.cscale=['Color scale','fixed','_fcs','free',''];
 pager.rot=['PolRot','None','h'];
 
 
@@ -230,7 +215,7 @@ pager.rot=['PolRot','None','h'];
     <td valign="top">
         <script language="JavaScript">
         <!--
-          auto_pager(['type3','rot','estimator','type1','type2','jack','dp','rx','cscale'],'maxcols','4','style','2','figname','fig1');
+          auto_pager(['type3','estimator','type1','type2','jack','rx','subset','year','cscale'],'maxcols','4','style','2','figname','fig1');
         -->
         </script>
     </td>
