@@ -150,126 +150,150 @@ The goal of this posting discusses a consistency check on the CMB data unique to
 
 
     <h3>Plots</h3>
-    <b><p>What plots do we want to look at?</p></b>
 
-<!--    <h4>&Delta;&alpha; Plots</h4>-->
-<!--    <p>Just plotting &Delta;&alpha; for each subset. The dots are the mean of sims and the error bars are the 1&sigma; standard deviation of the sims. The X's would be real data, but in this case I'm just using the first realization to show what the real data would look like on the plot.</p>-->
+    <h4>&Delta;&alpha; Plots</h4>
+    <p>
+        The pager below shows a histogram of &Delta;&alpha;'s for both "legacy" and "reanalysis"; for the two-year coadd and the years by themselves; and for the two bin ranges we're considering. The difference between "legacy" and "reanalysis" is the expectation values of the means: "reanalysis" has the angles corrected, so the expectation is zero while "legacy" doesn't and is thus non-zero.
+    </p>
+
+    <figure>
+        <img alt="Name pager" id="diffpager" src="#" onerror=this.src="figs/blank.png" width="95%"/>
+        <figcaption>
+            Histgrams of the three different combinations of &Delta;&alpha;. The <font color="red">red</font> line shows where the Real falls over the histograms.
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#diffpager",
+                {
+                    'Results Type|ser1': ['Legacy|legacy','Reanalysis|reanalysis'],
+                    'Coadd|daught' : ['2017|g','2018|h','2017+2018|gh'],
+                    'Nbins|nbins' : ['9','14'],
+
+
+                },
+                function(params) {
+                    return 'figs/delta_alpha_hist_'+params.ser1+'_'+params.daught+'_Nbins_'+params.nbins+'.png';
+                });
+            pager.setparams({
+                'ser1': 'legacy',
+                'daught': 'gh',
+                'nbins': '9',
+
+            });
+        </script>
+    </figure>
+<p>
+Notes:
+</p>
+    <ul>
+        <li>
+            Generally, switching from "legacy" to "reanalysis" shows the Real consistent with zero which is reassuring.
+        </li>
+        <li>
+            There are some oddballs:
+        </li>
+        <ul>
+        <li>
+            <a href="javascript:pager.setparams({
+                'ser1': 'reanalysis',
+                'daught': 'g',
+                'nbins': '9',
+
+            })">Reanalysis;2017;9 bins</a>: Real Low-High matches the mean of sims to <1%.
+        </li>
+        </ul>
+    </ul>
+
+<!--<h4>Final-like &chi; / &chi;<sup>2</sup> plots</h4>-->
+<!--    <p>Akin to the &chi; and &chi;<sup>2</sup> plots done in our final pagers, we can calculate them here except instead of summing over bandpowers, we can sum over the three different &Delta;&alpha;'s.</p>-->
+
+<!--\begin{align}-->
+<!--    &\chi = \sum^{[LM,MH,LH]}_{i}{\frac{\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>}{\sigma_{\chi,i}}}\\-->
+<!--    &\chi^2 = \sum^{[LM,MH,LH]}_{i}{\frac{(\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>)^2}{\sigma^2_{\chi,i}}}\\-->
+<!--    \end{align}-->
+
+<!--    <p>-->
+<!--        Where &sigma;<sub>&chi;</sub> is the combination of uncertainty from both the CMB analysis and the RPS analysis. From <a href="CV2023b"></a>, we now know we need scale our uncertainties coming from sims by 10%(5%) for 14(9) bandpowers since our angles are non-zero.-->
+<!--    </p>-->
+
+<!--    \begin{equation}-->
+<!--    \sigma_{\chi}^2 = (\sigma_{sims}(1+\epsilon))^2 + \sigma_{RPS}^2-->
+<!--    \end{equation}-->
+<!--    <p>-->
+<!--        Where &epsilon; is the 10% or 5% scaling factor from B<sub>&ell;</sub> uncertainties.-->
+<!--    </p>-->
+
 
 <!--    <figure>-->
-<!--        <img alt="Name pager" id="diffpager" src="#" onerror=this.src="figs/blank.png" width="65%"/>-->
+<!--        <img alt="Name pager" id="flikepager" src="#" onerror=this.src="figs/blank.png" width="80%"/>-->
 <!--        <figcaption>-->
-<!--            The errorbars are the 1-&sigma; standard deviations of the distributions.-->
+<!--            &chi; and &chi;<sup>2</sup> plots (see below for the legends). The "real" data here is realization 1 from the sims.-->
 <!--        </figcaption>-->
 <!--        <script type="text/javascript">-->
-<!--            pager.link("#diffpager",-->
+<!--            pager.link("#flikepager",-->
 <!--                {-->
 <!--                    'Signal Type|sig1': ['L-LCDM+N+Dust|8'],-->
 <!--                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],-->
-
+<!--                    'Year|year' : ['2016|f','2017|g','2018|h','17+18|gh'],-->
 
 <!--                },-->
 <!--                function(params) {-->
-<!--                    return 'figs/alpha_diff_plots_type_'+params.sig1+'_bins_'+params.bin1+'_with_real.png';-->
+<!--                    return 'figs/final_like_plots_daught_'+params.year+'_type_'+params.sig1+'_bins_'+params.bin1+'_with_real.png';-->
 <!--                });-->
 <!--            pager.setparams({-->
 <!--                'sig1': '8',-->
 <!--                'bin1': '2_10',-->
-
+<!--                'year': 'gh',-->
 <!--            });-->
 <!--        </script>-->
 <!--    </figure>-->
 
-<h4>Final-like &chi; / &chi;<sup>2</sup> plots</h4>
-    <p>Akin to the &chi; and &chi;<sup>2</sup> plots done in our final pagers, we can calculate them here except instead of summing over bandpowers, we can sum over the three different &Delta;&alpha;'s.</p>
 
-\begin{align}
-    &\chi = \sum^{[LM,MH,LH]}_{i}{\frac{\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>}{\sigma_{\chi,i}}}\\
-    &\chi^2 = \sum^{[LM,MH,LH]}_{i}{\frac{(\Delta\alpha_{real,i}-\left<\Delta\alpha_{sims,i}\right>)^2}{\sigma^2_{\chi,i}}}\\
-    \end{align}
+<!--    <p>    Below is the legend for each of the plots.</p>-->
+<!--    <b>&Delta;&alpha; Plots</b>-->
 
-    <p>
-        Where &sigma;<sub>&chi;</sub> is the combination of uncertainty from both the CMB analysis and the RPS analysis. From <a href="CV2023b"></a>, we now know we need scale our uncertainties coming from sims by 10%(5%) for 14(9) bandpowers since our angles are non-zero.
-    </p>
+<!--    <ul>-->
+<!--        <li><span style="color:gray;">thin gray</span> :-->
+<!--            s+n+d simulations with ΛCDM lensed scalars as signal (sim type 8)</li>-->
+<!--        <li><span style="color:gray; font-weight:bold;">thick gray</span> :-->
+<!--            mean of sims (<span style="color:gray;">thin gray</span>)</li>-->
+<!--        <li><span style="color:red;">red points</span> with <span-->
+<!--                style="color:blue;">blue error bars</span> :-->
+<!--            real data, uncertainties from the spread of the s+n-->
+<!--            sims (<span style="color:gray;">thin gray</span>)</li>-->
+<!--    </ul>-->
 
-    \begin{equation}
-    \sigma_{\chi}^2 = (\sigma_{sims}(1+\epsilon))^2 + \sigma_{RPS}^2
-    \end{equation}
-    <p>
-        Where &epsilon; is the 10% or 5% scaling factor from B<sub>&ell;</sub> uncertainties.
-    </p>
+<!--    <b>&chi; plots</b>-->
+<!--    <ul>-->
+<!--        <li><span style="color:gray;">thin gray</span> :-->
+<!--            s+n sims</li>-->
+<!--&lt;!&ndash;        <li><span style="color:red;">thin red</span> :&ndash;&gt;-->
+<!--&lt;!&ndash;            1 sigma contours</li>&ndash;&gt;-->
+<!--&lt;!&ndash;        <li><span style="color:green;">thin green</span> :&ndash;&gt;-->
+<!--&lt;!&ndash;            2 sigma contours</li>&ndash;&gt;-->
+<!--        <li><span style="font-weight:bold;">thick black + markers</span> :-->
+<!--            real data</li>-->
+<!--        <li><span style="color:red;">red markers</span> :-->
+<!--            bins that go into chi2 analysis</li>-->
+<!--    </ul>-->
 
+<!--&lt;!&ndash;    <p>Note: The contours mark the simulated bandpower in each bin closest&ndash;&gt;-->
+<!--&lt;!&ndash;        to the respective percentile.</p>&ndash;&gt;-->
 
-    <figure>
-        <img alt="Name pager" id="flikepager" src="#" onerror=this.src="figs/blank.png" width="80%"/>
-        <figcaption>
-            &chi; and &chi;<sup>2</sup> plots (see below for the legends). The "real" data here is realization 1 from the sims.
-        </figcaption>
-        <script type="text/javascript">
-            pager.link("#flikepager",
-                {
-                    'Signal Type|sig1': ['L-LCDM+N+Dust|8'],
-                    'Bins|bin1' : ['2-10|2_10','2-15|2_15'],
-                    'Year|year' : ['2016|f','2017|g','2018|h','17+18|gh'],
+<!--    <b>&chi; hist</b>-->
+<!--    <ul>-->
+<!--        <li><span style="color:red;">red vertical</span> :-->
+<!--            real data</li>-->
+<!--        <li><span style="color:blue;">blue</span> :-->
+<!--            distribution from s+n sims</li>-->
+<!--    </ul>-->
 
-                },
-                function(params) {
-                    return 'figs/final_like_plots_daught_'+params.year+'_type_'+params.sig1+'_bins_'+params.bin1+'_with_real.png';
-                });
-            pager.setparams({
-                'sig1': '8',
-                'bin1': '2_10',
-                'year': 'gh',
-            });
-        </script>
-    </figure>
-
-
-    <p>    Below is the legend for each of the plots.</p>
-    <b>&Delta;&alpha; Plots</b>
-
-    <ul>
-        <li><span style="color:gray;">thin gray</span> :
-            s+n+d simulations with ΛCDM lensed scalars as signal (sim type 8)</li>
-        <li><span style="color:gray; font-weight:bold;">thick gray</span> :
-            mean of sims (<span style="color:gray;">thin gray</span>)</li>
-        <li><span style="color:red;">red points</span> with <span
-                style="color:blue;">blue error bars</span> :
-            real data, uncertainties from the spread of the s+n
-            sims (<span style="color:gray;">thin gray</span>)</li>
-    </ul>
-
-    <b>&chi; plots</b>
-    <ul>
-        <li><span style="color:gray;">thin gray</span> :
-            s+n sims</li>
-<!--        <li><span style="color:red;">thin red</span> :-->
-<!--            1 sigma contours</li>-->
-<!--        <li><span style="color:green;">thin green</span> :-->
-<!--            2 sigma contours</li>-->
-        <li><span style="font-weight:bold;">thick black + markers</span> :
-            real data</li>
-        <li><span style="color:red;">red markers</span> :
-            bins that go into chi2 analysis</li>
-    </ul>
-
-<!--    <p>Note: The contours mark the simulated bandpower in each bin closest-->
-<!--        to the respective percentile.</p>-->
-
-    <b>&chi; hist</b>
-    <ul>
-        <li><span style="color:red;">red vertical</span> :
-            real data</li>
-        <li><span style="color:blue;">blue</span> :
-            distribution from s+n sims</li>
-    </ul>
-
-    <b>chi2</b>
-    <ul>
-        <li><span style="color:red;">red vertical</span> :
-            real data</li>
-        <li><span style="color:blue;">blue</span> :
-            distribution from s+n sims</li>
-    </ul>
+<!--    <b>chi2</b>-->
+<!--    <ul>-->
+<!--        <li><span style="color:red;">red vertical</span> :-->
+<!--            real data</li>-->
+<!--        <li><span style="color:blue;">blue</span> :-->
+<!--            distribution from s+n sims</li>-->
+<!--    </ul>-->
 
 
     <h3>What should we consider passing?</h3>
