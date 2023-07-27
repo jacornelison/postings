@@ -1010,7 +1010,7 @@ title({'Mean Pol 90 Vs Pol 0','Averaged Per-Pair'})
 pbaspect([1 1 1])
 
 fname = 'mean_pol90_vs_pol0_type5.png';
-saveas(fig,fullfile(figdir,fname),'png')
+%saveas(fig,fullfile(figdir,fname),'png')
 
 %% Now plot the covariance vs DK
 [C D] = deal([]);
