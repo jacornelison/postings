@@ -195,20 +195,13 @@ Notes:
 </p>
     <ul>
         <li>
-            Generally, switching from "legacy" to "reanalysis" shows the Real consistent with zero which reassures us that the pair-to-pair angle variation is being appropriately corrected.
+            Generally, switching from "legacy" to "reanalysis" shows the Real consistent with zero -- Real is within <1&sigma; for almost all cases and is never more than 2.3&sigma;. I find this to be reassuring evidence that the pair-to-pair angle variation is not only accurately measured, but is being appropriately corrected for in the "reanalysis" results.
         </li>
         <li>
-            There are some oddballs:
+            There are some noteworthy clicks:
         </li>
         <ul>
-            <li>
-                <a href="javascript:pager.setparams({
-                'ser1': 'reanalysis',
-                'daught': 'g',
-                'nbins': '9',
 
-            })">Reanalysis;2017;9 bins</a>: Real Low-High matches the mean of sims to <1%.
-            </li>
             <li>
                 Years <a href="javascript:pager.setparams({
                 'ser1': 'legacy',
@@ -222,9 +215,24 @@ Notes:
                 'nbins': '9',
 
             })">2018</a>
-                : There's pretty high variability in the real data O(0.6&deg;) between years in the histograms that contain the "Middle" subset -- low-high varies by O(0.1&deg;) between years.
+                : There's pretty high variability in the real data O(0.6&deg;) between years in the histograms that contain the "Middle" subset -- low-high varies by O(0.1&deg;) between years. The sims don't show anywhere near this amount of variability (RPS angles for both years are identical) and the maps show only small differences in the coverage & weighting between years, so it's currently unclear what could be causing this.
             </li>
+            <li>
+                <a href="javascript:pager.setparams({
+                'ser1': 'reanalysis',
+                'daught': 'g',
+                'nbins': '9',
 
+            })">Reanalysis;2017;9 bins</a>: Real Low-High matches the mean of sims to <1%. Neat, but probably coincidental since this is the only case.
+            </li>
+            <li>
+                <a href="javascript:pager.setparams({
+                'ser1': 'legacy',
+                'daught': 'g',
+                'nbins': '9',
+
+            })">Legacy;2017;9 bins</a>: Real Mid-High is at 2.3&sigma;
+            </li>
         </ul>
     </ul>
 
