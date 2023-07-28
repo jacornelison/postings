@@ -140,7 +140,7 @@ obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 
 % Loop over the file names and fit.
-for prefind = 98:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 40:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     % Tilt Calibrations
     if ismember(prefind,[1:18])
@@ -914,12 +914,13 @@ for schind = 1:length(unqsch)
 
 end
 
-
+%% declare plot ylims
+lims = [-0.65 0.4];
 %% Plot dPhi vs alignment offset
 clc
 offs = [0 1 2 0 1 2 -1 -2 -1 0 0.5 0.25 -0.25 -0.5 -0.125];
 schnums = [47:61];
-cmlines = distinguishable_colors(length(schnums));
+%cmlines = distinguishable_colors(length(schnums));
 
 fig = figure(173476);
 fig.Position(3:4) = [700 250];
@@ -940,7 +941,7 @@ end
 %plot(offs,dp_mn,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset',''})
@@ -972,7 +973,7 @@ end
 plot(offs,dp_mn,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset','Constant Peak Amplitude'})
@@ -983,7 +984,7 @@ saveas(fig,fullfile(figdir,fname),'png')
 clc
 offs = [0 0.5 1 1.5 2 1 0 -0.5 -1 -2];
 schnums = [70:79];
-cmlines = distinguishable_colors(length(schnums));
+%cmlines = distinguishable_colors(length(schnums));
 cmlines = colormap('lines');
 fig = figure(173477);
 fig.Position(3:4) = [700 250];
@@ -1004,7 +1005,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'})
@@ -1015,7 +1016,7 @@ fname = 'dp_vs_alignment_new_dist';
 clc
 offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
 schnums = [80:89];
-cmlines = distinguishable_colors(length(schnums));
+%cmlines = distinguishable_colors(length(schnums));
 cmlines = colormap('lines');
 fig = figure(173477);
 fig.Position(3:4) = [700 250];
@@ -1036,7 +1037,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('ISAAC Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Moving'})
@@ -1054,7 +1055,7 @@ fig.Position(3:4) = [700 250];
 clf; hold on;
 plot(1:length(dP),dP,'.','MarkerSize',14)
 plot(1:length(dP),dP)
-ylim([-0.5 0.2])
+ylim(lims);
 xlim([0 9])
 grid on
 xlabel('Measurement Number')
@@ -1088,7 +1089,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Flipped 180deg'})
@@ -1120,7 +1121,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn'})
@@ -1152,7 +1153,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn, flipped'})
@@ -1184,7 +1185,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.45 0.45])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('ISAAC Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','15dB horn, flipped, rotating ISAAC'})
@@ -1216,7 +1217,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.7 0.4])
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('Equivalent RPS angle [Degrees]')
 title({'Angle Bias vs. Translation Offset, Distance of $\sim1$m','15dB horn, flipped, moving ISAAC'})
@@ -1248,7 +1249,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2]-6.9)
+ylim(lims-6.9)
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and wire grid removed'})
@@ -1280,7 +1281,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim([-0.5 0.2]-6.9)
+ylim(lims-6.9)
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and wire grid removed'})
@@ -1312,6 +1313,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
+ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','15dB horn, flipped'})
@@ -1418,7 +1420,7 @@ for schind = 1:length(unqsch)
 
 end
 
-end % End of Main function
+%end % End of Main function
 %%
 function [prefix, labs] = get_pref_and_labs()
 
@@ -1854,4 +1856,4 @@ labs = {...;
     'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg';... 213
     };
 
-end
+%end
