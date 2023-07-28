@@ -1,5 +1,5 @@
 <head>
-<title>B2018 Sims Pager</title>
+<title>&Delta;&alpha; Maps Pager</title>
 
 
   <style type="text/css">
@@ -32,13 +32,17 @@
 </head>
 <body text="#000000" bgcolor="#ffffff">
 <center>
-<H2>Polarization Rotation Sims Pager</H2>
-<H3>2023 Jul 27 - J. Cornelison</H3>
+<H2>IPR 12: &Delta;&alpha; Maps Pager</H2>
+<H3>2023 Aug 1 - J. Cornelison</H3>
 </center>
 <hr>
 <h3>Introduction</h3>
 <p>
-    Something.
+    This posting is part of a series which comprises the IPR analysis, see <a href="#references">previous postings</a> for more on this.
+</p>
+<p>
+    A maps pager for the sims that went into the &Delta;&alpha; tests <a href="JAC2023i"></a>. In addition to the typical map/varmap/apmap/spec(lin), I include tile plots to show which detector pairs are included in the making of the maps.
+    I compare coverage between our "Legacy" and "Reanalysis" sims [see <a href="JAC2023g"></a>, &sect;3] as well as the BICEP3 maps used in BK18 (sernum 3553).
 </p>
 
 <hr>
@@ -47,8 +51,14 @@
 <p>
 <h3>Pager</h3>
 <p>
-
+Notes:
 </p>
+<ul>
+    <li>Version: "BK" uses all available detectors, so the maps won't change between subset clicks.</li>
+    <li>
+        At some point, I stopped making pairmaps for B2016 to save time, so Version: "Reanalysis" only has 2017, 2018, and 2017+2018. This shouldn't be a huge deal since we can see switching between "Legacy" and "Reanalysis", the downselection of pairs is identical and the coverage is nearly so as well.
+    </li>
+</ul>
 
 <SCRIPT SRC="pager.js"></SCRIPT>
 
@@ -112,6 +122,9 @@ function make_fignames() {
     // norot = '';
   }
 if (param.rx=='1') {
+    if (param.subset == 'all') {
+        param.base = '6606';
+    }
     if (param.subset == 'lower') {
         param.base = '6607';
     }
@@ -124,6 +137,9 @@ if (param.rx=='1') {
 }
 
 if (param.rx=='2') {
+    if (param.subset == 'all') {
+        param.base = '6621';
+    }
     if (param.subset == 'lower') {
         param.base = '6626';
     }
@@ -144,8 +160,12 @@ if (param.year=='f'){
    }
 
 
+if (param.type2=='tile'){
+fig.fig1.fname = 'figs/plot_tiles_'+param.base+'_'+param.year+'.png';
+}else {
 
-  fig.fig1.fname='reduc_plotcomap_pager/'+param.base+'/'+param.type3+'_'+param.year+'_filtp3_weight3_gs_dp'+param.dp+'_jack'+param.jack+coaddtype+'_cm'+overfreq+norot+'_'+param.type1+est+'_'+param.type2+'_'+apyear+param.cscale+'.png';
+    fig.fig1.fname = 'reduc_plotcomap_pager/' + param.base + '/' + param.type3 + '_' + param.year + '_filtp3_weight3_gs_dp' + param.dp + '_jack' + param.jack + coaddtype + '_cm' + overfreq + norot + '_' + param.type1 + est + '_' + param.type2 + '_' + apyear + param.cscale + '.png';
+}
 
 }
 
@@ -179,7 +199,7 @@ pager.type1=['Type1',
   'T','T','Q','Q','U','U',
   'E','E','B','B','TE','TE','TB','TB','EB','EB'];
 pager.type2=['Type2','map','map','1/varmap','noi','apmap','apmap',
-             'spec(lin)','speclin','','','',''];
+             'spec(lin)','speclin','TilePlot','tile','',''];
 pager.jack=['Jack',
             'none','0'];
 pager.rx=['Version',
@@ -187,12 +207,14 @@ pager.rx=['Version',
     'Reanalysis','2',
     'BK','3'];
 pager.subset=['Subset',
+    'All','all',
     'Lower','lower',
     'Middle','middle',
     'Upper','upper'];
 pager.year = ['Year','2016','f','2017','g','2018','h','2017+2018','gh'];
 pager.cscale=['Color scale','fixed','_fcs','free',''];
 pager.rot=['PolRot','None','h'];
+
 
 
 //-->
@@ -206,9 +228,6 @@ pager.rot=['PolRot','None','h'];
         width: expression(this.width > 1000 ? 1000: true);
 }
 </style>
-
-
-
 
 <table border="1">
   <tr>
@@ -457,6 +476,158 @@ DOI: 10.3847/0004-637X/825/1/66, arXiv: 1603.05976">BK-VII</span>.
   </dd>
 
 </dl>
+</section>
+<section>
+    <h2>References</h2>
+<p id="references"></p>
+<script type="text/javascript">
+
+    // This my way of making shorthand links.
+    // We'll make a couple arrays with the 'tag' and href information
+    // and then look through each anchor element for the specified tag.
+    // The anchors should then just look like: <a href="tagname"></a>
+    // and the script will automatically fill in the hyperlings and text.
+
+
+    var posting_dir = window.location.href; // What's the current url?
+
+    var bkurl = "bicep.rc.fas.harvard.edu";
+    var spurl = "bicep.usap.gov";
+
+    // These are the possible places to find postings
+    // The strings are for if you post your posting in that directory.
+    var sitemap = {
+        jcornelison: "../../../",   // /jcornelison/postings/
+        cverges: "../../../",
+        bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+        bicep3: "../../../",        //
+        bicep_array: "../../../",   //
+        bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+        keck  : "",                 // keck/analysis_logbook/analysis/
+        spuder: "",                 // ~spuder/hieno_analysis_logboo
+        bicep1: "",                 // ~bicep1/analysis_logbook_north/
+        general_projects:"",
+    };
+    // Logbook Site map:
+    // personal:www/jcornelison/postings/
+    // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+    // keck:    www/keck/analysis_logbook/analysis/
+    // BICEP3:  www/bicep3/analysis_logbook/
+    // BA:      www/bicep_array/analysis_logbook/
+    // We shouldn't be posting in these, but still have postings.
+    // bicep2:
+    // keck:    www/keck/analysis_logbook/analysis/
+    // spuder:  www/~spuder/hieno_analysis_logbook/
+    // bicep1:  www/~bicep1/analysis_logbook_north/
+
+    // Shorthand tags
+    var tags = [
+        "JAC2023a",
+        "JAC2023b",
+        "JAC2023c",
+        "JAC2023d",
+        "JAC2023e",
+        "JAC2023f",
+        "CV2023",
+        "JAC2023g",
+        "CV2023b",
+        "JAC2023h",
+        "JAC2023i",
+    ];
+
+    // Links
+    // Truncate the link down to the www directory in which it lies if you can.
+    // This ensures that we can view the linked postings at Pole without the internet.
+    var hrefs = [
+        "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+        "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+        "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+        "bkcmb/analysis_logbook/analysis/20230328_IPR_high_ell/",
+        "bkcmb/analysis_logbook/analysis/20230328_IPR_forecasting/",
+        "bkcmb/analysis_logbook/analysis/20230613_IPR_B18_subsets/",
+        "bkcmb/analysis_logbook/analysis/20230613_IPR7_dust/",
+        "bkcmb/analysis_logbook/analysis/2023mmdd_IPR_unblinding_proposal/",
+        "bkcmb/analysis_logbook/analysis/20230711_IPR9_beams/",
+        "bkcmb/analysis_logbook/analysis/20230711_IPR_final_50/",
+        "bkcmb/analysis_logbook/analysis/20230711_IPR_det_subset_jacks/",
+    ];
+
+
+    // Posting titles
+    var desc = [
+        "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+        "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+        "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+        "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
+        "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
+        "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
+        "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
+        "Isotropic Polarization Rotation Analysis 8: Unblinding Strategy",
+        "Isotropic Polarisation Rotation Analysis 9: Beam effects",
+        "Isotropic Polarisation Rotation Analysis 10: Final Pager with 50 Sims (blinded)",
+        "Isotropic Polarization Rotation Analysis 11: Δα jacks",
+    ];
+    // Debug
+    var posty = document.getElementById("testp");
+
+
+    var preface = "";
+    var keys = Object.keys(sitemap);
+    // If we're not at pole or bicep, just post the full URL
+    // If we are, go back to the www directory.
+    if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+        posting_dir.match(new RegExp(spurl))!=spurl){
+        preface = "http://" + bkurl+"/";
+    }
+    else {
+        for (key in keys){
+            if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                preface = sitemap[keys[key]];
+            };
+        };
+
+    };
+
+    // Add the prefixes we can.
+    // Only add prefixes to directories in the sitemap so we don't break
+    // external references.
+    for (ref in hrefs) {
+        for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+        };
+    };
+
+    // posty.innerHTML = preface;
+
+    // Make a list of references
+    var post = document.getElementById("references");
+    var msg = "<table>";
+    for (var tag in tags){
+        msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+    };
+    msg = msg+ "</table>";
+    post.innerHTML = msg;
+
+    // Look through all the hyperlinks and insert the proper links to the postings
+    var links = document.getElementsByTagName("A");
+    for (var link in links){
+        for (var tag in tags){
+            if (links[link].href.endsWith(tags[tag])){
+                links[link].text = "("+tags[tag]+")";
+                links[link].href = hrefs[tag];
+                links[link].target = "_blank";
+            }
+        }
+    }
+
+</script>
+
+
 
 </section>
 <hr>
