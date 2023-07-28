@@ -151,7 +151,6 @@ if (param.rx=='2') {
     }
 }
 
-
 if (param.year=='g'){
     apyear = 'B2017';
 }
@@ -350,37 +349,37 @@ DOI: 10.3847/0004-637X/825/1/66, arXiv: 1603.05976">BK-VII</span>.
 
   </dd>
 
-  <dt>Type0</dt>
-  <dd class="legend_table">
+<!--  <dt>Type0</dt>-->
+<!--  <dd class="legend_table">-->
 
-    <span>poly subtracted</span>
-    <span>
-          The timestream-subtracted polynomial component, sent through map
-          making. <b>Only plotted for real data.</b>
-        </span>
+<!--    <span>poly subtracted</span>-->
+<!--    <span>-->
+<!--          The timestream-subtracted polynomial component, sent through map-->
+<!--          making. <b>Only plotted for real data.</b>-->
+<!--        </span>-->
 
-    <span>ground subtracted</span>
-    <span>
-          The timestream-subtracted scan-synchronous component, sent through
-          map-making. <b>Only plotted for real data.</b>
-        </span>
+<!--    <span>ground subtracted</span>-->
+<!--    <span>-->
+<!--          The timestream-subtracted scan-synchronous component, sent through-->
+<!--          map-making. <b>Only plotted for real data.</b>-->
+<!--        </span>-->
 
-    <span>deprojected</span>
-    <span>
-          Sum of deprojection templates as applied (i.e. scaled by the
-          deprojection fit coefficient and summed over only enabled
-          deprojection modes).
-          <b>Only plotted for polarization fields in the real data. For
-          dp0000, the templates are unscaled and show the raw sum of all
-          templates.</b>
-        </span>
+<!--    <span>deprojected</span>-->
+<!--    <span>-->
+<!--          Sum of deprojection templates as applied (i.e. scaled by the-->
+<!--          deprojection fit coefficient and summed over only enabled-->
+<!--          deprojection modes).-->
+<!--          <b>Only plotted for polarization fields in the real data. For-->
+<!--          dp0000, the templates are unscaled and show the raw sum of all-->
+<!--          templates.</b>-->
+<!--        </span>-->
 
-    <span>remaining signal</span>
-    <span>
-          The final map after all filtering has been applied.
-        </span>
+<!--    <span>remaining signal</span>-->
+<!--    <span>-->
+<!--          The final map after all filtering has been applied.-->
+<!--        </span>-->
 
-  </dd>
+<!--  </dd>-->
 
   <dt>Type1</dt>
   <dd class="legend_table">
@@ -452,6 +451,12 @@ DOI: 10.3847/0004-637X/825/1/66, arXiv: 1603.05976">BK-VII</span>.
     only the real map is valid for all listed variations, and
     <b>simulations only have dp1100 available</b>.
   </dd>
+    <dt>Version</dt>
+    <dd>
+        Choice of data to show; works in concert with <b>Data set</b>, in which
+        case this option typically selects across years or through revision
+        history.
+    </dd>
 
   <dt>Data set</dt>
   <dd>
@@ -468,12 +473,6 @@ DOI: 10.3847/0004-637X/825/1/66, arXiv: 1603.05976">BK-VII</span>.
     a portion of the data.
   </dd>
 
-  <dt>Version</dt>
-  <dd>
-    Choice of data to show; works in concert with <b>Data set</b>, in which
-    case this option typically selects across years or through revision
-    history.
-  </dd>
 
 </dl>
 </section>
