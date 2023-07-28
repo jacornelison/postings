@@ -47,6 +47,12 @@
 The goal of this posting discusses a consistency check on the CMB data unique to our birefringence analysis.
 </p>
 
+<p>
+    <font color="#aa0029">
+        Update 2023 Jul 27: Now including &Delta;&alpha; jacks from both "Legacy" and "Reanlysis" sim/real data. I've also gotten rid of the "final-like" plots in lieu of just histograms of each jack.
+    </font>
+</p>
+
 <hr>
 
 <section>
@@ -153,6 +159,9 @@ The goal of this posting discusses a consistency check on the CMB data unique to
 
     <h4>&Delta;&alpha; Plots</h4>
     <p>
+        <font color="#8b0000">These plots are now unblinded.</font>
+    </p>
+    <p>
         The pager below shows a histogram of &Delta;&alpha;'s for both "legacy" and "reanalysis"; for the two-year coadd and the years by themselves; and for the two bin ranges we're considering. The difference between "legacy" and "reanalysis" is the expectation values of the means: "reanalysis" has the angles corrected, so the expectation is zero while "legacy" doesn't and is thus non-zero.
     </p>
 
@@ -186,20 +195,36 @@ Notes:
 </p>
     <ul>
         <li>
-            Generally, switching from "legacy" to "reanalysis" shows the Real consistent with zero which is reassuring.
+            Generally, switching from "legacy" to "reanalysis" shows the Real consistent with zero which reassures us that the pair-to-pair angle variation is being appropriately corrected.
         </li>
         <li>
             There are some oddballs:
         </li>
         <ul>
-        <li>
-            <a href="javascript:pager.setparams({
+            <li>
+                <a href="javascript:pager.setparams({
                 'ser1': 'reanalysis',
                 'daught': 'g',
                 'nbins': '9',
 
             })">Reanalysis;2017;9 bins</a>: Real Low-High matches the mean of sims to <1%.
-        </li>
+            </li>
+            <li>
+                Years <a href="javascript:pager.setparams({
+                'ser1': 'legacy',
+                'daught': 'g',
+                'nbins': '9',
+
+            })">2017</a> and
+                <a href="javascript:pager.setparams({
+                'ser1': 'legacy',
+                'daught': 'h',
+                'nbins': '9',
+
+            })">2018</a>
+                : There's pretty high variability in the real data O(0.6&deg;) between years in the histograms that contain the "Middle" subset -- low-high varies by O(0.1&deg;) between years.
+            </li>
+
         </ul>
     </ul>
 
@@ -296,7 +321,7 @@ Notes:
 <!--    </ul>-->
 
 
-    <h3>What should we consider passing?</h3>
+<!--    <h3>What should we consider passing?</h3>-->
 
 
 </section>
@@ -395,7 +420,7 @@ Notes:
 <!--    <h3>Data</h3>-->
 <!--    <p id="data"></p>-->
 <!--    -->
-<!--    <h3>References</h3>-->
+    <h3>References</h3>
 
     <p id="references"></p>
 
