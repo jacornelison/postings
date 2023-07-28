@@ -98,10 +98,11 @@ isaac_tilt_cals_all{end+1} = isaac_tilt_cal;
 if ~ispc
 addpath('~/Documents/kovac_lab/rps_benchtests/rsynced_from_cannon/beammap/')
 addpath('~/Documents/kovac_lab/rps_benchtests/rsynced_from_cannon/util/')
+addpath('~/Documents/kovac_lab/rps_benchtests/postings/2023mmdd_isaac_data/scripts/')
 gitdir = fullfile('/','home','annie','Documents','kovac_lab','rps_benchtests');
 %direct = fullfile(gitdir,'rps_cal','modified_data', 'even_angles');
 %direct = fullfile(gitdir,'rps_cal','modified_data', 'odd_angles');
-figdir = fullfile(gitdir,'figs');
+figdir = fullfile(gitdir,'postings', '2023mmdd_isaac_data', 'figs');
 else
     addpath('z:/pipeline/util/')
     addpath('z:/pipeline/beammap/')
@@ -139,7 +140,7 @@ obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 
 % Loop over the file names and fit.
-for prefind = 44:122%47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 98:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     % Tilt Calibrations
     if ismember(prefind,[1:18])
@@ -1254,6 +1255,69 @@ title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and w
 fname = 'dp_vs_alignment_no_shroud';
 saveas(fig,fullfile(figdir,fname),'png')
 
+%% Plot dPhi vs alignment offset -- Removed RPS shroud again
+clc
+offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
+schnums = [184:198];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173478);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim([-0.5 0.2]-6.9)
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and wire grid removed'})
+fname = 'dp_vs_alignment_no_shroud_pt2';
+saveas(fig,fullfile(figdir,fname),'png')
+
+%% Plot dPhi vs alignment offset -- Moved to 53in
+clc
+offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
+schnums = [199:213];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173478);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','15dB horn, flipped'})
+fname = 'dp_vs_alignment_1p3meters';
+saveas(fig,fullfile(figdir,fname),'png')
+
 %% Combine Mod curves and Compare as-fit residuals 
 
 clc
@@ -1542,6 +1606,36 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_no_shroud_1p5deg_2';...
     'isaac_cal_jig_july23_with_homing_no_shroud_2deg_2';...
     'isaac_cal_jig_july23_with_homing_no_shroud_0deg_3';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_0p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_1deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_1p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_2deg_2';...
+    'isaac_cal_jig_july23_with_homing_no_shroud_pt2_0deg_3';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_0p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_1deg_2';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_1p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_2deg_2';...
+    'isaac_cal_jig_july23_with_homing_1p3meters_0deg_3';...
     };
 
 labs = {...;
@@ -1727,7 +1821,37 @@ labs = {...;
     'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +1.0deg';... 180
     'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +1.5deg';... 181
     'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +2.0deg';... 182
-    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +0.0deg';... 183
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, RPS align +0.0deg';... 183 -------
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +0.0deg';... 184
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +0.5deg';... 185
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +1.0deg';... 186
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +1.5deg';... 187
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +2.0deg';... 188
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align -2.0deg';... 189
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align -1.5deg';... 190
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align -1.0deg';... 191
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align -0.5deg';... 192
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +0.0deg';... 193
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +0.5deg';... 194
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +1.0deg';... 195
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +1.5deg';... 196
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +2.0deg';... 197
+    'On Jig, Homing, Dist = 43", RPS Shroud Removed, round 2, RPS align +0.0deg';... 198
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg';... 199
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.5deg';... 200
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +1.0deg';... 201
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +1.5deg';... 202
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +2.0deg';... 203
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align -2.0deg';... 204
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align -1.5deg';... 205
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align -1.0deg';... 206
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align -0.5deg';... 207
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg';... 208
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.5deg';... 209
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +1.0deg';... 210
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +1.5deg';... 211
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +2.0deg';... 212
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg';... 213
     };
 
 end
