@@ -1320,6 +1320,38 @@ title({'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','15dB horn, fli
 fname = 'dp_vs_alignment_1p3meters';
 saveas(fig,fullfile(figdir,fname),'png')
 
+%% Plot dPhi vs alignment offset -- Rolled ISAAC by 90deg
+clc
+offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
+schnums = [214:228];
+%cmlines = distinguishable_colors(length(schnums));
+cmlines = colormap('lines');
+fig = figure(173478);
+fig.Position(3:4) = [700 250];
+clf; hold on;
+
+[offs_all dp_all,dp_mn] = deal([]);
+for schind = 1:length(schnums)
+    idx = find(fd.schnum==schnums(schind));
+    O = repmat(offs(schind),1,length(idx));
+    dP = fd.phi(idx)-fd.phi_isaac(idx);
+    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+    offs_all = [offs_all O];
+    dp_all = [dp_all dP];
+    dp_mn(schind) = nanmean(dP);
+end
+plot(offs_all,dp_all,'Color',cmlines(2,:))
+grid on
+xlim([-1 1]*2.5)
+ylim(lims+17.4);
+ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+xlabel('RPS Azimuthal Alignment Offset [Degrees]')
+title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC flipped 90deg'})
+fname = 'dp_vs_alignment_isaac_roll90';
+saveas(fig,fullfile(figdir,fname),'png')
+
 %% Combine Mod curves and Compare as-fit residuals 
 
 clc
@@ -1638,6 +1670,21 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_1p3meters_1p5deg_2';...
     'isaac_cal_jig_july23_with_homing_1p3meters_2deg_2';...
     'isaac_cal_jig_july23_with_homing_1p3meters_0deg_3';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_0deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_1deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_2deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_m2deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_m1p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_m1deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_m0p5deg_1';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_0deg_2';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_0p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_1deg_2';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_1p5deg_2';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_2deg_2';...
+    'isaac_cal_jig_july23_with_homing_isaac_roll90_0deg_3';...
     };
 
 labs = {...;
@@ -1854,6 +1901,21 @@ labs = {...;
     'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +1.5deg';... 211
     'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +2.0deg';... 212
     'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg';... 213
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +0.0deg';... 214
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +0.5deg';... 215
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +1.0deg';... 216
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +1.5deg';... 217
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +2.0deg';... 218
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align -2.0deg';... 219
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align -1.5deg';... 220
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align -1.0deg';... 221
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align -0.5deg';... 222
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +0.0deg';... 223
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +0.5deg';... 224
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +1.0deg';... 225
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +1.5deg';... 226
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +2.0deg';... 227
+    'On Jig, Homing, Dist = 43", ISAAC roll 90deg, RPS align +0.0deg';... 228 
     };
 
 %end
