@@ -255,8 +255,11 @@ for prefind = 40:length(prefix)%[6 7 9:15, 20:42 44]%20:42
             mxfev = 100000;
             mxiter = 100000;
             options = optimset('TolFun',1e-10,'MaxIter',mxiter,'MaxFunEvals',mxfev,'Display','off');
-            lb = [-20 -0.5 -10 -10 0]; % angle, xpol, collimation x2, amplitude
-            ub = [20 0.5 10 10 1e6];
+            %lb = [-20 -0.5 -10 -10 0]; % angle, xpol, collimation x2, amplitude
+            %ub = [20 0.5 10 10 1e6];
+
+            lb = [-180 -0.5 -10 -10 0]; % angle, xpol, collimation x2, amplitude
+            ub = [180 0.5 10 10 1e6];
 
             guess = [1e-6,1e-6,0,0,nanmax(R)/2]; % old fminsearch didn't leave zero if given zero as a guess
             %fittype = 'lsq';
@@ -1345,7 +1348,7 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim(lims+17.4);
+ylim(lims+87.5);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel('RPS Azimuthal Alignment Offset [Degrees]')
 title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC flipped 90deg'})
