@@ -993,17 +993,79 @@ fdsch = structcut(fd,idx);
 %t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
 time = fdsch.time-min(fdsch.time);
 
-fig = figure(808275);
+fig = figure(808255);
 fig.Position(3:4) = [800 400];
 t = tiledlayout(1,1);
 
 nexttile();
-plot(time(si)/3600,fdsch.phi(si))
+plot(time(si)/3600,fdsch.phi(si),'.-','MarkerSize',14)
 ylabel('Angle Error')
 xlabel('Time Hours')
 title('Noise Check at ~2.3m')
 grid on
+hold on
 
+idx = fd.schnum==245;
+fdsch = structcut(fd,idx);
+[s, si] = sort(fdsch.time);
+%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
+time = fdsch.time-min(fdsch.time)+550;
+
+plot(time(si)/3600,fdsch.phi(si),'.-','MarkerSize',14)
+grid on
+
+%% Look at 01 Aug Noise Check
+
+idx = fd.schnum==244;
+fdsch = structcut(fd,idx);
+[s, si] = sort(fdsch.time);
+%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
+time = fdsch.time-min(fdsch.time);
+
+fig = figure(808225);
+fig.Position(3:4) = [800 400];
+t = tiledlayout(1,1);
+
+nexttile();
+plot(time(si)/3600,fdsch.A(si),'.-','MarkerSize',14)
+ylabel('Angle Error')
+xlabel('Time Hours')
+title('Noise Check at ~2.3m')
+grid on
+hold on
+
+idx = fd.schnum==245;
+fdsch = structcut(fd,idx);
+[s, si] = sort(fdsch.time);
+%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
+time = fdsch.time-min(fdsch.time)+550;
+
+plot(time(si)/3600,fdsch.A(si),'.-','MarkerSize',14)
+grid on
+
+
+%% Look at 03 Aug Noise Check
+
+    
+fig = figure(808275);
+fig.Position(3:4) = [800 400];
+
+scheds = [48, 244, 245];
+for schind = 1:length(scheds)
+    idx = fd.schnum==scheds(schind);
+
+    fdsch = structcut(fd,idx);
+    [s, si] = sort(fdsch.time);
+    %t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
+    time = fdsch.time-min(fdsch.time);
+
+    plot(time(si)/3600,fdsch.phi(si))
+
+end
+ylabel('Angle Error')
+xlabel('Time Hours')
+title('Noise Check at ~2.3m')
+grid on
 
 
 %end % End of Main function
@@ -1355,6 +1417,7 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_2p4meters_2deg_2';...
     'isaac_cal_jig_july23_with_homing_2p4meters_0deg_3';...
     'isaac_cal_jig_july23_with_homing_2p4meters_stabilitytest';...
+    'isaac_cal_jig_july23_with_homing_2p4meters_stabilitytest_pt2';...
     };
 
 labs = {...;
@@ -1602,6 +1665,7 @@ labs = {...;
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +2.0deg';... 242
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg';... 243
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test';... 244
+    'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 2';... 245
     };
 
 %end
