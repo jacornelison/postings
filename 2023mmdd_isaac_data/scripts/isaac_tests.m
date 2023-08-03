@@ -991,14 +991,19 @@ idx = fd.schnum==244;
 fdsch = structcut(fd,idx);
 [s, si] = sort(fdsch.time);
 %t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
-t = fdsch.time-min(fdsch.time);
+time = fdsch.time-min(fdsch.time);
 
 fig = figure(808275);
-plot(t(si)/3600,fdsch.phi(si))
+fig.Position(3:4) = [800 400];
+t = tiledlayout(1,1);
+
+nexttile();
+plot(time(si)/3600,fdsch.phi(si))
 ylabel('Angle Error')
 xlabel('Time Hours')
 title('Noise Check at ~2.3m')
 grid on
+
 
 
 %end % End of Main function
