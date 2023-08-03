@@ -110,7 +110,8 @@ else
     figdir = fullfile(gitdir,'postings','2023mmdd_isaac_data','figs');
 end
 
-direct = fullfile(gitdir,'rps_cal','data');
+%direct = fullfile(gitdir,'rps_cal','data');
+direct = fullfile(gitdir,'postings','2023mmdd_isaac_data','rps_cal','data');
 [prefix, labs] = get_pref_and_labs(); % filenames and labels are moved to the bottom now...
 
 if ~exist('meanguess','var')
@@ -140,7 +141,7 @@ obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 
 % Loop over the file names and fit.
-for prefind = 40:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
 
     % Tilt Calibrations
     if ismember(prefind,[1:18])
@@ -169,6 +170,8 @@ for prefind = 40:length(prefix)%[6 7 9:15, 20:42 44]%20:42
                 sprintf('_scan_%i_loop_1.csv',di-1)]));
         end
     end
+    
+
 
     fittype = 'lsq';
     fitind = find(ismember(fitnames,'lsq'));
@@ -803,6 +806,8 @@ saveas(fig,fullfile(figdir,'hists',fname),'png')
 %% Make a pager for histograms
 
 unqsch = unique(fd.schnum);
+fig = figure(7385029);
+fig.Position(3:4) = [500 450];
 for schind = 1:length(unqsch)
     idx = fd.schnum==unqsch(schind);
     fdsch = structcut(fd,idx);
@@ -810,8 +815,7 @@ for schind = 1:length(unqsch)
     M = nanmean(dP);
     S = nanstd(dP);
     L = length(find(~isnan(dP)));
-    fig = figure(7385029);
-    fig.Position(3:4) = [500 450];
+    
     clf; hold on;
 
     hist(dP)
@@ -828,320 +832,29 @@ for schind = 1:length(unqsch)
 end
 
 
-%% Make a pager for Mod Curve Residuals
 
-unqsch = unique(fd.schnum);
-for schind = 1:length(unqsch)
-    idx = find(fd.schnum==unqsch(schind));
-    fdsch = structcut(fd,idx);
-    fig = figure(2875829);
-    fig.Position(3:4) = [600 350];
-    clf; hold on;
-    
-    for modind = 1:length(idx)
-        plot(angs{idx(modind)},reses{idx(modind)}/fdsch.A(modind),'.-','MarkerSize',14)
-        %plot(angs{idx(modind)},reses{idx(modind)},'.-','MarkerSize',14)
-    end
-    grid on
-    ylabel('$A_{meas}-A_{model}$ (Volts)','FontSize',14)
-    xlabel('Stage Angle WRT Gravity')
-    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
-    ttl = labs{unqsch(schind)};
-    ttl = strrep(ttl,'_','\_');
-    ttl = strrep(ttl,'%','\%');
-    ttl = strrep(ttl,'<','$<$');
-    title({ttl, ...
-        sprintf('%s UTC',t)})
-    ylim([-1 1]*0.1)
-    fname = sprintf('reses_%i',unqsch(schind));
-    saveas(fig,fullfile(figdir,'reses',fname),'png')
+%% Angle Error vs. Alignment Plots
+% Tired of copy pasting. Making a loop.
 
-end
-
-%% Make a pager for Mod Curves
-
-unqsch = unique(fd.schnum);
-for schind = 1:length(unqsch)
-    idx = find(fd.schnum==unqsch(schind));
-    fdsch = structcut(fd,idx);
-    fig = figure(2875828);
-    fig.Position(3:4) = [600 350];
-    clf; hold on;
-    
-    for modind = 1:length(idx)
-        plot(angs{idx(modind)},modcurves{idx(modind)},'.-','MarkerSize',14)
-    end
-    ylim([0 1]*4.5)
-    %ylim([0 1]*0.5)
-    grid on
-    ylabel('$A_{meas}$ (Volts)','FontSize',14)
-    xlabel('Stage Angle WRT Gravity')
-    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
-    ttl = labs{unqsch(schind)};
-    ttl = strrep(ttl,'_','\_');
-    ttl = strrep(ttl,'%','\%');
-    ttl = strrep(ttl,'<','$<$');
-    title({ttl, ...
-        sprintf('%s UTC',t)})
-    fname = sprintf('mod_curves_%i',unqsch(schind));
-    saveas(fig,fullfile(figdir,'mod_curves',fname),'png')
-
-end
-
-%% Make a pager for diff mod curve
-
-unqsch = unique(fd.schnum);
-for schind = 1:length(unqsch)
-    idx = find(fd.schnum==unqsch(schind));
-    fdsch = structcut(fd,idx);
-    fig = figure(2875829);
-    fig.Position(3:4) = [600 350];
-    clf; hold on;
-    
-    for modind = 1:length(idx)
-        m0 = sort(modcurves{idx(modind)});
-        plot(1:12,diff(modcurves{idx(modind)})/mean(m0((end-2):end)),'.-','MarkerSize',14)
-    end
-    ylim([-1 1]*0.5*1.1)
-    grid on
-    ylabel('$\Delta A_{meas}/A_0$ (Volts)','FontSize',14)
-    %xlabel('Stage Angle WRT Gravity')
-    t = datestr(nanmean(fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS'));
-    ttl = labs{unqsch(schind)};
-    ttl = strrep(ttl,'_','\_');
-    ttl = strrep(ttl,'%','\%');
-    title({ttl, ...
-        sprintf('%s UTC',t)})
-    fname = sprintf('diff_mod_curves_%i',unqsch(schind));
-    saveas(fig,fullfile(figdir,'mod_curves',fname),'png')
-
-end
-
-%% declare plot ylims
-lims = [-0.65 0.4];
-%% Plot dPhi vs alignment offset
 clc
-offs = [0 1 2 0 1 2 -1 -2 -1 0 0.5 0.25 -0.25 -0.5 -0.125];
-schnums = [47:61];
-%cmlines = distinguishable_colors(length(schnums));
-
-fig = figure(173476);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-%plot(offs,dp_mn,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset',''})
-fname = 'dp_vs_alignment';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- with constant amplitude
-clc
-offs = [0 1 2 1 0 -1 -2];
-schnums = [63:69];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(174357);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(schind,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs,dp_mn,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset','Constant Peak Amplitude'})
-fname = 'dp_vs_alignment_const_amp';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- peaked up distance 1m
-clc
-offs = [0 0.5 1 1.5 2 1 0 -0.5 -1 -2];
-schnums = [70:79];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173477);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'})
-fname = 'dp_vs_alignment_new_dist';
-%saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- peaked up distance 1m -- ISAAC Moving
-clc
-offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
-schnums = [80:89];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173477);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('ISAAC Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Moving'})
-fname = 'dp_vs_alignment_isaac_move';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Dphi vs eccosorb test
-
-schnums = [90:97];
-idx = ismember(fd.schnum,schnums);
-dP = fd.phi(idx)-fd.phi_isaac(idx);
-
-fig = figure(3897532);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-plot(1:length(dP),dP,'.','MarkerSize',14)
-plot(1:length(dP),dP)
-ylim(lims);
-xlim([0 9])
-grid on
-xlabel('Measurement Number')
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-title({'Angle Bias vs. Eccosorb',''})
-fname = 'dp_vs_alignment_eccosorb';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- Horn Flipped 180 deg
-clc
-offs = [0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
-schnums = [98:107];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173477);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Flipped 180deg'})
-fname = 'dp_vs_alignment_horn_flipped';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- New, small horn
-clc
-offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
-schnums = [108:122];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
+[all_offs, all_meas, meas_ttls, meas_names, rps_moved] = grab_meas_info();
+lims = [-0.6 0.4];
 fig = figure(173478);
 fig.Position(3:4) = [700 250];
-clf; hold on;
 
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
+for measind = 1:length(meas_names)
+offs = all_offs{measind};
+schnums = all_meas{measind};
+
+% Only do this if we've loaded the data
+if ~any(ismember(fd.schnum,schnums))
+    continue
 end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn'})
-fname = 'dp_vs_alignment_small_horn';
-saveas(fig,fullfile(figdir,fname),'png')
 
-%% Plot dPhi vs alignment offset -- Small horn, flipped
-clc
-offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
-schnums = [123:137];
-%cmlines = distinguishable_colors(length(schnums));
 cmlines = colormap('lines');
-fig = figure(173478);
-fig.Position(3:4) = [700 250];
 clf; hold on;
 
-[offs_all dp_all,dp_mn] = deal([]);
+[offs_all, dp_all, dp_mn] = deal([]);
 for schind = 1:length(schnums)
     idx = find(fd.schnum==schnums(schind));
     O = repmat(offs(schind),1,length(idx));
@@ -1156,248 +869,32 @@ end
 plot(offs_all,dp_all,'Color',cmlines(2,:))
 grid on
 xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn, flipped'})
-fname = 'dp_vs_alignment_small_horn';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- Small horn, flipped, rotating ISAAC
-clc
-offs = [0 0.5 1 1.5 2 -2:0.5:2 0 -0.5 -1 -1.5 -2 0];
-schnums = [138:157];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173477);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
+if nanmedian(dp_all)<1 && nanmedian(dp_all)>-1
+    ylim(lims);
+else
+    ylim(lims+nanmedian(dp_all))
 end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('ISAAC Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','15dB horn, flipped, rotating ISAAC'})
-fname = 'dp_vs_alignment_small_horn_rot_isaac_allangles';
+xlabel(sprintf('%s Azimuthal Alignment Offset [Degrees]',rps_moved{measind}))
+title(meas_ttls{measind})
+fname = meas_names{measind};
 saveas(fig,fullfile(figdir,fname),'png')
 
-%% Plot translation vs alignment offset -- Small horn, flipped, moving ISAAC
-clc
-offs = [0.0 -0.65 -1.33 -2.0 -1.34 -0.67 0 0.67 1.33 1.99 0];
-schnums = [158:168];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173477);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
 end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('Equivalent RPS angle [Degrees]')
-title({'Angle Bias vs. Translation Offset, Distance of $\sim1$m','15dB horn, flipped, moving ISAAC'})
-fname = 'dp_vs_alignment_moving_isaac';
-saveas(fig,fullfile(figdir,fname),'png')
 
-%% Plot dPhi vs alignment offset -- Removed RPS shroud
-clc
-offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
-schnums = [169:183];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173478);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims-6.9)
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and wire grid removed'})
-fname = 'dp_vs_alignment_no_shroud';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- Removed RPS shroud again
-clc
-offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
-schnums = [184:198];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173478);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims-6.9)
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and wire grid removed'})
-fname = 'dp_vs_alignment_no_shroud_pt2';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- Moved to 53in
-clc
-offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
-schnums = [199:213];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173478);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','15dB horn, flipped'})
-fname = 'dp_vs_alignment_1p3meters';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- Rolled ISAAC by 90deg
-clc
-offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
-schnums = [214:228];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173478);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims+87.5);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC flipped 90deg'})
-fname = 'dp_vs_alignment_isaac_roll90';
-saveas(fig,fullfile(figdir,fname),'png')
-
-%% Plot dPhi vs alignment offset -- Rolled ISAAC by 90deg
-clc
-offs = [0 0.5 1 1.5 2 -2:0.5:2 0];
-schnums = [229:243];
-%cmlines = distinguishable_colors(length(schnums));
-cmlines = colormap('lines');
-fig = figure(173478);
-fig.Position(3:4) = [700 250];
-clf; hold on;
-
-[offs_all dp_all,dp_mn] = deal([]);
-for schind = 1:length(schnums)
-    idx = find(fd.schnum==schnums(schind));
-    O = repmat(offs(schind),1,length(idx));
-    dP = fd.phi(idx)-fd.phi_isaac(idx);
-    plot(O,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
-    %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
-    %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
-    offs_all = [offs_all O];
-    dp_all = [dp_all dP];
-    dp_mn(schind) = nanmean(dP);
-end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
-grid on
-xlim([-1 1]*2.5)
-ylim(lims);
-ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
-xlabel('RPS Azimuthal Alignment Offset [Degrees]')
-title({'Angle Bias vs. Alignment Offset, Distance of $\sim2.4$m','15dB horn, flipped'})
-fname = 'dp_vs_alignment_2p4meters';
-saveas(fig,fullfile(figdir,fname),'png')
 
 %% Combine Mod curves and Compare as-fit residuals 
 
 clc
 unqsch = unique(fd.schnum);
+fig = figure(2875828);
+fig.Position(3:4) = [800 550];
 for schind = 1:length(unqsch)
     idx = find(fd.schnum==unqsch(schind));
     fdsch = structcut(fd,idx);
     dP = fd.phi(idx)-fd.phi_isaac(idx);
-    fig = figure(2875828);
-    fig.Position(3:4) = [800 550];
-    clf; hold on;
+    
+    clf;
     t = tiledlayout(2,1);
     t.Padding = 'compact';
     t.TileSpacing = 'compact';
@@ -1445,17 +942,18 @@ end
 %% Make plots for tilt meters
 clc
 unqsch = unique(fd.schnum);
+fig = figure(2877389);
+fig.Position(3:4) = [600 350];
+    
 for schind = 1:length(unqsch)
     idx = find(fd.schnum==unqsch(schind));
     fdsch = structcut(fd,idx);
-    fig = figure(2877389);
-    fig.Position(3:4) = [600 350];
     clf; hold on;
     t = tiledlayout(2,1);
     t.Padding = 'compact';
     t.TileSpacing = 'compact';
 
-    nexttile(1)
+    nexttile(1); hold on
     for modind = 1:length(idx)
         plot(angs{idx(modind)},tilts{idx(modind)},'.-','MarkerSize',14)
     end
@@ -1472,7 +970,7 @@ for schind = 1:length(unqsch)
     title({ttl, ...
         sprintf('%s UTC',t)})
     
-    nexttile(2)
+    nexttile(2); hold on;
     for modind = 1:length(idx)
         plot(angs{idx(modind)},istilts{idx(modind)},'.-','MarkerSize',14)
     end
@@ -1487,8 +985,124 @@ for schind = 1:length(unqsch)
 
 end
 
+%% Look at 01 Aug Noise Check
+
+idx = fd.schnum==244;
+fdsch = structcut(fd,idx);
+[s, si] = sort(fdsch.time);
+%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
+t = fdsch.time-min(fdsch.time);
+
+fig = figure(808275);
+plot(t(si)/3600,fdsch.phi(si))
+ylabel('Angle Error')
+xlabel('Time Hours')
+title('Noise Check at ~2.3m')
+grid on
+
+
 %end % End of Main function
 %%
+
+% Subsets of data that produce error vs alignment plots
+function [all_offs, all_meas, meas_ttls, meas_names, rps_moved] = grab_meas_info()
+
+% Alignment offset.
+all_offs = {
+[0 1 2 0 1 2 -1 -2 -1 0 0.5 0.25 -0.25 -0.5 -0.125];
+[0 1 2 1 0 -1 -2];
+[0 0.5 1 1.5 2 1 0 -0.5 -1 -2];
+[0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
+1:8;
+[0 0.5 1 1.5 2 -2 -1.5 -1 -0.5 0];
+[0 0.5 1 1.5 2 -2:0.5:2 0];
+[0 0.5 1 1.5 2 -2:0.5:2 0];
+[0 0.5 1 1.5 2 -2:0.5:2 0 -0.5 -1 -1.5 -2 0];
+[0.0 -0.65 -1.33 -2.0 -1.34 -0.67 0 0.67 1.33 1.99 0];
+[0 0.5 1 1.5 2 -2:0.5:2 0];
+[0 0.5 1 1.5 2 -2:0.5:2 0];
+[0 0.5 1 1.5 2 -2:0.5:2 0];
+[0 0.5 1 1.5 2 -2:0.5:2 0];    
+[0 0.5 1 1.5 2 -2:0.5:2 0];
+};
+
+% fd.sch's that go into the measurement
+all_meas = {
+47:61;
+63:69;
+70:79;
+80:89;
+90:97;
+98:107;
+108:122;
+123:137;
+138:157;
+158:168;
+169:183;
+184:198;
+199:213;
+214:228;    
+229:243;
+};
+
+% Figure title
+meas_ttls = {
+{'Angle Bias vs. Alignment Offset',''};
+{'Angle Bias vs. Alignment Offset','Constant Peak Amplitude'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Moving'};
+{'Angle Bias vs. Eccosorb',''};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Flipped 180deg'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn, flipped'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','15dB horn, flipped, rotating ISAAC'};
+{'Angle Bias vs. Translation Offset, Distance of $\sim1$m','15dB horn, flipped, moving ISAAC'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and wire grid removed'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','RPS shroud and wire grid removed'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','15dB horn, flipped'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC flipped 90deg'};  
+{'Angle Bias vs. Alignment Offset, Distance of $\sim2.4$m','15dB horn, flipped'};
+};
+
+% Name to save the figure as.
+meas_names = {
+'dp_vs_alignment';
+'dp_vs_alignment_const_amp';
+'dp_vs_alignment_new_dist';
+'dp_vs_alignment_isaac_move';
+'dp_vs_alignment_eccosorb';
+'dp_vs_alignment_horn_flipped';
+'dp_vs_alignment_small_horn';
+'dp_vs_alignment_small_horn_fipped';
+'dp_vs_alignment_small_horn_rot_isaac_allangles';
+'dp_vs_alignment_moving_isaac';
+'dp_vs_alignment_no_shroud';
+'dp_vs_alignment_no_shroud_pt2';
+'dp_vs_alignment_1p3meters';
+'dp_vs_alignment_isaac_roll90';    
+'dp_vs_alignment_2p4meters';
+};
+
+% Did we move the RPS or the ISAAC?
+rps_moved = {
+'RPS';
+'RPS';
+'RPS';
+'ISAAC';
+'Eccosorb';
+'RPS';
+'RPS';
+'RPS';
+'ISAAC';
+'ISAAC';
+'RPS';
+'RPS';
+'RPS';
+'RPS';    
+'RPS';  
+};
+
+% All the data for fitting angles
 function [prefix, labs] = get_pref_and_labs()
 
 prefix = {...
@@ -1735,6 +1349,7 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_2p4meters_1p5deg_2';...
     'isaac_cal_jig_july23_with_homing_2p4meters_2deg_2';...
     'isaac_cal_jig_july23_with_homing_2p4meters_0deg_3';...
+    'isaac_cal_jig_july23_with_homing_2p4meters_stabilitytest';...
     };
 
 labs = {...;
@@ -1981,6 +1596,7 @@ labs = {...;
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +1.5deg';... 241
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +2.0deg';... 242
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg';... 243
+    'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test';... 244
     };
 
 %end
