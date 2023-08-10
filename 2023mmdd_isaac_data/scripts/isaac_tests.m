@@ -882,6 +882,58 @@ saveas(fig,fullfile(figdir,fname),'png')
 
 end
 
+%% Angle Error vs. Alignment Plots
+% Tired of copy pasting. Making a loop.
+
+clc
+[all_offs, all_meas, meas_ttls, meas_names, rps_moved] = grab_meas_info();
+lims = [-0.6 0.4];
+fig = figure(173478);
+fig.Position(3:4) = [700 250];
+
+for measind = 1:length(meas_names)
+    offs = all_offs{measind};
+    schnums = all_meas{measind};
+    
+    % Only do this if we've loaded the data
+    if ~any(ismember(fd.schnum,schnums))
+        continue
+    end
+    
+    cmlines = colormap('lines');
+    clf; hold on;
+    
+    [offs_all, dp_all, dp_mn] = deal([]);
+    for schind = 1:length(schnums)
+        idx = find(fd.schnum==schnums(schind));
+        %O = repmat(offs(schind),1,length(idx));
+        times = fd.time(idx);
+        times = datetime(times, 'ConvertFrom', 'posixtime', 'Format', 'yyyy-MMM-dd:HH:mm:SS', 'TimeZone', 'local')
+        dP = fd.phi(idx)-fd.phi_isaac(idx);
+        plot(times,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
+        %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
+        %plot(repmat(offs(schind),1,length(idx)),fd.istilt(idx),'^','Color',cmlines(schind,:),'MarkerSize',10)
+        offs_all = [offs_all times];
+        dp_all = [dp_all dP];
+        dp_mn(schind) = nanmean(dP);
+    end
+    
+    plot(offs_all,dp_all,'Color',cmlines(2,:))
+    grid on
+    %xlim([-1 1]*2.5)
+    if nanmedian(dp_all)<1 && nanmedian(dp_all)>-1
+        ylim(lims);
+    else
+        ylim(lims+nanmedian(dp_all))
+    end
+    ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
+    xlabel(sprintf('Time',rps_moved{measind}))
+    title(meas_ttls{measind})
+    fname = meas_names{measind}+"_time";
+    saveas(fig,fullfile(figdir,fname),'png')
+
+end
+
 
 %% Combine Mod curves and Compare as-fit residuals 
 
@@ -1015,7 +1067,6 @@ plot(time(si)/3600,fdsch.phi(si),'.-','MarkerSize',14)
 grid on
 
 %% Look at 01 Aug Noise Check
-
 idx = fd.schnum==244;
 fdsch = structcut(fd,idx);
 [s, si] = sort(fdsch.time);
@@ -1044,28 +1095,42 @@ plot(time(si)/3600,fdsch.A(si),'.-','MarkerSize',14)
 grid on
 
 
-%% Look at 03 Aug Noise Check
+%% Look at 03 Aug Overnight Noise Check
 
-    
+schind=249;
+idx = fd.schnum==schind;
+fdsch = structcut(fd,idx);
+[s, si] = sort(fdsch.time);
+%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
+%time = fdsch.time%-min(fdsch.time);
+time = datetime(fdsch.time, 'ConvertFrom', 'posixtime', 'Format', 'yyyy-MMM-dd:HH:mm:SS', 'TimeZone', 'local');
+
 fig = figure(808275);
 fig.Position(3:4) = [800 400];
 
-scheds = [48, 244, 245];
-for schind = 1:length(scheds)
-    idx = fd.schnum==scheds(schind);
-
-    fdsch = structcut(fd,idx);
-    [s, si] = sort(fdsch.time);
-    %t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
-    time = fdsch.time-min(fdsch.time);
-
-    plot(time(si)/3600,fdsch.phi(si))
-
-end
+yyaxis left
+plot(time(si),fdsch.phi(si),'.-')
 ylabel('Angle Error')
-xlabel('Time Hours')
-title('Noise Check at ~2.3m')
+%ylim([0 0.5])
+
+yyaxis right
+plot(time(si),fdsch.temp(si)*1000,'.-')
+%plot(time(si),fdsch.istilttemp(si)*100+273.15)
+ylabel('Temperature [K]')
+
+
+%plot(time(si),fdsch.A(si))
+%ylabel('Amplitude (Error?)')
+
+xlabel('Time')
+title_str = sprintf('Noise Check at 1.5m, Schedule %i',schind);
+title(title_str)
 grid on
+
+%fname = sprintf('tilts_%i',unqsch(schind));
+%saveas(fig,fullfile(figdir,'tilts',fname),'png')
+
+
 
 
 %end % End of Main function
@@ -1418,6 +1483,10 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_2p4meters_0deg_3';...
     'isaac_cal_jig_july23_with_homing_2p4meters_stabilitytest';...
     'isaac_cal_jig_july23_with_homing_2p4meters_stabilitytest_pt2';...
+    'isaac_cal_jig_july23_with_homing_2p4meters_stabilitytest_pt3';...
+    'isaac_cal_jig_july23_with_homing_stabtest_53in';...
+    'isaac_cal_jig_july23_with_homing_stabtest_20in';...
+    'isaac_cal_jig_july23_with_homing_stabtest_aug10_1p5m';...
     };
 
 labs = {...;
@@ -1666,6 +1735,10 @@ labs = {...;
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg';... 243
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test';... 244
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 2';... 245
+    'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 3';... 246
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 4';... 247
+    'On Jig, Homing, Dist = 20", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 5';... 248
+    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 6';... 249
     };
 
 %end

@@ -168,6 +168,29 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
         </script>
     </figure>
 
+    <figure>
+    <img alt="Name pager" id="dpvstimepager" src="#" width="80%"/>
+    <figcaption>
+
+    </figcaption>
+    <script type="text/javascript">
+        pager.link("#dpvstimepager",
+            {
+                'Meas. Set|case' : ['1: Dist ~0.5m|','2: Const. Amp|_const_amp','3: Dist ~1m|_new_dist','4: Isaac Moved|_isaac_move','5: Eccosorb|_eccosorb',
+                '6: Flipped ISAAC Horn|_horn_flipped','7: 15dB Horn|_small_horn','8: Flipped 15dB Horn|_small_horn_flipped', '9: Translating ISAAC|_moving_isaac',
+                '10: Removed RPS Shroud|_no_shroud','11: Removed Shroud pt2|_no_shroud_pt2','12: Dist ~1.3m|_1p3meters','13: Flipped ISAAC 90deg|_isaac_roll90',
+                '14: Dist ~2.4m|_2p4meters'],
+            },
+            function(params) {
+
+                return 'figs/dp_vs_alignment'+params.case+'_time.png';
+            });
+        pager.setparams({
+            'case' : [''],
+        });
+    </script>
+    </figure>
+
 
     <p>Extra plots: Histograms and mod curve residuals for ISAAC Measurements</p>
     <p>Measurement 44 marks the start of the measurements taken in July 2023. 27 to 43 were taken in July 2022. Any before 27 were taken at Pole.</p>
