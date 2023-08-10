@@ -842,7 +842,7 @@ lims = [-0.6 0.4];
 fig = figure(173478);
 fig.Position(3:4) = [700 250];
 
-for measind = 1:length(meas_names)
+for measind = (length(meas_names)-5):length(meas_names)%1:length(meas_names)
 offs = all_offs{measind};
 schnums = all_meas{measind};
 
@@ -882,7 +882,7 @@ saveas(fig,fullfile(figdir,fname),'png')
 
 end
 
-%% Angle Error vs. Alignment Plots
+%% Angle Error vs. time Plots
 % Tired of copy pasting. Making a loop.
 
 clc
@@ -891,7 +891,7 @@ lims = [-0.6 0.4];
 fig = figure(173478);
 fig.Position(3:4) = [700 250];
 
-for measind = 1:length(meas_names)
+for measind = (length(meas_names)-5):length(meas_names)%1:length(meas_names)
     offs = all_offs{measind};
     schnums = all_meas{measind};
     
@@ -908,7 +908,7 @@ for measind = 1:length(meas_names)
         idx = find(fd.schnum==schnums(schind));
         %O = repmat(offs(schind),1,length(idx));
         times = fd.time(idx);
-        times = datetime(times, 'ConvertFrom', 'posixtime', 'Format', 'yyyy-MMM-dd:HH:mm:SS', 'TimeZone', 'local')
+        times = datetime(times, 'ConvertFrom', 'posixtime', 'Format', 'yyyy-MMM-dd:HH:mm:SS', 'TimeZone', 'local');
         dP = fd.phi(idx)-fd.phi_isaac(idx);
         plot(times,dP,'.','Color',cmlines(1,:),'MarkerSize',14)
         %plot(repmat(offs(schind),1,length(idx)),fd.tilt(idx),'x','Color',cmlines(schind,:),'MarkerSize',10)
@@ -917,8 +917,8 @@ for measind = 1:length(meas_names)
         dp_all = [dp_all dP];
         dp_mn(schind) = nanmean(dP);
     end
-    
-    plot(offs_all,dp_all,'Color',cmlines(2,:))
+    [s si] = sort(offs_all);
+    plot(offs_all(si),dp_all(si),'Color',cmlines(2,:))
     grid on
     %xlim([-1 1]*2.5)
     if nanmedian(dp_all)<1 && nanmedian(dp_all)>-1
@@ -1156,6 +1156,12 @@ all_offs = {
 [0 0.5 1 1.5 2 -2:0.5:2 0];
 [0 0.5 1 1.5 2 -2:0.5:2 0];    
 [0 0.5 1 1.5 2 -2:0.5:2 0];
+0;
+0;
+0;
+0;
+0;
+0;
 };
 
 % fd.sch's that go into the measurement
@@ -1175,6 +1181,12 @@ all_meas = {
 199:213;
 214:228;    
 229:243;
+244;
+245;
+246;
+247;
+248;
+249;
 };
 
 % Figure title
@@ -1194,6 +1206,12 @@ meas_ttls = {
 {'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','15dB horn, flipped'};
 {'Angle Bias vs. Alignment Offset, Distance of $\sim1$m','ISAAC flipped 90deg'};  
 {'Angle Bias vs. Alignment Offset, Distance of $\sim2.4$m','15dB horn, flipped'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim2.4$m','stability test 1'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim2.4$m','stability test 2'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim2.4$m','stability test overnight'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','stability test 1'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim0.5$m','stability test'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','stability test 2'};
 };
 
 
@@ -1232,6 +1250,12 @@ meas_names = {
 'dp_vs_alignment_1p3meters';
 'dp_vs_alignment_isaac_roll90';    
 'dp_vs_alignment_2p4meters';
+'dp_vs_alignment_2p4m_stab1';
+'dp_vs_alignment_2p4m_stab2';
+'dp_vs_alignment_2p4m_stab3';
+'dp_vs_alignment_1p3m_stab1';
+'dp_vs_alignment_0p5m_stab1';
+'dp_vs_alignment_1p3m_stab2';
 };
 
 % Did we move the RPS or the ISAAC?
@@ -1250,7 +1274,13 @@ rps_moved = {
 'RPS';
 'RPS';
 'RPS';    
-'RPS';  
+'RPS';
+'RPS';
+'RPS';
+'RPS';
+'RPS';    
+'RPS';
+'RPS';
 };
 
 % All the data for fitting angles

@@ -156,40 +156,49 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
                     'Meas. Set|case' : ['1: Dist ~0.5m|','2: Const. Amp|_const_amp','3: Dist ~1m|_new_dist','4: Isaac Moved|_isaac_move','5: Eccosorb|_eccosorb',
                     '6: Flipped ISAAC Horn|_horn_flipped','7: 15dB Horn|_small_horn','8: Flipped 15dB Horn|_small_horn_flipped', '9: Translating ISAAC|_moving_isaac',
                     '10: Removed RPS Shroud|_no_shroud','11: Removed Shroud pt2|_no_shroud_pt2','12: Dist ~1.3m|_1p3meters','13: Flipped ISAAC 90deg|_isaac_roll90',
-                    '14: Dist ~2.4m|_2p4meters'],
+                    '14: Dist ~2.4m|_2p4meters',
+                        '15: Dist ~2.4m stab1|_2p4m_stab1',
+                        '16: Dist ~2.4m stab2|_2p4m_stab2',
+                        '17: Dist ~2.4m overnight|_2p4m_stab3',
+                        '18: Dist ~1.3m stab1|_1p3m_stab1',
+                        '19: Dist ~0.5m stab1|_0p5m_stab1',
+                        '20: Dist ~1.3m stab2|_1p3m_stab2',
+                    ],
+                    'X-axis|xaxis' : ['Alignment|', 'Time|_time'],
                 },
                 function(params) {
 
-                    return 'figs/dp_vs_alignment'+params.case+'.png';
+                    return 'figs/dp_vs_alignment'+params.case+params.xaxis+'.png';
                 });
             pager.setparams({
                 'case' : [''],
+                'xaxis': [''],
             });
         </script>
     </figure>
 
-    <figure>
-    <img alt="Name pager" id="dpvstimepager" src="#" width="80%"/>
-    <figcaption>
+<!--    <figure>-->
+<!--    <img alt="Name pager" id="dpvstimepager" src="#" width="80%"/>-->
+<!--    <figcaption>-->
 
-    </figcaption>
-    <script type="text/javascript">
-        pager.link("#dpvstimepager",
-            {
-                'Meas. Set|case' : ['1: Dist ~0.5m|','2: Const. Amp|_const_amp','3: Dist ~1m|_new_dist','4: Isaac Moved|_isaac_move','5: Eccosorb|_eccosorb',
-                '6: Flipped ISAAC Horn|_horn_flipped','7: 15dB Horn|_small_horn','8: Flipped 15dB Horn|_small_horn_flipped', '9: Translating ISAAC|_moving_isaac',
-                '10: Removed RPS Shroud|_no_shroud','11: Removed Shroud pt2|_no_shroud_pt2','12: Dist ~1.3m|_1p3meters','13: Flipped ISAAC 90deg|_isaac_roll90',
-                '14: Dist ~2.4m|_2p4meters'],
-            },
-            function(params) {
+<!--    </figcaption>-->
+<!--    <script type="text/javascript">-->
+<!--        pager.link("#dpvstimepager",-->
+<!--            {-->
+<!--                'Meas. Set|case' : ['1: Dist ~0.5m|','2: Const. Amp|_const_amp','3: Dist ~1m|_new_dist','4: Isaac Moved|_isaac_move','5: Eccosorb|_eccosorb',-->
+<!--                '6: Flipped ISAAC Horn|_horn_flipped','7: 15dB Horn|_small_horn','8: Flipped 15dB Horn|_small_horn_flipped', '9: Translating ISAAC|_moving_isaac',-->
+<!--                '10: Removed RPS Shroud|_no_shroud','11: Removed Shroud pt2|_no_shroud_pt2','12: Dist ~1.3m|_1p3meters','13: Flipped ISAAC 90deg|_isaac_roll90',-->
+<!--                '14: Dist ~2.4m|_2p4meters'],-->
+<!--            },-->
+<!--            function(params) {-->
 
-                return 'figs/dp_vs_alignment'+params.case+'_time.png';
-            });
-        pager.setparams({
-            'case' : [''],
-        });
-    </script>
-    </figure>
+<!--                return 'figs/dp_vs_alignment'+params.case+'_time.png';-->
+<!--            });-->
+<!--        pager.setparams({-->
+<!--            'case' : [''],-->
+<!--        });-->
+<!--    </script>-->
+<!--    </figure>-->
 
 
     <p>Extra plots: Histograms and mod curve residuals for ISAAC Measurements</p>
@@ -244,8 +253,6 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
             });
         </script>
     </figure>
-
-
 
 
 </section>
