@@ -1196,6 +1196,25 @@ meas_ttls = {
 {'Angle Bias vs. Alignment Offset, Distance of $\sim2.4$m','15dB horn, flipped'};
 };
 
+
+%meas_ttls = {
+%{'Angle Bias vs. Time',''};
+%{'Angle Bias vs. Time','Constant Peak Amplitude'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','RPS/ISAAC Peaked up to $<1\%$ of max amp'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','ISAAC Moving'};
+%{'Angle Bias vs. Eccosorb',''};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','ISAAC Horn Flipped 180deg'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','ISAAC Horn Replaced With Small Horn, flipped'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','15dB horn, flipped, rotating ISAAC'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','15dB horn, flipped, moving ISAAC'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','RPS shroud and wire grid removed'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','RPS shroud and wire grid removed'};
+%{'Angle Bias vs. Time, Distance of $\sim1.3$m','15dB horn, flipped'};
+%{'Angle Bias vs. Time, Distance of $\sim1$m','ISAAC flipped 90deg'};  
+%{'Angle Bias vs. Time, Distance of $\sim2.4$m','15dB horn, flipped'};
+%};
+
 % Name to save the figure as.
 meas_names = {
 'dp_vs_alignment';
