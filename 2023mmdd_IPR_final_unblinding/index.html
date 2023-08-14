@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<!--suppress HtmlDeprecatedAttribute -->
+<head>
+    <meta charset="utf-8">
+    <title>IPR: Final Results</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+            // src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Isotropic Polarization Rotation Analysis #: Unblinded Results</h1>
+
+    <time datetime="2023-06-13" class="published updated">
+        2023 Mmm dd
+    </time> —
+    J. Cornelison and C. Vergès
+</header>
+
+<hr>
+
+<p>
+    This posting is part of a series which comprises the IPR analysis on BICEP3, see <a href="#references">previous postings</a> for more on this. You can find a link to the paper here: <a href="IPRpaper"></a>.
+</p>
+
+<p>
+This posting showcases the final unblinded results from our IPR analysis. We first provide an overview of the error budget from uncertainties source from both the RPS instrumental calibration and the CMB analysis based on sims. We then given a summary of the consistency tests on the real data.
+</p>
+
+<p>
+Finally, we show the results from EB power spectra. We find ... .
+</p>
+
+<hr>
+
+<section>
+    <h2 id="uncertainty">Error Budget</h2>
+
+
+    <p>The total uncertainty will comprise the stat/sys uncertainty from the CMB analysis (&sigma;<sub>CMB,stat</sub>, &sigma;<sub>CMB,sys</sub> resp.) and the stat/sys uncertainty from the instrumental calibration (&sigma;<sub>INST,stat</sub>, &sigma;<sub>INST,sys</sub> resp.) all added in quadrature:
+
+        \begin{equation}
+        \sigma^2_{tot} = \sigma^2_{CMB,stat}+\sigma^2_{CMB,sys}+\sigma^2_{INST,stat}+\sigma^2_{INST,sys}
+        \end{equation}
+    </p>
+    <p>The uncertainty from the CMB analysis differs depending on the number of bandpowers included in the fit, so we compute them for the two cases of including our standard 9 and also for the case of including bandpowers 2 through 15.
+        The errors for each bandpower are tabulated below.
+        We had previously discussed two approaches to acquiring results: Legacy and Reanalysis<a href="JAC2023g"></a>.
+        We found in <a href="CV2023b"></a> that we would incur an up to 10% multiplicative uncertainty for non-zero EB spectra, so now we de-rotate the Legacy results to avoid this extra uncertainty and now the scatter in the sims are nearly identical between the two approaches so we assign the same uncertainties to both approaches.
+    </p>
+    <p>Notes:</p>
+    <ul>
+        <li>&sigma;<sub>CMB,stat</sub> comes from the 1-&sigma; scatter from 50 L-LCDM+N+D (Type 8) sims <a href="JAC2023f"></a>.</li>
+        <li>&sigma;<sub>CMB,sys</sub> comes from the quadrature sum of the alternate dust and beam uncertaintes [<a href="CV2023a"></a> and <a href="CV2023b"></a> resp.].</li>
+        <li>Uncertainties from the instrumental calibration are explained in detail in &sect;II.C of the <a href="IPRpaper"></a> with a breakdown of the various contributions in Table 2 of the same section.</li>
+    </ul>
+
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th colspan="6"></th>
+            </tr>
+            <tr>
+                <th colspan="1"></th>
+                <th colspan="2">&sigma;<sub>CMB</sub></th>
+                <th colspan="2">&sigma;<sub>INST</sub></th>
+                <th></th>
+            </tr>
+
+            <tr>
+                <th>Bandpowers</th>
+                <th class="cstart">stat</th>
+                <th>sys</th>
+                <th class="cstart">stat</th>
+                <th>sys</th>
+                <th class="cstart">Total</th>
+            </tr>
+            <tr>
+                <td>2-10</td>
+                <td class="cstart">0.11</td>
+                <td>               0.11</td>
+                <td class="cstart">0.02</td>
+                <td>               0.09</td>
+                <td class="cstart">0.18</td>
+            </tr>
+            <tr>
+                <td>2-15</td>
+                <td class="cstart">0.08</td>
+                <td>               0.04</td>
+                <td class="cstart">0.02</td>
+                <td>               0.09</td>
+                <td class="cstart">0.13</td>
+            </tr>
+        </table>
+        <figcaption>
+            Table of final uncertainties from the instrumental calibration and CMB analysis.
+        </figcaption>
+    </figure>
+
+
+</section>
+
+
+
+
+
+<section>
+    <h2 id="tests">Consistency Tests</h2>
+    <p>
+
+    </p>
+    <h3>Standard BK Jacks</h3>
+
+    <h3>&Delta;&alpha; Jacks</h3>
+    <p>
+        We conducted an extra set of consistency tests called &Delta;&alpha; jacks <a href="JAC2023i"></a>. A summar plot is shown below.
+    </p>
+
+    <figure>
+        <img src="figs\delta_alpha_hist_gh_Nbins_14.png">
+        <figcaption>
+            Summary plot of &Delta;&alpha; jacks/
+        </figcaption>
+    </figure>
+
+
+
+</section>
+
+<section>
+    <h2 id="results">Birefringence Results</h2>
+
+    <p>
+        We produce our results in two different ways as a form of consistency check:
+    </p>
+
+    <ul>
+        <li><b>Legacy Result, Derotated (Sernum 6666):</b> Using the BICEP3 dataset as it was used in BK18 -- Sims are created to reflect this configuration by using RPS-derived pol angles to create the sim TOD's but using ideal angles to create the maps. We then de-rotate the maps based on the angle uniformly averaged across all pairs included in the analysis.</li>
+        <li><b>Reanalysis Result (Sernum 6621):</b> Reanalysing the real data using RPS-derived polarization angles to make maps. In contrast to the Legacy Result, sims will use RPS-derived angles in both TOD- and mapmaking.
+            Creating sim TOD's with the RPS-derived angles and then creating both real and sim maps with the RPS-derived polarization angles.</li>
+    </ul>
+
+    <p>
+        These two parallel approaches are intended to be cross-checks of one another, but if we've done everything right then either approach should spit out roughly the same number for our birefringence constraint.
+</p>
+
+    <h3 id="plots">Final Pager Plots</h3>
+<p>
+
+</p>
+    <figure>
+        <img alt="Name pager" id="finalpager" src="#" width="50%"/>
+        <figcaption>
+            Example "Final Pager" for the "Legacy" sims. To remain blinded, all "real" data are just realization 1 from the sims.
+        </figcaption>
+        <script type="text/javascript">
+            function fcn(params){
+                return 'figs/'+params.val+'_6606_gh_bins_2_'+params.bins+'.png';
+            }
+
+            pager.link("#finalpager",
+                {
+                    'Figure|val' : ['spectra','chi2','BP Dev|bpdev','Sum BP Dev|bphist'],
+                    'N Bins|bins' : ['9|10','14|15'],
+                    'Jack|jack' : ['0'],
+                },
+                fcn);
+            pager.setparams({
+                'val' : 'spectra',
+                'bins': '10',
+                'jack' : '0',
+            });
+        </script>
+    </figure>
+
+    <p>    Below is the legend for each of the plots.</p>
+    <b>spectra</b>
+
+    <ul>
+        <li><span style="color:gray;">thin gray</span> :
+            s+n+d simulations with ΛCDM lensed scalars as signal (sim type 8)</li>
+        <li><span style="color:gray; font-weight:bold;">thick gray</span> :
+            mean of sims (<span style="color:gray;">thin gray</span>)</li>
+        <li><span style="color:red;">red points</span> with <span
+                style="color:blue;">blue error bars</span> :
+            real data, uncertainties from the spread of the s+n
+            sims (<span style="color:gray;">thin gray</span>)</li>
+    </ul>
+
+    <b>bp devs</b>
+    <ul>
+        <li><span style="color:gray;">thin gray</span> :
+            s+n sims</li>
+        <li><span style="color:red;">thin red</span> :
+            1 sigma contours</li>
+        <li><span style="color:green;">thin green</span> :
+            2 sigma contours</li>
+        <li><span style="font-weight:bold;">thick black + markers</span> :
+            real data</li>
+        <li><span style="color:red;">red markers</span> :
+            bins that go into chi2 analysis</li>
+    </ul>
+
+    <p>Note: The contours mark the simulated bandpower in each bin closest
+        to the respective percentile.</p>
+
+    <b>chi2</b>
+    <ul>
+        <li><span style="color:red;">red vertical</span> :
+            real data</li>
+        <li><span style="color:blue;">blue</span> :
+            distribution from s+n sims</li>
+    </ul>
+
+    <b>sum bp devs</b>
+    <ul>
+        <li><span style="color:red;">red vertical</span> :
+            real data</li>
+        <li><span style="color:blue;">blue</span> :
+            distribution from s+n sims</li>
+    </ul>
+
+
+<hr>
+
+<h3>Angle Histograms</h3>
+        <p>
+
+    </p>
+
+
+    <figure>
+        <img src="figs\unblinded_hists_6606_test.png">
+        <figcaption>
+            Histograms of &beta; for "Legacy". The blue bars are the sims and the green line is the real data (rlz 1 of the sims here). The black dotted lines will show the 2&sigma; error bars from the total uncertainty.
+        </figcaption>
+    </figure>
+
+
+
+<h3>Tabulated Results</h3>
+    <p>Finally, the table below shows the angles and accompanying errors below. As discussed in <a href="JAC2023g"></a>, we establish 2&sigma; as our reanalysis threshold.</p>
+    <figure class="table">
+        <table class="results">
+            <tr>
+                <th colspan="4"></th>
+            </tr>
+            <tr>
+                <th>Approach</th>
+                <th class="cstart">&alpha;<sub>real</sub>(&deg;)</th>
+                <th class="cstart">&sigma;<sub>&alpha;,tot</sub>(&deg;)</th>
+                <th class="cstart">Significance (&times;&sigma;)</th>
+            </tr>
+            <tr>
+                <td>Legacy, 9BP</td>
+                <td class="cstart">----</td>
+                <td class="cstart">0.18</td>
+                <td class="cstart">----</td>
+            </tr>
+            <tr>
+                <td>Legacy, 14BP</td>
+                <td class="cstart">----</td>
+                <td class="cstart">0.13</td>
+                <td class="cstart">----</td>
+            </tr>
+            <tr>
+                <td>Reanalysis, 9BP</td>
+                <td class="cstart">----</td>
+                <td class="cstart">0.18</td>
+                <td class="cstart">----</td>
+            </tr>
+            <tr>
+                <td>Reanalysis, 14BP</td>
+                <td class="cstart">----</td>
+                <td class="cstart">0.13</td>
+                <td class="cstart">----</td>
+            </tr>
+        </table>
+<figcaption>
+Table of results, final uncertainties, and detection significance (using fake data for now).
+</figcaption>
+    </figure>
+
+
+</section>
+<section>
+    <h2 id="summary">Discussion and Conclusions</h2>
+<p>
+    Words words words
+</p>
+</section>
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+
+<!--
+    <h3>Footnotes</h3>
+    <p>Click on the number to return to the main text.</p>
+    <div class="footnote">
+        <p>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+    </p>
+    </div>
+-->
+    <!--
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "rps_fit_mirror_from_moon.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Derives mirror parameters from observations of the moon.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <h3>Data</h3>
+    <p id="data"></p>
+
+
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "moonsch.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Metadata of Moon observations",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+-->
+
+
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            cverges: "../../",          // cverges/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "JAC2023a",
+            "JAC2023b",
+            "JAC2023c",
+            "JAC2023d",
+            "JAC2023e",
+            "JAC2023f",
+            "CV2023a",
+            "JAC2023g",
+            "CV2023b",
+            "JAC2023h",
+            "JAC2023i",
+            "JAC2023j",
+            "IPRpaper",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which it lies if you can.
+        // This ensures that we can view the linked postings at Pole without the internet.
+        var hrefs = [
+            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_high_ell/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_forecasting/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR_B18_subsets/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR7_dust/",
+            "bkcmb/analysis_logbook/analysis/2023mmdd_IPR_unblinding_proposal/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR9_beams/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR_final_50/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR_det_subset_jacks/",
+            "bkcmb/analysis_logbook/analysis/20230801_delta_alpha_maps/",
+            "https://www.overleaf.com/read/pnnzqscqtpsn",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+            "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+            "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
+            "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
+            "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
+            "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
+            "Isotropic Polarization Rotation Analysis 8: Unblinding Strategy",
+            "Isotropic Polarization Rotation Analysis 9: Beam Effects",
+            "Isotropic Polarization Rotation Analysis 10: Final Pager with 50 Sims (blinded)",
+            "Isotropic Polarization Rotation Analysis 11: Δα Jacks",
+            "Isotropic Polarization Rotation Analysis 12: Δα Maps Pager",
+            "IPR Analysis Paper",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>

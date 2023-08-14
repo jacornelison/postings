@@ -51,6 +51,7 @@ close all
 
 sername1 = {'6607','6608','6609'};
 daughter1 = {'f','g','h','gh'};
+daughter1 = {'g','h','gh'};
 pure1 = {'matrix_'};
 cross1 = {false};
 cov1 = {'normal'};
