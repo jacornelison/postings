@@ -567,7 +567,7 @@ for valind = 1:length(vals)
         plot_tiles(V,p,'fig',fig,'pair','mean','clim',lims{valind,pltind},'clab',labs{valind},'title',ttls{valind,pltind});
         colormap(cm)
         fname = sprintf('%s_tile_plot%s.png',valname{valind},pltname{pltind});
-        saveas(fig,fullfile(figdir,fname))
+        %saveas(fig,fullfile(figdir,fname))
 
     end
 end

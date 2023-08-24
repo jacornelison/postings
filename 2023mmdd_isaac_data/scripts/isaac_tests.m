@@ -106,6 +106,7 @@ figdir = fullfile(gitdir,'postings', '2023mmdd_isaac_data', 'figs');
 else
     addpath('z:/pipeline/util/')
     addpath('z:/pipeline/beammap/')
+    %addpath('z:/dev/')
     gitdir = fullfile('c:/','Users','James','Documents','GitHub');
     figdir = fullfile(gitdir,'postings','2023mmdd_isaac_data','figs');
 end
@@ -1097,7 +1098,8 @@ grid on
 
 %% Look at 03 Aug Overnight Noise Check
 
-schind=249;
+schind=250;
+for schind = 244:251
 idx = fd.schnum==schind;
 fdsch = structcut(fd,idx);
 [s, si] = sort(fdsch.time);
@@ -1111,22 +1113,24 @@ fig.Position(3:4) = [800 400];
 yyaxis left
 plot(time(si),fdsch.phi(si),'.-')
 ylabel('Angle Error')
-%ylim([0 0.5])
+ylim([-1 1]*0.5+nanmean(fdsch.phi(si)))
 
 yyaxis right
 plot(time(si),fdsch.temp(si)*1000,'.-')
 %plot(time(si),fdsch.istilttemp(si)*100+273.15)
 ylabel('Temperature [K]')
-
+ylim([-1 1]*3+nanmean(fdsch.temp(si)*1000))
 
 %plot(time(si),fdsch.A(si))
 %ylabel('Amplitude (Error?)')
 
 xlabel('Time')
-title_str = sprintf('Noise Check at 1.5m, Schedule %i',schind);
-title(title_str)
+title_str = sprintf('Schedule %i:',schind);
+title({title_str,labs{schind}})
 grid on
-
+fname = sprintf('angle_temp_vs_time_sch_%i',schind);
+saveas(fig,fullfile(figdir,'angle_vs_time',fname),'png')
+end
 %fname = sprintf('tilts_%i',unqsch(schind));
 %saveas(fig,fullfile(figdir,'tilts',fname),'png')
 
@@ -1536,6 +1540,10 @@ prefix = {...
     'isaac_cal_jig_july23_with_homing_stabtest_53in';...
     'isaac_cal_jig_july23_with_homing_stabtest_20in';...
     'isaac_cal_jig_july23_with_homing_stabtest_aug10_1p5m';...
+    'isaac_cal_jig_july23_with_homing_stabtest_aug23_1m';...
+    'isaac_cal_jig_with_homing_stabtest_23aug2023_0p5m';...
+    'isaac_cal_jig_with_homing_stabtest_23aug2023_0p5m_attenuated';...
+    'isaac_cal_jig_with_homing_stabtest_24aug2023_0p5m_attenuated';...
     };
 
 labs = {...;
@@ -1782,12 +1790,16 @@ labs = {...;
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +1.5deg';... 241
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +2.0deg';... 242
     'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg';... 243
-    'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test';... 244
-    'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 2';... 245
-    'On Jig, Homing, Dist = 93", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 3';... 246
-    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 4';... 247
-    'On Jig, Homing, Dist = 20", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 5';... 248
-    'On Jig, Homing, Dist = 53", Small Horn Flipped, RPS align +0.0deg, Stab Test Round 6';... 249
+    'On Jig, Homing, Dist = 93", RPS align +0.0deg, Stab Test';... 244
+    'On Jig, Homing, Dist = 93", RPS align +0.0deg, Stab Test Round 2';... 245
+    'On Jig, Homing, Dist = 93", RPS align +0.0deg, Stab Test Round 3';... 246
+    'On Jig, Homing, Dist = 53", RPS align +0.0deg, Stab Test Round 4';... 247
+    'On Jig, Homing, Dist = 20", RPS align +0.0deg, Stab Test Round 5';... 248
+    'On Jig, Homing, Dist = 53", RPS align +0.0deg, Stab Test Round 6';... 249
+    'On Jig, Homing, Dist = 53", RPS align +0.0deg, Stab Test Round 7';... 250
+    'On Jig, Homing, Dist = 20", RPS align +0.0deg, Stab Test Round 8';... 251
+    'On Jig, Homing, Dist = 20", RPS align +0.0deg, Stab Test Round 9, RPS Attenuated to 53"';... 252
+    'On Jig, Homing, Dist = 20", RPS align +0.0deg, Stab Test Round 10, RPS Attenuated to 53"';... 253
     };
 
 %end
