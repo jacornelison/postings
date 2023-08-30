@@ -254,6 +254,36 @@ With the LNA removed from the ISAAC, I conducted some more measurements, rotatin
         </script>
     </figure>
 
+<p>
+    Below are plots of timestreams with and without RPS temperature control.
+</p>
+
+    <figure>
+        <img alt="Name pager" id="timestreampager" src="#" width="80%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+            pager.link("#timestreampager",
+                {
+                    'Meas. Set|tsname' : [
+                        'dist_53_overnight_no_pid',
+                    'dist_53_check2',
+                    'dist_20_with_atten',
+                    'dist_20_no_atten',
+                    ],
+                },
+                function(params) {
+
+                    return 'figs/rps_isaac_timestream_'+params.tsname+'.png';
+                });
+            pager.setparams({
+                'tsname' : [''],
+            });
+        </script>
+    </figure>
+
+
 
 </section>
 
