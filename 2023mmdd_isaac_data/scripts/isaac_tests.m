@@ -942,7 +942,7 @@ clc
 unqsch = unique(fd.schnum);
 fig = figure(2875828);
 fig.Position(3:4) = [800 550];
-for schind = 1:length(unqsch)
+for schind = 185:length(unqsch)%1:length(unqsch)
     idx = find(fd.schnum==unqsch(schind));
     fdsch = structcut(fd,idx);
     dP = fd.phi(idx)-fd.phi_isaac(idx);
@@ -998,7 +998,7 @@ unqsch = unique(fd.schnum);
 fig = figure(2877389);
 fig.Position(3:4) = [600 350];
     
-for schind = 1:length(unqsch)
+for schind = 185:length(unqsch)
     idx = find(fd.schnum==unqsch(schind));
     fdsch = structcut(fd,idx);
     clf; hold on;
@@ -1096,10 +1096,11 @@ plot(time(si)/3600,fdsch.A(si),'.-','MarkerSize',14)
 grid on
 
 
-%% Look at 03 Aug Overnight Noise Check
+%% Make a pager of Angle error/ temp vs time
 
+cmlines = colormap('lines');
 schind=250;
-for schind = 244:251
+for schind = 63:max(fd.schnum)
 idx = fd.schnum==schind;
 fdsch = structcut(fd,idx);
 [s, si] = sort(fdsch.time);
@@ -1109,18 +1110,35 @@ time = datetime(fdsch.time, 'ConvertFrom', 'posixtime', 'Format', 'yyyy-MMM-dd:H
 
 fig = figure(808275);
 fig.Position(3:4) = [800 400];
-
+clf
 yyaxis left
 plot(time(si),fdsch.phi(si),'.-')
 ylabel('Angle Error')
 ylim([-1 1]*0.5+nanmean(fdsch.phi(si)))
 
 yyaxis right
-plot(time(si),fdsch.temp(si)*1000,'.-')
-%plot(time(si),fdsch.istilttemp(si)*100+273.15)
-ylabel('Temperature [K]')
-ylim([-1 1]*3+nanmean(fdsch.temp(si)*1000))
-
+hold on
+T = fdsch.temp(si)*1000;
+T = T-nanmedian(T);
+plot(time(si),T,'.-','Color',cmlines(2,:))
+M = max(abs(T));
+if nanmedian(fdsch.istemp(si)*1000)>250
+    T = fdsch.istemp(si)*1000;
+    Tttl = 'ISAAC Det. Temp';
+else
+    T = fdsch.istilttemp(si)*100+273.15;
+    Tttl = 'ISAAC Tilt Temp';
+end
+T = T-nanmedian(T);
+M = max([M max(abs(T))]);
+if M==0
+    M = 0.1;
+end
+plot(time(si),T,'.-','Color',cmlines(4,:))
+ylabel('T-med(T) [K]')
+ylim([-1 1]*M*1.1)
+%ylim([-1 1]*3+nanmean(fdsch.temp(si)*1000))
+legend({'Angle Error','RPS Temp',Tttl},'Location','northwest')
 %plot(time(si),fdsch.A(si))
 %ylabel('Amplitude (Error?)')
 
@@ -1544,6 +1562,9 @@ prefix = {...
     'isaac_cal_jig_with_homing_stabtest_23aug2023_0p5m';...
     'isaac_cal_jig_with_homing_stabtest_23aug2023_0p5m_attenuated';...
     'isaac_cal_jig_with_homing_stabtest_24aug2023_0p5m_attenuated';...
+    'isaac_cal_jig_with_homing_stabtest_31aug2023_1p5m';...
+    'isaac_cal_jig_with_homing_stabtest_31aug2023_0p5m';...
+    'isaac_cal_jig_with_homing_stabtest_01Sep2023_0p5m';...
     };
 
 labs = {...;
@@ -1800,6 +1821,9 @@ labs = {...;
     'On Jig, Homing, Dist = 20", RPS align +0.0deg, Stab Test Round 8';... 251
     'On Jig, Homing, Dist = 20", RPS align +0.0deg, Stab Test Round 9, RPS Attenuated to 53"';... 252
     'On Jig, Homing, Dist = 20", RPS align +0.0deg, Stab Test Round 10, RPS Attenuated to 53"';... 253
+    'On Jig, Homing, Dist = 53", PID on ISAAC';... 254
+    'On Jig, Homing, Dist = 23", PID on ISAAC';... 255
+    'On Jig, Homing, Dist = 20", PID on ISAAC 2';... 256
     };
 
 %end

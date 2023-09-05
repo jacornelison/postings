@@ -237,7 +237,7 @@ fig.Position = [2400 0 400 400];
 tic
 ppd = 150;
 %ppd = 50;
-for dayind = 1:length(hd_sun{1})
+for dayind = 1%1:length(hd_sun{1})
     sto0s(dayind) = hd_moon{10}(dayind);
     illum0s(dayind) = hd_moon{6}(dayind);
     ang_diam = hd_moon{7}(dayind)/3600;
@@ -246,9 +246,9 @@ for dayind = 1:length(hd_sun{1})
     spos = [hd_sun{4}(dayind), hd_sun{5}(dayind)];
     
     utc = datestr(datenum(mjd2datestr(hd_moon{1}(dayind)),'yyyy-mmm-dd:HH:MM:SS'),'yyyy/mm/dd HH:MM:SS');
-    [Az, El] = RADec2AzEl_no_c(mpos(1),mpos(2),utc,-89.9911,-44.65,2.8);
+    %[Az, El] = RADec2AzEl_no_c(mpos(1),mpos(2),utc,-89.9911,-44.65,2.8);
     %mpos = [Az El];
-    [Az, El] = RADec2AzEl_no_c(spos(1),spos(2),utc,-89.9911,-44.65,2.8);
+    %[Az, El] = RADec2AzEl_no_c(spos(1),spos(2),utc,-89.9911,-44.65,2.8);
     %spos = [Az El];
     
     
