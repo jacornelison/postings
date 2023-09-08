@@ -142,7 +142,7 @@ obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 
 % Loop over the file names and fit.
-for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
+for prefind = 47:length(prefix)% 47:length(prefix)
 
     % Tilt Calibrations
     if ismember(prefind,[1:18])
@@ -335,7 +335,7 @@ for prefind = 47:length(prefix)%[6 7 9:15, 20:42 44]%20:42
             times(di) = mean(TIME);
 
             % Do a shitty cut.... do we still need this?
-            if abs(R(1)-R((length(R)+1)/2))<0.2
+            if 1%abs(R(1)-R((length(R)+1)/2))<0.2
                 for fldind = 1:length(flds)
                     eval(sprintf('fd.%s(end+1) = %s;',flds{fldind},vals{fldind}))
                 end
@@ -839,11 +839,11 @@ end
 
 clc
 [all_offs, all_meas, meas_ttls, meas_names, rps_moved] = grab_meas_info();
-lims = [-0.6 0.4];
+lims = [-1 1];
 fig = figure(173478);
 fig.Position(3:4) = [700 250];
 
-for measind = (length(meas_names)-5):length(meas_names)%1:length(meas_names)
+for measind = 1:length(meas_names)%1:length(meas_names)
 offs = all_offs{measind};
 schnums = all_meas{measind};
 
@@ -867,9 +867,14 @@ for schind = 1:length(schnums)
     dp_all = [dp_all dP];
     dp_mn(schind) = nanmean(dP);
 end
-plot(offs_all,dp_all,'Color',cmlines(2,:))
+%plot(offs_all,dp_all,'Color',cmlines(2,:))
+plot(offs,dp_mn,'Color',cmlines(2,:))
 grid on
-xlim([-1 1]*2.5)
+if max(abs(offs))<=2.5
+    xlim([-1 1]*2.5)
+else
+    xlim([-1 1]*max(abs(offs))*1.05)
+end
 if nanmedian(dp_all)<1 && nanmedian(dp_all)>-1
     ylim(lims);
 else
@@ -877,7 +882,8 @@ else
 end
 ylabel('$\phi_{fit}-\phi_{meas}$ [Deg]','FontSize',18)
 xlabel(sprintf('%s Azimuthal Alignment Offset [Degrees]',rps_moved{measind}))
-title(meas_ttls{measind})
+ttl = meas_ttls{measind}; ttl{end+1} = sprintf('Schedules: %i to %i',min(schnums),max(schnums));
+title(ttl)
 fname = meas_names{measind};
 saveas(fig,fullfile(figdir,fname),'png')
 
@@ -892,7 +898,7 @@ lims = [-0.6 0.4];
 fig = figure(173478);
 fig.Position(3:4) = [700 250];
 
-for measind = (length(meas_names)-5):length(meas_names)%1:length(meas_names)
+for measind = 1:length(meas_names)%1:length(meas_names)
     offs = all_offs{measind};
     schnums = all_meas{measind};
     
@@ -942,7 +948,7 @@ clc
 unqsch = unique(fd.schnum);
 fig = figure(2875828);
 fig.Position(3:4) = [800 550];
-for schind = 185:length(unqsch)%1:length(unqsch)
+for schind = 1:length(unqsch)%1:length(unqsch)
     idx = find(fd.schnum==unqsch(schind));
     fdsch = structcut(fd,idx);
     dP = fd.phi(idx)-fd.phi_isaac(idx);
@@ -956,7 +962,7 @@ for schind = 185:length(unqsch)%1:length(unqsch)
     for modind = 1:length(idx)
         plot(angs{idx(modind)},modcurves{idx(modind)},'.-','MarkerSize',14)
     end
-    ylim([0 1]*4.5)
+    ylim([0 1]*10)
     %ylim([0 1]*0.5)
     grid on
     ylabel('$A_{meas}$ (Volts)','FontSize',14)
@@ -998,7 +1004,7 @@ unqsch = unique(fd.schnum);
 fig = figure(2877389);
 fig.Position(3:4) = [600 350];
     
-for schind = 185:length(unqsch)
+for schind = 1:length(unqsch)
     idx = find(fd.schnum==unqsch(schind));
     fdsch = structcut(fd,idx);
     clf; hold on;
@@ -1038,69 +1044,11 @@ for schind = 185:length(unqsch)
 
 end
 
-%% Look at 01 Aug Noise Check
-
-idx = fd.schnum==244;
-fdsch = structcut(fd,idx);
-[s, si] = sort(fdsch.time);
-%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
-time = fdsch.time-min(fdsch.time);
-
-fig = figure(808255);
-fig.Position(3:4) = [800 400];
-t = tiledlayout(1,1);
-
-nexttile();
-plot(time(si)/3600,fdsch.phi(si),'.-','MarkerSize',14)
-ylabel('Angle Error')
-xlabel('Time Hours')
-title('Noise Check at ~2.3m')
-grid on
-hold on
-
-idx = fd.schnum==245;
-fdsch = structcut(fd,idx);
-[s, si] = sort(fdsch.time);
-%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
-time = fdsch.time-min(fdsch.time)+550;
-
-plot(time(si)/3600,fdsch.phi(si),'.-','MarkerSize',14)
-grid on
-
-%% Look at 01 Aug Noise Check
-idx = fd.schnum==244;
-fdsch = structcut(fd,idx);
-[s, si] = sort(fdsch.time);
-%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
-time = fdsch.time-min(fdsch.time);
-
-fig = figure(808225);
-fig.Position(3:4) = [800 400];
-t = tiledlayout(1,1);
-
-nexttile();
-plot(time(si)/3600,fdsch.A(si),'.-','MarkerSize',14)
-ylabel('Angle Error')
-xlabel('Time Hours')
-title('Noise Check at ~2.3m')
-grid on
-hold on
-
-idx = fd.schnum==245;
-fdsch = structcut(fd,idx);
-[s, si] = sort(fdsch.time);
-%t = (fdsch.time)/24/3600+datenum('1970-Jan-01:00:00:00','yyyy-mmm-dd:HH:MM:SS');
-time = fdsch.time-min(fdsch.time)+550;
-
-plot(time(si)/3600,fdsch.A(si),'.-','MarkerSize',14)
-grid on
-
 
 %% Make a pager of Angle error/ temp vs time
 
 cmlines = colormap('lines');
-schind=250;
-for schind = 63:max(fd.schnum)
+for schind = 258:max(fd.schnum)
 idx = fd.schnum==schind;
 fdsch = structcut(fd,idx);
 [s, si] = sort(fdsch.time);
@@ -1184,6 +1132,7 @@ all_offs = {
 0;
 0;
 0;
+[-5:2.5:5 5:-1.25:2.5];
 };
 
 % fd.sch's that go into the measurement
@@ -1209,6 +1158,7 @@ all_meas = {
 247;
 248;
 249;
+258:265;
 };
 
 % Figure title
@@ -1234,6 +1184,7 @@ meas_ttls = {
 {'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','stability test 1'};
 {'Angle Bias vs. Alignment Offset, Distance of $\sim0.5$m','stability test'};
 {'Angle Bias vs. Alignment Offset, Distance of $\sim1.3$m','stability test 2'};
+{'Angle Bias vs. Alignment Offset, Distance of $\sim2.4$m','ISAAC on Temp Control'};
 };
 
 
@@ -1278,6 +1229,7 @@ meas_names = {
 'dp_vs_alignment_1p3m_stab1';
 'dp_vs_alignment_0p5m_stab1';
 'dp_vs_alignment_1p3m_stab2';
+'dp_vs_alignment_93in_pid_isaac';
 };
 
 % Did we move the RPS or the ISAAC?
@@ -1301,6 +1253,7 @@ rps_moved = {
 'RPS';
 'RPS';
 'RPS';    
+'RPS';
 'RPS';
 'RPS';
 };
@@ -1565,6 +1518,15 @@ prefix = {...
     'isaac_cal_jig_with_homing_stabtest_31aug2023_1p5m';...
     'isaac_cal_jig_with_homing_stabtest_31aug2023_0p5m';...
     'isaac_cal_jig_with_homing_stabtest_01Sep2023_0p5m';...
+    'isaac_cal_jig_with_homing_stabtest_07Sep2023_0p6m';...
+    'isaac_cal_jig_07Sep2023_93in_alignment_m5p0deg_1';...
+    'isaac_cal_jig_07Sep2023_93in_alignment_m2p5deg_1';...
+    'isaac_cal_jig_07Sep2023_93in_alignment_0p0deg_1';...
+    'isaac_cal_jig_07Sep2023_93in_alignment_2p5deg_1';...
+    'isaac_cal_jig_07Sep2023_93in_alignment_5p0deg_1';... 262
+    'isaac_cal_jig_07Sep2023_93in_alignment_5p0deg_2';... 263
+    'isaac_cal_jig_07Sep2023_93in_alignment_3p750deg_1';... 264
+    'isaac_cal_jig_07Sep2023_93in_alignment_2p5deg_2';... 265
     };
 
 labs = {...;
@@ -1824,6 +1786,15 @@ labs = {...;
     'On Jig, Homing, Dist = 53", PID on ISAAC';... 254
     'On Jig, Homing, Dist = 23", PID on ISAAC';... 255
     'On Jig, Homing, Dist = 20", PID on ISAAC 2';... 256
+    'On Jig, Homing, Dist = 26", PID on ISAAC 3, Maxmimized Lock-in Amplitude';... 257
+    'On Jig, Homing, Dist = 93", PID on ISAAC, RPS align -5deg';... 258
+    'On Jig, Homing, Dist = 93", PID on ISAAC, RPS align -2.5deg';...259
+    'On Jig, Homing, Dist = 93", PID on ISAAC, RPS align 0deg';...260
+    'On Jig, Homing, Dist = 93", PID on ISAAC, RPS align 2.5deg';...261
+    'On Jig, Homing, Dist = 93", PID on ISAAC, RPS align 5deg';...262
+    'On Jig, Homing, Dist = 93", PID on ISAAC, RPS align 5deg 2';...263
+    'On Jig, Homing, Dist = 93", PID on ISAAC, RPS align 3.75deg';...264
+    'On Jig, Homing, Dist = 93", PID on ISAAC, RPS align 2.5deg 2';...265
     };
 
 %end
