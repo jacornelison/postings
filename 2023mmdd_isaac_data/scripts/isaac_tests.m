@@ -106,7 +106,7 @@ figdir = fullfile(gitdir,'postings', '2023mmdd_isaac_data', 'figs');
 else
     addpath('z:/pipeline/util/')
     addpath('z:/pipeline/beammap/')
-    %addpath('z:/dev/')
+    
     gitdir = fullfile('c:/','Users','James','Documents','GitHub');
     figdir = fullfile(gitdir,'postings','2023mmdd_isaac_data','figs');
 end
