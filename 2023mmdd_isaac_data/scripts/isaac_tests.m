@@ -142,7 +142,7 @@ obsnum = 1;
 dists = [ones(1,27), 20*0.0254, ones(1,3)*40*0.0254,ones(1,5)*20*0.0254,ones(1,7)*37*0.0254, ones(1,11)*26*0.0254];
 
 % Loop over the file names and fit.
-for prefind = 47:length(prefix)% 47:length(prefix)
+for prefind = [6 7 9:12]% 47:length(prefix)
 
     % Tilt Calibrations
     if ismember(prefind,[1:18])

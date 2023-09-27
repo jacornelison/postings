@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<!--suppress HtmlDeprecatedAttribute -->
+<head>
+    <meta charset="utf-8">
+    <title>IPR: Pol Convention</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+            // src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Isotropic Polarization Rotation Analysis 14: Polarization Convention of the BICEP Pipeline</h1>
+
+    <time datetime="2023-06-13" class="published updated">
+        2023 Mmm DD
+    </time> —
+    J. Cornelison
+</header>
+
+<hr>
+
+<p>
+    This posting is part of a series which comprises the IPR analysis on BICEP3, see <a href="#references">previous postings</a> for more on this. You can find a link to the paper here: <a href="IPRpaper"></a>.
+</p>
+
+<p>
+    For the birefringence analysis, it should be of no surprise that we care quit a lot about not just the amplitude of the angle but also the sign.
+    The 
+</p>
+<p>
+    I find that most of our pipeline is set up to adhere to the IAU convention 
+</p>
+<hr>
+<section>
+<h2>A Tale of Two Conventions</h2>
+    <figure>
+        <table>
+            <tr>
+                <td><img src="figs/IAU_Pol_Conventions_v3.png" width="800px"></td>
+            </tr>
+            <tr>
+                <td><img src="figs/COSMO_Pol_Conventions_v3.png" width="800px"></td>
+            </tr>
+        </table>
+        <figcaption>
+            In both conventions conventions, a positive rotation turns +Q into +U, but the projection of the orientation of +U on the sky flips parity when switching between the two.
+            Graphics acquired from this <a href="https://lambda.gsfc.nasa.gov/product/about/pol_convention.html#:~:text=In%20the%20polarization%20convention%20used,for%20a%20right%2Dhanded%20system.">LAMBDA Data Products</a> page.
+        </figcaption>
+    </figure>
+</section>
+<section>
+    <h2>Checking Map Angles</h2>
+<p>
+
+</p>
+</section>
+<section>
+<h2>Spectra Angles</h2>
+
+    <p>
+    <pre><font color="#006400">
+%changed from this original one (B=-Q.*s+U.*c) to have the sign of TB and EB agree with
+%spicepol and healpix from Eric.dB Jun 3 2008
+B=+Q.*s-U.*c;
+    </font>
+    </pre>
+    </p>
+
+
+</section>
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Appendix</h2>
+
+<!--
+    <h3>Footnotes</h3>
+    <p>Click on the number to return to the main text.</p>
+    <div class="footnote">
+        <p>
+        <sup><a name="ftn1" href="#sup1">[1]</a></sup>
+    </p>
+    </div>
+-->
+    <!--
+    <h3>Code</h3>
+    <p>Below is a list of code that was used for this analysis. The code is committed to the pipeline and can be found in the <tt>analysis/beammap/</tt> directory.</p>
+    <p id="code"></p>
+
+    <p id="testp"></p>
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var codes = [
+            "rps_fit_mirror_from_moon.m",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Derives mirror parameters from observations of the moon.",
+        ];
+
+        // Make a list of references
+        var post = document.getElementById("code");
+        var msg = "<table class=\"code\">";
+        for (var code in codes){
+            msg = msg + "<tr><td><tt>"+codes[code]+"</tt></td><td> - </td><td>"+desc[code]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+    </script>
+
+
+    <h3>Data</h3>
+    <p id="data"></p>
+
+
+
+    <script type="text/javascript">
+
+        // Shorthand tags
+        var data = [
+            "moonsch.mat",
+            ];
+
+        // Posting titles
+        var desc = [
+            "Metadata of Moon observations",
+            ];
+
+        // Make a list of references
+        var post = document.getElementById("data");
+        var msg = "<table class=\"code\">";
+        for (var datum in data) {
+            msg = msg + "<tr><td><tt>" + data[datum] + "</tt></td><td> - </td><td>" + desc[datum] + "</td>";
+        }
+        ;
+        msg = msg + "</table>";
+        post.innerHTML = msg;
+
+    </script>
+-->
+
+
+    <h3>References</h3>
+
+    <p id="references"></p>
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            cverges: "../../",          // cverges/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "JAC2023a",
+            "JAC2023b",
+            "JAC2023c",
+            "JAC2023d",
+            "JAC2023e",
+            "JAC2023f",
+            "CV2023a",
+            "JAC2023g",
+            "CV2023b",
+            "JAC2023h",
+            "JAC2023i",
+            "JAC2023j",
+            "IPRpaper",
+            "JAC2023k",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which it lies if you can.
+        // This ensures that we can view the linked postings at Pole without the internet.
+        var hrefs = [
+            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_high_ell/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_forecasting/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR_B18_subsets/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR7_dust/",
+            "bkcmb/analysis_logbook/analysis/2023mmdd_IPR_unblinding_proposal/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR9_beams/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR_final_50/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR_det_subset_jacks/",
+            "bkcmb/analysis_logbook/analysis/20230801_delta_alpha_maps/",
+            "https://www.overleaf.com/read/pnnzqscqtpsn",
+            "bkcmb/analysis_logbook/analysis/20230214_rps_grid_cal/",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+            "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+            "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
+            "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
+            "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
+            "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
+            "Isotropic Polarization Rotation Analysis 8: Unblinding Strategy",
+            "Isotropic Polarization Rotation Analysis 9: Beam Effects",
+            "Isotropic Polarization Rotation Analysis 10: Final Pager with 50 Sims (blinded)",
+            "Isotropic Polarization Rotation Analysis 11: Δα Jacks",
+            "Isotropic Polarization Rotation Analysis 12: Δα Maps Pager",
+            "IPR Analysis Paper",
+            "RPS Analysis: Polarizing Wire Grid Angle Calibration",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
