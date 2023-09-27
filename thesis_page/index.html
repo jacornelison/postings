@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<!--suppress HtmlDeprecatedAttribute -->
+<head>
+    <meta charset="utf-8">
+    <title>Cornelison Thesis Landing Page</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Load up MathJax for math notation -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript"
+            src="../mathjax/MathJax.js?config=TeX-AMS-MML_SVG">
+            // src="../mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+<!-- Add my custom pager script -->
+<script type="text/javascript" src="scripts/pager.js"></script>
+<link rel="stylesheet" type="text/css" href="scripts/pager.css">
+
+<header>
+    <h1>Thesis Progress Page</h1>
+
+<!--    <time datetime="2023-06-13" class="published updated">-->
+<!--        -->
+<!--    </time> —-->
+    J. Cornelison
+</header>
+
+<hr>
+Welcome to my thesis progress page. All of the versions of my thesis will be published here. The final version will also be appropriately placed in our internal repository of
+<a href="http://bicep.rc.fas.harvard.edu/~bicep2/papers/thesi/">BICEP-based thesi</a> under BICEP3.
+<hr>
+<section>
+<h2>Drafts</h2>
+    <p>In reverse chronological order.</p>
+    <p><a href="pdfs/Cornelison_Thesis_draft_27Sep2023.pdf" target="_blank">27Sep2023_draft</a></p>
+    <p><a href="pdfs/Cornelison_Thesis_draft_11Sep2023.pdf" target="_blank">11Sep2023_draft</a></p>
+    <p><a href="pdfs/Cornelison_Thesis_draft_25Aug2023.pdf" target="_blank">25Aug2023_draft</a></p>
+</section>
+
+<hr>
+
+<section class="appendix">
+<h2 class="appendix">Relevant Internal References</h2>
+
+    <p id="references"></p>
+
+
+    <script type="text/javascript">
+
+        // This my way of making shorthand links.
+        // We'll make a couple arrays with the 'tag' and href information
+        // and then look through each anchor element for the specified tag.
+        // The anchors should then just look like: <a href="tagname"></a>
+        // and the script will automatically fill in the hyperlings and text.
+
+
+        var posting_dir = window.location.href; // What's the current url?
+
+        var bkurl = "bicep.rc.fas.harvard.edu";
+        var spurl = "bicep.usap.gov";
+
+        // These are the possible places to find postings
+        // The strings are for if you post your posting in that directory.
+        var sitemap = {
+            jcornelison: "../../../",   // /jcornelison/postings/
+            cverges: "../../",          // cverges/
+            bkcmb : "../../../../",     // /bkcmb/analysis_logbook/analysis/
+            bicep3: "../../../",        //
+            bicep_array: "../../../",   //
+            bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
+            keck  : "",                 // keck/analysis_logbook/analysis/
+            spuder: "",                 // ~spuder/hieno_analysis_logboo
+            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            general_projects:"",
+                   };
+        // Logbook Site map:
+        // personal:www/jcornelison/postings/
+        // bkcmb:   www/bkcmb/analysis_logbook/analysis/
+        // keck:    www/keck/analysis_logbook/analysis/
+        // BICEP3:  www/bicep3/analysis_logbook/
+        // BA:      www/bicep_array/analysis_logbook/
+        // We shouldn't be posting in these, but still have postings.
+        // bicep2:
+        // keck:    www/keck/analysis_logbook/analysis/
+        // spuder:  www/~spuder/hieno_analysis_logbook/
+        // bicep1:  www/~bicep1/analysis_logbook_north/
+
+        // Shorthand tags
+        var tags = [
+            "JAC2023a",
+            "JAC2023b",
+            "JAC2023c",
+            "JAC2023d",
+            "JAC2023e",
+            "JAC2023f",
+            "CV2023a",
+            "JAC2023g",
+            "CV2023b",
+            "JAC2023h",
+            "JAC2023i",
+            "JAC2023j",
+            "JAC2023k",
+            "IPRpaper",
+            "JAC2023l",
+        ];
+
+        // Links
+        // Truncate the link down to the www directory in which it lies if you can.
+        // This ensures that we can view the linked postings at Pole without the internet.
+        var hrefs = [
+            "bkcmb/analysis_logbook/analysis/20230207_IPR_angle_fits_to_B2018/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_B18_mat_pure/",
+            "bkcmb/analysis_logbook/analysis/20230214_IPR_pol_rot_sims/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_high_ell/",
+            "bkcmb/analysis_logbook/analysis/20230328_IPR_forecasting/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR_B18_subsets/",
+            "bkcmb/analysis_logbook/analysis/20230613_IPR7_dust/",
+            "bkcmb/analysis_logbook/analysis/2023mmdd_IPR_unblinding_proposal/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR9_beams/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR_final_50/",
+            "bkcmb/analysis_logbook/analysis/20230711_IPR_det_subset_jacks/",
+            "bkcmb/analysis_logbook/analysis/20230801_delta_alpha_maps/",
+            "bkcmb/analysis_logbook/analysis/20230926_IPR_error_discuss/",
+            "https://www.overleaf.com/read/pnnzqscqtpsn",
+            "bkcmb/analysis_logbook/analysis/20230214_rps_grid_cal/",
+        ];
+
+
+        // Posting titles
+        var desc = [
+            "Isotropic Polarization Rotation Analysis: Global Polarization Rotation Fits on Standard B2018 Sims",
+            "Isotropic Polarization Rotation Analysis 2: B18 sims and combined EB+TB fits",
+            "Isotropic Polarization Rotation Analysis 3: B2018 Polarization Rotation sims",
+            "Isotropic Polarization Rotation Analysis 4: Angle estimates including higher ell-bins",
+            "Isotropic Polarization Rotation Analysis 5: Basic Forecasting of Angle Uncertainty on B18 sims",
+            "Isotropic Polarization Rotation Analysis 6: Angle Fits With Reduced Coverage in B18 sims",
+            "Isotropic Polarisation Rotation Analysis 7: Alternate dust models",
+            "Isotropic Polarization Rotation Analysis 8: Unblinding Strategy",
+            "Isotropic Polarization Rotation Analysis 9: Beam Effects",
+            "Isotropic Polarization Rotation Analysis 10: Final Pager with 50 Sims (blinded)",
+            "Isotropic Polarization Rotation Analysis 11: Δα Jacks",
+            "Isotropic Polarization Rotation Analysis 12: Δα Maps Pager",
+            "Isotropic Polarization Rotation Analysis 13: RPS Benchtop Measurements and proposal to look at real CMB data",
+            "IPR Analysis Paper",
+            "RPS Analysis: Polarizing Wire Grid Angle Calibration",
+        ];
+        // Debug
+        var posty = document.getElementById("testp");
+
+
+        var preface = "";
+        var keys = Object.keys(sitemap);
+        // If we're not at pole or bicep, just post the full URL
+        // If we are, go back to the www directory.
+        if (posting_dir.match(new RegExp(bkurl))!=bkurl &
+            posting_dir.match(new RegExp(spurl))!=spurl){
+                preface = "http://" + bkurl+"/";
+            }
+        else {
+            for (key in keys){
+                if (posting_dir.match(new RegExp("/"+keys[key]+"/"))=="/"+keys[key]+"/"){
+                    preface = sitemap[keys[key]];
+                };
+            };
+
+        };
+
+        // Add the prefixes we can.
+        // Only add prefixes to directories in the sitemap so we don't break
+        // external references.
+        for (ref in hrefs) {
+            for (key in keys) {
+
+            // If there's a match, at the prefix and move on.
+            if(hrefs[ref].match(new RegExp(keys[key] + "/"))==keys[key]+"/"){
+                hrefs[ref] = preface+hrefs[ref];
+                break;
+            }
+            };
+        };
+
+        // posty.innerHTML = preface;
+
+        // Make a list of references
+        var post = document.getElementById("references");
+        var msg = "<table>";
+        for (var tag in tags){
+            msg = msg + "<tr><td><a href="+tags[tag]+"></a></td><td> - </td><td>"+desc[tag]+"</td>";
+        };
+        msg = msg+ "</table>";
+        post.innerHTML = msg;
+
+        // Look through all the hyperlinks and insert the proper links to the postings
+        var links = document.getElementsByTagName("A");
+        for (var link in links){
+            for (var tag in tags){
+                if (links[link].href.endsWith(tags[tag])){
+                    links[link].text = "("+tags[tag]+")";
+                    links[link].href = hrefs[tag];
+                    links[link].target = "_blank";
+                }
+            }
+        }
+
+    </script>
+</section>
+</body>
