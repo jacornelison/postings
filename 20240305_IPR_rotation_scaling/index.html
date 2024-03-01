@@ -29,10 +29,10 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Isotropic Polarization Rotation Analysis ##: Issues with map rotation</h1>
+    <h1>Isotropic Polarization Rotation Analysis ##: Angle rotation scaling in sims</h1>
 
     <time datetime="2024-01-31" class="published updated">
-        2024 Mmm DD
+        2024 Mar 05
     </time> —
     J. Cornelison
 </header>
@@ -44,76 +44,35 @@
 </p>
 
 <p>
-    For the birefringence analysis, it should be of no surprise that we care quit a lot about not just the amplitude of the angle but also the sign.
-    The 
+    In previous postings, I showed a scaling relation of 0.87 between input rotations into the sims and angles fit from EB power spectra.
+It wasn't understood why this scaling happens, but we ultimately continued with the analysis and accounted for this scaling by dividing out a scaling 
+factor from all of the angles fit to EB power spectra. I've found relatively recently that the same scaling is observed down at the map level as well.
 </p>
 <p>
-    I find that most of our pipeline is set up to adhere to the IAU convention 
+    As a reminder, uniform rotation in our CMB data comes from differences between the polarization angles of detectors as they produce timestreams and 
+    the polarization angles we assign to detectors during mapmaking. We discovered the scaling in the power spectra by creating simsets with a known uniform
+    rotation and comparing angles fit to the power spectra. We created five type-2 B2018 simsets of 10 sims each with one simset having no rotationa and 
+    the other four having uniform rotations of -0.5&deg;, 0.25&deg;, 0.5&deg; and 1&deg; repsectively.
 </p>
-<hr>
-<section>
-<h2>A Tale of Two Conventions</h2>
-    <figure>
-        <table>
-            <tr>
-                <td><img src="figs/IAU_Pol_Conventions_v3.png" width="800px"></td>
-            </tr>
-            <tr>
-                <td><img src="figs/COSMO_Pol_Conventions_v3.png" width="800px"></td>
-            </tr>
-        </table>
-        <figcaption>
-            In both conventions conventions, a positive rotation turns +Q into +U, but the projection of the orientation of +U on the sky flips parity when switching between the two.
-            Graphics acquired from this <a href="https://lambda.gsfc.nasa.gov/product/about/pol_convention.html#:~:text=In%20the%20polarization%20convention%20used,for%20a%20right%2Dhanded%20system.">LAMBDA Data Products</a> page.
-        </figcaption>
-    </figure>
-</section>
-<section>
-    <h2>Checking Map Angles</h2>
+
 <p>
-In previous postings, I showed a scaling relation of 0.87 between input rotations into the sims and angles fit from EB power spectra.
-I an unrelated investigation, I discovered two issues the same scaling factor in map space.
-</p>
-<p>
-    If we're observing the CMB at some true polarization angle $\phi_1$, but assume that we're observing it with angle $\phi_2$, then the Q/U maps will look like
+    In this posting, I have done a similar exercise now on the Q and U maps of the sims instead of power spectra.
+    In the figure below, I fit for the angle that rotates the uniformly rotated Q maps, U maps, or both simultanously 
+    such that the residuals between a given uniformly rotated map and the non-rotated map is minimized.
 </p>
 
-\begin{equation}
-\begin{bmatrix}
-    Q\\
-    U\\
-\end{bmatrix}_\phi
-=
-\begin{bmatrix}
-    \cos 2\phi & -\sin 2\phi\\
-    \sin 2\phi & \cos 2\phi\\
-\end{bmatrix}
-\begin{bmatrix}
-    Q\\
-    U\\
-\end{bmatrix}
-=
-\begin{bmatrix}
-    Q\cos 2\phi-U\sin 2\phi\\
-    Q\sin 2\phi+U\cos 2\phi\\
-\end{bmatrix}
-\end{equation}
-
-<p>In application, this is actually accomplished by our <tt>rotqumaps</tt>.</p>
-
-</section>
 <section>
-<h2>Spectra Angles</h2>
 
-    <p>
-    <pre><font color="#006400">
-%changed from this original one (B=-Q.*s+U.*c) to have the sign of TB and EB agree with
-%spicepol and healpix from Eric.dB Jun 3 2008
-B=+Q.*s-U.*c;
-    </font>
-    </pre>
-    </p>
+<figure>
+    <img src="figs/Aout_vs_Ain.png" width="100%"/>
+    <figcaption>
+        Plots of the uniformly rotated angle input into sims versus the angle fit from Q, U, or Q+U maps <b>Top Row</b> or to EB or TB power spectra <b>Bottom Row</b>.
+    </figcaption>
+</figure>
 
+<p>
+    We can see that the ... and, perhaps not surprisingly, the power spectral fits match mostly clostly to the fit to Q+U.
+</p>
 
 </section>
 
