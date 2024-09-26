@@ -11,7 +11,7 @@
 
     function drawChart () {
       var query = new google.visualization.Query(
-          'https://docs.google.com/spreadsheets/d/1H78nHzfi2E8_Flb5QWDBa4yPCxztv14B1LJsWyVwm6s/gviz/tq?gid=1932995134&headers=2');
+          'https://docs.google.com/spreadsheets/d/10NAoifVl0Y2dxdlx_JSGmlcqxI2pSLf0GLOCBm8ZmdA/gviz/tq?gid=1702205809&headers=2');
       query.send(handleQueryResponse);
     }
 
@@ -49,20 +49,9 @@
   </script>
 </head>
 <body>
-<h2>BA 2024 module production timeline - updated 9/18/2024</h2>
+<h2>RPS Campaign Measurement Timeline</h2>
 
-<p>The data for the gantt chart is stored in this <a href=https://docs.google.com/spreadsheets/d/1H78nHzfi2E8_Flb5QWDBa4yPCxztv14B1LJsWyVwm6s/edit#gid=1932995134>spreadsheet</a>.
-
-
-<p>Notes for 9/18/2024
-<ul>
-	<li>The chart has been stripped down to the deliverables for the 2024-2025 deployment season, except for tile fabrication which includes the last modules which will be deployed 2025-2026.</li>
-	<li>For 2024-2025 the chart deploys two 150 GHz modules, L13 and L14, four 220 GHz modules, H9,H6,H2, and H4, and two 270 GHz modules, I3 and I4.</li>
-	<li>The chart includes one BA3 run to dark test tiles and squid screen in November. This run will dark test H6,H2,L13 and L14, and squid screen I1 and I2. The squids screened will not be used for the 2024/2025 deployment.</li>
-	<li>Hybridization of I3,I4 and H4 occurs from October 25 - December 5. Because Aaron and Sofia will be going to pole, we don't have hybridization resources determined for these modules.</li>
-	<li>The last squids to be screened and used for 2024-2025 will be from I3 in Shortkeck in late September/early October. We don't depend on another run of the UBC screening cryostat for this deployment season.</li>
-	<li>H1 is omitted from deployment because it needs major rework to investigate the ring of low optical efficiency, which is not yet in the plan. Reworking H1 could be a good alternative to hybridizing H4.
-</ul>
+<p>The data for the gantt chart is stored in this <a href=https://docs.google.com/spreadsheets/d/10NAoifVl0Y2dxdlx_JSGmlcqxI2pSLf0GLOCBm8ZmdA/edit?gid=1702205809>spreadsheet</a>.
 
   <div id="chart_div"></div>
 </body>
