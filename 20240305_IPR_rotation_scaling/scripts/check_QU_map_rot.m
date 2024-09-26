@@ -197,6 +197,48 @@ title('Fit TB Spectra')
 sgtitle({'Input Vs. Output Angle','Sims: LCDM-only, N=10'},'Interpreter','latex')
 exportgraphics(fig,fullfile(figdir,'Aout_vs_Ain.png'),"Resolution",300)
 
+%% Check AC
+
+%%
+% map2 = load(sprintf('z:/dev/sims/maps/6600_%03i2_h_filtp3_weight3_gs_dp1100_jack01.mat',simind));
+% map1 = load(sprintf('z:/dev/sims/maps/6613_%03i2_h_filtp3_weight3_gs_dp1100_jack01.mat',simind));
+map2 = load('z:/dev/sims/maps/6600_0012_20180514E10_dk248_filtp3_weight0_gs_dp.mat');
+map1 = load('z:/dev/sims/maps/6613_0012_20180514E10_dk248_filtp3_weight0_gs_dp.mat');
+%%
+clc
+ch = 381;
+figure(2); clf;
+subplot(1,3,1)
+ac1 = map1.ac(ch,1);
+%alpha1 = acosd(ac1.wc ./ ac1.w);
+alpha1 = acosd(ac1.wcz ./ ac1.wzdiff)/2; alpha1 = real(alpha1);
+imagesc(alpha1); colorbar();
+
+subplot(1,3,2)
+ac2 = map2.ac(ch,1);
+alpha2 = acosd(ac2.wcz ./ ac2.wzdiff)/2; alpha2 = real(alpha2);
+imagesc(alpha2); colorbar();
+
+subplot(1,3,3)
+imagesc(alpha2-alpha1); colorbar();
+%plot(reshape(alpha1-alpha2,[],1),'.');
+nanmedian(reshape(alpha1-alpha2,[],1))
+
+% subplot(1,3,3)
+% a1 = ac1.wcz./ac1.wzdiff;
+% a2 = ac1.wc./ac1.w;
+% imagesc(a1-a2); colorbar()
+% nanmedian(reshape(a1-a2,[],1))
+
+
+%%
+for chind = 1:1240
+    if any(reshape(~isnan(MAP2(chind,2).Q),[],1))
+        disp(chind)
+    end
+end
+
+
 function model = rotmodel(ang,mapin,fitmode)
 mapout = rotqumaps(mapin,ang);
 
