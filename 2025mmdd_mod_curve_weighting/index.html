@@ -34,18 +34,79 @@
     <time datetime="2022-07-01" class="published updated">
         2022 Jul 01
     </time> —
-    J. Cornelison
+    J. Cornelison 
+    <p><font color="red">Updated 2025 May 13</font></p>
 </header>
 
 <hr>
-
+<p>
+    <font color="red">Note: This posting is originally from Jul2022, but went unpublished. Section 1 has plots that I made 13 May 2025. The rest is from that original posting for reference purposes.</font>
+</p>
 <p>
     This posting investigates how different approaches to our weighting of modulation curves during fits could improve constraints on polarization parameters. I create a simset of 100 realizations of modulation curves with amplitude scaling noise at a series of DK angles. I fit for polarization angle, $\epsilon$, amplitude, and two collimation nuisance parameters to those simulated data using three weighting schemes: Uniform, Threshold, and 1/Amplitude. I find that the bias is consistent with zero in all relevant cases and the standard deviation on best-fit parameters is consistently reduced using the non-uniform weighting schemes.
 </p>
 
 <hr>
 
-<section><h2></h2>
+
+<section>
+    <h2>Reweighting RPS2022 data</h2>
+    <p></p>
+    
+    <figure>
+        <img alt="wgt pager" id="wgtpager" src="#" width="75%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+            pager.link("#wgtpager",
+                {
+                    'Parameter|param_wgt': ['pol. eff|poleffs','xpol|xpols','per-pair Angle|phi_pair','per-pair Angle tile-sub|phi_pair_tilesub'],
+                    'Weighting|real_wgt': ['Uniform|uniform', '1/Amp|refit'],
+                },
+                function(params) {
+                    return 'figs/tile_plots_'+params.param_wgt+'_'+params.real_wgt+'.png';
+                });
+            pager.setparams({
+                'param_wgt': 'poleffs',
+                'real_wgt': 'uniform',
+            });
+        </script>
+
+</figure>
+
+<p>
+Histogram of values from above. Per-pair polarization efficiency that I quoted from 2018 data for <a href="BK-XV"></a> in 2021 was 0.7%&pm;0.2%. The uniformly fit RPS2022 data is consistent with that from the plot below: 1-"poleff" &pm; "obs2obs std".
+While the median remains unchanged, the precision on pol.eff. gets tighter by a factor of 2 when we switch to a weighting of 1/Amp.
+</p>
+
+        <figure>
+        <img alt="wgt hist pager" id="wgthistpager" src="#" width="75%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+            pager.link("#wgthistpager",
+                {
+                    'Parameter|param_wgt': ['pol. eff|poleffs','xpol|xpols','per-pair Angle|phi_pair','per-pair Angle tile-sub|phi_pair_tilesub'],
+                    'Weighting|real_wgt': ['Uniform|uniform', '1/Amp|refit'],
+                },
+                function(params) {
+                    return 'figs/hists_'+params.param_wgt+'_'+params.real_wgt+'.png';
+                });
+            pager.setparams({
+                'param_wgt': 'poleffs',
+                'real_wgt': 'uniform',
+            });
+        </script>
+    </figure>
+
+
+</section>
+
+<section><h2>Some sims I did in 2022?</h2>
 
     <h3>The Model</h3>
 <p>
@@ -190,7 +251,7 @@
             });
         </script>
     </figure>
-    <p>For $\epsilon$, the 1/Amp weighting is consistently smallest, but for $\phi$ the threshold weighting seems to be the best. My plan now is to test these weighting schemes on real RPS data.
+    <!-- <p>For $\epsilon$, the 1/Amp weighting is consistently smallest, but for $\phi$ the threshold weighting seems to be the best. My plan now is to test these weighting schemes on real RPS data.
 
 
         I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter on phi, the I find that the mean of the scatter changes drastically.</p>
@@ -233,7 +294,7 @@
                 'meas':'009'
             });
         </script>
-    </figure>
+    </figure> -->
 
 </section>
 

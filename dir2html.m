@@ -1,7 +1,8 @@
 function dir2html()
 
 %%
-figdir = 'C:/Users/jcornelison/Documents/GitHub/postings/';
+%figdir = 'C:/Users/jcornelison/Documents/GitHub/postings/';
+figdir = '~/postings/';
 d = dir(figdir);
 
 dates = [];
