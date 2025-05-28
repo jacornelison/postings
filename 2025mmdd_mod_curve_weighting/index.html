@@ -70,7 +70,9 @@ A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{
 
 <p>
     So if $N_1$ and $N_2$ are small or zero (which they usually are), $\epsilon$ doesn't depend on the RPS angle in this model and thus implies a uniform weighting is best.
-    Intuitively, we know this isn't true, but this is really due to the way we've parameterized our model.
+    Intuitively, we know this isn't true, but this is really due to the way we've parameterized our model. </p>
+    
+<p>Looking through the literature, it appears that Abby was the first to define our modulation curve this way <a href="AGV2012"></a>.
     Effectively, the absolute height between the peak and trough of the mod curve remain the same, but the overall amplitude changes to make the <it>relative</it> height change.
     See Fig. 1.1 for a plot of sweeping through epsilon of 0 to 1.
 </p>
@@ -79,19 +81,13 @@ A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{
 <figure>
     <img src="figs/eps_model_comparison.png" width="75%"/>
     <figcaption>
-        
+        Plot of modulation curves, sweeping through $\epsilon=0$ (<font color="blue">blue</font>) to $\epsilon=1$ (<font color="red">red</font>) with all parameters fixed. "Original Model" is given by Eq. 1 and "Physical Model" is given by Eq. 3.
     </figcaption>
 </figure>
 
 
 <p>
-    With our current model, we still get accurate $\epsilon$'s, but the amplitude of the mod curve will change in order to compensate.;
-    For small $\epsilon$, as have been the cases we've always dealt with, it's hardly noticeable.
-    That said, we may want to change this in the future since this means that the mod curve amplitude is tied to the uncertainty in $epsilon$, albeit rather slightly.
-</p>
-
-<p>
-    But in order to get a more realistive $\partial A/\partial\epsilon$, we need to rewrite our model so that it represents what's physically happening.
+    Where the "physical" model is a representation of what is actually happening if we have non-zero cross-polar response.
     I.e., even when perfectly orthogonal to the source, we still see the some power from the RPS, scaled by $\epsilon$:
 </p>
 
@@ -99,8 +95,25 @@ A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{
 A(\theta) = G\left(\cos^2\left(\theta+\psi\right)-\epsilon\sin^2\left(\theta+\psi\right)\right)\left(N_1\cos(\theta)+N_2\sin(\theta)+1\right)
 \end{equation}
 
+
 <p>
-    The is functionally the same as the model in Eq. 1, but now we can look at the derivative:
+    With our current model, we still get accurate $\epsilon$'s, but the amplitude of the mod curve will change in order to compensate (see Fig. 1.2).
+    For small $\epsilon$, as have been the cases we've always dealt with, it's hardly noticeable.
+    That said, we may want to change this in the future since this means that the mod curve amplitude is tied to the uncertainty in $\epsilon$, albeit rather slightly.
+</p>
+
+
+<figure>
+    <img src="figs/eps_fit_comparison.png" width="75%"/>
+    <figcaption>
+        
+    </figcaption>
+</figure>
+
+
+
+<p>
+    For $\epslion$, Eq. 3 is functionally the same as the model in Eq. 1, but now we can look at the derivative:
 </p>
 
 \begin{equation}
@@ -108,6 +121,23 @@ A(\theta) = G\left(\cos^2\left(\theta+\psi\right)-\epsilon\sin^2\left(\theta+\ps
 \frac{\partial A}{\partial \epsilon} = G\sin^2\left(\theta+\psi\right)\left(N_1\cos(\theta)+N_2\sin(\theta)+1\right)
 \end{aligned}
 \end{equation}
+
+<p>We can also see how our flat noise + amplitude-scaling noise impacts the weights by looking at the score of the Fisher Information Matrix</p>
+
+\begin{equation}
+\begin{aligned}
+I_{\epsilon,\epsilon} &= \frac{1}{\sigma_{total}^2}\left(\frac{\partial A}{\partial \epsilon}\right)^2\\
+&= \frac{\left(G\sin^2\left(\theta+\psi\right)\left(N_1\cos(\theta)+N_2\sin(\theta)+1\right)\right)^2}{\left(\sigma_{flat}+A(\theta|X)\sigma_{amp}\right)^2}\\
+\end{aligned}
+\end{equation}
+
+<figure>
+    <img src="figs/eps_dAdE_and_score.png" width="75%"/>
+    <figcaption>
+        
+    </figcaption>
+</figure>
+
 
 
 <!-- 
@@ -490,6 +520,7 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
 
         // Shorthand tags
         var tags = [
+            "AGV2012",
             "JAC2018",
             "BK-XV"
         ];
@@ -497,14 +528,16 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
         // Links
         // Truncate the link down to the www directory in which is lies if you can.
         var hrefs = [
-            "bkcmb/analysis_logbook/analysis/20180717_rps_sims/",
+        "bkcmb/analysis_logbook/analysis/20121107_rpsPolAngleAndCrossPolResponse/",    
+        "bkcmb/analysis_logbook/analysis/20180717_rps_sims/",
             "https://arxiv.org/pdf/2110.00482.pdf",
         ];
 
 
         // Posting titles
         var desc = [
-            "Simulating RPS Data",
+        "Another Look at Polarization Angles and Cross-Polar Response using RPS Data",    
+        "Simulating RPS Data",
             "The BICEP3 CMB Polarimeter and the First Three Year Data Set",
         ];
         // Debug
