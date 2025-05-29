@@ -92,7 +92,7 @@ A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{
 </p>
 
 \begin{equation}
-A(\theta) = G\left(\cos^2\left(\theta+\psi\right)-\epsilon\sin^2\left(\theta+\psi\right)\right)\left(N_1\cos(\theta)+N_2\sin(\theta)+1\right)
+A(\theta) = G\left[\cos^2\left(\theta+\psi\right)+\epsilon\sin^2\left(\theta+\psi\right)\right]\left[N_1\cos(\theta)+N_2\sin(\theta)+1\right]
 \end{equation}
 
 
@@ -106,7 +106,8 @@ A(\theta) = G\left(\cos^2\left(\theta+\psi\right)-\epsilon\sin^2\left(\theta+\ps
 <figure>
     <img src="figs/eps_fit_comparison.png" width="75%"/>
     <figcaption>
-        
+        Fit values of $\epsilon$ and amplitude $G$, for input values of $\epsilon$.
+        Input Amplitude is fixed at 1, and $\psi$, $N_1$, $N_2$ are fixed at zero.
     </figcaption>
 </figure>
 
@@ -118,16 +119,25 @@ A(\theta) = G\left(\cos^2\left(\theta+\psi\right)-\epsilon\sin^2\left(\theta+\ps
 
 \begin{equation}
 \begin{aligned}
-\frac{\partial A}{\partial \epsilon} = G\sin^2\left(\theta+\psi\right)\left(N_1\cos(\theta)+N_2\sin(\theta)+1\right)
+\frac{\partial A}{\partial \epsilon} = G\sin^2\left(\theta+\psi\right)
 \end{aligned}
 \end{equation}
 
-<p>We can also see how our flat noise + amplitude-scaling noise impacts the weights by looking at the score of the Fisher Information Matrix</p>
+<p>Where I'm assuming $N_1$ and $N_2$ are negligble.</p>
+
+<p>We can also need to consider our noise model of flat noise + amplitude-scaling noise:
+</p>    
+\begin{equation}
+\sigma^2_{total} = \sigma_{amp}^2\sigma_{white}^2+\cos^4(\theta)
+\end{equation}  
+
+<p>the weights by looking at the score of our chi-square from e.g. the Fisher Information Matrix</p>
 
 \begin{equation}
 \begin{aligned}
-I_{\epsilon,\epsilon} &= \frac{1}{\sigma_{total}^2}\left(\frac{\partial A}{\partial \epsilon}\right)^2\\
-&= \frac{\left(G\sin^2\left(\theta+\psi\right)\left(N_1\cos(\theta)+N_2\sin(\theta)+1\right)\right)^2}{\left(\sigma_{flat}+A(\theta|X)\sigma_{amp}\right)^2}\\
+I_{\epsilon,\epsilon}\left(\theta\right) &= \frac{1}{\sigma_{total}^2}\left(\frac{\partial A}{\partial \epsilon}\right)^2\\
+&\\
+&= \frac{\left(G\sin^2\left(\theta+\psi\right)\right)^2}{\sigma_{flat}^2+\hat{A}^2(\theta)\sigma_{amp}^2}\\
 \end{aligned}
 \end{equation}
 
@@ -140,15 +150,28 @@ I_{\epsilon,\epsilon} &= \frac{1}{\sigma_{total}^2}\left(\frac{\partial A}{\part
 
 
 
-<!-- 
-\begin{equation}
-\begin{aligned}
-I(\Theta) & = E[\frac{\partial}{\partial \Theta}\log f] \\
-& = E[\frac{\partial}{\partial \Theta}\chi^2]\\
-& = E[\frac{\partial}{\partial \Theta}\frac{A'-A(\Theta)}{\sigma^2}]\\
-\end{aligned}
-\end{equation} -->
+<figure>
+    <img alt="wgtsimpager" id="wgtsimpager" src="#" width="100%"/>
+    <figcaption>
 
+    </figcaption>
+    <script type="text/javascript">
+
+        pager.link("#wgtsimpager",
+            {
+                'Weighting|sim_wgt': ['Uniform|uniform', '1/$\\sigma^2$|sigmasq',
+                '$\\partial A/\\partial \\epsilon$|dAdE',
+                '$(\\partial A/\\partial \\epsilon)/\\sigma^2$|dAdEonsigmasq'],
+            },
+            function(params) {
+                return 'figs/eps_sim_weight_fit_case_'+params.sim_wgt+'_comparison.png';
+            });
+        pager.setparams({
+            'sim_wgt': 'uniform',
+        });
+    </script>
+
+</figure>
 
 
 <p>
@@ -163,7 +186,7 @@ I(\Theta) & = E[\frac{\partial}{\partial \Theta}\log f] \\
     <p></p>
     
     <figure>
-        <img alt="wgt pager" id="wgtpager" src="#" width="75%"/>
+        <img alt="wgtpager" id="wgtpager" src="#" width="75%"/>
         <figcaption>
 
         </figcaption>
