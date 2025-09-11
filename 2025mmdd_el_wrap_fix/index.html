@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Posting Title — J. Cornelison</title>
+    <title>El Wrap Fix — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
     <script type="text/x-mathjax-config">
@@ -28,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>Fixing Az/El wrapping near Zenith </h1>
+    <h1>Fixing El wrapping near Zenith </h1>
 
     <time datetime="2020-xx-xx" class="published updated">
         2025 Mmm dd
@@ -39,33 +39,39 @@
 <hr>
 
 <p>
-    Abstract
+    This is annoying for studies where differentiating between two spots with the same topocentric elevation, but different mount elevations (e.g. El=80&deg; and El=100&deg;).
+    I think I've come up with a fix for current studies using our beam mapping pointing models, but there exists a real bug in our current CMB pointing code that we should probably fix.
+    Further, only a few people are familiar with the bm functions, so I'd like to propose replacing our CMB pointing code with the beam mapping models.
 </p>
 
 <hr>
 
-<section><h2>Section 1</h2>
+<section><h2>The Problem</h2>
 
-    <h3>Subsection 1</h3>
+<b>invpointing_model</b>
+<p>[see <a href="HCC2007"></a>] The main CMB analysis pointing model that converts mount coordinates to topocentric AZ/El/PA. All of the calculations are done algebraically which, while efficient, require some cludges to make work due to singularities and degeneracies.</p>
 
-<p>
-    Example equation:
+<p>This function has a cludge at the end that unwraps the elevation, but it's broken in two ways:
+<ol>
+<li>It unwraps EL according to the input mount coords, which is only approximate. You can see in Fig 1.1 that the wrap occurs well before it should for large tilts.</li>
+<li>It only unwraps EL while keeping AZ the same. This means that the pointing is actually incorrect. Further, it's not actually straightforward to just add 180&deg; to AZ to rectify it due to all of the tilts.</li>
+</ol>
 </p>
 
-    \begin{equation}
-    x_0 = 2 \sin(r_0/2) \cos(\theta_0)\\
-    y_0 = 2 \sin(r_0/2) \sin(\theta_0)
-    \end{equation}
+
+<b>beam_map_pointing_model</b>
+<p>
+[see <a href="JAC2021"></a>] Because the beam map pointing model is all done in vector space, calculating the final output coordinates after all of the rotations are done, we only really have the issue of breaking degeneracy between two points of the same elevation.
+</p>
 
 
-<p>An example footnote<sup><a href="#ftn1">1</a></sup> and reference citation <a href="CAB2012"></a>.</p>
       <p>
- Example pager:
+ The pager below shows an example of the issue. For the beam map model, <tt>keck_beam_map_pointing</tt> (KBMP) is similar in usage and shown for comparison since the new <tt>beam_map_pointing_model</tt> already has the fix I describe below.
     </p>
     <figure>
         <img alt="Name pager" id="namepager" src="#" width="900px"/>
         <figcaption>
-            Example pager
+
         </figcaption>
         <script type="text/javascript">
             pager.link("#namepager",
@@ -78,10 +84,22 @@
                 });
             pager.setparams({
                 'a': 'ipm',
-                'b': 'gif',
+                'b': 'png',
             });
         </script>
     </figure>
+
+<h3>The Solution</h3>
+
+<p>
+The elevation stage follows the path outlined by the great circle connecting the AZ-pointing vector to 
+</p>
+<p>
+So far, that's only for the boresight, but accounting for detector offsets is relatively straightforward.
+</p>
+
+
+<h3>The Proposal</h3>
 
 
 
@@ -204,7 +222,7 @@
             bicep2: "",                 // We shouldn't be posting in these, but still have postings we can reference.
             keck  : "",                 // keck/analysis_logbook/analysis/
             spuder: "",                 // ~spuder/hieno_analysis_logboo
-            bicep1: "",                 // ~bicep1/analysis_logbook_north/
+            bicep: "",                 // ~bicep1/analysis_logbook_north/
             general_projects:"",
                    };
         // Logbook Site map:
@@ -217,24 +235,33 @@
         // bicep2:
         // keck:    www/keck/analysis_logbook/analysis/
         // spuder:  www/~spuder/hieno_analysis_logbook/
-        // bicep1:  www/~bicep1/analysis_logbook_north/
+        // bicep1:  www/~bicep/analysis_logbook_north/
 
         // Shorthand tags
         var tags = [
-            "CAB2012",
+        "HCC2007",    
+        "CAB2012",
+        "CZ2020",
+        "JAC2021",
         ];
 
         // Links
         // Truncate the link down to the www directory in which it lies if you can.
         // This ensures that we can view the linked postings at Pole without the internet.
         var hrefs = [
-            "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+        "~bicep/analysis_logbook_north/20070302_inv_pointing/",    
+        "keck/analysis_logbook/analysis/20120510_beam_map_pointing/",
+        "bicep_array/analysis_logbook/20201208_instloading/",
+        "bkcmb/analysis_logbook/analysis/20210518_bmpm/",
         ];
 
 
         // Posting titles
         var desc = [
-            "Pointing Model for Keck Beam Maps",
+        "Inverse Pointing Model",    
+        "Pointing Model for Keck Beam Maps",
+                   "BA1 Receiver Loading",
+        "A New Pointing Model for Beam Mapping",
         ];
         // Debug
         var posty = document.getElementById("testp");
