@@ -29,7 +29,7 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Analysis: Modulation Curve Weights for Cross-Pol Efficiency</h1>
+    <h1>RPS Analysis: Polarization Efficiency</h1>
 
     <time datetime="2022-07-01" class="published updated">
         2025 Sep 
@@ -42,6 +42,7 @@
 
 
 <p>
+    In the 2022 RPS data, we see some strange features in the cross-polarization leakage which invariably bleeds into 
     This posting investigates how different approaches to our weighting of modulation curves during fits could improve constraints on cross-polarization efficiency.
     We've been typically using uniform weighting for mod curves. 
     While we do see some improvement on constraints by weighting by a simple noise model....
@@ -50,6 +51,41 @@
 </p>
 
 <hr>
+
+<section>
+<h2></h2>
+
+
+    <figure>
+        <img alt="sec1pager" id="sec1pager" src="#" width="75%"/>
+        <figcaption>
+
+        </figcaption>
+        <script type="text/javascript">
+
+            pager.link("#sec1pager",
+                {
+                    'Parameter|param_sec1': ['pol. eff|poleffs_uniform','PSat|psat2019'],
+                },
+                function(params) {
+                    return 'figs/tile_plots_'+params.param_sec1+'.png';
+                });
+            pager.setparams({
+                'param_sec1': 'poleffs_uniform',
+            });
+        </script>
+
+</figure>
+
+<figure>
+    <img src="figs/mod_curve_compression_model.png" width="75%"/>
+    <figcaption>
+        
+    </figcaption>
+</figure>
+
+
+</section>
 
 <section>
 <h2>Analytic Weight Optimization</h2>
@@ -160,9 +196,7 @@ I_{\epsilon,\epsilon}\left(\theta\right) &= \frac{1}{\sigma_{total}^2}\left(\fra
 <p>
     Below is 10000 sims with the noise model from Eq. 5.
 </p>
-<p>
-    <font color="red">Q: Does this change if we include non-linearity at higher amplitudes? Do we have a physical motivation to believe this is happening?</font>
-</p>
+
 <figure>
     <img alt="wgtsimpager" id="wgtsimpager" src="#" width="100%"/>
     <figcaption>
