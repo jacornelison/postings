@@ -29,21 +29,24 @@
 <link rel="stylesheet" type="text/css" href="scripts/pager.css">
 
 <header>
-    <h1>RPS Analysis: Modulation Curve Weights</h1>
+    <h1>RPS Analysis: Modulation Curve Weights for Cross-Pol Efficiency</h1>
 
     <time datetime="2022-07-01" class="published updated">
-        2022 Jul 01
+        2025 Sep 
     </time> —
     J. Cornelison 
-    <p><font color="red">Updated 2025 May 28</font></p>
+
 </header>
 
 <hr>
+
+
 <p>
-    <font color="red">Note: This posting is originally from Jul2022, but went unpublished. Section 1 has plots that I made 13 May 2025. The rest is from that original posting for reference purposes.</font>
-</p>
-<p>
-    This posting investigates how different approaches to our weighting of modulation curves during fits could improve constraints on polarization parameters. I create a simset of 100 realizations of modulation curves with amplitude scaling noise at a series of DK angles. I fit for polarization angle, $\epsilon$, amplitude, and two collimation nuisance parameters to those simulated data using three weighting schemes: Uniform, Threshold, and 1/Amplitude. I find that the bias is consistent with zero in all relevant cases and the standard deviation on best-fit parameters is consistently reduced using the non-uniform weighting schemes.
+    This posting investigates how different approaches to our weighting of modulation curves during fits could improve constraints on cross-polarization efficiency.
+    We've been typically using uniform weighting for mod curves. 
+    While we do see some improvement on constraints by weighting by a simple noise model....
+    Further, 
+    Going forward, we shall be using this weighting
 </p>
 
 <hr>
@@ -172,12 +175,14 @@ I_{\epsilon,\epsilon}\left(\theta\right) &= \frac{1}{\sigma_{total}^2}\left(\fra
                 'Weighting|sim_wgt': ['Uniform|uniform', '1/$\\sigma^2$|sigmasq',
                 '$\\partial A/\\partial \\epsilon$|dAdE',
                 '$(\\partial A/\\partial \\epsilon)/\\sigma^2$|dAdEonsigmasq'],
+                'Compression|comp': ['Off|', 'On|_compressed'],
             },
             function(params) {
-                return 'figs/eps_sim_weight_fit_case_'+params.sim_wgt+'_comparison.png';
+                return 'figs/eps_sim_weight_fit_case_'+params.sim_wgt+'_comparison'+params.comp+'.png';
             });
         pager.setparams({
             'sim_wgt': 'uniform',
+            'comp': '',
         });
     </script>
 
@@ -205,7 +210,7 @@ I_{\epsilon,\epsilon}\left(\theta\right) &= \frac{1}{\sigma_{total}^2}\left(\fra
             pager.link("#wgtpager",
                 {
                     'Parameter|param_wgt': ['pol. eff|poleffs','xpol|xpols','per-pair Angle|phi_pair','per-pair Angle tile-sub|phi_pair_tilesub'],
-                    'Weighting|real_wgt': ['Uniform|uniform', '1/Amp|refit'],
+                    'Weighting|real_wgt': ['Uniform|uniform', '1/$\\sigma^2$|oneoveramp','$(\\partial A/\\partial \\epsilon)/\\sigma^2$|dadeoveramp'],
                 },
                 function(params) {
                     return 'figs/tile_plots_'+params.param_wgt+'_'+params.real_wgt+'.png';
@@ -233,7 +238,7 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
             pager.link("#wgthistpager",
                 {
                     'Parameter|param_wgt': ['pol. eff|poleffs','xpol|xpols','per-pair Angle|phi_pair','per-pair Angle tile-sub|phi_pair_tilesub'],
-                    'Weighting|real_wgt': ['Uniform|uniform', '1/Amp|refit'],
+                    'Weighting|real_wgt': ['Uniform|uniform', '1/$\\sigma^2$|oneoveramp','$(\\partial A/\\partial \\epsilon)/\\sigma^2$|dadeoveramp'],
                 },
                 function(params) {
                     return 'figs/hists_'+params.param_wgt+'_'+params.real_wgt+'.png';
@@ -247,7 +252,7 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
 
 
 </section>
-
+<!-- 
 <section><h2>Some sims I did in 2022?</h2>
 
     <h3>The Model</h3>
@@ -393,7 +398,7 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
             });
         </script>
     </figure>
-    <!-- <p>For $\epsilon$, the 1/Amp weighting is consistently smallest, but for $\phi$ the threshold weighting seems to be the best. My plan now is to test these weighting schemes on real RPS data.
+     <p>For $\epsilon$, the 1/Amp weighting is consistently smallest, but for $\phi$ the threshold weighting seems to be the best. My plan now is to test these weighting schemes on real RPS data.
 
 
         I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter on phi, the I find that the mean of the scatter changes drastically.</p>
@@ -439,6 +444,7 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
     </figure> -->
 
 </section>
+
 
 <hr>
 
