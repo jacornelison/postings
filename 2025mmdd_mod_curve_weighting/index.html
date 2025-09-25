@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Mod Curve Weights — J. Cornelison</title>
+    <title>RPS2022: Polarization Efficiency — J. Cornelison</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Load up MathJax for math notation -->
 
@@ -42,40 +42,83 @@
 
 
 <p>
-    In the 2022 RPS data, we see some strange features in the cross-polarization leakage which invariably bleeds into 
-    This posting investigates how different approaches to our weighting of modulation curves during fits could improve constraints on cross-polarization efficiency.
-    We've been typically using uniform weighting for mod curves. 
-    While we do see some improvement on constraints by weighting by a simple noise model....
-    Further, 
-    Going forward, we shall be using this weighting
+In <a href="BK-XVIII"></a>, we published the polarization angles derived from the RPS data collected during the 2021/2022 Austral Summer.
+This posting extends our earlier RPS angle analysis to polarization efficiency. 
+The 2022 data show some non-physical tile features, likely linked to detector non-linearity.
+By reweighting the modulation curves with noise- and derivative-based schemes, we largely remove these artifacts and cut the uncertainty on polarization efficiency by about a factor of two.
+The results suggest a small downward shift in $\epsilon$ (from 0.005 to ~0.003), consistent with expectations and with (probably) little impact on $r$-systematics, but opening the door to possible EE-based calibration.
 </p>
 
 <hr>
 
 <section>
-<h2></h2>
+<h2>Intro</h2>
+
+<p>
+    For our pair-sum and pair-diff timestream signals, $z_s$ and $z_d$ respectively, we define their contributions from T, Q, and U as
+</p>
+
+\begin{equation}\label{eq:paircombinemod}
+\begin{split}
+&z_s = T + \rho_+\left(Q\cos2\psi_++U\sin2\psi_+\right)\\
+&z_d = \rho_-\left(Q\cos2\psi_-+U\sin2\psi_-\right)\\
+\end{split}
+\end{equation}
+
+where $\psi_\pm$ is the pair-averaged polarization response angle,
+
+\begin{equation}\label{eq:paircombineangle}
+    \begin{split}
+        &\psi_\pm = \frac{\psi_A+\psi_B-\pi/2}{2}+\frac{1}{2}\tan^{-1}\left[\frac{\gamma_A\pm\gamma_B}{\gamma_A\mp\gamma_B}\frac{\sin(\psi_A-\psi_B+\pi/2)}{\cos(\psi_A-\psi_B+\pi/2)}\right]\\
+    \end{split}
+\end{equation}
+
+<p>where $\gamma=\frac{1-\epsilon}{1+\epsilon}$ and $\epsilon$ is the cross-polarization leakage.</p>
+<p>$\rho_\pm$ is the polarization efficiency,</p>
 
 
-    <figure>
-        <img alt="sec1pager" id="sec1pager" src="#" width="75%"/>
-        <figcaption>
+\begin{equation}
+    \rho_\pm = \frac{1}{2}\left[\left(\gamma_A\pm\gamma_B\right)^2\sin^2\left(\psi_A-\psi_B+\pi/2\right)+\left(\gamma_A\mp\gamma_B\right)^2\cos^2\left(\psi_A-\psi_B+\pi/2\right)\right]^{\frac{1}{2}}
+\end{equation}
+<p>
+    [See <a href="JBW2019"></a>, &sect; 4.1 for the complete formalism].
+    <b>Note:</b> for the rest of this posting, we'll be focusing entirely on the pair-difference polarization efficiency.
+</p>
 
-        </figcaption>
-        <script type="text/javascript">
+<p>
+Below are the results for polarization efficiency using the current RPS analysis pipeline.
+Note that features pop up for certain tiles where the polarization efficiency is non-physical.
+One possible hypothesis for this is that the power from the RPS is driving some tiles to non-linearity.
+To check this, I added the PSats from B3's 2019/2020 OE measurements<a href="JAC2019"></a> to the pager, since I thought the lowest relative PSats <it>should</it> indicate which detectors would saturate first.
+While that's not necessarily true, the overall morphology within a tile does appear to correlate with the most severe tiles, 1,3,4, and 8, if you squint.
+</p>
 
-            pager.link("#sec1pager",
-                {
-                    'Parameter|param_sec1': ['pol. eff|poleffs_uniform','PSat|psat2019'],
-                },
-                function(params) {
-                    return 'figs/tile_plots_'+params.param_sec1+'.png';
-                });
-            pager.setparams({
-                'param_sec1': 'poleffs_uniform',
+<figure>
+    <img alt="compsecpager" id="compsecpager" src="#" width="75%"/>
+    <figcaption>
+
+    </figcaption>
+    <script type="text/javascript">
+
+        pager.link("#compsecpager",
+            {
+                'Parameter|param_compsec': ['pol. eff|poleffs_uniform','PSat|psat2019'],
+            },
+            function(params) {
+                return 'figs/tile_plots_'+params.param_compsec+'.png';
             });
-        </script>
-
+        pager.setparams({
+            'param_compsec': 'poleffs_uniform',
+        });
+    </script>
 </figure>
+
+<h3>Effect of detector saturation on mod curves</h3>
+
+<p>If the RPS is indeed too bright, then the detectors would be driven non-linear at the height of the modulation curves.
+    The model I use here is some generic gain compression model for demonstrative purposes.
+    But effectively, what we want to do is come up with some weighting scheme that downweights the larger amplitudes in the modulation curve.
+</p>
 
 <figure>
     <img src="figs/mod_curve_compression_model.png" width="75%"/>
@@ -85,10 +128,28 @@
 </figure>
 
 
+
 </section>
 
 <section>
-<h2>Analytic Weight Optimization</h2>
+<h2>Weight Optimization</h2>
+
+<h3>Naive 1/Amp</h3>
+
+<p>As it happens, we know our modulation curves contain some amplitude scaling noise<a href="JAC2018"></a>, so a good starting point was to just weight using
+    inversely with the amplitude.
+</p>    
+\begin{equation}
+\sigma^2_{total} = \sigma_{white}^2+\sigma_{amp}^2\cos^4(\theta)
+\end{equation}  
+
+<p>
+ In addition to accounting for non-linearities, this should also be the statistically optimum weighting.
+    For now, I'm assuming $\sigma_{white}=0.5\%$ and $\sigma_{amp}=3\%$ based on previous rough estimations.
+
+</p>
+
+<h3>Analytic Optimization</h3>
 
 <p>
     We have our model:
@@ -164,15 +225,8 @@ A(\theta) = G\left[\cos^2\left(\theta+\psi\right)+\epsilon\sin^2\left(\theta+\ps
 
 <p>Where I'm assuming $N_1$ and $N_2$ are negligble.</p>
 
-<p>We can also need to consider our noise model of flat noise + amplitude-scaling noise:
-</p>    
-\begin{equation}
-\sigma^2_{total} = \sigma_{white}^2+\sigma_{amp}^2\cos^4(\theta)
-\end{equation}  
-
 <p>
-For now, I'm assuming $\sigma_{white}=0.5\%$ and $\sigma_{amp}=3\%$ based on previous rough estimations.
-Figure 1.3 Shows ${\partial A}/{\partial \epsilon}$ and $1/\sigma^2$ compared to our modulation curve, as well as the case where we combine them.
+    The figure below shows ${\partial A}/{\partial \epsilon}$ and $1/\sigma^2$ compared to our modulation curve, as well as the case where we combine them.
 </p>
 
 <!-- 
@@ -189,22 +243,26 @@ I_{\epsilon,\epsilon}\left(\theta\right) &= \frac{1}{\sigma_{total}^2}\left(\fra
 <figure>
     <img src="figs/eps_dAdE_and_score.png" width="75%"/>
     <figcaption>
-        
+    Weights (in color) compared to a fiducial modulation curve (black).
     </figcaption>
 </figure>
 
+
+
+
 <p>
-    Below is 10000 sims with the noise model from Eq. 5.
+    Below is 10000 sims that includes the noise model as well as a case which includes non-linearity from detector staturation.
 </p>
 
+
 <figure>
-    <img alt="wgtsimpager" id="wgtsimpager" src="#" width="100%"/>
+    <img alt="wgtsimpager2" id="wgtsimpager2" src="#" width="100%"/>
     <figcaption>
 
     </figcaption>
     <script type="text/javascript">
 
-        pager.link("#wgtsimpager",
+        pager.link("#wgtsimpager2",
             {
                 'Weighting|sim_wgt': ['Uniform|uniform', '1/$\\sigma^2$|sigmasq',
                 '$\\partial A/\\partial \\epsilon$|dAdE',
@@ -219,11 +277,12 @@ I_{\epsilon,\epsilon}\left(\theta\right) &= \frac{1}{\sigma_{total}^2}\left(\fra
             'comp': '',
         });
     </script>
-
 </figure>
 
 
 <p>
+Not surprisingly, the $1/\sigma$ selection reduces the scatter since we're optimally weighting. 
+A notable feature is that when compression is on, $\epsilon$ is biased positive.
 
 </p>
 
@@ -232,7 +291,12 @@ I_{\epsilon,\epsilon}\left(\theta\right) &= \frac{1}{\sigma_{total}^2}\left(\fra
 <section>
 
     <h2>Reweighting RPS2022 data</h2>
-    <p></p>
+    <p>
+    The pager below shows the polarization parameters from the real data re-weighted.
+    We find that the $(\partial A/\partial \epsilon)/\sigma^2$ option nearly completely removes the features across the tiles.
+    Interestingly, most detectors that are 'fixed' in the real data are biased negative, the opposite of what we see in the sims.
+    It's not clear to me what that would mean physically.
+    </p>
     
     <figure>
         <img alt="wgtpager" id="wgtpager" src="#" width="75%"/>
@@ -258,8 +322,8 @@ I_{\epsilon,\epsilon}\left(\theta\right) &= \frac{1}{\sigma_{total}^2}\left(\fra
 </figure>
 
 <p>
-Histogram of values from above. Per-pair polarization efficiency that I quoted from 2018 data for <a href="BK-XV"></a> in 2021 was 0.7%&pm;0.2%. The uniformly fit RPS2022 data is consistent with that from the plot below: 1-"poleff" &pm; "obs2obs std".
-While the median remains unchanged, the precision on pol.eff. gets tighter by a factor of 2 when we switch to a weighting of 1/Amp.
+Histogram of values from above.
+While the median remains unchanged, the precision on pol.eff. gets tighter by a factor of 2 when we switch to the new weighting.
 </p>
 
         <figure>
@@ -284,198 +348,53 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
         </script>
     </figure>
 
-
-</section>
-<!-- 
-<section><h2>Some sims I did in 2022?</h2>
-
-    <h3>The Model</h3>
 <p>
-    Our model for the modulation curve amplitude, $A$, as a function of RPS rotation angle, $\theta$, is:
+    In our CMB analysis, we lock in $\epsilon=0.005$, giving us a polarization efficiency of 0.990. 
+    These results show that our sims are in fairly good agreement, but we could change $\epsilon$ to 0.003 to reflect these measurements.
+    While we don't think this change would have a major impact on $r$-systematics (see a posting from Clara shortly), 
+    this <it>does</it> open the possibility of performing our own EE abscal.
+    My plan is to start looking into that.
 </p>
 
-    \begin{equation}
-    A(\theta) = G\left(\cos\left(2\left(\theta+\psi\right)\right)-\frac{\epsilon+1}{\epsilon-1}\right)\left(N_1\cos(\theta)+N_2\sin(\theta)+1\right)
-    \end{equation}
 
-    where:
-    <ul>
-        <li>$G$ is the gain of a detector</li>
-        <li>$\phi$ is the polarization angle WRT to the RPS wire grid (The wire grid pol response is align to zenith)</li>
-        <li>$\epsilon$ is the cross-polar {response,(in)efficiency, leakage}</li>
-        <li>$N1,\;N2$ are nuisance parameters which account for miscollimation of the RPS axis of rotation.</li>
-    </ul>
+</section>
 
-    Together with our data, $A_d$, the chi-square we minimize is:
-    \begin{equation}
-    \chi^2 = \sum\left(w(\theta)\left[A_d(\theta)-A(\theta)\right]\right)^2
-    \end{equation}
+<section>
+<h2>Impact from Non-Orthogonality</h2>
+<p>
+    This is mostly here because I don't think I've put this in a posting before.
+    As we can see from Eq. 3, non-orthogonality between detectors also has an impact on polarization efficiency.
+    I measure a non-orthgonality between intra-pair detectors of $0.5^\circ\pm0.02^\circ$.
+    Futher, we can see that this feature is tied to the individual tiles.
+    When, we choose the subtraction based on tile orientation (H minus V), the sign of the angle flips in MCE0, 
+    which has all of its tiles clocked 90&deg; to the rest of the focal plane.
+</p>    
+<p>
+    This effect is subdominant to the contributions from $\epsilon$.
+    Forcing the detector non-orthogonality to zero changes the polarization efficiency by $O(10^{-5})$.
+</p>
 
-    <p>where $w$ is a weighting we could apply to the residuals.</p>
+<figure>
+    <img alt="sec1pager" id="sec1pager" src="#" width="75%"/>
+    <figcaption>
 
-    <p>I chose three different weighting options:</p>
-    <ul>
-        <li>Uniform:
-        \begin{equation}
-        w(\theta) = 1
-        \end{equation}
-        This is what we currently use in our RPS analysis.</li>
-        <li>Threshold:
-        \begin{equation}
-        w(\theta) =
-        \begin{cases}
-        1 & \; A_d(\theta) < A_{thresh}\\
-        0 & \; A_d(\theta) \ge A_{thresh}\\
-        \end{cases}
-        \end{equation}
-        This puts all of the weight on the lower amplitudes where the constraining power on $\epsilon$ should be highest.</li>
-        <li>1/Amp:
-        \begin{equation}
-        w(\theta) = {A_d(\theta)}^{-1}-\text{min}\left({A_d(\theta)}^{-1}\right)
-        \end{equation}
-        This weighting does the same as above, but avoids establishing an arbitrary threshold.</li>
-    </ul>
+    </figcaption>
+    <script type="text/javascript">
 
-    <h3>Simulations</h3>
-
-      <p>
-        I created simsets of 100 modulation curves at DK-angles of 0&deg; to 180&deg; in 10&deg; increments. Modulation curves are created using Eq. 1 with $\theta = [-180:30:180]$ to match RPS observations. For my fiducial input parameters, I used the following:
-          \begin{equation}
-          P = [\phi\; \epsilon\; G\; N_1\; N_2] = [0^\circ\;0.007 \;0.5 \;0 \;0]
-          \end{equation}
-
-          I chose an $\epsilon=0.007$ as this is roughly around what we've previously measured <a href="BK-XV"></a>. Because amplitude-scaling noise is the dominating reason, I include a 3% Gaussian noise that scales with amplitude in these sims to match roughly what we've seen previously in the data <a href="JAC2018"></a>:
-
-          \begin{equation}
-          A_d = A(\theta|P)+A(\theta|P)\times\,N(\mu=0,\sigma=0.03)
-          \end{equation}
-
-          I should also note that each weighting option at each DK angle uses the same 100 noise realizations. I fit this modulation curves to the same model in Eq.1 using Matlab's <tt>lsqnonlin</tt> to minimize our chi-square in Eq. 2.
-      </p>
-
-        <figure>
-            <img src="figs/mod_curves.png"/>
-            <figcaption>
-
-            </figcaption>
-        </figure>
-          <p>
-          The pager below shows histograms of the best-fit parameters for $\phi$ and $\epsilon$ at various DK angles.
-         </p>
-
-    <figure>
-        <img alt="Name pager" id="histpager" src="#" width="100%"/>
-        <figcaption>
-            Example pager
-        </figcaption>
-        <script type="text/javascript">
-
-            var vallist = new Array(10);
-            for (var ii=0; ii<=9; ++ii) {
-                vallist[ii] = ii*10;
-
-            }
-
-            var valopt = new Pager.DataList(vallist);
-            valopt.toString = function() {
-                var val = this.list[this.idx].toString();
-                while (val.length < 1) { val = "0"+val; }
-                return val;
-            }
-            valopt.fromString = function(val) {
-                return parseInt(val);
-            }
-
-
-            pager.link("#histpager",
-                {
-                    'Parameter|param': ['Angle|phi','Eps|eps'],
-                    'DK|dk': valopt,
-
-                },
-                function(params) {
-                    return 'figs/hist_'+params.param+'_dk_'+params.dk+'.png';
-                });
-            pager.setparams({
-                'param': 'eps',
-                'dk': '0'
+        pager.link("#sec1pager",
+            {
+                'Parameter|param_sec1': ['A minus B|ab','H minus V|hv'],
+            },
+            function(params) {
+                return 'figs/phi_'+params.param_sec1+'_diff_tile_plot.jpg';
             });
-        </script>
-    </figure>
+        pager.setparams({
+            'param_sec1': 'ab',
+        });
+    </script>
+</figure>
+</section>
 
-    <p>
-        We can see that for $\epsilon$, the scatter is consistently lower for the Threshold and 1/Amp weighting schemes. Interestingly, the scatter for $\phi$ is also lower for the non-uniform weights as well which implies that it's fairly sensitive to the amplitude scaling noise which is something I was surprised by.
-    </p>
-    <p>
-        Figure 1.3 shows the bias and standard deviation for each parameter as a function of DK angle. The bias is calculated as the best-fit parameter minus the fiducial parameter given in Eq. 6.
-    </p>
-
-
-    <figure>
-        <img alt="Name pager" id="namepager" src="#" width="75%"/>
-        <figcaption>
-            Example pager
-        </figcaption>
-        <script type="text/javascript">
-
-            pager.link("#namepager",
-                {
-                    'Parameter|param2': ['Angle|phi','Eps|eps','Amp|amp','N1|n1','N2|n2'],
-                    'Plot|plt': ['Bias|bias', 'STD|std'],
-                },
-                function(params) {
-                    return 'figs/scatter_'+params.plt+'_'+params.param2+'_vs_dk.png';
-                });
-            pager.setparams({
-                'plt': 'std',
-                'param2': 'eps',
-            });
-        </script>
-    </figure>
-     <p>For $\epsilon$, the 1/Amp weighting is consistently smallest, but for $\phi$ the threshold weighting seems to be the best. My plan now is to test these weighting schemes on real RPS data.
-
-
-        I was able to apply this to RPS-ISAAC data that I acquired at Pole and I find that either of the new weighting schemes greatly reduces the scatter on phi, the I find that the mean of the scatter changes drastically.</p>
-
-    <figure>
-        <img alt="Name pager" id="isaacpager" src="#" width="85%"/>
-        <figcaption>
-            Example pager
-        </figcaption>
-        <script type="text/javascript">
-
-            var vstart = 33;
-            var vallist2 = new Array(vstart);
-            for (var ii=0; ii<=vstart-1; ++ii) {
-                vallist2[ii] = ii+8;
-
-            }
-
-            var valopt2 = new Pager.DataList(vallist2);
-            valopt2.toString = function() {
-                var val = this.list[this.idx].toString();
-                while (val.length < 3) { val = "0"+val; }
-                return val;
-            }
-            valopt2.fromString = function(val) {
-                return parseInt(val);
-            }
-
-            pager.link("#isaacpager",
-                {
-                    //'Measurement|meas': ['No Homing, No fine sw.|009','With homing, No fine sw.|011','Added Fine Homing sw|022','Post RPS obs|023'],
-                    'Measurement|meas':  valopt2,
-                    'Weight|wgt': ['Uniform|_uniform', 'Threshold|_threshold','1/Amp|_one_on_r'],
-                },
-                function(params) {
-                    return 'figs/isaac_cal_'+params.meas+params.wgt+'.png';
-                });
-            pager.setparams({
-                'wgt': '_uniform',
-                'meas':'009'
-            });
-        </script>
-    </figure> -->
 
 </section>
 
@@ -595,7 +514,10 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
         var tags = [
             "AGV2012",
             "JAC2018",
-            "BK-XV"
+            "JBW2019",
+            "JAC2019",
+            "BK-XV",
+            "BK-XVIII",
         ];
 
         // Links
@@ -603,7 +525,10 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
         var hrefs = [
         "bkcmb/analysis_logbook/analysis/20121107_rpsPolAngleAndCrossPolResponse/",    
         "bkcmb/analysis_logbook/analysis/20180717_rps_sims/",
-            "https://arxiv.org/pdf/2110.00482.pdf",
+        "~bicep2/papers/thesi/B3/willmert_thesis_submit_20191104.pdf",
+        "bicep3/analysis_logbook/20200102_bicep3_opteff/",
+        "https://arxiv.org/pdf/2110.00482.pdf",
+            "https://arxiv.org/pdf/2410.12089",
         ];
 
 
@@ -611,7 +536,10 @@ While the median remains unchanged, the precision on pol.eff. gets tighter by a 
         var desc = [
         "Another Look at Polarization Angles and Cross-Polar Response using RPS Data",    
         "Simulating RPS Data",
-            "The BICEP3 CMB Polarimeter and the First Three Year Data Set",
+        "Justin Willmert's Thesis",
+        "BICEP3 Run11 Optical Efficiency",
+            "BK-XV: The BICEP3 CMB Polarimeter and the First Three Year Data Set",
+            "BICEP/Keck XVIII: Measurement of BICEP3 polarization angles and consequences for constraining cosmic birefringence and inflation",
         ];
         // Debug
         var posty = document.getElementById("testp");
